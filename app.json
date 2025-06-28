@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "bolt-expo-nativewind",
+    "name": "Habit Tracker",
     "slug": "bolt-expo-nativewind",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -29,6 +29,10 @@
       "eas": {
         "projectId": "c79ccc1a-0003-4b2e-b8fc-12ece7ccd878"
       }
-    }
+    },
+    "android": {
+      "package": "com.habittracker.app"
+    },
+    "owner": "sabbir404"
   }
 }
