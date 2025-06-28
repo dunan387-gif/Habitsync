@@ -1,0 +1,139 @@
+import { Theme } from '@/types';
+
+export const LIGHT_THEME: Theme = {
+  id: 'light',
+  name: 'Light',
+  isDark: false,
+  colors: {
+    background: '#FFFFFF',
+    surface: '#F8FAFC',
+    card: '#FFFFFF',
+    text: '#1E293B',
+    textSecondary: '#475569',
+    textMuted: '#94A3B8',
+    primary: '#4ECDC4',
+    primaryLight: '#7EDDD6',
+    primaryDark: '#3CBDB5',
+    accent: '#FF6B6B',
+    accentLight: '#FF8E8E',
+    success: '#10B981',
+    warning: '#F59E0B',
+    error: '#EF4444',
+    border: '#E2E8F0',
+    shadow: '#000000',
+    overlay: 'rgba(0, 0, 0, 0.5)',
+  },
+};
+
+export const DARK_THEME: Theme = {
+  id: 'dark',
+  name: 'Dark',
+  isDark: true,
+  colors: {
+    background: '#121212',
+    surface: '#1E1E1E',
+    card: '#1E1E1E',
+    text: '#E0E0E0',
+    textSecondary: '#E0E0E0',
+    textMuted: '#90CAF9',
+    primary: '#90CAF9',
+    primaryLight: '#B3D9FF',
+    primaryDark: '#6DB3F2',
+    accent: '#FF8A65',
+    accentLight: '#FFB74D',
+    success: '#10B981',
+    warning: '#F59E0B',
+    error: '#EF5350',
+    border: '#1E1E1E',
+    shadow: '#000000',
+    overlay: 'rgba(0, 0, 0, 0.7)',
+  },
+};
+
+export const PASTEL_THEME: Theme = {
+  id: 'pastel',
+  name: 'Pastel Dreams',
+  isDark: false,
+  colors: {
+    background: '#FDF6F0',
+    surface: '#FDF6F0',
+    card: '#FFFFFF',
+    text: '#5C5C5C',
+    textSecondary: '#5C5C5C',
+    textMuted: '#5C5C5C',
+    primary: '#A0CED9',
+    primaryLight: '#B8D9E3',
+    primaryDark: '#88C3CF',
+    accent: '#FFB7B2',
+    accentLight: '#FFC9C5',
+    success: '#6EE7B7',
+    warning: '#F6D6AD',
+    error: '#F28B82',
+    border: '#E5E7EB',
+    shadow: '#000000',
+    overlay: 'rgba(0, 0, 0, 0.4)',
+  },
+};
+
+export const BOLD_THEME: Theme = {
+  id: 'bold',
+  name: 'Bold & Vibrant',
+  isDark: false,
+  isPremium: true,
+  colors: {
+    background: '#FFFFFF',
+    surface: '#FFFFFF',
+    card: '#FFFFFF',
+    text: '#212121',
+    textSecondary: '#212121',
+    textMuted: '#212121',
+    primary: '#FF4081',
+    primaryLight: '#FF6FA3',
+    primaryDark: '#E91E63',
+    accent: '#00E676',
+    accentLight: '#4AE88A',
+    success: '#00E676',
+    warning: '#536DFE',
+    error: '#D50000',
+    border: '#E0E0E0',
+    shadow: '#000000',
+    overlay: 'rgba(0, 0, 0, 0.6)',
+  },
+};
+
+export const OCEAN_THEME: Theme = {
+  id: 'ocean',
+  name: 'Ocean Breeze',
+  isDark: false,
+  isPremium: true,
+  colors: {
+    background: '#E0F7FA',
+    surface: '#E0F7FA',
+    card: '#FFFFFF',
+    text: '#004D40',
+    textSecondary: '#004D40',
+    textMuted: '#004D40',
+    primary: '#0288D1',
+    primaryLight: '#29B6F6',
+    primaryDark: '#0277BD',
+    accent: '#26A69A',
+    accentLight: '#4DB6AC',
+    success: '#26A69A',
+    warning: '#4DD0E1',
+    error: '#FF7043',
+    border: '#B2EBF2',
+    shadow: '#000000',
+    overlay: 'rgba(0, 0, 0, 0.5)',
+  },
+};
+
+export const AVAILABLE_THEMES: Theme[] = [
+  LIGHT_THEME,
+  DARK_THEME,
+  PASTEL_THEME,
+  BOLD_THEME,
+  OCEAN_THEME,
+];
+
+export const FREE_THEMES = AVAILABLE_THEMES.filter(theme => !theme.isPremium);
+export const PREMIUM_THEMES = AVAILABLE_THEMES.filter(theme => theme.isPremium);
