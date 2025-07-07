@@ -1,15 +1,29 @@
 {
   "expo": {
     "name": "Habit Tracker",
-    "slug": "bolt-expo-nativewind",
+    "slug": "habit-tracker",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "scheme": "myapp",
+    "scheme": "habittracker",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
+    "privacy": "public",
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.habittracker.app"
+    },
+    "android": {
+      "package": "com.habittracker.app",
+      "versionCode": 1,
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/images/icon.png",
+        "backgroundColor": "#ffffff"
+      },
+      "permissions": [
+        "android.permission.INTERNET",
+        "android.permission.SYSTEM_ALERT_WINDOW"
+      ]
     },
     "web": {
       "bundler": "metro",
@@ -29,9 +43,6 @@
       "eas": {
         "projectId": "c79ccc1a-0003-4b2e-b8fc-12ece7ccd878"
       }
-    },
-    "android": {
-      "package": "com.habittracker.app"
     },
     "owner": "sabbir404"
   }

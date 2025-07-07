@@ -166,13 +166,16 @@ export default function Library() {
           </TouchableOpacity>
 
           {filteredUserHabits.length > 0 ? (
-            <FlatList
-              data={userHabitSuggestions}
-              keyExtractor={(item) => item.id}
-              renderItem={({ item }) => {
+            <ScrollView
+              showsVerticalScrollIndicator={false}
+              contentContainerStyle={styles.listContent}
+              nestedScrollEnabled={true}
+            >
+              {userHabitSuggestions.map((item) => {
                 const userHabit = habits?.find(h => h.id === item.id);
                 return (
                   <HabitSuggestion
+                    key={item.id}
                     habit={item}
                     onAdd={() => {}}
                     userHabit={userHabit}
@@ -180,10 +183,8 @@ export default function Library() {
                     onDelete={handleDeleteHabit}
                   />
                 );
-              }}
-              showsVerticalScrollIndicator={false}
-              contentContainerStyle={styles.listContent}
-            />
+              })}
+            </ScrollView>
           ) : (
             <View style={styles.emptyContainer}>
               <Text style={styles.emptyText}>{t('no_habits_found')}</Text>
@@ -235,11 +236,13 @@ export default function Library() {
             ))}
           </ScrollView>
 
-          <FlatList
-            data={filteredCategories}
-            keyExtractor={(item) => item.id}
-            renderItem={({ item }) => (
-              <View style={styles.categorySection}>
+          <ScrollView
+            showsVerticalScrollIndicator={false}
+            contentContainerStyle={styles.listContent}
+            nestedScrollEnabled={true}
+          >
+            {filteredCategories.map((item) => (
+              <View key={item.id} style={styles.categorySection}>
                 <Text style={styles.categoryTitle}>{t(item.name)}</Text>
                 {item.habits
                   .filter(habit => 
@@ -253,10 +256,8 @@ export default function Library() {
                     />
                   ))}
               </View>
-            )}
-            showsVerticalScrollIndicator={false}
-            contentContainerStyle={styles.listContent}
-          />
+            ))}
+          </ScrollView>
         </>
       )}
 

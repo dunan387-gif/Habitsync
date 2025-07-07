@@ -1,24 +1,18 @@
 import { Tabs } from 'expo-router';
-import { Chrome as Home, BookOpen, ChartBar as BarChart2, Settings } from 'lucide-react-native';
-import { useLanguage } from '@/context/LanguageContext';
+import { Home, BookOpen, BarChart3, Settings, Trophy } from 'lucide-react-native';
+import { useTheme } from '@/context/ThemeContext';
 
 export default function TabLayout() {
-  const { t } = useLanguage();
-  
+  const { currentTheme } = useTheme();
+
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: '#4ECDC4',
-        tabBarInactiveTintColor: '#94A3B8',
+        tabBarActiveTintColor: currentTheme.colors.primary,
+        tabBarInactiveTintColor: currentTheme.colors.textMuted,
         tabBarStyle: {
-          backgroundColor: '#FFFFFF',
-          borderTopColor: '#E2E8F0',
-          height: 60,
-          paddingBottom: 8,
-        },
-        tabBarLabelStyle: {
-          fontSize: 12,
-          fontWeight: '500',
+          backgroundColor: currentTheme.colors.card,
+          borderTopColor: currentTheme.colors.border,
         },
         headerShown: false,
       }}
@@ -26,28 +20,35 @@ export default function TabLayout() {
       <Tabs.Screen
         name="index"
         options={{
-          title: t('today'),
+          title: 'Home',
           tabBarIcon: ({ color, size }) => <Home size={size} color={color} />,
         }}
       />
       <Tabs.Screen
         name="library"
         options={{
-          title: t('library'),
+          title: 'Library',
           tabBarIcon: ({ color, size }) => <BookOpen size={size} color={color} />,
         }}
       />
       <Tabs.Screen
         name="stats"
         options={{
-          title: t('progress'),
-          tabBarIcon: ({ color, size }) => <BarChart2 size={size} color={color} />,
+          title: 'Stats',
+          tabBarIcon: ({ color, size }) => <BarChart3 size={size} color={color} />,
+        }}
+      />
+      <Tabs.Screen
+        name="gamification"
+        options={{
+          title: 'Rewards',
+          tabBarIcon: ({ color, size }) => <Trophy size={size} color={color} />,
         }}
       />
       <Tabs.Screen
         name="settings"
         options={{
-          title: t('settings'),
+          title: 'Settings',
           tabBarIcon: ({ color, size }) => <Settings size={size} color={color} />,
         }}
       />

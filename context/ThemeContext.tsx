@@ -1,10 +1,11 @@
-import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import React, { createContext, useContext, useEffect, useState, ReactNode } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { Theme, ThemePreference } from '@/types';
+import { Theme, ThemePreference, ThemeColors } from '@/types';
 import { AVAILABLE_THEMES, LIGHT_THEME } from '@/constants/themes';
 
 type ThemeContextType = {
   currentTheme: Theme;
+  colors: ThemeColors;
   setTheme: (themeId: string) => Promise<void>;
   isLoading: boolean;
   availableThemes: Theme[];
@@ -89,6 +90,7 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
 
   const value: ThemeContextType = {
     currentTheme,
+    colors: currentTheme.colors,
     setTheme,
     isLoading,
     availableThemes: AVAILABLE_THEMES,

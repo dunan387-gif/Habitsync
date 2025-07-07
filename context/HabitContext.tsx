@@ -11,6 +11,8 @@ import {
 import { aiService } from '@/services/AIService';
 import { useCelebration } from './CelebrationContext';
 import { useLanguage } from './LanguageContext';
+import { useGamification } from './GamificationContext';
+
 
 type HabitContextType = {
   habits: Habit[] | null;
@@ -27,6 +29,8 @@ type HabitContextType = {
   getAIHabitSuggestions: () => AIHabitSuggestion[];
   getSmartReminderSuggestions: () => SmartReminderSuggestion[];
   triggerMotivationalCheck: () => void;
+  getTotalCompletions: () => number;
+  getOverallCompletionRate: () => number;
 };
 
 type DailyCompletionData = {
@@ -49,6 +53,19 @@ export function HabitProvider({ children }: { children: ReactNode }) {
   const [isLoading, setIsLoading] = useState(true);
   const { showCelebration } = useCelebration();
   const { t } = useLanguage();
+  
+  // Make gamification optional
+  let addXP: ((amount: number, source: string) => Promise<void>) | undefined;
+  let checkAchievements: ((habits: Habit[]) => Promise<void>) | undefined;
+  
+  try {
+    const gamification = useGamification();
+    addXP = gamification.addXP;
+    checkAchievements = gamification.checkAchievements;
+  } catch (error) {
+    // GamificationContext not available yet
+    console.log('GamificationContext not available');
+  }
 
   // Load habits from storage on mount
   useEffect(() => {
@@ -189,7 +206,7 @@ export function HabitProvider({ children }: { children: ReactNode }) {
     }
   };
   
-  // Enhanced toggleHabitCompletion to track completion times
+  // Enhanced toggleHabitCompletion with gamification integration
   const toggleHabitCompletion = async (id: string) => {
     if (!habits) return;
     
@@ -247,6 +264,24 @@ export function HabitProvider({ children }: { children: ReactNode }) {
       setHabits(updatedHabits);
       await saveHabits(updatedHabits);
       
+      // Make gamification calls conditional
+      const completedHabit = updatedHabits.find(h => h.id === id);
+      if (completedHabit && completedHabit.completedToday && addXP) {
+        // Use the correct XP amount from gamification system
+        await addXP(10, 'habit_completion'); // Changed from 20 to 10
+        
+        // Bonus XP for streaks
+        if (completedHabit.streak > 0) {
+          const bonusXP = Math.min(completedHabit.streak * 2, 50);
+          await addXP(bonusXP, 'streak_bonus');
+        }
+      }
+      
+      // Check for achievements - this should happen AFTER XP is awarded
+      if (checkAchievements) {
+        await checkAchievements(updatedHabits);
+      }
+      
       // Check for celebrations
       checkForCelebrations(updatedHabits, id);
       
@@ -267,14 +302,12 @@ export function HabitProvider({ children }: { children: ReactNode }) {
           }
         });
       }, 2000); // Delay to avoid overwhelming user
-      
     } catch (error) {
       console.error('Failed to toggle habit completion:', error);
     }
   };
-
+  
   const checkForCelebrations = (updatedHabits: Habit[], completedHabitId: string) => {
-    // Remove the useCelebration() call from here
     const completedHabit = updatedHabits.find(h => h.id === completedHabitId);
     
     if (!completedHabit || !completedHabit.completedToday) return;
@@ -309,190 +342,219 @@ export function HabitProvider({ children }: { children: ReactNode }) {
     if (streak >= 7) return `🚀 ${streak}-day streak! You're unstoppable!`;
     return `🎯 ${streak}-day streak! Great momentum!`;
   };
-  
-  // AI Feature methods
-  const getAIHabitSuggestions = useCallback((): AIHabitSuggestion[] => {
-    if (!habits) return [];
-    return aiService.generateHabitSuggestions(habits, t);
-  }, [habits, t]);
-
-  const getSmartReminderSuggestions = (): SmartReminderSuggestion[] => {
-    if (!habits) return [];
-    return aiService.generateSmartReminderSuggestions(habits);
-  };
-
-  const triggerMotivationalCheck = () => {
-    if (habits) {
-      checkAndScheduleMotivationalSupport(habits);
-    }
-  };
-  
-  const getHabitById = (id: string) => {
-    if (!habits) return undefined;
-    return habits.find(habit => habit.id === id);
-  };
-  
-  const getCompletionRate = (days: number) => {
-    if (!habits || habits.length === 0) return 0;
-    
-    const today = new Date();
-    let totalPossible = 0;
-    let totalCompleted = 0;
-    
-    // For each day in the range
-    for (let i = 0; i < days; i++) {
-      const date = new Date();
-      date.setDate(today.getDate() - i);
-      const dateStr = date.toISOString().split('T')[0];
       
-      // For each habit, check if it was completed on this date
-      habits.forEach(habit => {
-        // Only count habits that existed on this date
-        const habitCreationDate = new Date(habit.createdAt);
-        if (habitCreationDate <= date) {
-          totalPossible++;
-          if (habit.completedDates.includes(dateStr)) {
-            totalCompleted++;
-          }
+      // AI Feature methods
+      const getAIHabitSuggestions = useCallback((): AIHabitSuggestion[] => {
+        if (!habits) return [];
+        return aiService.generateHabitSuggestions(habits, t);
+      }, [habits, t]);
+  
+      const getSmartReminderSuggestions = (): SmartReminderSuggestion[] => {
+        if (!habits) return [];
+        return aiService.generateSmartReminderSuggestions(habits);
+      };
+  
+      const triggerMotivationalCheck = () => {
+        if (habits) {
+          checkAndScheduleMotivationalSupport(habits);
         }
-      });
-    }
-    
-    return totalPossible > 0 ? Math.round((totalCompleted / totalPossible) * 100) : 0;
-  };
+      };
   
-  const getDailyCompletionData = (days: number): DailyCompletionData[] => {
-    if (!habits || habits.length === 0) return [];
-    
-    const data: DailyCompletionData[] = [];
-    const today = new Date();
-    
-    // For each day in the range, starting from days ago to today
-    for (let i = days - 1; i >= 0; i--) {
-      const date = new Date();
-      date.setDate(today.getDate() - i);
-      const dateStr = date.toISOString().split('T')[0];
-      const dayShort = date.toLocaleDateString('en-US', { weekday: 'short' }).charAt(0);
-      
-      let totalCount = 0;
-      let completedCount = 0;
-      
-      // For each habit, check if it was completed on this date
-      habits.forEach(habit => {
-        // Only count habits that existed on this date
-        const habitCreationDate = new Date(habit.createdAt);
-        if (habitCreationDate <= date) {
-          totalCount++;
-          if (habit.completedDates.includes(dateStr)) {
-            completedCount++;
-          }
+      const getHabitById = (id: string) => {
+        if (!habits) return undefined;
+        return habits.find(habit => habit.id === id);
+      };
+  
+      const getCompletionRate = (days: number) => {
+        if (!habits || habits.length === 0) return 0;
+        
+        const today = new Date();
+        let totalPossible = 0;
+        let totalCompleted = 0;
+        
+        // For each day in the range
+        for (let i = 0; i < days; i++) {
+          const date = new Date();
+          date.setDate(today.getDate() - i);
+          const dateStr = date.toISOString().split('T')[0];
+          
+          // For each habit, check if it was completed on this date
+          habits.forEach(habit => {
+            // Only count habits that existed on this date
+            const habitCreationDate = new Date(habit.createdAt);
+            if (habitCreationDate <= date) {
+              totalPossible++;
+              if (habit.completedDates.includes(dateStr)) {
+                totalCompleted++;
+              }
+            }
+          });
         }
-      });
-      
-      const completionRate = totalCount > 0 ? (completedCount / totalCount) * 100 : 0;
-      
-      data.push({
-        date: dateStr,
-        dayShort,
-        totalCount,
-        completedCount,
-        completionRate,
-      });
-    }
-    
-    return data;
-  };
+        
+        return totalPossible > 0 ? Math.round((totalCompleted / totalPossible) * 100) : 0;
+      };
   
-  const getMonthlyCompletionData = (month: number, year: number): MonthlyCompletionData[] => {
-    if (!habits || habits.length === 0) return [];
-    
-    const data: MonthlyCompletionData[] = [];
-    const daysInMonth = new Date(year, month + 1, 0).getDate();
-    
-    // For each day in the month
-    for (let day = 1; day <= daysInMonth; day++) {
-      const date = new Date(year, month, day);
-      const dateStr = date.toISOString().split('T')[0];
-      
-      let totalCount = 0;
-      let completedCount = 0;
-      
-      // For each habit, check if it was completed on this date
-      habits.forEach(habit => {
-        // Only count habits that existed on this date
-        const habitCreationDate = new Date(habit.createdAt);
-        if (habitCreationDate <= date) {
-          totalCount++;
-          if (habit.completedDates.includes(dateStr)) {
-            completedCount++;
-          }
+      const getDailyCompletionData = (days: number): DailyCompletionData[] => {
+        if (!habits || habits.length === 0) return [];
+        
+        const data: DailyCompletionData[] = [];
+        const today = new Date();
+        
+        // For each day in the range, starting from days ago to today
+        for (let i = days - 1; i >= 0; i--) {
+          const date = new Date();
+          date.setDate(today.getDate() - i);
+          const dateStr = date.toISOString().split('T')[0];
+          const dayShort = date.toLocaleDateString('en-US', { weekday: 'short' }).charAt(0);
+          
+          let totalCount = 0;
+          let completedCount = 0;
+          
+          // For each habit, check if it was completed on this date
+          habits.forEach(habit => {
+            // Only count habits that existed on this date
+            const habitCreationDate = new Date(habit.createdAt);
+            if (habitCreationDate <= date) {
+              totalCount++;
+              if (habit.completedDates.includes(dateStr)) {
+                completedCount++;
+              }
+            }
+          });
+          
+          const completionRate = totalCount > 0 ? (completedCount / totalCount) * 100 : 0;
+          
+          data.push({
+            date: dateStr,
+            dayShort,
+            totalCount,
+            completedCount,
+            completionRate,
+          });
         }
-      });
-      
-      const completionRate = totalCount > 0 ? (completedCount / totalCount) * 100 : 0;
-      
-      data.push({
-        day,
-        completionRate,
-      });
-    }
-    
-    return data;
-  };
+        
+        return data;
+      };
   
-  const reorderHabits = (reorderedHabits: Habit[]) => {
-    if (!habits) return;
-    
-    try {
-      const updatedHabits = reorderedHabits.map((habit, index) => ({
-        ...habit,
-        order: index
-      }));
+      const getMonthlyCompletionData = (month: number, year: number): MonthlyCompletionData[] => {
+        if (!habits || habits.length === 0) return [];
+        
+        const data: MonthlyCompletionData[] = [];
+        const daysInMonth = new Date(year, month + 1, 0).getDate();
+        
+        // For each day in the month
+        for (let day = 1; day <= daysInMonth; day++) {
+          const date = new Date(year, month, day);
+          const dateStr = date.toISOString().split('T')[0];
+          
+          let totalCount = 0;
+          let completedCount = 0;
+          
+          // For each habit, check if it was completed on this date
+          habits.forEach(habit => {
+            // Only count habits that existed on this date
+            const habitCreationDate = new Date(habit.createdAt);
+            if (habitCreationDate <= date) {
+              totalCount++;
+              if (habit.completedDates.includes(dateStr)) {
+                completedCount++;
+              }
+            }
+          });
+          
+          const completionRate = totalCount > 0 ? (completedCount / totalCount) * 100 : 0;
+          
+          data.push({
+            day,
+            completionRate,
+          });
+        }
+        
+        return data;
+      };
+  
+      const reorderHabits = (reorderedHabits: Habit[]) => {
+        if (!habits) return;
+        
+        try {
+          const updatedHabits = reorderedHabits.map((habit, index) => ({
+            ...habit,
+            order: index
+          }));
+          
+          // Update state immediately for smooth UI
+          setHabits(updatedHabits);
+          
+          // Save to storage asynchronously without blocking
+          saveHabits(updatedHabits).catch(error => {
+            console.error('Failed to save reordered habits:', error);
+          });
+        } catch (error) {
+          console.error('Failed to reorder habits:', error);
+        }
+      };
+  
+      const getTotalCompletions = (): number => {
+        if (!habits || habits.length === 0) return 0;
+        
+        let totalCompletions = 0;
+        habits.forEach(habit => {
+          totalCompletions += habit.completedDates.length;
+        });
+        
+        return totalCompletions;
+      };
       
-      // Update state immediately for smooth UI
-      setHabits(updatedHabits);
-      
-      // Save to storage asynchronously without blocking
-      saveHabits(updatedHabits).catch(error => {
-        console.error('Failed to save reordered habits:', error);
-      });
-    } catch (error) {
-      console.error('Failed to reorder habits:', error);
+      const getOverallCompletionRate = (): number => {
+        if (!habits || habits.length === 0) return 0;
+        
+        const today = new Date();
+        let totalPossible = 0;
+        let totalCompleted = 0;
+        
+        habits.forEach(habit => {
+          const habitCreationDate = new Date(habit.createdAt);
+          const daysSinceCreation = Math.floor((today.getTime() - habitCreationDate.getTime()) / (1000 * 60 * 60 * 24)) + 1;
+          
+          totalPossible += daysSinceCreation;
+          totalCompleted += habit.completedDates.length;
+        });
+        
+        return totalPossible > 0 ? Math.round((totalCompleted / totalPossible) * 100) : 0;
+      };
+  
+      const value: HabitContextType = {
+        habits: habits ? [...habits].sort((a, b) => (a.order || 0) - (b.order || 0)) : null,
+        isLoading,
+        addHabit,
+        updateHabit,
+        deleteHabit,
+        toggleHabitCompletion,
+        reorderHabits,
+        getHabitById,
+        getCompletionRate,
+        getDailyCompletionData,
+        getMonthlyCompletionData,
+        getAIHabitSuggestions,
+        getSmartReminderSuggestions,
+        triggerMotivationalCheck,
+        getTotalCompletions,
+        getOverallCompletionRate,
+      };
+  
+      return (
+        <HabitContext.Provider value={value}>
+          {children}
+        </HabitContext.Provider>
+      );
     }
-  };
 
-  const value: HabitContextType = {
-    habits: habits ? [...habits].sort((a, b) => (a.order || 0) - (b.order || 0)) : null,
-    isLoading,
-    addHabit,
-    updateHabit,
-    deleteHabit,
-    toggleHabitCompletion,
-    reorderHabits,
-    getHabitById,
-    getCompletionRate,
-    getDailyCompletionData,
-    getMonthlyCompletionData,
-    getAIHabitSuggestions,
-    getSmartReminderSuggestions,
-    triggerMotivationalCheck,
-  };
+    export function useHabits() {
+      const context = useContext(HabitContext);
+      if (context === undefined) {
+        throw new Error('useHabits must be used within a HabitProvider');
+      }
+      return context;
+    }
 
-  return (
-    <HabitContext.Provider value={value}>
-      {children}
-    </HabitContext.Provider>
-  );
-}
-
-export function useHabits() {
-  const context = useContext(HabitContext);
-  if (context === undefined) {
-    throw new Error('useHabits must be used within a HabitProvider');
-  }
-  return context;
-}
-
-
-
-
+    

@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, Animated, Dimensions } from 'react-native';
 import ConfettiCannon from 'react-native-confetti-cannon';
 import { useTheme } from '@/context/ThemeContext';
 
-type CelebrationType = 'streak' | 'allComplete' | 'milestone';
+type CelebrationType = 'streak' | 'allComplete' | 'milestone' | 'level_up' | 'achievement';
 
 type CelebrationOverlayProps = {
   visible: boolean;
@@ -76,6 +76,10 @@ export default function CelebrationOverlay({ visible, type, message, onComplete 
         return ['#00B894', '#00CEC9', '#6C5CE7', '#A29BFE', '#FD79A8'];
       case 'milestone':
         return ['#FDCB6E', '#E17055', '#74B9FF', '#81ECEC', '#FD79A8'];
+      case 'level_up':
+        return ['#6C5CE7', '#A29BFE', '#74B9FF', '#00CEC9', '#FDCB6E'];
+      case 'achievement':
+        return ['#FFD700', '#FFA500', '#FF6347', '#32CD32', '#1E90FF'];
       default:
         return ['#FF6B6B', '#4ECDC4', '#45B7D1'];
     }
@@ -89,6 +93,10 @@ export default function CelebrationOverlay({ visible, type, message, onComplete 
         return '🎉';
       case 'milestone':
         return '⭐';
+      case 'level_up':
+        return '🆙';
+      case 'achievement':
+        return '🏆';
       default:
         return '🎉';
     }

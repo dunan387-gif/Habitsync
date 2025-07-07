@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useState, ReactNode } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-type CelebrationType = 'streak' | 'allComplete' | 'milestone';
+type CelebrationType = 'streak' | 'allComplete' | 'milestone' | 'level_up' | 'achievement';
 
 type CelebrationData = {
   type: CelebrationType;

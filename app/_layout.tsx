@@ -8,10 +8,12 @@ import { useFrameworkReady } from '@/hooks/useFrameworkReady';
 import { HabitProvider } from '@/context/HabitContext';
 import { ThemeProvider } from '@/context/ThemeContext';
 import { LanguageProvider } from '@/context/LanguageContext';
+import { AuthProvider } from '@/context/AuthContext';
 import { requestNotificationPermissions } from '@/services/NotificationService';
 import { CelebrationProvider } from '@/context/CelebrationContext';
 import CelebrationOverlay from '@/components/CelebrationOverlay';
 import { useCelebration } from '@/context/CelebrationContext';
+import { GamificationProvider } from '@/context/GamificationContext';
 
 function RootLayoutContent() {
   const { currentCelebration, hideCelebration } = useCelebration();
@@ -20,6 +22,7 @@ function RootLayoutContent() {
     <>
       <StatusBar style={Platform.OS === 'ios' ? 'dark' : 'auto'} />
       <Stack>
+        <Stack.Screen name="(auth)" options={{ headerShown: false }} />
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
         <Stack.Screen name="habit/[id]" options={{ headerShown: false }} />
         <Stack.Screen name="+not-found" />
@@ -39,14 +42,19 @@ function RootLayoutContent() {
 
 export default function RootLayout() {
   return (
-    <ThemeProvider>
-      <LanguageProvider>
-        <CelebrationProvider>
-          <HabitProvider>
-            <RootLayoutContent />
-          </HabitProvider>
-        </CelebrationProvider>
-      </LanguageProvider>
-    </ThemeProvider>
+    // Change the provider order so GamificationProvider wraps HabitProvider
+    <AuthProvider>
+      <ThemeProvider>
+        <LanguageProvider>
+          <CelebrationProvider>
+            <GamificationProvider>
+              <HabitProvider>
+                <RootLayoutContent />
+              </HabitProvider>
+            </GamificationProvider>
+          </CelebrationProvider>
+        </LanguageProvider>
+      </ThemeProvider>
+    </AuthProvider>
   );
 }

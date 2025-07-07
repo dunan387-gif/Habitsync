@@ -105,3 +105,114 @@ export type ThemePreference = {
   themeId: string;
   customColors?: Partial<ThemeColors>;
 };
+
+// Add these new types at the end of the file
+export interface User {
+  id: string;
+  email: string;
+  name: string;
+  avatar?: string;
+  bio?: string;
+  dateOfBirth?: string;
+  location?: string;
+  coverImage?: string; // Add this new field
+  joinedAt: string;
+  preferences: {
+    notifications: boolean;
+    emailUpdates: boolean;
+    publicProfile: boolean;
+  };
+  stats: {
+    totalHabits: number;
+    completedHabits: number;
+    currentStreak: number;
+    longestStreak: number;
+  };
+}
+
+export interface ProfileUpdateData {
+  name?: string;
+  bio?: string;
+  dateOfBirth?: string;
+  location?: string;
+  avatar?: string;
+  coverImage?: string; // Add this new field
+  preferences: Partial<User['preferences']>;
+}
+
+export interface User {
+  id: string;
+  email: string;
+  name: string;
+  avatar?: string;
+  bio?: string;
+  dateOfBirth?: string;
+  location?: string;
+  coverImage?: string; // Add this new field
+  joinedAt: string;
+  preferences: {
+    notifications: boolean;
+    emailUpdates: boolean;
+    publicProfile: boolean;
+  };
+  stats: {
+    totalHabits: number;
+    completedHabits: number;
+    currentStreak: number;
+    longestStreak: number;
+  };
+}
+
+// Add these new gamification types
+// Gamification Types
+export interface Achievement {
+  id: string;
+  title: string;
+  description: string;
+  icon: string;
+  category: 'streak' | 'completion' | 'consistency' | 'milestone' | 'special';
+  requirement: {
+    type: 'streak' | 'total_completions' | 'consecutive_days' | 'habit_count' | 'perfect_week';
+    value: number;
+    habitId?: string; // For habit-specific achievements
+  };
+  xpReward: number;
+  rarity: 'common' | 'rare' | 'epic' | 'legendary';
+  unlockedAt?: string; // ISO date string
+}
+
+export interface UserLevel {
+  level: number;
+  currentXP: number;
+  xpToNextLevel: number;
+  totalXP: number;
+  title: string;
+  perks: string[];
+}
+
+export interface MoodEntry {
+  id: string;
+  date: string; // ISO date string
+  mood: 1 | 2 | 3 | 4 | 5; // 1 = very bad, 5 = excellent
+  note?: string;
+  tags?: string[]; // e.g., ['stressed', 'energetic', 'focused']
+}
+
+export interface StreakMilestone {
+  id: string;
+  habitId: string;
+  streakLength: number;
+  achievedAt: string; // ISO date string
+  xpEarned: number;
+  celebrationShown: boolean;
+}
+
+export interface GamificationData {
+  userLevel: UserLevel;
+  achievements: Achievement[];
+  unlockedAchievements: string[]; // Achievement IDs
+  streakMilestones: StreakMilestone[];
+  moodEntries: MoodEntry[];
+  dailyXPEarned: number;
+  lastMoodCheckIn?: string; // ISO date string
+}
