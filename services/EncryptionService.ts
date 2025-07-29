@@ -1,6 +1,8 @@
 import * as SecureStore from 'expo-secure-store';
 import * as Crypto from 'expo-crypto';
 import CryptoES from 'crypto-es';
+import { Platform } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export class EncryptionService {
   private static encryptionKey: string | null = null;
@@ -10,9 +12,18 @@ export class EncryptionService {
 
   static async initializeEncryption(): Promise<void> {
     try {
-      // Try to get existing key and salt
-      let key = await SecureStore.getItemAsync('encryption_key');
-      let salt = await SecureStore.getItemAsync('encryption_salt');
+      let key: string | null = null;
+      let salt: string | null = null;
+
+      if (Platform.OS === 'web') {
+        // Use AsyncStorage for web platform (less secure but functional)
+        key = await AsyncStorage.getItem('encryption_key');
+        salt = await AsyncStorage.getItem('encryption_salt');
+      } else {
+        // Use SecureStore for native platforms
+        key = await SecureStore.getItemAsync('encryption_key');
+        salt = await SecureStore.getItemAsync('encryption_salt');
+      }
 
       if (!key || !salt) {
         // Generate new key and salt using expo-crypto
@@ -22,8 +33,13 @@ export class EncryptionService {
         key = Array.from(randomBytes, byte => byte.toString(16).padStart(2, '0')).join('');
         salt = Array.from(saltBytes, byte => byte.toString(16).padStart(2, '0')).join('');
         
-        await SecureStore.setItemAsync('encryption_key', key);
-        await SecureStore.setItemAsync('encryption_salt', salt);
+        if (Platform.OS === 'web') {
+          await AsyncStorage.setItem('encryption_key', key);
+          await AsyncStorage.setItem('encryption_salt', salt);
+        } else {
+          await SecureStore.setItemAsync('encryption_key', key);
+          await SecureStore.setItemAsync('encryption_salt', salt);
+        }
       }
 
       this.encryptionKey = key;
@@ -93,8 +109,6 @@ export class EncryptionService {
   // New method to clear incompatible encrypted data
   static async clearIncompatibleData(): Promise<void> {
     try {
-      const AsyncStorage = require('@react-native-async-storage/async-storage').default;
-      
       const keysToCheck = [
         'wellness_sleep_data',
         'wellness_exercise_data',
@@ -132,22 +146,31 @@ export class EncryptionService {
 
   static async secureDelete(key: string): Promise<void> {
     try {
-      // Generate random data to overwrite
-      const randomBytes = await Crypto.getRandomBytesAsync(32);
-      const randomData = Array.from(randomBytes, byte => byte.toString(16).padStart(2, '0')).join('');
-      
-      // Overwrite with random data multiple times
-      for (let i = 0; i < 3; i++) {
-        await SecureStore.setItemAsync(key, randomData);
+      if (Platform.OS === 'web') {
+        // For web, just remove the item from AsyncStorage
+        await AsyncStorage.removeItem(key);
+      } else {
+        // Generate random data to overwrite
+        const randomBytes = await Crypto.getRandomBytesAsync(32);
+        const randomData = Array.from(randomBytes, byte => byte.toString(16).padStart(2, '0')).join('');
+        
+        // Overwrite with random data multiple times
+        for (let i = 0; i < 3; i++) {
+          await SecureStore.setItemAsync(key, randomData);
+        }
+        
+        // Finally delete the key
+        await SecureStore.deleteItemAsync(key);
       }
-      
-      // Finally delete the key
-      await SecureStore.deleteItemAsync(key);
     } catch (error) {
       console.error('Secure deletion failed:', error);
       // Fallback to regular deletion
       try {
-        await SecureStore.deleteItemAsync(key);
+        if (Platform.OS === 'web') {
+          await AsyncStorage.removeItem(key);
+        } else {
+          await SecureStore.deleteItemAsync(key);
+        }
       } catch (fallbackError) {
         console.error('Fallback deletion failed:', fallbackError);
       }
