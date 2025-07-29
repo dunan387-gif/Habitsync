@@ -14,10 +14,12 @@ import { StatusBar } from 'expo-status-bar';
 import { ArrowLeft, Eye, EyeOff } from 'lucide-react-native';
 import { useRouter } from 'expo-router';
 import { useTheme } from '@/context/ThemeContext';
+import { useLanguage } from '@/context/LanguageContext';
 import { useAuth } from '@/context/AuthContext';
 
 export default function ChangePasswordScreen() {
   const { currentTheme } = useTheme();
+  const { t } = useLanguage();
   const { user } = useAuth();
   const router = useRouter();
   const [currentPassword, setCurrentPassword] = useState('');
@@ -32,17 +34,17 @@ export default function ChangePasswordScreen() {
 
   const handleChangePassword = async () => {
     if (!currentPassword || !newPassword || !confirmPassword) {
-      Alert.alert('Error', 'Please fill in all fields');
+      Alert.alert(t('changePassword.alerts.error'), t('changePassword.alerts.fillAllFields'));
       return;
     }
 
     if (newPassword !== confirmPassword) {
-      Alert.alert('Error', 'New passwords do not match');
+      Alert.alert(t('changePassword.alerts.error'), t('changePassword.alerts.passwordsDoNotMatch'));
       return;
     }
 
     if (newPassword.length < 8) {
-      Alert.alert('Error', 'Password must be at least 8 characters long');
+      Alert.alert(t('changePassword.alerts.error'), t('changePassword.alerts.passwordTooShort'));
       return;
     }
 
@@ -52,12 +54,12 @@ export default function ChangePasswordScreen() {
       await new Promise(resolve => setTimeout(resolve, 1000)); // Simulate API call
       
       Alert.alert(
-        'Success',
-        'Your password has been changed successfully',
+        t('changePassword.alerts.success'),
+        t('changePassword.alerts.successMessage'),
         [{ text: 'OK', onPress: () => router.back() }]
       );
     } catch (error) {
-      Alert.alert('Error', 'Failed to change password. Please try again.');
+      Alert.alert(t('changePassword.alerts.error'), t('changePassword.alerts.failedToChange'));
     } finally {
       setIsLoading(false);
     }
@@ -72,7 +74,7 @@ export default function ChangePasswordScreen() {
         <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
           <ArrowLeft size={24} color={currentTheme.colors.text} />
         </TouchableOpacity>
-        <Text style={styles.title}>Change Password</Text>
+        <Text style={styles.title}>{t('changePassword.title')}</Text>
       </View>
 
       <KeyboardAvoidingView 
@@ -82,14 +84,14 @@ export default function ChangePasswordScreen() {
         <View style={styles.form}>
           {/* Current Password */}
           <View style={styles.inputGroup}>
-            <Text style={styles.label}>Current Password</Text>
+            <Text style={styles.label}>{t('changePassword.currentPassword')}</Text>
             <View style={styles.passwordContainer}>
               <TextInput
                 style={styles.passwordInput}
                 value={currentPassword}
                 onChangeText={setCurrentPassword}
                 secureTextEntry={!showCurrentPassword}
-                placeholder="Enter current password"
+                placeholder={t('changePassword.currentPasswordPlaceholder')}
                 placeholderTextColor={currentTheme.colors.textMuted}
               />
               <TouchableOpacity
@@ -107,14 +109,14 @@ export default function ChangePasswordScreen() {
 
           {/* New Password */}
           <View style={styles.inputGroup}>
-            <Text style={styles.label}>New Password</Text>
+            <Text style={styles.label}>{t('changePassword.newPassword')}</Text>
             <View style={styles.passwordContainer}>
               <TextInput
                 style={styles.passwordInput}
                 value={newPassword}
                 onChangeText={setNewPassword}
                 secureTextEntry={!showNewPassword}
-                placeholder="Enter new password"
+                placeholder={t('changePassword.newPasswordPlaceholder')}
                 placeholderTextColor={currentTheme.colors.textMuted}
               />
               <TouchableOpacity
@@ -128,19 +130,19 @@ export default function ChangePasswordScreen() {
                 )}
               </TouchableOpacity>
             </View>
-            <Text style={styles.hint}>Password must be at least 8 characters long</Text>
+            <Text style={styles.hint}>{t('changePassword.passwordHint')}</Text>
           </View>
 
           {/* Confirm Password */}
           <View style={styles.inputGroup}>
-            <Text style={styles.label}>Confirm New Password</Text>
+            <Text style={styles.label}>{t('changePassword.confirmPassword')}</Text>
             <View style={styles.passwordContainer}>
               <TextInput
                 style={styles.passwordInput}
                 value={confirmPassword}
                 onChangeText={setConfirmPassword}
                 secureTextEntry={!showConfirmPassword}
-                placeholder="Confirm new password"
+                placeholder={t('changePassword.confirmPasswordPlaceholder')}
                 placeholderTextColor={currentTheme.colors.textMuted}
               />
               <TouchableOpacity
@@ -162,7 +164,7 @@ export default function ChangePasswordScreen() {
             disabled={isLoading}
           >
             <Text style={styles.saveButtonText}>
-              {isLoading ? 'Changing Password...' : 'Change Password'}
+              {isLoading ? t('changePassword.changingPassword') : t('changePassword.changePasswordButton')}
             </Text>
           </TouchableOpacity>
         </View>

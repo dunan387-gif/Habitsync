@@ -1,15 +1,28 @@
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { Plus } from 'lucide-react-native';
 import { useRouter } from 'expo-router';
+import { useTheme } from '@/context/ThemeContext';
 
 type EmptyStateProps = {
   title: string;
   message: string;
   actionLabel: string;
+  onAction?: () => void; // Add optional onAction prop
 };
 
-export default function EmptyState({ title, message, actionLabel }: EmptyStateProps) {
+export default function EmptyState({ title, message, actionLabel, onAction }: EmptyStateProps) {
   const router = useRouter();
+  const { currentTheme } = useTheme();
+
+  const handleAction = () => {
+    if (onAction) {
+      onAction(); // Use custom action if provided
+    } else {
+      router.push('/library'); // Default behavior
+    }
+  };
+
+  const styles = createStyles(currentTheme.colors);
 
   return (
     <View style={styles.container}>
@@ -19,7 +32,7 @@ export default function EmptyState({ title, message, actionLabel }: EmptyStatePr
         
         <TouchableOpacity 
           style={styles.button}
-          onPress={() => router.push('/library')}
+          onPress={handleAction}
         >
           <Plus size={20} color="#FFFFFF" style={styles.buttonIcon} />
           <Text style={styles.buttonText}>{actionLabel}</Text>
@@ -29,7 +42,7 @@ export default function EmptyState({ title, message, actionLabel }: EmptyStatePr
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors: any) => StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'center',
@@ -44,20 +57,20 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 20,
     fontWeight: '600',
-    color: '#1E293B',
+    color: colors.text,
     marginBottom: 8,
     textAlign: 'center',
   },
   message: {
     fontSize: 16,
-    color: '#64748B',
+    color: colors.textSecondary,
     textAlign: 'center',
     marginBottom: 24,
   },
   button: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#4ECDC4',
+    backgroundColor: colors.primary,
     paddingVertical: 12,
     paddingHorizontal: 20,
     borderRadius: 8,

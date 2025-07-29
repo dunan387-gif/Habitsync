@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, ReactNode } from 'react';
+import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 type CelebrationType = 'streak' | 'allComplete' | 'milestone' | 'level_up' | 'achievement';
@@ -25,7 +25,7 @@ export function CelebrationProvider({ children }: { children: ReactNode }) {
   const [animationsEnabled, setAnimationsEnabledState] = useState(true);
 
   // Load animation preference on mount
-  React.useEffect(() => {
+  useEffect(() => {
     loadAnimationPreference();
   }, []);
 

@@ -1,22 +1,136 @@
-import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Animated, Pressable } from 'react-native';
-import { useRef, useEffect } from 'react';
-import { Check, ChevronRight } from 'lucide-react-native';
+import React, { useState, useRef, useEffect } from 'react';
+import { View, Text, TouchableOpacity, StyleSheet, Animated, Pressable, Modal, Alert } from 'react-native';
+import { Check, ChevronRight, Square, CheckSquare } from 'lucide-react-native';
 import { useRouter } from 'expo-router';
 import { useHabits } from '@/context/HabitContext';
 import { useTheme } from '@/context/ThemeContext';
 import { Habit } from '@/types';
+import { useLanguage } from '@/context/LanguageContext';
 
 type HabitItemProps = {
   habit: Habit;
   onLongPress?: () => void;
   isActive?: boolean;
+  isMultiSelectMode?: boolean;
+  isSelected?: boolean;
+  onToggleSelection?: () => void;
 };
 
-export default function HabitItem({ habit, onLongPress, isActive }: HabitItemProps) {
+// Add mood selection modal
+const MoodSelectionModal = ({ visible, onClose, onSelect }: {
+  visible: boolean;
+  onClose: () => void;
+  onSelect: (mood: { moodState: string; intensity: number }) => void;
+}) => {
+  const [selectedMood, setSelectedMood] = useState<string>('');
+  const [intensity, setIntensity] = useState<number>(5);
+  const { currentTheme } = useTheme();
+  const { t } = useLanguage();
+  
+  const moods = [
+    { state: 'happy', emoji: '😊', label: 'Happy' },
+    { state: 'calm', emoji: '😌', label: t('moodCheckIn.moodTags.calm') },
+    { state: 'energetic', emoji: '⚡', label: 'Energetic' },
+    { state: 'tired', emoji: '😴', label: 'Tired' },
+    { state: 'stressed', emoji: '😰', label: t('moodCheckIn.moodTags.stressed') },
+    { state: 'anxious', emoji: '😟', label: 'Anxious' },
+    { state: 'sad', emoji: '😢', label: 'Sad' },
+  ];
+  
+  const handleSubmit = () => {
+    if (!selectedMood) {
+      Alert.alert('Select Mood', 'Please choose how you\'re feeling before completing this habit.');
+      return;
+    }
+    
+    onSelect({ moodState: selectedMood, intensity });
+    onClose();
+    setSelectedMood('');
+    setIntensity(5);
+  };
+  
+  return (
+    <Modal visible={visible} transparent animationType="slide">
+      <View style={modalStyles.modalOverlay}>
+        <View style={[modalStyles.modalContent, { backgroundColor: currentTheme.colors.surface }]}>
+          <Text style={[modalStyles.modalTitle, { color: currentTheme.colors.text }]}>
+            How are you feeling right now?
+          </Text>
+          
+          <View style={modalStyles.moodGrid}>
+            {moods.map((mood) => (
+              <TouchableOpacity
+                key={mood.state}
+                style={[
+                  modalStyles.moodOption,
+                  selectedMood === mood.state && { backgroundColor: currentTheme.colors.primary }
+                ]}
+                onPress={() => setSelectedMood(mood.state)}
+              >
+                <Text style={modalStyles.moodEmoji}>{mood.emoji}</Text>
+                <Text style={[
+                  modalStyles.moodLabel,
+                  { color: selectedMood === mood.state ? currentTheme.colors.background : currentTheme.colors.text }
+                ]}>
+                  {mood.label}
+                </Text>
+              </TouchableOpacity>
+            ))}
+          </View>
+          
+          <View style={modalStyles.intensitySection}>
+            <Text style={[modalStyles.intensityLabel, { color: currentTheme.colors.text }]}>
+              Intensity: {intensity}/10
+            </Text>
+            <View style={modalStyles.intensitySlider}>
+              {Array.from({ length: 10 }, (_, i) => i + 1).map((value) => (
+                <TouchableOpacity
+                  key={value}
+                  style={[
+                    modalStyles.intensityDot,
+                    {
+                      backgroundColor: value <= intensity ? currentTheme.colors.primary : currentTheme.colors.border
+                    }
+                  ]}
+                  onPress={() => setIntensity(value)}
+                />
+              ))}
+            </View>
+          </View>
+          
+          <View style={modalStyles.modalButtons}>
+            <TouchableOpacity
+              style={[modalStyles.modalButton, { backgroundColor: currentTheme.colors.border }]}
+              onPress={onClose}
+            >
+              <Text style={[modalStyles.modalButtonText, { color: currentTheme.colors.text }]}>Cancel</Text>
+            </TouchableOpacity>
+            
+            <TouchableOpacity
+              style={[modalStyles.modalButton, { backgroundColor: currentTheme.colors.primary }]}
+              onPress={handleSubmit}
+            >
+              <Text style={[modalStyles.modalButtonText, { color: currentTheme.colors.background }]}>Continue</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </View>
+    </Modal>
+  );
+};
+
+export default function HabitItem({ 
+  habit, 
+  onLongPress, 
+  isActive, 
+  isMultiSelectMode, 
+  isSelected, 
+  onToggleSelection 
+}: HabitItemProps) {
   const router = useRouter();
   const { toggleHabitCompletion } = useHabits();
   const { currentTheme } = useTheme();
+  const [showMoodModal, setShowMoodModal] = useState(false);
   
   const scaleAnim = useRef(new Animated.Value(1)).current;
   const checkOpacity = useRef(new Animated.Value(0)).current;
@@ -47,75 +161,121 @@ export default function HabitItem({ habit, onLongPress, isActive }: HabitItemPro
   }, [habit.completedToday]);
 
   const handleToggle = () => {
-    toggleHabitCompletion(habit.id);
+    if (!isMultiSelectMode) {
+      if (!habit.completedToday) {
+        // ✅ Use smart default, no modal needed
+        const defaultMood = { moodState: 'neutral', intensity: 5 };
+        toggleHabitCompletion(habit.id, defaultMood);
+      } else {
+        toggleHabitCompletion(habit.id);
+      }
+    }
   };
 
-  const navigateToDetail = () => {
-    router.push(`/habit/${habit.id}`);
+  const handleMoodSelection = (mood: { moodState: string; intensity: number }) => {
+    toggleHabitCompletion(habit.id, mood);
+    setShowMoodModal(false);
   };
 
-  const styles = createStyles(currentTheme.colors);
+  const handlePress = () => {
+    if (isMultiSelectMode) {
+      onToggleSelection?.();
+    } else {
+      router.push(`/habit/${habit.id}`);
+    }
+  };
+
+  const componentStyles = createStyles(currentTheme.colors);
 
   return (
-    <Pressable
-      style={({ pressed }) => [
-        styles.container,
-        isActive && styles.activeContainer,
-        pressed && { opacity: 0.8 }
-      ]}
-      onPress={navigateToDetail}
-      onLongPress={onLongPress}
-      delayLongPress={100}
-    >
-      <TouchableOpacity
-        style={styles.checkboxContainer}
-        onPress={handleToggle}
-        activeOpacity={0.7}
+    <>
+      <Pressable
+        style={({ pressed }) => [
+          componentStyles.container,
+          isActive && componentStyles.activeContainer,
+          isSelected && componentStyles.selectedContainer,
+          pressed && { opacity: 0.8 }
+        ]}
+        onPress={handlePress}
+        onLongPress={onLongPress}
+        delayLongPress={100}
       >
-        <Animated.View 
-          style={[
-            styles.checkbox,
-            habit.completedToday && styles.checkboxCompleted,
-            { transform: [{ scale: scaleAnim }] }
-          ]}
-        >
-          <Animated.View style={{ opacity: checkOpacity }}>
-            <Check size={18} color="#FFFFFF" />
-          </Animated.View>
-        </Animated.View>
-      </TouchableOpacity>
-      
-      <View style={styles.content}>
-        <View style={styles.habitInfo}>
-          <View style={styles.titleRow}>
-            {habit.icon && (
-              <View style={styles.iconContainer}>
-                <Text style={styles.habitIcon}>{habit.icon}</Text>
-              </View>
+        {/* Selection checkbox for multi-select mode */}
+        {isMultiSelectMode && (
+          <TouchableOpacity
+            style={componentStyles.selectionContainer}
+            onPress={onToggleSelection}
+            activeOpacity={0.7}
+          >
+            {isSelected ? (
+              <CheckSquare size={24} color={currentTheme.colors.primary} />
+            ) : (
+              <Square size={24} color={currentTheme.colors.textMuted} />
             )}
-            <Text 
+          </TouchableOpacity>
+        )}
+        
+        {/* Completion checkbox */}
+        {!isMultiSelectMode && (
+          <TouchableOpacity
+            style={componentStyles.checkboxContainer}
+            onPress={handleToggle}
+            activeOpacity={0.7}
+          >
+            <Animated.View 
               style={[
-                styles.title,
-                !habit.icon && styles.titleNoIcon,
-                habit.completedToday && styles.titleCompleted
+                componentStyles.checkbox,
+                habit.completedToday && componentStyles.checkboxCompleted,
+                { transform: [{ scale: scaleAnim }] }
               ]}
             >
-              {habit.title}
-            </Text>
-          </View>
-          
-          <View style={styles.streakContainer}>
-            <View style={styles.streakBadge}>
-              <Text style={styles.streakText}>
-                {habit.streak} day{habit.streak !== 1 ? 's' : ''}
+              <Animated.View style={{ opacity: checkOpacity }}>
+                <Check size={18} color="#FFFFFF" />
+              </Animated.View>
+            </Animated.View>
+          </TouchableOpacity>
+        )}
+        
+        <View style={componentStyles.content}>
+          <View style={componentStyles.habitInfo}>
+            <View style={componentStyles.titleRow}>
+              {habit.icon && (
+                <View style={componentStyles.iconContainer}>
+                  <Text style={componentStyles.habitIcon}>{habit.icon}</Text>
+                </View>
+              )}
+              <Text 
+                style={[
+                  componentStyles.title,
+                  !habit.icon && componentStyles.titleNoIcon,
+                  habit.completedToday && componentStyles.titleCompleted
+                ]}
+              >
+                {habit.title}
               </Text>
             </View>
+            
+            <View style={componentStyles.streakContainer}>
+              <View style={componentStyles.streakBadge}>
+                <Text style={componentStyles.streakText}>
+                  {habit.streak} day{habit.streak !== 1 ? 's' : ''}
+                </Text>
+              </View>
+            </View>
           </View>
+          
+          {!isMultiSelectMode && (
+            <ChevronRight size={20} color={currentTheme.colors.textMuted} />
+          )}
         </View>
-        
-        <ChevronRight size={20} color={currentTheme.colors.textMuted} />
-      </View>
-    </Pressable>
+      </Pressable>
+      
+      <MoodSelectionModal
+        visible={showMoodModal}
+        onClose={() => setShowMoodModal(false)}
+        onSelect={handleMoodSelection}
+      />
+    </>
   );
 }
 
@@ -125,13 +285,20 @@ const createStyles = (colors: any) => StyleSheet.create({
     alignItems: 'center',
     backgroundColor: colors.card,
     borderRadius: 12,
-    marginBottom: 12,
+    marginBottom: 8,
+    marginHorizontal: 4,
     padding: 4,
-    shadowColor: colors.shadow,
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.05,
-    shadowRadius: 2,
-    elevation: 2,
+    // Remove shadow properties
+    borderWidth: 1,
+    borderColor: colors.border || colors.surface,
+  },
+  selectedContainer: {
+    borderWidth: 2,
+    borderColor: colors.primary,
+    backgroundColor: colors.primaryLight || colors.surface,
+  },
+  selectionContainer: {
+    padding: 12,
   },
   checkboxContainer: {
     padding: 12,
@@ -155,8 +322,8 @@ const createStyles = (colors: any) => StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingVertical: 16,
-    paddingRight: 16,
+    paddingVertical: 14, // Reduced from 16 to 14
+    paddingRight: 12, // Reduced from 16 to 12
   },
   habitInfo: {
     flex: 1,
@@ -206,22 +373,99 @@ const createStyles = (colors: any) => StyleSheet.create({
     color: colors.textSecondary,
   },
   dragging: {
-    opacity: 0.8,
-    transform: [{ scale: 1.02 }],
-    shadowOpacity: 0.2,
-    shadowRadius: 8,
-    elevation: 8,
+    opacity: 0.9, // Improved opacity for better visibility
+    transform: [{ scale: 1.05 }], // Slightly larger scale
+    backgroundColor: colors.primaryLight || colors.surface,
+    borderWidth: 2,
+    borderColor: colors.primary,
+    // Remove shadow properties
   },
   activeContainer: {
-    transform: [{ scale: 1.05 }],
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 4,
-    },
-    shadowOpacity: 0.3,
-    shadowRadius: 8,
-    elevation: 8,
+    transform: [{ scale: 1.08 }], // More pronounced scale
+    backgroundColor: colors.primaryLight || colors.surface,
+    borderWidth: 2,
+    borderColor: colors.primary,
+    // Remove shadow properties
     zIndex: 1000,
+  },
+});
+
+// Modal styles with different variable name to avoid conflicts
+const modalStyles = StyleSheet.create({
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modalContent: {
+    width: '90%',
+    maxWidth: 400,
+    borderRadius: 16,
+    padding: 24,
+  },
+  modalTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    marginBottom: 20,
+  },
+  moodGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-between',
+    marginBottom: 20,
+  },
+  moodOption: {
+    width: '30%',
+    aspectRatio: 1,
+    borderRadius: 12,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 12,
+    borderWidth: 1,
+    borderColor: '#E0E0E0',
+  },
+  moodEmoji: {
+    fontSize: 24,
+    marginBottom: 4,
+  },
+  moodLabel: {
+    fontSize: 12,
+    fontWeight: '500',
+  },
+  intensitySection: {
+    marginBottom: 24,
+  },
+  intensityLabel: {
+    fontSize: 16,
+    fontWeight: '600',
+    textAlign: 'center',
+    marginBottom: 12,
+  },
+  intensitySlider: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingHorizontal: 8,
+  },
+  intensityDot: {
+    width: 20,
+    height: 20,
+    borderRadius: 10,
+  },
+  modalButtons: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  modalButton: {
+    flex: 1,
+    paddingVertical: 12,
+    borderRadius: 8,
+    alignItems: 'center',
+    marginHorizontal: 8,
+  },
+  modalButtonText: {
+    fontSize: 16,
+    fontWeight: '600',
   },
 });

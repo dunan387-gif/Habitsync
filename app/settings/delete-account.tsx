@@ -12,12 +12,15 @@ import {
 import { StatusBar } from 'expo-status-bar';
 import { ArrowLeft, AlertTriangle, Trash2 } from 'lucide-react-native';
 import { useRouter } from 'expo-router';
+import AsyncStorage from '@react-native-async-storage/async-storage'; // Add this import
 import { useTheme } from '@/context/ThemeContext';
 import { useAuth } from '@/context/AuthContext';
+import { useLanguage } from '@/context/LanguageContext';
 
 export default function DeleteAccountScreen() {
   const { currentTheme } = useTheme();
   const { user, logout } = useAuth();
+  const { t } = useLanguage();
   const router = useRouter();
   const [confirmationText, setConfirmationText] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -27,17 +30,17 @@ export default function DeleteAccountScreen() {
 
   const handleDeleteAccount = async () => {
     if (confirmationText !== 'DELETE') {
-      Alert.alert('Error', 'Please type "DELETE" to confirm account deletion');
+      Alert.alert(t('deleteAccount.alerts.confirmationError.title'), t('deleteAccount.alerts.confirmationError.message'));
       return;
     }
 
     Alert.alert(
-      'Final Confirmation',
-      'Are you absolutely sure you want to delete your account? This action cannot be undone.',
+      t('deleteAccount.alerts.finalConfirmation.title'),
+      t('deleteAccount.alerts.finalConfirmation.message'),
       [
-        { text: 'Cancel', style: 'cancel' },
+        { text: t('deleteAccount.alerts.finalConfirmation.cancel'), style: 'cancel' },
         {
-          text: 'Delete Account',
+          text: t('deleteAccount.alerts.finalConfirmation.confirm'),
           style: 'destructive',
           onPress: async () => {
             setIsLoading(true);
@@ -45,12 +48,21 @@ export default function DeleteAccountScreen() {
               // TODO: Implement account deletion API call
               await new Promise(resolve => setTimeout(resolve, 2000));
               
+              // Clear all local storage data
+              await AsyncStorage.clear();
+              
+              // Or if you want to be more specific, clear individual items:
+              // await AsyncStorage.removeItem('mood_habit_onboarding_completed');
+              // await AsyncStorage.removeItem('@productivity_app_language');
+              // await AsyncStorage.removeItem('user_preferences');
+              // Add any other AsyncStorage keys you want to clear
+              
               Alert.alert(
-                'Account Deleted',
-                'Your account has been successfully deleted.',
+                t('deleteAccount.alerts.success.title'),
+                t('deleteAccount.alerts.success.message'),
                 [
                   {
-                    text: 'OK',
+                    text: t('deleteAccount.alerts.success.ok'),
                     onPress: () => {
                       logout();
                       router.replace('/(auth)/login');
@@ -59,7 +71,8 @@ export default function DeleteAccountScreen() {
                 ]
               );
             } catch (error) {
-              Alert.alert('Error', 'Failed to delete account. Please try again.');
+              console.error('Error deleting account or clearing storage:', error);
+              Alert.alert(t('deleteAccount.alerts.error.title'), t('deleteAccount.alerts.error.message'));
             } finally {
               setIsLoading(false);
             }
@@ -73,37 +86,37 @@ export default function DeleteAccountScreen() {
     <ScrollView style={styles.content}>
       <View style={styles.warningSection}>
         <AlertTriangle size={48} color={currentTheme.colors.error} />
-        <Text style={styles.warningTitle}>Delete Account</Text>
+        <Text style={styles.warningTitle}>{t('deleteAccount.warning.title')}</Text>
         <Text style={styles.warningSubtitle}>
-          This action will permanently delete your account and all associated data.
+          {t('deleteAccount.warning.subtitle')}
         </Text>
       </View>
 
       <View style={styles.consequencesSection}>
-        <Text style={styles.sectionTitle}>What will be deleted:</Text>
+        <Text style={styles.sectionTitle}>{t('deleteAccount.warning.whatWillBeDeleted')}</Text>
         <View style={styles.consequencesList}>
-          <Text style={styles.consequenceItem}>• All your habits and tracking data</Text>
-          <Text style={styles.consequenceItem}>• Your profile information and settings</Text>
-          <Text style={styles.consequenceItem}>• All streak records and achievements</Text>
-          <Text style={styles.consequenceItem}>• Any premium subscription benefits</Text>
-          <Text style={styles.consequenceItem}>• All app data and preferences</Text>
+          <Text style={styles.consequenceItem}>{t('deleteAccount.warning.consequences.habits')}</Text>
+          <Text style={styles.consequenceItem}>{t('deleteAccount.warning.consequences.profile')}</Text>
+          <Text style={styles.consequenceItem}>{t('deleteAccount.warning.consequences.streaks')}</Text>
+          <Text style={styles.consequenceItem}>{t('deleteAccount.warning.consequences.premium')}</Text>
+          <Text style={styles.consequenceItem}>{t('deleteAccount.warning.consequences.appData')}</Text>
         </View>
       </View>
 
       <View style={styles.alternativesSection}>
-        <Text style={styles.sectionTitle}>Consider these alternatives:</Text>
+        <Text style={styles.sectionTitle}>{t('deleteAccount.warning.alternatives.title')}</Text>
         <View style={styles.alternativesList}>
           <TouchableOpacity style={styles.alternativeItem}>
-            <Text style={styles.alternativeTitle}>Export Your Data</Text>
+            <Text style={styles.alternativeTitle}>{t('deleteAccount.warning.alternatives.exportData.title')}</Text>
             <Text style={styles.alternativeDescription}>
-              Download a copy of your data before deleting
+              {t('deleteAccount.warning.alternatives.exportData.description')}
             </Text>
           </TouchableOpacity>
           
           <TouchableOpacity style={styles.alternativeItem}>
-            <Text style={styles.alternativeTitle}>Temporarily Disable</Text>
+            <Text style={styles.alternativeTitle}>{t('deleteAccount.warning.alternatives.temporaryDisable.title')}</Text>
             <Text style={styles.alternativeDescription}>
-              Take a break without losing your data
+              {t('deleteAccount.warning.alternatives.temporaryDisable.description')}
             </Text>
           </TouchableOpacity>
         </View>
@@ -113,7 +126,7 @@ export default function DeleteAccountScreen() {
         style={styles.continueButton}
         onPress={() => setStep('confirmation')}
       >
-        <Text style={styles.continueButtonText}>Continue with Deletion</Text>
+        <Text style={styles.continueButtonText}>{t('deleteAccount.warning.continueButton')}</Text>
       </TouchableOpacity>
     </ScrollView>
   );
@@ -122,19 +135,19 @@ export default function DeleteAccountScreen() {
     <View style={styles.content}>
       <View style={styles.confirmationSection}>
         <Trash2 size={48} color={currentTheme.colors.error} />
-        <Text style={styles.confirmationTitle}>Final Step</Text>
+        <Text style={styles.confirmationTitle}>{t('deleteAccount.confirmation.title')}</Text>
         <Text style={styles.confirmationSubtitle}>
-          To confirm account deletion, please type "DELETE" in the field below:
+          {t('deleteAccount.confirmation.subtitle')}
         </Text>
       </View>
 
       <View style={styles.inputSection}>
-        <Text style={styles.inputLabel}>Type "DELETE" to confirm:</Text>
+        <Text style={styles.inputLabel}>{t('deleteAccount.confirmation.inputLabel')}</Text>
         <TextInput
           style={styles.confirmationInput}
           value={confirmationText}
           onChangeText={setConfirmationText}
-          placeholder="DELETE"
+          placeholder={t('deleteAccount.confirmation.placeholder')}
           placeholderTextColor={currentTheme.colors.textMuted}
           autoCapitalize="characters"
         />
@@ -145,7 +158,7 @@ export default function DeleteAccountScreen() {
           style={styles.backButton}
           onPress={() => setStep('warning')}
         >
-          <Text style={styles.backButtonText}>Go Back</Text>
+          <Text style={styles.backButtonText}>{t('deleteAccount.confirmation.backButton')}</Text>
         </TouchableOpacity>
         
         <TouchableOpacity
@@ -158,7 +171,7 @@ export default function DeleteAccountScreen() {
           disabled={confirmationText !== 'DELETE' || isLoading}
         >
           <Text style={styles.deleteButtonText}>
-            {isLoading ? 'Deleting...' : 'Delete Account'}
+            {isLoading ? t('deleteAccount.confirmation.deleting') : t('deleteAccount.confirmation.deleteButton')}
           </Text>
         </TouchableOpacity>
       </View>
@@ -174,7 +187,7 @@ export default function DeleteAccountScreen() {
         <TouchableOpacity onPress={() => router.back()} style={styles.headerBackButton}>
           <ArrowLeft size={24} color={currentTheme.colors.text} />
         </TouchableOpacity>
-        <Text style={styles.title}>Delete Account</Text>
+        <Text style={styles.title}>{t('deleteAccount.title')}</Text>
       </View>
 
       {step === 'warning' ? renderWarningStep() : renderConfirmationStep()}

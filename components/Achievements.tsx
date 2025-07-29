@@ -2,12 +2,14 @@ import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { useGamification } from '@/context/GamificationContext';
 import { useTheme } from '@/context/ThemeContext';
+import { useLanguage } from '@/context/LanguageContext';
 import { Achievement } from '@/types';
 import { Award, Lock, Star } from 'lucide-react-native';
 
 export default function Achievements() {
   const { gamificationData, getAvailableAchievements } = useGamification();
   const { currentTheme } = useTheme();
+  const { t } = useLanguage();
 
   const achievements = getAvailableAchievements();
   const unlockedIds = gamificationData?.unlockedAchievements || [];
@@ -58,7 +60,7 @@ export default function Achievements() {
               {item.rarity.toUpperCase()}
             </Text>
           </View>
-          <Text style={styles.xpReward}>+{item.xpReward} XP</Text>
+          <Text style={styles.xpReward}>+{item.xpReward} {t('gamification.achievements.xp')}</Text>
         </View>
       </TouchableOpacity>
     );
@@ -68,7 +70,7 @@ export default function Achievements() {
     <View style={styles.container}>
       <View style={styles.header}>
         <Award size={24} color={currentTheme.colors.primary} />
-        <Text style={styles.title}>Achievements</Text>
+        <Text style={styles.title}>{t('gamification.achievements.title')}</Text>
         <Text style={styles.progress}>
           {unlockedIds.length}/{achievements.length}
         </Text>

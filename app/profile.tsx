@@ -45,15 +45,15 @@ export default function ProfileScreen() {
   const styles = createStyles(currentTheme.colors);
   
   const handleSave = async () => {
-    if (isSubmitting) return; // Simple check, no debouncing for direct save
+    if (isSubmitting) return;
     
     setIsSubmitting(true);
     try {
       await updateProfile(formData);
       setIsEditing(false);
-      Alert.alert(t('Success'), t('Profile updated successfully!'));
+      Alert.alert(t('profile.success'), t('profile.profileUpdated'));
     } catch (error) {
-      Alert.alert(t('Error'), t('Failed to update profile. Please try again.'));
+      Alert.alert(t('profile.error'), t('profile.failedToUpdate'));
     } finally {
       setIsSubmitting(false);
     }
@@ -78,7 +78,7 @@ export default function ProfileScreen() {
       const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
       
       if (status !== 'granted') {
-        Alert.alert(t('Permission Required'), t('Please allow access to your photo library to upload an avatar.'));
+        Alert.alert(t('profile.permissionRequired'), t('profile.photoLibraryAccess'));
         return;
       }
       
@@ -95,7 +95,7 @@ export default function ProfileScreen() {
       }
     } catch (error) {
       console.error('Error uploading avatar:', error);
-      Alert.alert(t('Upload Failed'), t('Failed to upload avatar. Please try again.'));
+      Alert.alert(t('profile.uploadFailed'), t('profile.avatarUploadFailed'));
     }
   };
 
@@ -104,7 +104,7 @@ export default function ProfileScreen() {
       const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
       
       if (status !== 'granted') {
-        Alert.alert(t('Permission Required'), t('Please allow access to your photo library to upload a cover image.'));
+        Alert.alert(t('profile.permissionRequired'), t('profile.coverImageAccess'));
         return;
       }
       
@@ -117,12 +117,11 @@ export default function ProfileScreen() {
       
       if (!result.canceled && result.assets && result.assets.length > 0) {
         const selectedImage = result.assets[0];
-        // For now, we'll store it in formData. In a real app, upload to cloud storage
         setFormData({ ...formData, coverImage: selectedImage.uri });
       }
     } catch (error) {
       console.error('Error uploading cover image:', error);
-      Alert.alert(t('Upload Failed'), t('Failed to upload cover image. Please try again.'));
+      Alert.alert(t('profile.uploadFailed'), t('profile.coverUploadFailed'));
     }
   };
 

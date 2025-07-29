@@ -30,7 +30,7 @@ export default function Library() {
     const currentHabitsCount = habits?.length || 0;
     addHabit({
       id: Date.now().toString(),
-      title: habitTitle,
+      title: t(habitTitle), // ✅ Translate the title
       streak: 0,
       createdAt: new Date().toISOString(),
       completedToday: false,
@@ -44,8 +44,8 @@ export default function Library() {
     const currentHabitsCount = habits?.length || 0;
     addHabit({
       id: Date.now().toString(),
-      title: suggestion.title,
-      notes: suggestion.description,
+      title: t(suggestion.title), // ✅ Translate the title
+      notes: t(suggestion.description), // ✅ Also translate the description
       streak: 0,
       createdAt: new Date().toISOString(),
       completedToday: false,

@@ -43,7 +43,7 @@ export default function LanguageSelector({ visible, onClose }: LanguageSelectorP
         <View style={styles.header}>
           <View style={styles.headerLeft}>
             <Globe size={24} color={currentTheme.colors.primary} />
-            <Text style={styles.title}>{t('select_language')}</Text>
+            <Text style={styles.title}>{t('languageSelector.selectLanguage')}</Text>
           </View>
           <TouchableOpacity onPress={onClose} style={styles.closeButton}>
             <X size={24} color={currentTheme.colors.text} />

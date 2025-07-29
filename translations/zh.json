@@ -1,41 +1,38 @@
 {
-  "language": "中文",
-  "dashboard": "仪表板",
-  "library": "习惯库",
-  "settings": "设置",
-  "stats": "统计",
-  "good_morning": "早上好",
-  "good_afternoon": "下午好",
-  "good_evening": "晚上好",
+  "tabs": {
+    "home": "首页",
+    "library": "习惯库",
+    "wellness": "健康",
+    "analytics": "分析",
+    "habits": "习惯",
+    "rewards": "奖励",
+    "more": "更多",
+    "mood": "心情",
+    "community": "社区"
+  },
+  "avgMood": "平均心情",
+  "dominantMood": "主导心情",
+  "emotionalStability": "情感稳定性",
+  "consistent": "一致",
+  "daysTracked": "已追踪天数",
+  "overallMood": "整体心情",
   "today_progress": "今日进度",
-  "current_streak": "当前连续天数",
-  "days": "天",
-  "day": "天",
-  "total_habits": "总习惯数",
-  "completed_today": "今日完成",
-  "weekly_progress": "周进度",
-  "monthly_progress": "月进度",
-  "no_habits_yet": "还没有习惯",
-  "start_building": "开始建立您的日常习惯",
-  "add_first_habit": "添加您的第一个习惯",
-  "suggested_habits": "推荐习惯",
-  "or_create_custom": "或创建自定义习惯",
-  "mark_complete": "标记为完成",
-  "mark_incomplete": "标记为未完成",
-  "edit": "编辑",
+  "select_all": "全选",
   "delete": "删除",
-  "theme": "主题",
-  "language_setting": "语言",
-  "notifications": "通知",
-  "add_habit": "添加习惯",
-  "today": "今天",
-  "progress": "进度",
-  "all_completed": "全部完成",
-  "partially_completed": "部分完成",
-  "of": "共",
-  "habits_completed": "个习惯已完成",
   "to_complete": "待完成",
+  "habit_details": "习惯详情",
+  "habit_name": "习惯名称",
+  "notes": "备注",
+  "delete_habit": "删除习惯",
+  "add_notes_about_habit": "添加习惯备注",
+  "habits_completed": "习惯已完成",
+  "select_multiple": "多选",
   "completed": "已完成",
+  "selected": "已选择",
+  "loading_habits": "正在加载习惯...",
+  "no_habits_yet": "还没有习惯",
+  "add_first_habit": "添加您的第一个习惯开始吧！",
+  "add_habit": "添加习惯",
   "edit_habit": "编辑习惯",
   "create_new_habit": "创建新习惯",
   "icon": "图标",
@@ -44,144 +41,663 @@
   "title": "标题",
   "enter_habit_title": "输入习惯标题",
   "notes_optional": "备注（可选）",
-  "add_notes_habit": "添加关于您习惯的备注",
-  "daily_reminder": "每日提醒",
+  "add_notes_habit": "为这个习惯添加备注",
+  "custom_reminder": "自定义提醒",
+  "reminder_days": "提醒日期",
+  "all_days": "每天",
+  "weekdays": "工作日",
+  "weekends": "周末",
+  "no_days_selected": "未选择日期",
+  "reminders_on": "提醒时间：",
   "cancel": "取消",
-  "update_habit": "更新习惯",
+  "save_changes": "保存更改",
   "create_habit": "创建习惯",
-  "habit_name": "习惯名称",
-  "enter_habit_name": "输入习惯名称",
-  "notes": "备注",
-  "add_notes_about_habit": "添加关于此习惯的备注",
-  "delete_habit": "删除习惯",
-  "habit_not_found": "未找到习惯",
+  "error": "错误",
+  "please_enter_habit_title": "请输入习惯标题",
+  "please_select_reminder_days": "请至少选择一天进行提醒",
+  "sunday": "星期日",
+  "monday": "星期一",
+  "tuesday": "星期二",
+  "wednesday": "星期三",
+  "thursday": "星期四",
+  "friday": "星期五",
+  "saturday": "星期六",
+  "sun": "日",
+"mon": "一", 
+"tue": "二",
+"wed": "三",
+"thu": "四",
+"fri": "五",
+"sat": "六",
+"weekday_sun": "日",
+"weekday_mon": "一",
+"weekday_tue": "二",
+"weekday_wed": "三",
+"weekday_thu": "四",
+"weekday_fri": "五",
+"weekday_sat": "六",
+  
   "habit_library": "习惯库",
-  "discover_manage_habits": "发现和管理您的习惯",
-  "search_habits": "搜索习惯...",
+  "discover_manage_habits": "发现和管理习惯",
+  "search_habits": "搜索习惯",
   "my_habits": "我的习惯",
   "suggestions": "建议",
   "no_habits_found": "未找到习惯",
-  "create_habit_or_add_suggestion": "创建新习惯或从建议中添加一个",
+  "create_habit_or_add_suggestion": "创建习惯或添加建议",
   "all": "全部",
-  "ai_suggestions": "AI 建议",
+  
+  "ai_suggestions": "AI建议",
+  "add_habit_button": "添加习惯",
+  "success": "成功",
+  "habit_added_message": "习惯已添加成功",
+  "great": "太棒了",
+  "awesome": "太棒了",
+  "habit_added_ai_message": "已添加到您的习惯列表中",
+  "lets_go": "开始吧",
   "new_habit": "新习惯",
+  "match": "匹配度",
   "smart_reminder": "智能提醒",
   "optimal_time": "最佳时间",
-  "match": "匹配",
   "confidence": "置信度",
-  "add_habit_button": "添加习惯",
   "set_reminder": "设置提醒",
-  "wellness": "健康",
+  "ai_smart_reminder_reason": "根据您的完成模式，{time}似乎最适合您",
+  
+  "Health & Fitness": "健康与健身",
+  "Learning & Reading": "学习与阅读",
+  "Daily Life": "日常生活",
+  "Productivity": "效率",
+  "Nature & Environment": "自然与环境",
+  "Social & Relationships": "社交与人际关系",
+  "No Icon": "无图标",
+  
+  "ai_consistent_pairs_well": "与您的{habitTitle}习惯（{streak}天连续）搭配很好",
+  "ai_trouble_easier_version": "这是{habitTitle}的简化版本，更容易坚持",
+  "ai_no_category_habits": "您在{category}方面还没有习惯，建议添加",
+  "ai_alternative_three_breaths": "深呼吸三次",
+  "ai_alternative_three_breaths_desc": "微冥想，帮助建立习惯",
+  
+  "ai_complementary_walk": "散步10分钟",
+  "ai_complementary_walk_desc": "轻松的步行来补充您的健康习惯",
+  "ai_complementary_water": "喝一杯水",
+  "ai_complementary_water_desc": "保持水分，支持您的健康目标",
+  "ai_complementary_gratitude": "写下感恩事项",
+  "ai_complementary_gratitude_desc": "记录三件感恩的事情",
+  "ai_complementary_breathing": "专注呼吸",
+  "ai_complementary_breathing_desc": "5分钟的专注呼吸练习",
+  "ai_complementary_review": "回顾每日笔记",
+  "ai_complementary_review_desc": "花5分钟回顾您学到的内容",
+  "ai_complementary_skill": "练习新技能",
+  "ai_complementary_skill_desc": "专门时间进行技能发展",
+  "ai_alternative_jumping_jacks": "做5个开合跳",
+  "ai_alternative_jumping_jacks_desc": "快速的运动爆发来开始",
+  "ai_alternative_one_page": "阅读一页",
+  "ai_alternative_one_page_desc": "每天从一页开始，循序渐进",
+  
+  "moodAnalytics": {
+    "title": "心情分析",
+     "subtitle": "追踪您的情感健康之旅",
+      "moodStates": {
+    "happy": "开心",
+    "calm": "平静",
+    "energetic": "精力充沛",
+    "tired": "疲惫",
+    "stressed": "压力大",
+    "anxious": "焦虑",
+    "sad": "悲伤"
+  },
+  
+     "dashboard": {
+       "thisWeeksMood": "本周心情",
+    "averageMood": "平均心情",
+    "habitsThisWeek": "本周习惯",
+    "keepItUp": "继续保持！",
+    "moodBoost": "+{boost} 心情提升"
+  },
+  "topMoodBoosters": {
+    "title": "🚀 顶级心情提升器"
+  },
+  "moodImprovement": {
+    "improving": "📈 改善中",
+    "stable": "📊 稳定"
+  },
+    "tabs": {
+      "overview": "概览",
+      "analytics": "分析",
+      "aiInsights": "AI洞察",
+      "progress": "进度",
+      "correlations": "关联性",
+      "wellness": "健康",
+      "reports": "报告",
+      "calendar": "日历",
+      "distribution": "分布" 
+    },
+    "subTabs": {
+      "habitAnalysis": "习惯分析",
+      "heatMap": "热力图",
+      "successRates": "成功率",
+      "summary": "总结",
+      "resilience": "韧性",
+      "trends": "趋势"
+    },
+    "aiInsights": {
+      "title": "🤖 AI预测智能",
+      "description": "基于您的心情和习惯数据提供个性化洞察",
+      "currentMoodCheckIn": {
+        "title": "当前心情签到",
+        "subtitle": "告诉我们您的感受，获得个性化洞察"
+      },
+      "successPredictions": {
+        "title": "成功预测",
+        "subtitle": "AI驱动的习惯成功预测"
+      },
+      "riskAlerts": {
+        "title": "风险警报",
+        "subtitle": "可能被跳过的习惯"
+      },
+      "keyFactors": "关键因素：",
+      "moodAlignment": "心情匹配",
+      "timing": "时机",
+      "urgencyLevel": "紧急程度：",
+      "suggestions": "💡 建议：",
+      "bestTimeToday": "🎯 今日最佳时间：",
+      "alternativeTimes": "备选时间：",
+      "expectedMoodBoost": "预期心情提升：",
+      "outOfTen": "/10",
+      "quickMoodBoosters": "🚀 快速心情提升：",
+      "predictedCompletions": "预测完成数",
+      "successRate": "成功率",
+      "riskDays": "⚠️ 风险日："
+    },
+    "optimalTiming": {
+        "title": "⏰ 最佳时机",
+        "subtitle": "基于心情的习惯最佳时间"
+      },
+     "moodBasedRecommendations": {
+        "title": "💡 基于心情的建议",
+        "subtitle": "匹配您当前情绪状态的习惯"
+      },
+      "weeklyForecast": {
+        "title": "📅 每周预测",
+        "subtitle": "AI对即将到来一周的预测"
+      },
+      "weeklyInsights": "🔍 每周洞察：",
+    "weeklyInsights": {
+      "title": "🔍 每周洞察：",
+      "intensity": "强度：",
+      "moodImprovementTracking": "📈 心情改善追踪",
+      "thirtyDayTrend": "30天趋势",
+      "ninetyDayTrend": "90天趋势"
+    },
+    "trends": {
+      "improving": "改善中",
+      "declining": "下降中",
+      "stable": "稳定",
+      "longTermGrowth": "长期增长",
+      "needsAttention": "需要关注",
+      "consistent": "一致"
+    },
+    "charts": {
+      "weeklyMoodProgress": "每周心情进展",
+      "successRatesByMood": "按心情分类的成功率",
+      "habitSuccessByMood": "按情绪状态的习惯成功率",
+      "weeklyProgression": "每周进展",
+      "week": "周",
+      "mood": "心情",
+      "days": "天数"
+    },
+    "moodPerformance": {
+      "bestMood": "最佳心情",
+      "challengingMood": "挑战性心情"
+    },
+    "monthlyInsights": {
+      "title": "月度洞察",
+      "emotionalJourney": "情感之旅",
+      "daysTracked": "天已追踪",
+      "overallMood": "整体心情",
+      "avgMood": "平均心情",
+      "dominantMood": "主导心情",
+      "emotionalStability": "情感稳定性",
+      "consistent": "一致",
+      "tips": {
+        "variable": "您这个月的心情变化较大。考虑追踪触发因素并练习正念。",
+        "positive": "很棒的一个月！您的整体心情一直很积极。保持良好的习惯！",
+        "needMore": "追踪更多天数以获得更好的洞察。争取每日心情签到！"
+      }
+    },
+    "correlations": {
+      "title": "心情-习惯关联发现",
+      "highEnergyCorrelation": "高能量关联",
+      "highEnergyDesc": "感到精力充沛时，您完成习惯的比例高出40%",
+      "highEnergyTip": "在高能量时段安排挑战性习惯",
+      "morningMoodBoost": "晨间心情提升",
+      "morningBoostDesc": "晨间习惯平均提升您的心情1.2分",
+      "morningBoostTip": "优先考虑晨间例行公事以获得更好的日常心情",
+      "socialConnectionImpact": "社交连接影响",
+      "socialImpactDesc": "社交习惯与25%更好的心情稳定性相关",
+      "socialImpactTip": "在您的例行公事中包含更多社交活动",
+      "moodImpact": "心情影响",
+      "successByMood": "按心情分类的成功："
+    },
+    "wellnessSummary": {
+      "title": "情感健康总结",
+      "overallWellnessScore": "整体健康评分",
+      "moodStability": "心情稳定性",
+      "habitConsistency": "习惯一致性",
+      "weeklyImprovement": "每周改善",
+      "target": "目标：",
+      "points": "分"
+    },
+    "recommendations": {
+      "title": "个性化建议",
+      "moodOptimization": "心情优化",
+      "habitEfficiency": "习惯效率",
+      "wellnessIntegration": "健康整合",
+      "expectedImpact": "预期影响",
+      "tips": {
+        "meditation": "在低能量时段（下午3-5点）尝试冥想",
+        "socialWeekend": "周末安排社交活动以提升心情",
+        "sunlight": "考虑晨间阳光照射以更好地调节心情",
+        "groupHabits": "将相似习惯组合在一起以提高完成率",
+        "reminders": "在您的高峰能量时间前30分钟设置习惯提醒",
+        "habitStacking": "与您最一致的习惯使用习惯叠加",
+        "breathing": "在要求高的任务之间添加5分钟呼吸练习",
+        "sleepTracking": "追踪睡眠质量以识别心情模式关联",
+        "reflection": "实施每周反思会议以持续改进"
+      }
+    },
+    "performance": {
+      "title": "比较表现",
+      "lastThirtyDays": "过去30天",
+      "previousThirtyDays": "前30天",
+      "thirtyDayTrendAnalysis": "30天趋势分析",
+      "moodImprovement": "心情改善",
+      "habitProgress": "习惯进展",
+      "stability": "稳定性"
+    },
+    "streaks": {
+      "title": "🔥 心情-习惯连续追踪",
+      "activeStreaks": "活跃连续",
+      "longest": "最长：",
+      "total": "总计：",
+      "days": "天",
+      "longestCurrent": "最长当前",
+      "allTimeBest": "历史最佳"
+    },
+    "monthlyReports": {
+      "title": "📊 月度健康报告",
+      "moodDistribution": "本月心情分布",
+      "averageMood": "平均心情",
+      "habitsCompleted": "已完成习惯",
+      "dailyAverage": "日均",
+      "daysTracked": "已追踪天数"
+    },
+    "resilience": {
+      "title": "🛡️ 情感韧性评分",
+      "score": "情感韧性评分",
+      "levels": {
+        "excellent": "优秀",
+        "good": "良好",
+        "moderate": "中等",
+        "developing": "发展中"
+      },
+      "factors": {
+        "moodStability": "心情稳定性",
+        "recoveryRate": "恢复率",
+        "habitConsistency": "习惯一致性",
+        "overallTrend": "整体趋势"
+      },
+      "buildingTips": {
+        "mindfulness": "在挑战时刻练习正念",
+        "consistency": "即使在困难的日子也要保持习惯",
+        "gradualImprovement": "专注于渐进、一致的改善"
+      }
+    },
+    "quickInsights": {
+      "title": "快速洞察",
+      "bestMood": "最佳心情",
+      "watchOut": "注意",
+      "topMoodBoosters": "🚀 顶级心情提升器",
+      "success": "成功",
+      "thisWeeksMood": "本周心情",
+      "keepItUp": "继续保持！",
+      "habitsThisWeek": "本周习惯"
+    },
+    "analytics": {
+      "title": "📈 分析",
+      "trends": "趋势",
+      "successRates": "成功率",
+      "distribution": "分布",
+      "compare": "比较"
+    },
+    "successRateAnalysis": {
+      "title": "📊 成功率分析",
+      "weeklySuccessRates": "每周成功率",
+      "habitSuccessRates": "习惯成功率"
+    },
+    "emotionalWellnessTrends": {
+      "title": "📈 情感健康趋势",
+      "thirtyDayMoodTrend": "30天心情趋势",
+      "improving": "📈 改善中",
+      "declining": "📉 下降中",
+      "stable": "📊 稳定",
+      "averageMood": "平均心情",
+      "peakMood": "峰值心情",
+      "lowestMood": "最低心情"
+    },
+    "moodDistribution": {
+      "title": "🥧 心情分布",
+  "lastThirtyDays": "过去30天心情分解",
+  "mood": "心情",
+  "distribution": "分布",
+  "totalDays": "总天数",
+  "excellentDays": "优秀天数",
+  "goodPlusDays": "良好+天数",
+  "categories": {
+    "excellent": "优秀",
+    "good": "良好",
+    "neutral": "中性",
+    "poor": "较差",
+    "veryPoor": "很差"
+  },
+         "smartInsights": {
+       "title": "💡 智能洞察",
+       "successByMoodState": {
+         "title": "🎯 按心情状态的成功率",
+         "subtitle": "您的心情如何影响习惯完成"
+       },
+       "personalizedTips": {
+         "title": "🎯 个性化建议",
+         "optimalTiming": "最佳时机",
+         "moodBoosters": "心情提升"
+       },
+       "bestMood": "🎯 最佳心情",
+       "challengingMood": "⚠️ 挑战性心情",
+       "successRate": "成功率",
+       "optimalTiming": {
+         "title": "最佳时机",
+         "subtitle": "基于心情的习惯最佳时间"
+       },
+       "moodBasedRecommendations": {
+         "title": "基于心情的建议",
+         "subtitle": "匹配您当前情绪状态的习惯"
+       },
+       "weeklyForecast": {
+         "title": "每周预测",
+         "subtitle": "AI对即将到来一周的预测"
+       },
+       "weeklyProgression": {
+         "title": "每周进展"
+       },
+       "monthlyInsights": {
+         "title": "月度洞察",
+         "variableMoodTip": "您这个月的心情变化较大。考虑追踪触发因素并练习正念。",
+         "greatMonthTip": "很棒的一个月！您的整体心情一直很积极。保持良好的习惯！",
+         "trackMoreTip": "追踪更多天数以获得更好的洞察。争取每日心情签到！"
+       },
+       "correlationDiscoveries": {
+         "title": "心情-习惯关联发现",
+         "highEnergyCorrelation": {
+           "title": "高能量关联",
+           "description": "感到精力充沛时，您完成习惯的比例高出40%",
+           "actionable": "在高能量时段安排挑战性习惯"
+         },
+         "morningMoodBoost": {
+           "title": "晨间心情提升",
+           "description": "晨间习惯平均提升您的心情1.2分",
+           "actionable": "优先考虑晨间例行公事以获得更好的日常心情"
+         },
+         "socialConnectionImpact": {
+           "title": "社交连接影响",
+           "description": "社交习惯与25%更好的心情稳定性相关",
+           "actionable": "在您的例行公事中包含更多社交活动"
+         }
+       }
+     },
+   "riskLevels": {
+      "low": "低",
+      "medium": "中等",
+      "high": "高",
+      "critical": "严重"
+    },
+    "urgencyLevels": {
+      "low": "低",
+      "medium": "中等",
+      "high": "高"
+    },
+    "priorities": {
+      "low": "低",
+      "medium": "中等",
+      "high": "高"
+    },
+    "recommendations": {
+      "title": "个性化建议",
+      "categories": {
+        "moodOptimization": "心情优化",
+        "habitEfficiency": "习惯效率",
+        "wellnessIntegration": "健康整合"
+      },
+      "suggestions": {
+        "meditation": "在低能量时段尝试冥想（下午3-5点）",
+        "socialActivities": "在周末安排社交活动以提升心情",
+        "sunlightExposure": "考虑晨光照射以更好地调节心情",
+        "groupHabits": "将相似习惯组合在一起以提高完成率",
+        "reminders": "在您的高峰能量时间前30分钟设置习惯提醒",
+        "habitStacking": "与您最一致的习惯使用习惯叠加",
+        "breathing": "在要求高的任务之间添加5分钟呼吸练习",
+        "sleepTracking": "追踪睡眠质量以识别心情模式关联",
+        "reflection": "实施每周反思会议以持续改进"
+      },
+      "impacts": {
+        "moodStability": "+15% 心情稳定性",
+        "completionRate": "+25% 完成率",
+        "overallWellness": "+20% 整体健康"
+      }
+    }
+    },
+    "months": {
+      "january": "一月",
+      "february": "二月",
+      "march": "三月",
+      "april": "四月",
+      "may": "五月",
+      "june": "六月",
+      "july": "七月",
+      "august": "八月",
+      "september": "九月",
+      "october": "十月",
+      "november": "十一月",
+      "december": "十二月"
+    },
+    
+    "weekLabels": {
+      "w1": "第1周",
+      "w2": "第2周",
+      "w3": "第3周",
+      "w4": "第4周"
+    },
+    "selectView": "选择视图"
+  },
+  "dailyMoodReminder": {
+    "successTitle": "心情已记录！",
+    "successMessage": "感谢您花时间反思今天的感受。"
+  },
+  
+  "quickMoodSelector": {
+    "todaysMoodEntry": "今日心情记录",
+    "intensityLabel": "强度",
+    "title": "您今天感觉如何？",
+    "subtitle": "选择最能描述您当前感受的心情",
+    "triggersLabel": "触发因素",
+    "noteLabel": "备注",
+    "skipButton": "跳过",
+    "lowLabel": "低",
+    "highLabel": "高",
+    "moodInfluenceTitle": "什么影响了您的心情？",
+    "optionalLabel": "（可选）",
+    "notePlaceholder": "添加关于您心情的备注...",
+    "recordMoodButton": "记录心情",
+    "backButton": "返回",
+    "moreOptionsButton": "更多选项"
+  },
+  
   "mindfulness": "正念",
   "productivity": "效率",
   "fitness": "健身",
   "creativity": "创意",
-  "drink_water": "喝一杯水",
-  "drink_water_desc": "用水分开始新的一天 - 每天早上喝一整杯水。",
-  "drink_water_benefits": "提高能量水平和大脑功能",
-  "stretch_break": "5分钟伸展休息",
-  "stretch_break_desc": "快速伸展以改善血液循环和减少紧张感。",
-  "stretch_break_benefits": "减少肌肉僵硬并改善姿势",
-  "deep_breathing": "练习深呼吸",
-  "deep_breathing_desc": "深呼吸10次，专注于吸气和呼气。",
-  "deep_breathing_benefits": "减少压力并提高专注力",
-  "sunlight": "晒10分钟太阳",
-  "sunlight_desc": "在自然光下至少待10分钟。",
-  "sunlight_benefits": "增加维生素D并改善情绪",
-  "meditation": "1分钟冥想",
-  "meditation_desc": "只需一分钟静默专注于呼吸。",
-  "meditation_benefits": "减少焦虑并提高注意力",
-  "gratitude": "写一条感恩笔记",
-  "gratitude_desc": "记下今天你感激的一件事。",
-  "gratitude_benefits": "增加幸福感和积极态度",
-  "device_break": "数字设备休息",
-  "device_break_desc": "远离所有屏幕15分钟。",
-  "device_break_benefits": "减少眼疲劳和精神疲劳",
-  "single_task": "单任务专注",
-  "single_task_desc": "花10分钟全神贯注地做一件事。",
-  "single_task_benefits": "提高专注力和效率",
-  "daily_priorities": "设定3个每日优先事项",
-  "daily_priorities_desc": "确定当天最重要的3项任务。",
-  "daily_priorities_benefits": "提高专注力和成就感",
+  
+  "drink_water": "喝水",
+  "drink_water_desc": "每天喝足够的水保持身体水分",
+  "drink_water_benefits": "改善皮肤、增强能量、促进新陈代谢",
+  
+  "stretch_break": "伸展休息",
+  "stretch_break_desc": "每小时进行简单的伸展运动",
+  "stretch_break_benefits": "减少肌肉紧张、改善姿势、增加灵活性",
+  
+  "deep_breathing": "深呼吸",
+  "deep_breathing_desc": "练习深呼吸技巧来放松身心",
+  "deep_breathing_benefits": "减少压力、改善专注力、促进放松",
+  
+  "sunlight": "晒太阳",
+  "sunlight_desc": "每天获得自然阳光照射",
+  "sunlight_benefits": "增加维生素D、改善情绪、调节睡眠",
+  
+  "meditation": "冥想",
+  "meditation_desc": "每天进行短时间的冥想练习",
+  "meditation_benefits": "减少焦虑、提高专注力、增强自我意识",
+  
+  "gratitude": "感恩",
+  "gratitude_desc": "每天记录感恩的事情",
+  "gratitude_benefits": "提升幸福感、改善人际关系、增强积极心态",
+  
+  "device_break": "设备休息",
+  "device_break_desc": "定期远离电子设备",
+  "device_break_benefits": "减少眼疲劳、改善睡眠、增强现实连接",
+  
+  "single_task": "专注单任务",
+  "single_task_desc": "一次只专注于一项任务",
+  "single_task_benefits": "提高效率、减少错误、增强专注力",
+  
+  "daily_priorities": "每日优先事项",
+  "daily_priorities_desc": "每天确定最重要的任务",
+  "daily_priorities_benefits": "提高效率、减少压力、实现目标",
+  
   "clear_workspace": "整理工作空间",
-  "clear_workspace_desc": "花2分钟整理桌子或工作空间。",
-  "clear_workspace_benefits": "减少干扰和心理混乱",
-  "planning_session": "5分钟规划时间",
-  "planning_session_desc": "花5分钟规划一天或查看日程安排。",
-  "planning_session_benefits": "减少压力并改善时间管理",
-  "learn_new": "学习新事物",
-  "learn_new_desc": "花5分钟学习你领域的新知识。",
-  "learn_new_benefits": "积累知识并保持技能新鲜",
-  "squats": "10个深蹲",
-  "squats_desc": "随时随地做10个简单的深蹲。",
-  "squats_benefits": "增强下肢力量并改善活动能力",
-  "walk": "步行5分钟",
-  "walk_desc": "短暂步行5分钟，即使只是在家里走走。",
-  "walk_benefits": "改善血液循环和能量水平",
-  "jumping_jacks": "20个开合跳",
-  "jumping_jacks_desc": "快速有氧运动提高心率。",
-  "jumping_jacks_benefits": "促进新陈代谢和能量",
-  "take_stairs": "走楼梯",
-  "take_stairs_desc": "今天至少选择一次楼梯而不是电梯。",
-  "take_stairs_benefits": "增强腿部力量和心血管健康",
-  "doodle": "涂鸦2分钟",
-  "doodle_desc": "不加评判地画任何东西2分钟。",
-  "doodle_benefits": "激发创造性思维并减少压力",
-  "micro_story": "写微型故事",
-  "micro_story_desc": "用3句话写一个完整的故事。",
-  "micro_story_benefits": "发展想象力和简洁表达",
-  "different_route": "走不同路线",
-  "different_route_desc": "选择不同的路径到熟悉的目的地。",
-  "different_route_benefits": "刺激大脑并增加意识",
+  "clear_workspace_desc": "保持工作区域整洁有序",
+  "clear_workspace_benefits": "提高专注力、减少干扰、增强创造力",
+  
+  "planning_session": "规划时间",
+  "planning_session_desc": "每天花时间规划和回顾",
+  "planning_session_benefits": "提高组织能力、减少焦虑、实现目标",
+  
+  "learn_new": "学习新知识",
+  "learn_new_desc": "每天学习新的技能或知识",
+  "learn_new_benefits": "增强大脑功能、提升技能、保持好奇",
+  
+  "squats": "深蹲",
+  "squats_desc": "进行简单的深蹲运动",
+  "squats_benefits": "增强腿部力量、改善姿势、燃烧卡路里",
+  
+  "walk": "散步",
+  "walk_desc": "每天进行短距离步行",
+  "walk_benefits": "改善心血管健康、增强情绪、燃烧卡路里",
+  
+  "jumping_jacks": "开合跳",
+  "jumping_jacks_desc": "进行开合跳运动",
+  "jumping_jacks_benefits": "提高心率、增强协调性、燃烧卡路里",
+  
+  "take_stairs": "爬楼梯",
+  "take_stairs_desc": "选择爬楼梯而不是电梯",
+  "take_stairs_benefits": "增强腿部力量、改善心血管健康、燃烧卡路里",
+  
+  "doodle": "涂鸦",
+  "doodle_desc": "进行简单的绘画或涂鸦",
+  "doodle_benefits": "激发创造力、减少压力、提高专注力",
+  
+  "micro_story": "微故事",
+  "micro_story_desc": "写一个简短的故事或想法",
+  "micro_story_benefits": "增强创造力、改善写作技巧、表达想法",
+  
+  "different_route": "不同路线",
+  "different_route_desc": "选择不同的路线到达目的地",
+  "different_route_benefits": "激发创造力、增强观察力、打破常规",
+  
   "observe_details": "观察细节",
-  "observe_details_desc": "花3分钟注意环境中通常错过的细节。",
-  "observe_details_benefits": "提高注意力和正念",
+  "observe_details_desc": "仔细观察周围环境的细节",
+  "observe_details_benefits": "提高观察力、增强正念、激发创造力",
+  
   "benefits": "好处",
   "day_streak": "天连续",
-  "ai_consistent_pairs_well": "您在\"{{habitTitle}}\"方面一直很坚持（{{streak}}天连续）。这个很配！",
-  "ai_trouble_easier_version": "在\"{{habitTitle}}\"方面有困难？试试这个更简单的版本来建立动力。",
-  "ai_no_category_habits": "您还没有任何{{category}}习惯。这可以完善您的日常安排！",
-  "category_wellness": "健康",
-  "category_productivity": "效率",
-  "category_learning": "学习",
-  "category_mindfulness": "正念",
-  "category_fitness": "健身",
-  "your_progress": "您的进度",
-  "track_consistency": "跟踪您的一致性",
-  "weekly_completion": "周完成率",
-  "best_streak": "最佳连续",
-  "last_7_days": "最近7天",
-  "monthly_view": "月视图",
-  "habit_breakdown": "习惯分析",
-  "weekday_sun": "日",
-  "weekday_mon": "一",
-  "weekday_tue": "二",
-  "weekday_wed": "三",
-  "weekday_thu": "四",
-  "weekday_fri": "五",
-  "weekday_sat": "六",
-  "january": "一月",
-  "february": "二月",
-  "march": "三月",
-  "april": "四月",
-  "may": "五月",
-  "june": "六月",
-  "july": "七月",
-  "august": "八月",
-  "september": "九月",
-  "october": "十月",
-  "november": "十一月",
-  "december": "十二月",
-  "appearance": "外观",
-  "current_language": "当前语言：",
-  "premium": "高级版",
-  "premium_active": "高级版已激活",
-  "upgrade_to_premium": "升级到高级版",
-  "premium_active_desc": "享受所有主题和高级功能",
-  "premium_upgrade_desc": "解锁独家主题和功能",
-  "about": "关于",
-  "version": "版本",
-  "animations": "动画",
-  "celebration_animations": "庆祝动画",
-  "celebration_animations_desc": "为连续天数和成就显示彩带和庆祝效果"
+  "wellness": {
+  "title": "健康与心情",
+  "subtitle": "追踪您的心情和健康之旅",
+  "startStreak": "开始您的连续记录！",
+  "oneDayStreak": "1天连续记录！",
+  "multiDayStreak": "{{count}}天连续记录！",
+  "feeling": "感受",
+  "intensity": "强度",
+  "recordedAt": "记录于",
+  "loading": "加载中...",
+  "tabs": {
+    "checkin": "签到",
+    "analysis": "分析",
+    "aiCoach": "AI教练",
+    "integration": "整合"
+  },
+  "todaysMoodJourney": "🌟 今日心情之旅",
+  "moodCheckinTitle": "📝 心情签到",
+  "howFeelingToday": "💭 您今天感觉如何？",
+  "amazingWork": "做得很棒！",
+  "completedDetailedCheckin": "您已完成今日详细心情签到。继续保持！",
+  "letsCheckin": "让我们来签到吧",
+  "reflectionPrompt": "花一点时间反思您当前的心情。这有助于建立自我意识并追踪您的健康之旅。",
+  "addDetailsPrompt": "想要深入了解吗？添加详细信息有助于您了解模式并获得个性化洞察。",
+  "addDetails": "✨ 添加详情",
+  "trackingBenefits": "💡 追踪触发因素、备注和背景信息，解锁AI驱动的健康洞察"
+},
+"moodCheckIn": {
+  "moodTags": {
+    "happy": "开心",
+    "sad": "悲伤",
+    "anxious": "焦虑",
+    "energetic": "精力充沛",
+    "tired": "疲惫",
+    "stressed": "压力大",
+    "calm": "平静",
+    "excited": "兴奋",
+    "frustrated": "沮丧",
+    "content": "满足",
+    "neutral": "中性",
+    "relaxed": "放松",
+    "confident": "自信",
+    "nervous": "紧张",
+    "peaceful": "平和",
+    "focused": "专注",
+    "overwhelmed": "不知所措"
+  },
+  "contextTags": {
+    "work": "工作",
+    "family": "家庭",
+    "health": "健康",
+    "social": "社交",
+    "finance": "财务",
+    "exercise": "运动",
+    "sleep": "睡眠",
+    "weather": "天气",
+    "relationships": "人际关系",
+    "money": "金钱",
+    "travel": "旅行",
+    "food": "饮食",
+    "entertainment": "娱乐"
+  }
+},
+ "thisWeeksMood": "本周心情",
+"dayLabels": {
+    "sun": "日",
+    "mon": "一", 
+    "tue": "二",
+    "wed": "三",
+    "thu": "四",
+    "fri": "五",
+    "sat": "六"
+  }
 }

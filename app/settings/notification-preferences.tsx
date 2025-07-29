@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -13,6 +13,8 @@ import { StatusBar } from 'expo-status-bar';
 import { ArrowLeft, Bell, Mail, Smartphone } from 'lucide-react-native';
 import { useRouter } from 'expo-router';
 import { useTheme } from '@/context/ThemeContext';
+import { useLanguage } from '@/context/LanguageContext';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 interface NotificationSetting {
   id: string;
@@ -24,49 +26,50 @@ interface NotificationSetting {
 
 export default function NotificationPreferencesScreen() {
   const { currentTheme } = useTheme();
+  const { t } = useLanguage();
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   
   const [notifications, setNotifications] = useState<NotificationSetting[]>([
     {
       id: '1',
-      title: 'Habit Reminders',
-      description: 'Get reminded when it\'s time to complete your habits',
+      title: t('notificationPreferences.habitReminders'),
+      description: t('notificationPreferences.habitRemindersDesc'),
       enabled: true,
       category: 'push',
     },
     {
       id: '2',
-      title: 'Streak Achievements',
-      description: 'Celebrate when you reach new streak milestones',
+      title: t('notificationPreferences.streakAchievements'),
+      description: t('notificationPreferences.streakAchievementsDesc'),
       enabled: true,
       category: 'push',
     },
     {
       id: '3',
-      title: 'Weekly Progress',
-      description: 'Weekly summary of your habit progress',
+      title: t('notificationPreferences.weeklyProgress'),
+      description: t('notificationPreferences.weeklyProgressDesc'),
       enabled: false,
       category: 'push',
     },
     {
       id: '4',
-      title: 'Daily Summary',
-      description: 'Daily recap of completed and missed habits',
+      title: t('notificationPreferences.dailySummary'),
+      description: t('notificationPreferences.dailySummaryDesc'),
       enabled: true,
       category: 'email',
     },
     {
       id: '5',
-      title: 'Monthly Reports',
-      description: 'Detailed monthly progress reports',
+      title: t('notificationPreferences.monthlyReports'),
+      description: t('notificationPreferences.monthlyReportsDesc'),
       enabled: true,
       category: 'email',
     },
     {
       id: '6',
-      title: 'Tips & Motivation',
-      description: 'Helpful tips and motivational content',
+      title: t('notificationPreferences.tipsMotivation'),
+      description: t('notificationPreferences.tipsMotivationDesc'),
       enabled: false,
       category: 'email',
     },
@@ -74,23 +77,54 @@ export default function NotificationPreferencesScreen() {
 
   const styles = createStyles(currentTheme.colors);
 
+  // Remove this duplicate import line:
+  // import AsyncStorage from '@react-native-async-storage/async-storage';
+  
+  // Update handleToggleNotification function
   const handleToggleNotification = async (id: string) => {
     setIsLoading(true);
     try {
-      // TODO: Implement API call to update notification preferences
-      await new Promise(resolve => setTimeout(resolve, 500));
-      
-      setNotifications(prev => 
-        prev.map(notification => 
-          notification.id === id 
-            ? { ...notification, enabled: !notification.enabled }
-            : notification
-        )
+      const updatedNotifications = notifications.map(notification => 
+        notification.id === id 
+          ? { ...notification, enabled: !notification.enabled }
+          : notification
       );
+      
+      setNotifications(updatedNotifications);
+      
+      // Save to persistent storage
+      await AsyncStorage.setItem('notificationSettings', JSON.stringify(updatedNotifications));
+      
     } catch (error) {
-      Alert.alert('Error', 'Failed to update notification preferences');
+      Alert.alert(t('notificationPreferences.error'), t('notificationPreferences.failedToUpdate'));
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  // Load settings on component mount
+  useEffect(() => {
+    const loadSettings = async () => {
+      try {
+        const saved = await AsyncStorage.getItem('notificationSettings');
+        if (saved) {
+          setNotifications(JSON.parse(saved));
+        }
+      } catch (error) {
+        console.error('Failed to load notification settings:', error);
+      }
+    };
+    loadSettings();
+  }, []);
+
+  const getCategoryTitle = (category: string) => {
+    switch (category) {
+      case 'push':
+        return t('notificationPreferences.pushNotifications');
+      case 'email':
+        return t('notificationPreferences.emailNotifications');
+      default:
+        return t('notificationPreferences.inAppNotifications');
     }
   };
 
@@ -102,17 +136,6 @@ export default function NotificationPreferencesScreen() {
         return <Mail size={20} color={currentTheme.colors.primary} />;
       default:
         return <Bell size={20} color={currentTheme.colors.primary} />;
-    }
-  };
-
-  const getCategoryTitle = (category: string) => {
-    switch (category) {
-      case 'push':
-        return 'Push Notifications';
-      case 'email':
-        return 'Email Notifications';
-      default:
-        return 'In-App Notifications';
     }
   };
 
@@ -149,10 +172,14 @@ export default function NotificationPreferencesScreen() {
         <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
           <ArrowLeft size={24} color={currentTheme.colors.text} />
         </TouchableOpacity>
-        <Text style={styles.title}>Notification Preferences</Text>
+        <Text style={styles.title}>{t('notificationPreferences.title')}</Text>
       </View>
 
-      <ScrollView style={styles.content}>
+      <ScrollView 
+        style={styles.content}
+        contentContainerStyle={{ paddingBottom: 40 }}
+        showsVerticalScrollIndicator={false}
+      >
         {Object.entries(groupedNotifications).map(([category, categoryNotifications]) => (
           <View key={category} style={styles.categorySection}>
             <View style={styles.categoryHeader}>
@@ -167,9 +194,9 @@ export default function NotificationPreferencesScreen() {
         ))}
         
         <View style={styles.infoSection}>
-          <Text style={styles.infoTitle}>Notification Settings</Text>
+          <Text style={styles.infoTitle}>{t('notificationPreferences.notificationSettings')}</Text>
           <Text style={styles.infoText}>
-            You can customize when and how you receive notifications. Push notifications require permission from your device settings.
+            {t('notificationPreferences.notificationInfo')}
           </Text>
         </View>
       </ScrollView>

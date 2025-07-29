@@ -1,187 +1,1646 @@
 {
-  "language": "English",
-  "dashboard": "Dashboard",
-  "library": "Library",
-  "settings": "Settings",
-  "stats": "Stats",
-  "good_morning": "Good Morning",
-  "good_afternoon": "Good Afternoon",
-  "good_evening": "Good Evening",
-  "today_progress": "Today's Progress",
-  "current_streak": "Current Streak",
-  "days": "days",
-  "day": "day",
-  "your_progress": "Your progress",
-  "track_consistency": "Track Consistency",
-  "last_7_days": "Last 7 Days",
-  "monthly_view": "Monthly View",
-  "weekly_completion": "Weekly Completion",
-  "best_streak": "Best Streak",
-  "total_habits": "Total Habits",
-  "completed_today": "Completed Today",
-  "weekly_progress": "Weekly Progress",
-  "monthly_progress": "Monthly Progress",
+  "tabs": {
+    "home": "Home",
+    "library": "Library",
+    "wellness": "Wellness",
+    "analytics": "Analytics",
+    "rewards": "Rewards",
+    "more": "More",
+    "mood": "Mood",
+    "community": "Community"
+  },
+  "loading_habits": "Loading habits...",
   "no_habits_yet": "No habits yet",
-  "start_building": "Start building your daily routine",
-  "add_first_habit": "Add your first habit",
-  "suggested_habits": "Suggested Habits",
-  "or_create_custom": "Or create a custom habit",
-  "mark_complete": "Mark as complete",
-  "mark_incomplete": "Mark as incomplete",
-  "edit": "Edit",
-  "delete": "Delete",
-  "theme": "Theme",
-  "language_setting": "Language",
-  "notifications": "Notifications",
-  "add_habit": "Add a Habit",
-  "today": "Today",
-  "progress": "Progress",
-  "all_completed": "All Completed",
-  "partially_completed": "Partially Completed",
+  "add_first_habit": "Add your first habit to get started!",
+  "add_habit": "Add Habit",
+  "today_progress": "Today's Progress",
   "of": "of",
   "habits_completed": "habits completed",
-  "to_complete": "To Complete",
-  "completed": "Completed",
-  "edit_habit": "Edit Habit",
-  "create_new_habit": "Create New Habit",
-  "icon": "Icon",
-  "change_icon": "Change Icon",
-  "choose_icon": "Choose Icon",
-  "title": "Title",
-  "enter_habit_title": "Enter habit title",
-  "notes_optional": "Notes (optional)",
-  "add_notes_habit": "Add notes about your habit",
-  "daily_reminder": "Daily Reminder",
+  "to_complete": "to complete",
+  "completed": "completed",
+  "delete_habits": "Delete Habits",
+  "delete_confirmation": "Are you sure you want to delete the selected habits? This action cannot be undone.",
   "cancel": "Cancel",
-  "update_habit": "Update Habit",
-  "create_habit": "Create Habit",
+  "delete": "Delete",
+  "selected": "selected",
+  "select_all": "Select All",
+  "select_multiple": "Select Multiple",
+  "habit_not_found": "Habit not found",
+  "edit_habit": "Edit Habit",
   "habit_name": "Habit Name",
   "enter_habit_name": "Enter habit name",
+  "error": "Error",
+  "enter_habit_title_validation": "Please enter a habit title",
+  "select_reminder_days_validation": "Please select at least one day for reminders",
+  "go_back": "Go Back",
+  "sunday": "Sunday",
+  "monday": "Monday",
+  "tuesday": "Tuesday",
+  "wednesday": "Wednesday",
+  "thursday": "Thursday",
+  "friday": "Friday",
+  "saturday": "Saturday",
+  "sun": "Sun",
+  "mon": "Mon",
+  "tue": "Tue", 
+  "wed": "Wed",
+  "thu": "Thu",
+  "fri": "Fri",
+  "sat": "Sat",
+  "please_enter_habit_title": "Please enter a habit title",
+  "please_select_reminder_days": "Please select at least one day for reminders",
+  "delete_habit_title": "Delete Habit",
+  "delete_habit": "Delete Habit",
+  "delete_habit_confirmation": "Are you sure you want to delete this habit? This action cannot be undone.",
   "notes": "Notes",
   "add_notes_about_habit": "Add notes about this habit",
-  "delete_habit": "Delete Habit",
-  "habit_not_found": "Habit not found",
+  "custom_reminder": "Custom Reminder",
+  "reminder_days": "Reminder Days",
+  "all_days": "All Days",
+  "weekdays": "Weekdays",
+  "weekends": "Weekends",
+  "no_days_selected": "No days selected",
+  "reminders_on": "Reminders on:",
   "habit_library": "Habit Library",
   "discover_manage_habits": "Discover and manage your habits",
   "search_habits": "Search habits...",
   "my_habits": "My Habits",
   "suggestions": "Suggestions",
+  "create_new_habit": "Create New Habit",
   "no_habits_found": "No habits found",
-  "create_habit_or_add_suggestion": "Create a new habit or add one from suggestions",
+  "create_habit_or_add_suggestion": "Create a new habit or add one from our suggestions",
   "all": "All",
-  "ai_suggestions": "AI Suggestions",
-  "new_habit": "New Habit",
-  "smart_reminder": "Smart Reminder",
-  "optimal_time": "Optimal Time",
-  "match": "match",
-  "confidence": "confidence",
-  "add_habit_button": "Add Habit",
-  "set_reminder": "Set Reminder",
-  "wellness": "Wellness",
-  "mindfulness": "Mindfulness",
-  "productivity": "Productivity",
-  "fitness": "Fitness",
-  "creativity": "Creativity",
-  "drink_water": "Drink a glass of water",
-  "drink_water_desc": "Start your day with hydration - drink a full glass of water each morning.",
-  "drink_water_benefits": "Improves energy levels and brain function",
-  "stretch_break": "Take a 5-minute stretch break",
-  "stretch_break_desc": "A quick stretch to improve circulation and reduce tension.",
-  "stretch_break_benefits": "Reduces muscle stiffness and improves posture",
-  "deep_breathing": "Practice deep breathing",
-  "deep_breathing_desc": "Take 10 deep breaths, focusing on your inhale and exhale.",
-  "deep_breathing_benefits": "Reduces stress and improves focus",
-  "sunlight": "Get 10 minutes of sunlight",
-  "sunlight_desc": "Spend at least 10 minutes outside in natural light.",
-  "sunlight_benefits": "Boosts vitamin D and improves mood",
-  "meditation": "1-minute meditation",
-  "meditation_desc": "Just one minute of silent focus on your breath.",
-  "meditation_benefits": "Reduces anxiety and improves concentration",
-  "gratitude": "Write one gratitude note",
-  "gratitude_desc": "Jot down one thing you're grateful for today.",
-  "gratitude_benefits": "Increases happiness and positive outlook",
-  "device_break": "Digital device break",
-  "device_break_desc": "Take a 15-minute break from all screens.",
-  "device_break_benefits": "Reduces eye strain and mental fatigue",
-  "single_task": "Single-task focus",
-  "single_task_desc": "Spend 10 minutes doing just one task with full attention.",
-  "single_task_benefits": "Improves focus and productivity",
-  "daily_priorities": "Set 3 daily priorities",
-  "daily_priorities_desc": "Identify your 3 most important tasks for the day.",
-  "daily_priorities_benefits": "Improves focus and accomplishment",
-  "clear_workspace": "Clear your workspace",
-  "clear_workspace_desc": "Spend 2 minutes tidying your desk or workspace.",
-  "clear_workspace_benefits": "Reduces distractions and mental clutter",
-  "planning_session": "5-minute planning session",
-  "planning_session_desc": "Take 5 minutes to plan your day or review your schedule.",
-  "planning_session_benefits": "Reduces stress and improves time management",
-  "learn_new": "Learn one new thing",
-  "learn_new_desc": "Spend 5 minutes learning something new in your field.",
-  "learn_new_benefits": "Builds knowledge and keeps skills fresh",
-  "squats": "10 squats",
-  "squats_desc": "Do 10 simple squats anywhere, anytime.",
-  "squats_benefits": "Strengthens lower body and improves mobility",
-  "walk": "Walk for 5 minutes",
-  "walk_desc": "Take a short 5-minute walk, even just around your home.",
-  "walk_benefits": "Improves circulation and energy levels",
-  "jumping_jacks": "20 jumping jacks",
-  "jumping_jacks_desc": "A quick cardio burst to get your heart rate up.",
-  "jumping_jacks_benefits": "Boosts metabolism and energy",
-  "take_stairs": "Take the stairs",
-  "take_stairs_desc": "Choose stairs over elevators at least once today.",
-  "take_stairs_benefits": "Builds leg strength and cardiovascular health",
-  "doodle": "Doodle for 2 minutes",
-  "doodle_desc": "Draw anything for just 2 minutes without judgment.",
-  "doodle_benefits": "Stimulates creative thinking and reduces stress",
-  "micro_story": "Write a micro-story",
-  "micro_story_desc": "Write a complete story in just 3 sentences.",
-  "micro_story_benefits": "Develops imagination and concise expression",
-  "different_route": "Take a different route",
-  "different_route_desc": "Choose a different path to a familiar destination.",
-  "different_route_benefits": "Stimulates brain and increases awareness",
-  "observe_details": "Observe details",
-  "observe_details_desc": "Spend 3 minutes noticing details you usually miss in your environment.",
-  "observe_details_benefits": "Improves attention to detail and mindfulness",
+  "success": "✅ Success!",
+  "habit_added_success": "has been added to your habits!",
+  "great": "Great!",
+  "awesome": "🎉 Awesome!",
+  "habit_added_start_building": "has been added to your habits! Start building this positive habit today.",
+  "lets_go": "Let's Go!",
+  "icon": "Icon",
+  "change_icon": "Change Icon",
+  "choose_icon": "Choose an icon",
+  "title": "Title",
+  "enter_habit_title": "Enter habit title",
+  "notes_optional": "Notes (Optional)",
+  "add_notes_habit": "Add notes about this habit",
+  "save_changes": "Save Changes",
+  "create_habit": "Create Habit",
   "benefits": "Benefits",
   "day_streak": "day streak",
-  "ai_consistent_pairs_well": "You've been consistent with \"{{habitTitle}}\" ({{streak}} day streak). This pairs well!",
-  "ai_trouble_easier_version": "Having trouble with \"{{habitTitle}}\"? Try this easier version to build momentum.",
-  "ai_no_category_habits": "You don't have any {{category}} habits yet. This could round out your routine!",
+  "added": "Added",
+  "ai_suggestions": "AI Suggestions",
+  "new_habit": "New Habit",
+  "match": "match",
+  "add_habit_button": "Add Habit",
+  "smart_reminder": "Smart Reminder",
+  "optimal_time": "Optimal Time",
+  "confidence": "Confidence",
+  "set_reminder": "Set Reminder",
+  "productivity": "Productivity",
+  "learning": "Learning",
+  "mindfulness": "Mindfulness",
+  "fitness": "Fitness",
+  "social": "Social",
+  "creativity": "Creativity",
+  "finance": "Finance",
+  "drink_water": "Drink Water",
+  "drink_water_desc": "Stay hydrated throughout the day",
+  "drink_water_benefits": "Improves energy, skin health, and brain function",
+  "stretch_break": "Take a Stretch Break",
+  "stretch_break_desc": "Do simple stretches to relieve tension",
+  "stretch_break_benefits": "Reduces muscle tension, improves flexibility, boosts energy",
+  "deep_breathing": "Deep Breathing",
+  "deep_breathing_desc": "Practice deep breathing for 2 minutes",
+  "deep_breathing_benefits": "Reduces stress, lowers blood pressure, improves focus",
+  "sunlight": "Get Sunlight",
+  "sunlight_desc": "Spend 10 minutes in natural sunlight",
+  "sunlight_benefits": "Boosts vitamin D, improves mood, regulates sleep cycle",
+  "meditation": "Meditation",
+  "meditation_desc": "Practice mindfulness meditation for 5 minutes",
+  "meditation_benefits": "Reduces anxiety, improves concentration, enhances self-awareness",
+  "gratitude": "Practice Gratitude",
+  "gratitude_desc": "Write down 3 things you're grateful for",
+  "gratitude_benefits": "Improves mood, increases life satisfaction, strengthens relationships",
+  "device_break": "Digital Detox Break",
+  "device_break_desc": "Take a 30-minute break from all devices",
+  "device_break_benefits": "Reduces eye strain, improves focus, enhances real-world connections",
+  "single_task": "Single-Task Focus",
+  "single_task_desc": "Focus on one task at a time for 25 minutes",
+  "single_task_benefits": "Improves productivity, reduces stress, enhances quality of work",
+  "daily_priorities": "Set Daily Priorities",
+  "daily_priorities_desc": "Identify your top 3 priorities for the day",
+  "daily_priorities_benefits": "Increases focus, improves time management, reduces overwhelm",
+  "clear_workspace": "Clear Your Workspace",
+  "clear_workspace_desc": "Organize and clean your work area",
+  "clear_workspace_benefits": "Improves focus, reduces distractions, boosts productivity",
+  "planning_session": "Weekly Planning",
+  "planning_session_desc": "Spend 15 minutes planning your week",
+  "planning_session_benefits": "Improves organization, reduces stress, increases goal achievement",
+  "learn_new": "Learn Something New",
+  "learn_new_desc": "Spend 10 minutes learning a new skill or fact",
+  "learn_new_benefits": "Stimulates brain growth, increases knowledge, boosts confidence",
+  "squats": "Do Squats",
+  "squats_desc": "Perform 10 bodyweight squats",
+  "squats_benefits": "Strengthens legs, improves posture, boosts metabolism",
+  "walk": "Take a Walk",
+  "walk_desc": "Go for a 10-minute walk outside",
+  "walk_benefits": "Improves cardiovascular health, boosts mood, increases energy",
+  "jumping_jacks": "Jumping Jacks",
+  "jumping_jacks_desc": "Do 20 jumping jacks to get your heart pumping",
+  "jumping_jacks_benefits": "Improves cardiovascular fitness, burns calories, energizes body",
+  "take_stairs": "Take the Stairs",
+  "take_stairs_desc": "Choose stairs over elevators when possible",
+  "take_stairs_benefits": "Strengthens legs, improves cardiovascular health, burns extra calories",
+  "doodle": "Creative Doodling",
+  "doodle_desc": "Spend 5 minutes drawing or doodling freely",
+  "doodle_benefits": "Stimulates creativity, reduces stress, improves focus",
+  "micro_story": "Write a Micro Story",
+  "micro_story_desc": "Write a very short story in 50 words or less",
+  "micro_story_benefits": "Enhances creativity, improves writing skills, stimulates imagination",
+  "different_route": "Take a Different Route",
+  "different_route_desc": "Use a different path to a familiar destination",
+  "different_route_benefits": "Stimulates brain plasticity, increases awareness, sparks creativity",
+  "observe_details": "Observe Details",
+  "observe_details_desc": "Spend 5 minutes noticing details in your environment",
+  "observe_details_benefits": "Improves mindfulness, enhances creativity, increases awareness",
+  "exercise_daily": "Exercise Daily",
+  "exercise_daily_desc": "Get at least 30 minutes of physical activity",
+  "exercise_daily_benefits": "Boosts mood, improves health, increases energy",
+  "meditate": "Meditate",
+  "meditate_desc": "Practice mindfulness for 10 minutes",
+  "meditate_benefits": "Reduces stress, improves focus, enhances well-being",
+  "read_books": "Read Books",
+  "read_books_desc": "Read for at least 20 minutes daily",
+  "read_books_benefits": "Expands knowledge, improves vocabulary, reduces stress",
+  "plan_day": "Plan Your Day",
+  "plan_day_desc": "Spend 10 minutes planning your daily tasks",
+  "plan_day_benefits": "Increases productivity, reduces stress, improves focus",
+  "ai_consistent_pairs_well": "Since you've been consistent with '{habitTitle}' for {streak} days, this pairs well with your routine",
+  "ai_trouble_easier_version": "Having trouble with '{habitTitle}'? Try this easier version to build momentum",
+  "ai_no_category_habits": "You don't have any {category} habits yet. This could be a great addition",
   "category_wellness": "wellness",
   "category_productivity": "productivity",
   "category_learning": "learning",
   "category_mindfulness": "mindfulness",
   "category_fitness": "fitness",
-  "habit_breakdown": "Habit Breakdown",
-  "weekday_sun": "S",
-  "weekday_mon": "M",
-  "weekday_tue": "T",
-  "weekday_wed": "W",
-  "weekday_thu": "T",
-  "weekday_fri": "F",
-  "weekday_sat": "S",
-  "january": "January",
-  "february": "February",
-  "march": "March",
-  "april": "April",
-  "may": "May",
-  "june": "June",
-  "july": "July",
-  "august": "August",
-  "september": "September",
-  "october": "October",
-  "november": "November",
-  "december": "December",
-  "appearance": "Appearance",
-  "current_language": "Current: ",
-  "premium": "Premium",
-  "premium_active": "Premium Active",
-  "upgrade_to_premium": "Upgrade to Premium",
-  "premium_active_desc": "Enjoy all themes and premium features",
-  "premium_upgrade_desc": "Unlock exclusive themes and features",
-  "about": "About",
-  "version": "Version",
-  "animations": "Animations",
-  "celebration_animations": "Celebration Animations",
-  "celebration_animations_desc": "Show confetti and celebrations for streaks and milestones"
+  "ai_milestone_message": "🎉 Amazing! You've hit a {streak}-day streak with '{title}'! You're building real momentum.",
+  "ai_perfect_day_message": "🌟 Perfect day! You've completed all your habits. You're unstoppable!",
+  "ai_low_completion_message": "💪 Every expert was once a beginner. Start small today - even 1% progress counts!",
+  "ai_good_streak_message": "🔥 Your {streak}-day streak shows you've got what it takes. Keep the momentum going!",
+  "ai_encouraging_1": "🌱 Small steps lead to big changes. You've got this!",
+  "ai_encouraging_2": "⭐ Progress, not perfection. Every day is a new opportunity.",
+  "ai_encouraging_3": "🚀 You're building the future you want, one habit at a time.",
+  "ai_encouraging_4": "💎 Consistency is the mother of mastery. Keep going!",
+  "ai_encouraging_5": "🌈 Your future self will thank you for the work you do today.",
+  "ai_complementary_walk": "Take a 5-minute walk",
+  "ai_complementary_walk_desc": "Light movement to complement your wellness routine",
+  "ai_complementary_water": "Drink a glass of water",
+  "ai_complementary_water_desc": "Stay hydrated throughout the day",
+  "ai_complementary_gratitude": "Practice gratitude",
+  "ai_complementary_gratitude_desc": "Write down 3 things you're grateful for",
+  "ai_complementary_breathing": "Deep breathing exercise",
+  "ai_complementary_breathing_desc": "5 minutes of focused breathing",
+  "ai_complementary_review": "Review daily notes",
+  "ai_complementary_review_desc": "Spend 5 minutes reviewing what you learned",
+  "ai_complementary_skill": "Practice a new skill",
+  "ai_complementary_skill_desc": "Dedicate time to skill development",
+  "ai_alternative_jumping_jacks": "Do 5 jumping jacks",
+  "ai_alternative_jumping_jacks_desc": "A quick burst of movement to get started",
+  "ai_alternative_one_page": "Read one page",
+  "ai_alternative_one_page_desc": "Start small with just one page per day",
+  "ai_alternative_three_breaths": "Take 3 deep breaths",
+  "ai_alternative_three_breaths_desc": "A micro-meditation to build the habit",
+  "ai_smart_reminder_reason": "Based on your completion pattern, {time} seems to work best for you.",
+  "stats": {
+    "title": "Statistics",
+    "subtitle": "Track your progress and insights",
+    "motivational": {
+      "keepGoing": "Keep going! You're doing great!",
+      "greatProgress": "Great progress! Stay consistent!",
+      "stayConsistent": "Stay consistent, you're building momentum!",
+      "almostThere": "Almost there! Keep pushing forward!",
+      "excellentWork": "Excellent work! You're on fire!"
+    },
+    "filters": {
+      "today": "Today",
+      "week": "Week",
+      "month": "Month"
+    },
+    "summary": {
+      "title": "Summary",
+      "totalHabits": "Total Habits",
+      "currentStreak": "Current Streak",
+      "longestStreak": "Longest Streak",
+      "completionRate": "Completion Rate"
+    },
+    "tabs": {
+      "overview": "Overview",
+      "overviewDesc": "Quick insights",
+      "charts": "Charts",
+      "chartsDesc": "Visual data",
+      "activity": "Activity",
+      "activityDesc": "Past records",
+      "advanced": "AI Insights",
+      "advancedDesc": "Smart analysis"
+    },
+    "quickStats": {
+      "today": "Today",
+      "allTime": "All Time",
+      "thirtyDayRate": "30-Day Rate"
+    },
+    "topHabit": {
+      "title": "Top Performing Habit",
+      "noHabits": "No habits yet",
+      "dayStreak": "{count} day streak",
+      "keepItUp": "Keep it up!"
+    },
+    "charts": {
+      "title": "Analytics",
+      "subtitle": "Detailed insights into your habit performance"
+    },
+    "metrics": {
+      "currentStreak": "Current Streak",
+      "successRate": "Success Rate",
+      "today": "Today"
+    },
+    "leaderboard": {
+      "title": "Habit Performance",
+      "completion": "completion",
+      "noHabitsDisplay": "No habits to display yet. Start building habits to see your progress!"
+    },
+    "heatmap": {
+      "weeklyTitle": "Weekly Activity",
+      "less": "Less",
+      "more": "More"
+    },
+    "habitHeatmap": {
+      "title": "Habit Heatmap",
+      "subtitle": "Your habit completion patterns over time",
+      "thisYear": "This Year",
+      "longestStreak": "Longest Streak",
+      "currentStreak": "Current Streak"
+    },
+    "habits": {
+      "title": "Individual Habits",
+      "export": "Export"
+    },
+    "social": {
+      "title": "Social",
+      "share": "Share Progress",
+      "invite": "Invite Friends"
+    },
+    "activity": {
+      "title": "Activity Log",
+      "filter": "Filter",
+      "filterTitle": "Filter Activity",
+      "filterMessage": "Choose what type of activity to display:",
+      "all": "All Activity",
+      "completed": "Completed Only",
+      "missed": "Missed Only",
+      "noActivity": "No recent activity",
+      "completeHabits": "Complete some habits to see your activity here!"
+    },
+    "export": {
+      "title": "Export Data",
+      "message": "Choose export format:",
+      "json": "Export as JSON",
+      "csv": "Export as CSV",
+      "error": "Failed to export data"
+    },
+    "share": {
+      "title": "Habit Tracker Progress",
+      "message": "Check out my habit tracking progress!",
+      "totalHabits": "Total Habits",
+      "currentStreak": "Current Streak",
+      "completionRate": "Completion Rate",
+      "error": "Failed to share progress"
+    },
+    "invite": {
+      "title": "Join me on Habit Tracker!",
+      "message": "I've been using this amazing habit tracker app to build positive habits. Join me and let's grow together!",
+      "error": "Failed to send invitation"
+    }
+  },
+  "csv": {
+    "exportHeader": "Habit Statistics Export",
+    "exportDate": "Export Date",
+    "totalHabits": "Total Habits",
+    "currentStreak": "Current Streak",
+    "longestStreak": "Longest Streak",
+    "weeklyCompletionRate": "Weekly Completion Rate",
+    "monthlyCompletionRate": "Monthly Completion Rate",
+    "totalCompletedToday": "Total Completed Today",
+    "totalCompletedAllTime": "Total Completed All Time",
+    "habitDetails": "Habit Details",
+    "habitDetailsHeader": "Title,Icon,Current Streak,Best Streak,Total Completions,Created Date"
+  },
+  "shareError": {
+    "title": "Share Error",
+    "message": "Failed to share data."
+  },
+  "gamification": {
+    "title": "Gamification",
+    "subtitle": "Level up your habit journey",
+    "tabs": {
+      "overview": "Overview",
+      "achievements": "Achievements",
+      "mood": "Mood",
+      "milestones": "Milestones"
+    },
+    "perks": {
+    "dailyHabitTracking": "Daily habit tracking",
+    "advancedStatistics": "Advanced statistics",
+    "customThemes": "Custom themes",
+    "aiHabitSuggestions": "AI habit suggestions",
+    "premiumFeatures": "Premium features"
+  },
+    "levelProgress": {
+      "level": "Level",
+      "xp": "XP",
+      "xpToday": "XP today",
+      "levelPerks": "Level Perks:"
+    },
+    "achievements": {
+      "title": "Achievements",
+      "xp": "XP"
+    },
+    "moodCheckIn": {
+      "title": "Daily Mood Check-in",
+      "todaysMood": "Today's Mood",
+      "xpReward": "+5 XP",
+      "question": "How are you feeling today?",
+      "tagsTitle": "How would you describe it?",
+      "noteTitle": "Add a note (optional)",
+      "notePlaceholder": "What's on your mind?",
+      "recordMood": "Record Mood",
+      "recording": "Recording...",
+      "quickMoodSelector": {
+        "title": "Quick Mood Check",
+        "subtitle": "How are you feeling right now?",
+        "fullSelectorTitle": "How are you feeling?",
+        "fullSelectorSubtitle": "Select your current mood",
+        "moreOptionsButton": "More Options & Details",
+        "intensityLabel": "Intensity",
+        "intensityLow": "Low",
+        "intensityHigh": "High",
+        "influencingMoodTitle": "What's influencing your mood?",
+        "backToQuickSelect": "← Back to Quick Select",
+        "notePlaceholder": "How are you feeling? What's on your mind?",
+        "attachmentsTitle": "Add attachments",
+        "photoButton": "Photo",
+        "voiceButton": "Voice",
+        "recordingButton": "Recording...",
+        "imageButton": "Image",
+        "fileButton": "File"
+      },
+      "moodLabels": {
+        "veryBad": "Very Bad",
+        "bad": "Bad",
+        "okay": "Okay",
+        "good": "Good",
+        "excellent": "Excellent"
+      },
+      "moodTags": {
+        "stressed": "stressed",
+        "tired": "tired",
+        "overwhelmed": "overwhelmed",
+        "anxious": "anxious",
+        "frustrated": "frustrated",
+        "low": "low",
+        "neutral": "neutral",
+        "calm": "calm",
+        "stable": "stable",
+        "happy": "happy",
+        "motivated": "motivated",
+        "positive": "positive",
+        "energetic": "energetic",
+        "excited": "excited",
+        "amazing": "amazing"
+      },
+      "alerts": {
+        "selectMood": "Please select a mood",
+        "chooseFeelings": "Choose how you're feeling today",
+        "moodRecorded": "Mood Recorded! 🎉",
+        "thanksMessage": "Thanks for checking in. You earned 5 XP!",
+        "alreadyRecorded": "Already Recorded",
+        "alreadyRecordedMessage": "You have already recorded your mood for today. Come back tomorrow!",
+        "error": "Error",
+        "failedRecord": "Failed to record mood. Please try again."
+      }
+    },
+    "streakMilestones": {
+      "title": "Streak Milestones",
+      "recentTitle": "Recent Streak Milestones",
+      "dayStreak": "{days}-Day Streak!",
+      "unknownHabit": "Unknown Habit",
+      "noMilestones": "No milestones yet",
+      "keepBuilding": "Keep building streaks to unlock milestones!"
+    }
+  },
+  "settings": {
+    "title": "Settings",
+    "subtitle": "Customize your experience",
+    "quickActions": {
+      "title": "✨ Quick Actions",
+      "theme": "Theme",
+      "language": "Language",
+      "notifications": "Notifications",
+      "profile": "Profile"
+    },
+    "termsOfService": "Terms of Service",
+    "premium": {
+      "title": "Upgrade to Premium",
+      "subtitle": "Unlock advanced features and premium themes"
+    },
+    "professional": {
+      "title": "🏥 Professional Integration",
+      "sharing": {
+        "title": "Professional Data Sharing",
+        "subtitle": "Share anonymized data with healthcare providers"
+      },
+      "dashboard": {
+        "title": "Professional Dashboard",
+        "subtitle": "Access professional insights and reports"
+      },
+      "enableSharing": "Professional Data Sharing",
+      "sharingSubtitle": "Share anonymized data with healthcare providers",
+      "anonymousData": "Research Contribution",
+      "anonymousSubtitle": "Contribute to mental health research anonymously"
+    },
+    "wellness": {
+      "title": "💚 Wellness Integration",
+      "tracking": {
+        "title": "Wellness Tracking",
+        "subtitle": "Track sleep, exercise, and nutrition correlations"
+      },
+      "correlations": {
+        "title": "Health Correlations",
+        "subtitle": "Analyze patterns between wellness and mood data"
+      },
+      "enableTracking": "Wellness Tracking",
+      "trackingSubtitle": "Track sleep, exercise, and nutrition correlations",
+      "configure": "Configure Wellness Data",
+      "configureTitle": "Wellness Configuration",
+      "configureMessage": "Connect your fitness apps and wearables to track wellness correlations with your mood and habits."
+    },
+    "community": {
+      "title": "👥 Community & Social",
+      "features": {
+        "title": "Community Features",
+        "subtitle": "Share progress and connect with others"
+      },
+      "anonymousSharing": {
+        "title": "Anonymous Sharing",
+        "subtitle": "Share patterns anonymously with the community"
+      },
+      "feed": {
+        "title": "Community Feed",
+        "subtitle": "View and interact with community posts"
+      },
+      "enableFeatures": "Community Features",
+      "featuresSubtitle": "Share progress and connect with others",
+      "configure": "Community Settings",
+      "configureTitle": "Community Configuration",
+      "configureMessage": "Manage your privacy settings, accountability partners, and community participation preferences."
+    },
+    "experience": {
+      "title": "Experience",
+      "celebrationAnimations": "Celebration Animations",
+      "celebrationSubtitle": "Show effects when completing habits",
+      "emailUpdates": "Email Updates",
+      "emailSubtitle": "Receive progress reports and tips"
+    },
+    "accountSecurity": {
+      "title": "Account & Security",
+      "changePassword": "Change Password",
+      "linkedAccounts": "Linked Accounts",
+      "privacySettings": "Privacy Settings"
+    },
+    "dataManagement": {
+      "title": "Data Management",
+      "exportData": "Export Data",
+      "deleteAccount": "Delete Account"
+    },
+    "about": {
+      "title": "About",
+      "version": "Version"
+    },
+    "logout": {
+      "signOut": "Sign Out"
+    },
+    "alerts": {
+      "logout": {
+        "title": "Logout",
+        "message": "Are you sure you want to logout?",
+        "cancel": "Cancel",
+        "confirm": "Logout"
+      },
+      "deleteAccount": {
+        "title": "Delete Account",
+        "message": "This action cannot be undone. All your data will be permanently deleted.",
+        "cancel": "Cancel",
+        "confirm": "Delete Account"
+      },
+      "exportData": {
+        "title": "Export Data",
+        "message": "Your data will be prepared for download. This may take a few minutes.",
+        "cancel": "Cancel",
+        "confirm": "Export",
+        "started": "Export Started",
+        "startedMessage": "You will receive an email when your data is ready for download."
+      },
+      "professionalSharing": {
+        "title": "Enable Professional Sharing",
+        "message": "Allow sharing of your progress with healthcare professionals?",
+        "disabled": "Professional Sharing Disabled",
+        "enableNow": "Enable Now"
+      },
+      "exportFailed": {
+        "title": "Export Failed",
+        "message": "Failed to export data. Please try again."
+      }
+    },
+    "export": {
+      "dialogTitle": "Export Your Habit Tracker Data",
+      "appName": "Habit Tracker App"
+    },
+    "userProfile": {
+      "guestUser": "Guest User"
+    }
+  },
+"moodAnalytics": {
+  "title": "🧠 Mood Analytics",
+  "subtitle": "AI-powered insights for better habits",
+  "tabs": {
+    "dashboard": "Dashboard",
+    "moodProgress": "Mood Progress",
+    "successByMood": "Success by Mood",
+    "streaks": "Streaks",
+    "monthlyReport": "Monthly Report",
+    "resilience": "Resilience",
+    "calendar": "Calendar",
+    "correlations": "Correlations",
+    "successRates": "Success Rates",
+    "trends": "Trends",
+    "distribution": "Distribution",
+    "insights": "Insights",
+    "aiInsights": "AI Insights",
+    "patterns": "Patterns",
+    "discoveries": "Discoveries",
+    "wellness": "Wellness",
+    "tips": "Tips",
+    "compare": "Compare",
+    "habits": "Habits"
+  },
+  
+  "aiInsights": {
+    "title": "🤖 AI Predictive Intelligence",
+    "currentMoodCheckIn": {
+      "title": "Current Mood Check-in",
+      "subtitle": "Tell us how you're feeling for personalized insights",
+      "intensity": "Intensity: {intensity}/10"
+    },
+    "successPredictions": {
+      "title": "📊 Success Predictions",
+      "subtitle": "AI-powered habit success forecasts",
+      "moodAlignment": "Mood Alignment",
+      "timing": "Timing"
+    },
+    "riskAlerts": {
+      "title": "⚠️ Risk Alerts",
+      "subtitle": "Habits at risk of being skipped",
+      "urgency": "Urgency: {urgency}"
+    },
+    "optimalTiming": {
+      "title": "⏰ Optimal Timing",
+      "subtitle": "Best times for your habits based on mood",
+      "bestTimeToday": "Best time today: {time}",
+      "alternativeTimes": "Alternative times:"
+    },
+    "moodBasedRecommendations": {
+      "title": "💡 Mood-Based Recommendations",
+      "subtitle": "Habits that match your current emotional state",
+      "expectedMoodBoost": "Expected mood boost: ",
+      "quickMoodBoosters": "Quick mood boosters:"
+    },
+    "weeklyForecast": {
+      "title": "📅 Weekly Forecast",
+      "subtitle": "AI predictions for the upcoming week",
+      "predictedCompletions": "Predicted completions",
+      "successRate": "Success rate",
+      "riskDays": "Risk days:",
+      "weeklyInsights": "Weekly Insights:"
+    }
+  },
+
+  "moodImprovement": {
+    "title": "📈 Mood Improvement Tracking",
+    "thirtyDayTrend": "30-Day Trend",
+    "ninetyDayTrend": "90-Day Trend",
+    "improving": "📈 Improving",
+    "declining": "📉 Declining",
+    "stable": "📊 Stable",
+    "longTermGrowth": "🚀 Long-term Growth",
+    "needsAttention": "⚠️ Needs Attention",
+    "consistent": "🔄 Consistent",
+    "weeklyMoodProgress": "Weekly Mood Progress"
+  },
+  "habitSuccessByMood": {
+    "title": "🎯 Habit Success by Emotional State",
+    "successRatesByMood": "Success Rates by Mood",
+    "bestMood": "🎯 Best Mood",
+    "challengingMood": "⚠️ Challenging Mood",
+    "successRate": "{rate}% success rate"
+  },
+  "moodDistribution": {
+    "title": "🥧 Mood Distribution",
+    "lastThirtyDays": "Last 30 Days Mood Breakdown",
+    "moodCenter": "Mood",
+    "distributionCenter": "Distribution",
+    "totalDays": "Total Days",
+    "excellentDays": "Excellent Days",
+    "goodPlusDays": "Good+ Days",
+    "excellent": "Excellent",
+    "good": "Good",
+    "neutral": "Neutral",
+    "poor": "Poor",
+    "veryPoor": "Very Poor"
+  },
+  "correlationHeatMap": {
+    "title": "🔥 Mood-Habit Correlation Heat Map",
+    "correlationStrength": "Correlation Strength:",
+    "strongPositive": "Strong Positive",
+    "weakPositive": "Weak Positive",
+    "weakNegative": "Weak Negative",
+    "strongNegative": "Strong Negative"
+  },
+  "dashboard": {
+    "averageMood": "Average Mood",
+    "bestMood": "Best Mood",
+    "challengingMood": "Challenging Mood",
+    "topMoodBoosters": "🚀 Top Mood Boosters",
+    "moodBoost": "+{boost} mood boost",
+    "thisWeeksMood": "📅 This Week's Mood",
+    "habitsThisWeek": "Habits This Week",
+    "keepItUp": "Keep it up!",
+    "successByMoodState": "🎯 Success by Mood State",
+    "howMoodAffects": "How your mood affects habit completion",
+    "mostSuccessfulWhen": "You're most successful when feeling {mood}",
+    "moodBoosters": "Mood Boosters",
+    "tryMoodBoosters": "Try {habits} to improve your mood",
+    "moodTrends": "📈 Mood Trends",
+    "avgMood": "Avg Mood",
+    "highestMood": "Highest Mood",
+    "lowestMood": "Lowest Mood",
+    "mood": "mood",
+    "moodImpact": "mood impact",
+    "successByMood": "Success by Mood:"
+  },
+  "quickInsights": {
+  "title": "Quick Insights",
+  "bestMood": "Best Mood",
+  "watchOut": "Watch Out"
+},
+"topMoodBoosters": {
+  "title": "🚀 Top Mood Boosters"
+},
+  "calendar": {
+    "title": "📅 Mood Calendar",
+    "moodScale": "Mood Scale:",
+    "excellent": "Excellent (8-10)",
+    "good": "Good (6-7)",
+    "fair": "Fair (4-5)",
+    "poor": "Poor (2-3)",
+    "veryPoor": "Very Poor (0-1)"
+  },
+  "emotionalWellnessTrends": {
+    "title": "📈 Emotional Wellness Trends",
+    "thirtyDayMoodTrend": "30-Day Mood Trend",
+    "trendDirection": "Trend Direction",
+    "moodRange": "Mood Range",
+    "highestMood": "Highest Mood",
+    "lowestMood": "Lowest Mood"
+  },
+  "emotionalPatterns": {
+    "title": "Monthly Emotional Patterns",
+    "dominantMood": "Dominant Mood",
+    "emotionalStability": "Emotional Stability",
+    "days": "days"
+  },
+  "correlationDiscoveries": {
+    "title": "Mood-Habit Correlation Discoveries",
+    "morningMoodBoost": "Morning Mood Boost",
+    "morningHabitsImprove": "Morning habits improve your mood by an average of 1.2 points",
+    "prioritizeMorningRoutines": "Prioritize morning routines for better daily mood",
+    "socialConnection": "Social Connection",
+    "socialHabitsCorrelate": "Social habits correlate with 25% better mood stability",
+    "scheduleRegularSocial": "Schedule regular social activities for emotional well-being"
+  },
+  "emotionalWellnessSummary": {
+    "title": "Emotional Wellness Summary",
+    "moodStability": "Mood Stability",
+    "habitConsistency": "Habit Consistency",
+    "moodImprovement": "Mood Improvement",
+    "socialConnection": "Social Connection"
+  },
+  "personalizedRecommendations": {
+    "moodOptimization": "Mood Optimization",
+    "scheduleSocialActivities": "Schedule social activities on weekends for mood boost",
+    "considerMorningSunlight": "Consider morning sunlight exposure for better mood regulation",
+    "moodStabilityIncrease": "+15% mood stability",
+    "trackSleepQuality": "Track sleep quality to identify mood pattern correlations"
+  },
+  "comparativePerformance": {
+    "moodImprovement": "Mood Improvement",
+    "avgMood": "Avg Mood",
+    "currentPeriod": "Current Period",
+    "previousPeriod": "Previous Period"
+  },
+  "streakTracking": {
+    "title": "🔥 Mood-Habit Streak Tracking"
+  },
+  "monthlyReports": {
+    "averageMood": "Average Mood",
+    "moodDistributionThisMonth": "Mood Distribution This Month"
+  },
+  "emotionalResilience": {
+    "title": "🛡️ Emotional Resilience Score",
+    "emotionalResilienceScore": "Emotional Resilience Score",
+    "moodStability": "Mood Stability"
+  }
+},
+  "themeSelector": {
+    "title": "Choose Theme",
+    "done": "Done",
+    "availableThemes": "Available Themes",
+    "darkTheme": "Dark theme",
+    "lightTheme": "Light theme",
+    "premium": "Premium",
+    "premiumTheme": "Premium Theme",
+    "premiumMessage": "is a premium theme. Upgrade to unlock all themes and exclusive features!",
+    "maybeLater": "Maybe Later",
+    "upgradeNow": "Upgrade Now",
+    "comingSoon": "Coming Soon",
+    "premiumFeatures": "Premium features will be available soon!",
+    "unlockPremium": "Unlock premium themes and more features!",
+    "upgrade": "Upgrade",
+    "error": "Error",
+    "failedToChange": "Failed to change theme. Please try again."
+  },
+  "auth": {
+    "selectLanguage": "Select Language",
+    "welcomeBack": "Welcome Back",
+    "signInToContinue": "Sign in to continue",
+    "email": "Email",
+    "password": "Password",
+    "signIn": "Sign In",
+    "signingIn": "Signing In...",
+    "dontHaveAccount": "Don't have an account?",
+    "createAccount": "Create Account",
+    "joinUs": "Join us today",
+    "fullName": "Full Name",
+    "confirmPassword": "Confirm Password",
+    "creatingAccount": "Creating Account...",
+    "alreadyHaveAccount": "Already have an account?",
+    "error": "Error",
+    "fillAllFields": "Please fill in all fields",
+    "passwordsDontMatch": "Passwords don't match",
+    "passwordTooShort": "Password must be at least 6 characters",
+    "loginFailed": "Login Failed",
+    "registrationFailed": "Registration Failed",
+    "errorOccurred": "An error occurred"
+  },
+  "languageSelector": {
+    "selectLanguage": "Select Language",
+    "comingSoon": "Coming Soon",
+    "comingSoonMessage": "This language will be available in a future update. Stay tuned!",
+    "ok": "OK"
+  },
+  "notificationPreferences": {
+    "title": "Notification Preferences",
+    "pushNotifications": "Push Notifications",
+    "emailNotifications": "Email Notifications",
+    "inAppNotifications": "In-App Notifications",
+    "habitReminders": "Habit Reminders",
+    "habitRemindersDesc": "Get reminded when it's time to complete your habits",
+    "streakAchievements": "Streak Achievements",
+    "streakAchievementsDesc": "Celebrate when you reach new streak milestones",
+    "weeklyProgress": "Weekly Progress",
+    "weeklyProgressDesc": "Weekly summary of your habit progress",
+    "dailySummary": "Daily Summary",
+    "dailySummaryDesc": "Daily recap of completed and missed habits",
+    "monthlyReports": "Monthly Reports",
+    "monthlyReportsDesc": "Detailed monthly progress reports",
+    "tipsMotivation": "Tips & Motivation",
+    "tipsMotivationDesc": "Helpful tips and motivational content",
+    "notificationSettings": "Notification Settings",
+    "notificationInfo": "You can customize when and how you receive notifications. Push notifications require permission from your device settings.",
+    "error": "Error",
+    "failedToUpdate": "Failed to update notification preferences"
+  },
+  "profile": {
+    "success": "Success",
+    "profileUpdated": "Profile updated successfully!",
+    "error": "Error",
+    "failedToUpdate": "Failed to update profile. Please try again.",
+    "permissionRequired": "Permission Required",
+    "photoLibraryAccess": "Please allow access to your photo library to upload an avatar.",
+    "coverImageAccess": "Please allow access to your photo library to upload a cover image.",
+    "uploadFailed": "Upload Failed",
+    "avatarUploadFailed": "Failed to upload avatar. Please try again.",
+    "coverUploadFailed": "Failed to upload cover image. Please try again.",
+    "pleaseLogin": "Please log in to view your profile.",
+    "addCoverPhoto": "Add Cover Photo",
+    "personalInfo": "Personal Information",
+    "name": "Name",
+    "bio": "Bio",
+    "location": "Location",
+    "email": "Email",
+    "readOnly": "Read only",
+    "cancel": "Cancel",
+    "save": "Save",
+    "charactersRemaining": "characters remaining"
+  },
+  "changePassword": {
+    "title": "Change Password",
+    "currentPassword": "Current Password",
+    "newPassword": "New Password",
+    "confirmPassword": "Confirm New Password",
+    "currentPasswordPlaceholder": "Enter current password",
+    "newPasswordPlaceholder": "Enter new password",
+    "confirmPasswordPlaceholder": "Confirm new password",
+    "passwordHint": "Password must be at least 8 characters long",
+    "changePasswordButton": "Change Password",
+    "changingPassword": "Changing Password...",
+    "alerts": {
+      "fillAllFields": "Please fill in all fields",
+      "passwordsDoNotMatch": "New passwords do not match",
+      "passwordTooShort": "Password must be at least 8 characters long",
+      "success": "Success",
+      "successMessage": "Your password has been changed successfully",
+      "error": "Error",
+      "failedToChange": "Failed to change password. Please try again."
+    }
+  },
+  "linkedAccounts": {
+    "title": "Linked Accounts",
+    "description": "Connect your accounts to enable seamless sign-in and data synchronization.",
+    "connectedOn": "Connected on",
+    "comingSoon": "Coming Soon",
+    "comingSoonMessage": "Account linking functionality will be available in a future update. Stay tuned!",
+    "aboutTitle": "About Linked Accounts",
+    "aboutText": "• Linking accounts allows you to sign in with multiple providers\n• Your data remains secure and is not shared between providers\n• You can disconnect accounts at any time\n• Primary account cannot be disconnected",
+    "alerts": {
+      "success": "Success",
+      "successConnected": "Successfully connected to",
+      "successDisconnected": "Successfully disconnected from",
+      "error": "Error",
+      "failedToUpdate": "Failed to update account connection"
+    }
+  },
+  "privacySettings": {
+    "title": "Privacy Settings",
+    "categories": {
+      "visibility": "Profile Visibility",
+      "data": "Data Collection",
+      "sharing": "Sharing & Social"
+    },
+    "settings": {
+      "publicProfile": {
+        "title": "Public Profile",
+        "description": "Allow others to view your profile and achievements"
+      },
+      "showStreakCount": {
+        "title": "Show Streak Count",
+        "description": "Display your current streaks on your profile"
+      },
+      "showHabitList": {
+        "title": "Show Habit List",
+        "description": "Allow others to see what habits you're tracking"
+      },
+      "analyticsCollection": {
+        "title": "Analytics Collection",
+        "description": "Help improve the app by sharing anonymous usage data"
+      },
+      "crashReports": {
+        "title": "Crash Reports",
+        "description": "Automatically send crash reports to help fix bugs"
+      },
+      "performanceData": {
+        "title": "Performance Data",
+        "description": "Share app performance data to improve user experience"
+      },
+      "socialSharing": {
+        "title": "Social Sharing",
+        "description": "Allow sharing achievements to social media"
+      },
+      "friendRecommendations": {
+        "title": "Friend Recommendations",
+        "description": "Suggest friends based on your contacts"
+      }
+    },
+    "privacyInfo": {
+      "title": "Privacy Information",
+      "description": "Your privacy is important to us. These settings control how your data is used and shared. You can change these settings at any time.",
+      "viewPrivacyPolicy": "View Privacy Policy",
+      "viewTermsOfService": "View Terms of Service"
+    },
+    "alerts": {
+      "error": "Error",
+      "failedToUpdate": "Failed to update privacy settings"
+    }
+  },
+  "deleteAccount": {
+    "title": "Delete Account",
+    "warning": {
+      "title": "Delete Account",
+      "subtitle": "This action will permanently delete your account and all associated data.",
+      "whatWillBeDeleted": "What will be deleted:",
+      "consequences": {
+        "habits": "• All your habits and tracking data",
+        "profile": "• Your profile information and settings",
+        "streaks": "• All streak records and achievements",
+        "premium": "• Any premium subscription benefits",
+        "appData": "• All app data and preferences"
+      },
+      "alternatives": {
+        "title": "Consider these alternatives:",
+        "exportData": {
+          "title": "Export Your Data",
+          "description": "Download a copy of your data before deleting"
+        },
+        "temporaryDisable": {
+          "title": "Temporarily Disable",
+          "description": "Take a break without losing your data"
+        }
+      },
+      "continueButton": "Continue with Deletion"
+    },
+    "confirmation": {
+      "title": "Final Step",
+      "subtitle": "To confirm account deletion, please type \"DELETE\" in the field below:",
+      "inputLabel": "Type \"DELETE\" to confirm:",
+      "placeholder": "DELETE",
+      "backButton": "Go Back",
+      "deleteButton": "Delete Account",
+      "deleting": "Deleting..."
+    },
+    "alerts": {
+      "confirmationError": {
+        "title": "Error",
+        "message": "Please type \"DELETE\" to confirm account deletion"
+      },
+      "finalConfirmation": {
+        "title": "Final Confirmation",
+        "message": "Are you absolutely sure you want to delete your account? This action cannot be undone.",
+        "cancel": "Cancel",
+        "confirm": "Delete Account"
+      },
+      "success": {
+        "title": "Account Deleted",
+        "message": "Your account has been successfully deleted.",
+        "ok": "OK"
+      },
+      "error": {
+        "title": "Error",
+        "message": "Failed to delete account. Please try again."
+      }
+    }
+  },
+  "shareProgress": {
+    "title": "Share Your Progress",
+    "subtitle": "Choose a template and share your habit journey!",
+    "templates": {
+      "default": {
+        "name": "Default",
+        "description": "Simple and clean progress summary"
+      },
+      "minimalist": {
+        "name": "Minimalist",
+        "description": "Clean, focused message"
+      },
+      "achievement": {
+        "name": "Achievement",
+        "description": "Highlight your accomplishments"
+      },
+      "motivational": {
+        "name": "Motivational",
+        "description": "Inspiring and encouraging tone"
+      },
+      "statsHeavy": {
+        "name": "Stats Heavy",
+        "description": "Detailed progress metrics"
+      },
+      "milestone": {
+        "name": "Milestone",
+        "description": "Celebrate major achievements"
+      },
+      "weeklySummary": {
+        "name": "Weekly Summary",
+        "description": "Week-focused progress report"
+      }
+    },
+    "stats": {
+      "totalHabits": "Total Habits",
+      "bestStreak": "Best Streak",
+      "level": "Level",
+      "successRate": "Success Rate"
+    },
+    "buttons": {
+      "preview": "Preview",
+      "share": "Share",
+      "close": "Close",
+      "shareNow": "Share Now",
+      "sharing": "Sharing..."
+    },
+    "modal": {
+      "previewTitle": "Preview Message"
+    },
+    "messages": {
+      "default": {
+        "title": "🎯 My Habit Tracker Progress",
+        "level": "Level",
+        "achievements": "Achievements Unlocked",
+        "activeHabits": "Active Habits",
+        "totalCompletions": "Total Completions",
+        "bestStreak": "Day Best Streak",
+        "successRate": "Success Rate",
+        "callToAction": "Join me in building better habits!"
+      },
+      "minimalist": {
+        "title": "Building better habits, one day at a time",
+        "level": "Level",
+        "achievements": "achievements unlocked",
+        "dayStreak": "day streak",
+        "successRate": "success rate"
+      },
+      "achievement": {
+        "title": "ACHIEVEMENT UNLOCKED!",
+        "justEarned": "Just earned",
+        "newMilestone": "a new milestone",
+        "myProgress": "My Progress",
+        "level": "Level",
+        "achievements": "achievements collected",
+        "activeHabits": "active habits",
+        "question": "What's your longest streak?"
+      },
+      "motivational": {
+        "title": "CONSISTENCY IS KEY!",
+        "day": "Day",
+        "buildingHabits": "of building better habits",
+        "andMore": "and {{count}} more",
+        "smallSteps": "Small steps, big changes!",
+        "whoJoining": "Who's joining me?"
+      },
+      "stats": {
+        "title": "HABIT TRACKER STATS",
+        "level": "Level",
+        "achievements": "Achievements",
+        "bestStreak": "Best Streak",
+        "days": "days",
+        "totalCompletions": "Total Completions",
+        "successRate": "Success Rate",
+        "activeHabits": "Active Habits",
+        "dataDriven": "Data-driven self-improvement!"
+      },
+      "milestone": {
+        "title": "MILESTONE REACHED!",
+        "dayStreak": "DAY STREAK ACHIEVED!",
+        "journeyTaught": "This journey taught me",
+        "consistency": "Consistency beats perfection",
+        "smallWins": "Small wins compound",
+        "progressLinear": "Progress isn't always linear",
+        "thankYou": "Thank you for the support!",
+        "nextHabit": "What habit should I tackle next?"
+      },
+      "weekly": {
+        "title": "WEEK IN REVIEW",
+        "thisWeek": "This week I",
+        "days": "days",
+        "weekScore": "Week score",
+        "nextWeekFocus": "Next week's focus: Stay consistent!"
+      }
+    }
+  },
+  "wellness": {
+    "title": "Wellness & Mood",
+    "subtitle": "Track your mood and wellness journey",
+    "startStreak": "Start your streak!",
+    "oneDayStreak": "1 day streak!",
+    "multiDayStreak": "{{count}} day streak!",
+    "feeling": "Feeling",
+    "intensity": "Intensity",
+    "moodHabitInsights": "Mood & Habit Insights",
+    "aiWellnessCoaching": "AI Wellness Coaching",
+    "wellnessIntegration": "Wellness Integration",
+    "tabs": {
+      "checkin": "Check-in",
+      "analysis": "Analysis",
+      "aiCoach": "AI Coach",
+      "integration": "Integration"
+    },
+    "todaysMoodJourney": "🌟 Today's Mood Journey",
+    "moodCheckinTitle": "📝 Mood Check-in",
+    "howFeelingToday": "💭 How are you feeling today?",
+    "amazingWork": "Amazing work!",
+    "completedDetailedCheckin": "You've completed your detailed mood check-in for today. Keep up the great work!",
+    "letsCheckin": "Let's check in with yourself",
+    "reflectionPrompt": "Take a moment to reflect on your current mood. This helps build self-awareness and track your wellness journey.",
+    "addDetailsPrompt": "Want to dive deeper? Adding details helps you understand patterns and get personalized insights.",
+    "addDetails": "✨ Add Details",
+    "trackingBenefits": "💡 Track triggers, notes, and context to unlock AI-powered wellness insights",
+    "recordedAt": "Recorded at",
+    "loading": "Loading...",
+    "tracking": {
+      "title": "Wellness Tracking",
+      "subtitle": "Track sleep, exercise, and nutrition correlations"
+    },
+    "correlations": {
+      "title": "Health Correlations",
+      "subtitle": "Analyze patterns between wellness and mood data"
+    },
+    "enableTracking": "Wellness Tracking",
+    "trackingSubtitle": "Track sleep, exercise, and nutrition correlations",
+    "configure": "Configure Wellness Data",
+    "configureTitle": "Wellness Configuration",
+    "configureMessage": "Connect your fitness apps and wearables to track wellness correlations with your mood and habits.",
+    "overview": "Overview",
+    "sleep": "Sleep",
+    "exercise": "Exercise",
+    "nutrition": "Nutrition",
+    "meditation": "Meditation",
+    "social": "Social",
+    "correlationOverview": "Correlation Overview",
+    "negativeImpact": "Negative Impact",
+    "dataPoints": "Data Points",
+    "quality": "Quality",
+    "effectiveness": "Effectiveness",
+    "satisfaction": "Satisfaction",
+    "logged": "Logged",
+    "today": "Today",
+    "yesterday": "Yesterday",
+    "entries": "entries",
+    "moodCorrelation": "Mood Correlation",
+    "totalEntries": "Total Entries",
+    "daysSinceLastEntry": "Days Since Last Entry",
+    "recentActivity": "Recent Activity",
+    "insights": "Insights",
+    "positivePatterns": "Positive Patterns",
+    "recommendations": "Recommendations",
+    "highIntensity": "high intensity",
+    "min": "min",
+    "strength": "strength",
+    "noMeditationData": "No Meditation Data",
+    "startMeditationTracking": "Start Meditation Tracking",
+    "addFirstMeditation": "Add First Meditation",
+    "noNutritionData": "No Nutrition Data",
+    "startNutritionTracking": "Start Nutrition Tracking",
+    "addFirstNutrition": "Add First Nutrition",
+    "noSleepData": "No Sleep Data",
+    "startSleepTracking": "Start Sleep Tracking",
+    "addFirstSleep": "Add First Sleep",
+    "noExerciseData": "No Exercise Data",
+    "startExerciseTracking": "Start Exercise Tracking",
+    "addFirstExercise": "Add First Exercise",
+    "noSocialData": "No Social Data",
+    "startSocialTracking": "Start Social Tracking",
+    "addFirstSocial": "Add First Social"
+  },
+  "onboarding": {
+    "welcome": {
+      "title": "Welcome to HabitSync! 🎉",
+      "description": "Your AI-powered productivity companion for building better habits",
+      "features": {
+        "trackMoods": "Track your daily moods",
+        "buildHabits": "Build better habits",
+        "discoverPatterns": "Discover patterns",
+        "improveWellbeing": "Improve your well-being"
+      }
+    },
+    "featuresOverview": {
+      "title": "Powerful Features 🚀",
+      "description": "Discover what makes HabitSync special",
+      "smartHabits": {
+        "title": "Smart Habits",
+        "description": "AI-suggested habits based on your goals"
+      },
+      "analytics": {
+        "title": "Analytics",
+        "description": "Detailed progress tracking and insights"
+      },
+      "gamification": {
+        "title": "Gamification",
+        "description": "Earn XP, levels, and achievements"
+      },
+      "wellness": {
+        "title": "Wellness",
+        "description": "Mood tracking and wellness integration"
+      }
+    },
+    "aiIntelligence": {
+      "title": "AI-Powered Intelligence 🧠",
+      "description": "Get personalized insights and smart recommendations",
+      "smartSuggestions": {
+        "title": "Smart Suggestions",
+        "description": "Get personalized habit recommendations"
+      },
+      "optimalTiming": {
+        "title": "Optimal Timing",
+        "description": "AI finds the best times for your habits"
+      },
+      "predictiveInsights": {
+        "title": "Predictive Insights",
+        "description": "Predict success and prevent habit breaks"
+      }
+    },
+    "moodWellness": {
+      "title": "Mood & Wellness Tracking 💚",
+      "description": "Connect your emotions with your habits",
+      "emotionalAwareness": {
+        "title": "Emotional Awareness",
+        "description": "Regular mood tracking increases self-awareness by 60%"
+      },
+      "patternRecognition": {
+        "title": "Pattern Recognition",
+        "description": "Identify triggers and positive influences in your life"
+      },
+      "proactiveWellbeing": {
+        "title": "Proactive Well-being",
+        "description": "Make informed decisions to improve your mental health"
+      },
+      "connectionDemo": {
+        "stressed": "Stressed",
+        "meditation": "Meditation",
+        "calm": "Calm"
+      }
+    },
+    "gamification": {
+      "title": "Gamification & Rewards 🏆",
+      "description": "Level up and earn achievements as you progress",
+      "achievements": {
+        "title": "Achievements",
+        "description": "Unlock badges for completing milestones"
+      },
+      "xpLevels": {
+        "title": "XP & Levels",
+        "description": "Gain experience points and level up"
+      },
+      "streaks": {
+        "title": "Streaks",
+        "description": "Build momentum with daily streaks"
+      },
+      "challenges": {
+        "title": "Challenges",
+        "description": "Complete weekly and monthly challenges"
+      }
+    },
+    "analytics": {
+      "title": "Advanced Analytics 📊",
+      "description": "Track your progress with detailed insights",
+      "insights": {
+        "morningExercise": {
+          "title": "Morning Exercise Boost",
+          "description": "Exercise before 9 AM increases your mood by 2.3 points on average",
+          "impact": "+2.3 mood boost"
+        },
+        "socialConnection": {
+          "title": "Social Connection Pattern",
+          "description": "You feel 40% happier on days when you connect with friends",
+          "impact": "+40% happiness"
+        },
+        "stressTrigger": {
+          "title": "Stress Trigger Alert",
+          "description": "Work meetings after 4 PM tend to increase your stress levels",
+          "impact": "Stress prevention"
+        }
+      }
+    },
+    "privacySecurity": {
+      "title": "Privacy & Security 🔒",
+      "description": "Your data is encrypted and secure"
+    },
+    "privacy": {
+      "title": "Privacy & Security 🔒",
+      "subtitle": "Your data is encrypted and secure",
+      "benefits": {
+        "encryption": {
+          "title": "End-to-End Encryption",
+          "description": "Your mood data is encrypted and stored securely on your device"
+        },
+        "offlineFirst": {
+          "title": "Offline First",
+          "description": "All data stays on your device unless you choose to export it"
+        },
+        "personalizedInsights": {
+          "title": "Personalized Insights",
+          "description": "AI analyzes your patterns to provide tailored recommendations"
+        },
+        "progressTracking": {
+          "title": "Progress Tracking",
+          "description": "Watch your emotional well-being improve over time"
+        }
+      }
+    },
+    "setupWizard": {
+      "title": "Let's Get Started! 🚀",
+      "description": "Create your first habit and mood check-in",
+      "tryFirstMood": "Try your first mood check-in below (optional)",
+      "completionMessage": "Great! You can always track your mood later. 🎉",
+      "skipMessage": "No problem! You can start tracking your mood anytime from the wellness tab."
+    }
+  },
+  "common": {
+    "back": "Back",
+    "continue": "Continue",
+    "getStarted": "Get Started",
+    "error": "Error",
+    "cancel": "Cancel",
+    "enable": "Enable",
+    "noDescription": "No description",
+    "noData": "No data",
+    "unknown": "Unknown",
+    "notSet": "Not set",
+    "uncategorized": "Uncategorized",
+    "unnamedHabit": "Unnamed Habit",
+    "noNote": "No note",
+    "noContext": "No context provided",
+    "noNotes": "No notes",
+    "invalidData": "Invalid habit data",
+    "couldNotParse": "Could not parse habit data"
+  },
+  "socialActivity": {
+    "types": {
+      "familyTime": "Family Time",
+      "friendsHangout": "Friends",
+      "dateNight": "Date Night",
+      "party": "Party",
+      "networking": "Networking",
+      "teamBuilding": "Team Building",
+      "communityEvent": "Community",
+      "volunteerWork": "Volunteer",
+      "groupHobby": "Group Hobby"
+    },
+    "settings": {
+      "home": "Home",
+      "restaurant": "Restaurant",
+      "park": "Park",
+      "cafe": "Café",
+      "gym": "Gym",
+      "office": "Office",
+      "outdoors": "Outdoors",
+      "online": "Online"
+    },
+    "energyLevels": {
+      "drained": "Drained",
+      "tired": "Tired",
+      "neutral": "Neutral",
+      "energized": "Energized",
+      "pumped": "Pumped"
+    },
+    "satisfaction": {
+      "poor": "Poor",
+      "fair": "Fair",
+      "good": "Good",
+      "veryGood": "Very Good",
+      "excellent": "Excellent"
+    },
+    "alerts": {
+      "missingInfo": "Missing Information",
+      "fillAllFields": "Please fill in all required fields.",
+      "success": "Social activity logged successfully!",
+      "error": "Failed to save social activity data."
+    },
+    "saving": "Saving...",
+    "saveActivity": "Save Activity"
+  },
+  "nutrition": {
+    "addMealPrompt": "Tap 'Add Meal' to get started",
+    "enterSupplementName": "Enter supplement name"
+  },
+  "exercise": {
+    "highEnergyCorrelation": "High Energy Correlation"
+  },
+  "mood": {
+    "stability": "Mood Stability",
+    "currentMood": "Current mood",
+    "highMoodBonus": "High mood: Add 10 minutes bonus"
+  },
+  "sleep": {
+    "missingInfo": "Missing Information",
+    "setBothTimes": "Please set both bedtime and wake time to continue.",
+    "bedtime": "Bedtime",
+    "wakeTime": "Wake Time",
+    "quality": {
+      "poor": "Poor",
+      "fair": "Fair",
+      "good": "Good",
+      "great": "Great",
+      "excellent": "Excellent"
+    },
+    "saving": "Saving...",
+    "saveSleepData": "Save Sleep Data"
+  },
+  "community": {
+    "tabs": {
+      "feed": "Feed",
+      "trending": "Trending",
+      "success": "Success",
+      "support": "Support",
+      "partners": "Partners"
+    },
+    "anonymous": "Anonymous",
+    "untitled": "Untitled"
+  },
+  "calendar": {
+    "months": {
+      "january": "January",
+      "february": "February",
+      "march": "March",
+      "april": "April",
+      "may": "May",
+      "june": "June",
+      "july": "July",
+      "august": "August",
+      "september": "September",
+      "october": "October",
+      "november": "November",
+      "december": "December"
+    },
+    "days": {
+      "sunday": "Sunday",
+      "monday": "Monday",
+      "tuesday": "Tuesday",
+      "wednesday": "Wednesday",
+      "thursday": "Thursday",
+      "friday": "Friday",
+      "saturday": "Saturday"
+    }
+  },
+  "patterns": {
+    "improving": "improving",
+    "declining": "declining",
+    "stable": "stable"
+  },
+  "professional": {
+    "generateReport": "Generate Report",
+    "generatingReport": "Generating comprehensive report...",
+    "shareData": "Share Data",
+    "sharingData": "Sharing dashboard data...",
+    "scheduleSession": "Schedule Session",
+    "openingCalendar": "Opening calendar...",
+    "clientOverview": "Client Overview",
+    "alertAction": "Alert Action",
+    "takingAction": "Taking action for"
+  },
+  "quickMoodSelector": {
+    "title": "Quick Mood Check",
+    "subtitle": "How are you feeling right now?",
+    "moreOptionsButton": "More Options & Details",
+    "skipButton": "Skip for Now",
+    "optionalLabel": "(optional)",
+    "noteLabel": "Add a note (optional)",
+    "notePlaceholder": "How are you feeling? What's on your mind?",
+    "attachmentsTitle": "Add attachments",
+    "photoButton": "Photo",
+    "voiceButton": "Voice",
+    "recordingButton": "Recording...",
+    "imageButton": "Image",
+    "fileButton": "File",
+    "recordMoodButton": "Record Mood",
+    "backButton": "← Back to Quick Select",
+    "todaysMoodEntry": "Today's Mood Entry",
+    "triggersLabel": "Triggers:",
+    "intensityLabel": "Intensity",
+    "lowLabel": "Low",
+    "highLabel": "High",
+    "moodInfluenceTitle": "What's influencing your mood?"
+  },
+  "dailyMoodReminder": {
+    "title": "Daily Mood Check-in",
+    "subtitle": "How are you feeling today? Tracking your mood helps our AI coach provide better insights.",
+    "whyTrack": "Why track your mood?",
+    "benefit1": "AI-powered insights and recommendations",
+    "benefit2": "Discover mood-habit correlations",
+    "benefit3": "Personalized coaching based on your patterns",
+    "checkinNow": "Check-in Now",
+    "remindLater": "Remind Me Later",
+    "howFeeling": "How are you feeling?",
+    "successTitle": "Great job!",
+    "successMessage": "Your mood has been recorded. This will help our AI coach provide better insights and correlations with your habits."
+  },
+  "moodCheckIn": {
+    "moodTags": {
+      "happy": "Happy",
+      "calm": "Calm",
+      "energetic": "Energetic",
+      "tired": "Tired",
+      "stressed": "Stressed",
+      "anxious": "Anxious",
+      "sad": "Sad",
+      "excited": "Excited",
+      "frustrated": "Frustrated",
+      "content": "Content",
+      "neutral": "Neutral",
+      "overwhelmed": "Overwhelmed"
+    },
+    "contextTags": {
+      "work": "Work",
+      "family": "Family",
+      "health": "Health",
+      "social": "Social",
+      "finance": "Finance",
+      "exercise": "Exercise",
+      "sleep": "Sleep",
+      "weather": "Weather",
+      "relationships": "Relationships",
+      "money": "Money",
+      "travel": "Travel",
+      "food": "Food",
+      "entertainment": "Entertainment"
+    },
+    "quickMoodSelector": {
+      "title": "Quick Mood Check",
+      "subtitle": "How are you feeling right now?",
+      "fullSelectorTitle": "How are you feeling?",
+      "fullSelectorSubtitle": "Select your current mood",
+      "moreOptionsButton": "More Options & Details",
+      "quickMode": "Quick Mode",
+      "todaysMoodEntry": "Today's Mood Entry",
+      "intensityLabel": "Intensity"
+    },
+    "alerts": {
+      "selectMood": "Please select a mood",
+      "chooseFeelings": "Choose how you're feeling today",
+      "moodRecorded": "Mood Recorded! 🎉",
+      "thanksMessage": "Thanks for checking in. You earned 5 XP!",
+      "alreadyRecorded": "Already Recorded",
+      "alreadyRecordedMessage": "You have already recorded your mood for today. Come back tomorrow!",
+      "error": "Error",
+      "failedRecord": "Failed to record mood. Please try again.",
+      "saveFailed": "Failed to save mood. Please try again."
+    }
+  },
+  
+  "advancedAnalytics": {
+    "title": "Advanced Analytics",
+    "subtitle": "Deep insights into your habit-mood patterns",
+    "tabs": {
+      "correlations": "Correlations",
+      "predictions": "Predictions",
+      "patterns": "Patterns",
+      "insights": "Insights"
+    },
+    "timeframes": {
+      "week": "Week",
+      "month": "Month",
+      "quarter": "Quarter"
+    },
+    "sections": {
+      "correlationsTitle": "📊 Detailed Mood-Habit Correlations",
+      "predictionsTitle": "🔮 Habit Success Predictions",
+      "patternsTitle": "🧩 Advanced Pattern Recognition",
+      "insightsTitle": "💡 Personalized Insights"
+    },
+    "correlations": {
+      "strengthStrong": "Strong",
+      "strengthModerate": "Moderate",
+      "strengthWeak": "Weak",
+      "bestTimes": "Best Times",
+      "optimalMood": "Optimal Mood",
+      "strongPositive": "Strong positive correlation with mood improvement",
+      "moderatePositive": "Moderate positive correlation with mood",
+      "negative": "Negative correlation - may need adjustment",
+      "noData": "No correlation data available yet. Complete more habits to see insights!"
+    },
+    "predictions": {
+      "averageSuccess": "Average Success Probability This Week",
+      "buildingModels": "Building predictive models... Complete more habits for accurate predictions!"
+    },
+    "patterns": {
+      "cyclical": "Cyclical",
+      "trigger": "Trigger",
+      "chain": "Chain",
+      "moodCascade": "Mood Cascade",
+      "optimizeFor": "Optimize for {frequency} patterns",
+      "monitorTrigger": "Monitor this trigger",
+      "successRate": "Success rate: {rate}%",
+      "bestTiming": "Best timing: {timing}",
+      "leadsTo": "Leads to {moods} over {timeframe}",
+      "cascade": "{mood} cascade",
+      "earlyIntervention": "Early intervention recommended",
+      "analyzing": "Analyzing patterns... More data needed for pattern recognition!"
+    },
+    "insights": {
+      "applySuggestion": "Apply Suggestion",
+      "priorityHigh": "high",
+      "priorityMedium": "medium",
+      "priorityLow": "low",
+      "generating": "Generating personalized insights... Keep tracking to unlock custom recommendations!"
+    },
+    "common": {
+      "unknownHabit": "Unknown Habit",
+      "notAvailable": "N/A"
+    }
+  }
 }
+ 

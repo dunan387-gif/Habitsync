@@ -1,6 +1,6 @@
-import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
-import { Plus, Edit2, Trash2 } from 'lucide-react-native';
+import React, { useRef, useState } from 'react';
+import { View, Text, TouchableOpacity, StyleSheet, Animated, Alert } from 'react-native';
+import { Plus, Edit2, Trash2, Check } from 'lucide-react-native';
 import { HabitSuggestion as HabitSuggestionType, Habit } from '@/types';
 import { useLanguage } from '@/context/LanguageContext';
 
@@ -21,6 +21,47 @@ export default function HabitSuggestion({
 }: HabitSuggestionProps) {
   const { t } = useLanguage();
   const isUserHabit = !!userHabit;
+  const scaleAnim = useRef(new Animated.Value(1)).current;
+  const [isAdded, setIsAdded] = useState(false);
+
+  const handleAddPress = () => {
+    // Scale animation
+    Animated.sequence([
+      Animated.timing(scaleAnim, {
+        toValue: 0.9,
+        duration: 100,
+        useNativeDriver: true,
+      }),
+      Animated.timing(scaleAnim, {
+        toValue: 1.1,
+        duration: 150,
+        useNativeDriver: true,
+      }),
+      Animated.timing(scaleAnim, {
+        toValue: 1,
+        duration: 100,
+        useNativeDriver: true,
+      }),
+    ]).start();
+
+    // Show success state
+    setIsAdded(true);
+    
+    // Call the original onAdd function
+    onAdd();
+    
+    // Show success popup with properly translated title
+    const habitTitle = habit.title.includes('_') ? t(habit.title) : habit.title;
+    Alert.alert(
+      t('success'),
+      `"${habitTitle}" ${t('habit_added_message')}`,
+      [{ text: t('great'), style: 'default' }],
+      { cancelable: true }
+    );
+    
+    // Reset success state after animation
+    setTimeout(() => setIsAdded(false), 2000);
+  };
 
   return (
     <View style={styles.container}>
@@ -61,13 +102,19 @@ export default function HabitSuggestion({
           </TouchableOpacity>
         </View>
       ) : (
-        <TouchableOpacity 
-          style={styles.addButton}
-          onPress={onAdd}
-          activeOpacity={0.7}
-        >
-          <Plus size={20} color="#4ECDC4" />
-        </TouchableOpacity>
+        <Animated.View style={{ transform: [{ scale: scaleAnim }] }}>
+          <TouchableOpacity 
+            style={[styles.addButton, isAdded && styles.addedButton]}
+            onPress={handleAddPress}
+            activeOpacity={0.8}
+          >
+            {isAdded ? (
+              <Check size={20} color="#FFFFFF" />
+            ) : (
+              <Plus size={20} color="#4ECDC4" />
+            )}
+          </TouchableOpacity>
+        </Animated.View>
       )}
     </View>
   );
@@ -137,6 +184,10 @@ const styles = StyleSheet.create({
     marginLeft: 12,
     alignSelf: 'center',
     backgroundColor: '#FFFFFF',
+  },
+  addedButton: {
+    backgroundColor: '#10B981',
+    borderColor: '#10B981',
   },
   actionsContainer: {
     flexDirection: 'column',

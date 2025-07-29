@@ -10,6 +10,7 @@ import {
 } from 'react-native';
 import { Check, Crown, Palette } from 'lucide-react-native';
 import { useTheme } from '@/context/ThemeContext';
+import { useLanguage } from '@/context/LanguageContext';
 import { Theme } from '@/types';
 
 type ThemeSelectorProps = {
@@ -19,16 +20,17 @@ type ThemeSelectorProps = {
 
 export default function ThemeSelector({ visible, onClose }: ThemeSelectorProps) {
   const { currentTheme, setTheme, availableThemes, isPremiumUser } = useTheme();
+  const { t } = useLanguage();
   const [isChangingTheme, setIsChangingTheme] = useState(false);
 
   const handleThemeSelect = async (theme: Theme) => {
     if (theme.isPremium && !isPremiumUser) {
       Alert.alert(
-        'Premium Theme',
-        `"${theme.name}" is a premium theme. Upgrade to unlock all themes and exclusive features!`,
+        t('themeSelector.premiumTheme'),
+        `"${theme.name}" ${t('themeSelector.premiumMessage')}`,
         [
-          { text: 'Maybe Later', style: 'cancel' },
-          { text: 'Upgrade Now', onPress: () => handleUpgrade() },
+          { text: t('themeSelector.maybeLater'), style: 'cancel' },
+          { text: t('themeSelector.upgradeNow'), onPress: () => handleUpgrade() },
         ]
       );
       return;
@@ -38,15 +40,14 @@ export default function ThemeSelector({ visible, onClose }: ThemeSelectorProps) 
     try {
       await setTheme(theme.id);
     } catch (error) {
-      Alert.alert('Error', 'Failed to change theme. Please try again.');
+      Alert.alert(t('themeSelector.error'), t('themeSelector.failedToChange'));
     } finally {
       setIsChangingTheme(false);
     }
   };
 
   const handleUpgrade = () => {
-    // TODO: Implement premium upgrade flow
-    Alert.alert('Coming Soon', 'Premium features will be available soon!');
+    Alert.alert(t('themeSelector.comingSoon'), t('themeSelector.premiumFeatures'));
   };
 
   const renderThemeOption = (theme: Theme) => {
@@ -108,8 +109,8 @@ export default function ThemeSelector({ visible, onClose }: ThemeSelectorProps) 
             styles.themeDescription,
             { color: currentTheme.colors.textSecondary }
           ]}>
-            {theme.isDark ? 'Dark theme' : 'Light theme'}
-            {theme.isPremium && ' • Premium'}
+            {theme.isDark ? t('themeSelector.darkTheme') : t('themeSelector.lightTheme')}
+            {theme.isPremium && ` • ${t('themeSelector.premium')}`}
           </Text>
         </View>
       </TouchableOpacity>
@@ -137,7 +138,7 @@ export default function ThemeSelector({ visible, onClose }: ThemeSelectorProps) 
               styles.title,
               { color: currentTheme.colors.text }
             ]}>
-              Choose Theme
+              {t('themeSelector.title')}
             </Text>
           </View>
           
@@ -152,7 +153,7 @@ export default function ThemeSelector({ visible, onClose }: ThemeSelectorProps) 
               styles.closeButtonText,
               { color: currentTheme.colors.textSecondary }
             ]}>
-              Done
+              {t('themeSelector.done')}
             </Text>
           </TouchableOpacity>
         </View>
@@ -165,7 +166,7 @@ export default function ThemeSelector({ visible, onClose }: ThemeSelectorProps) 
             styles.sectionTitle,
             { color: currentTheme.colors.textSecondary }
           ]}>
-            Available Themes
+            {t('themeSelector.availableThemes')}
           </Text>
           
           {availableThemes.map(renderThemeOption)}
@@ -180,7 +181,7 @@ export default function ThemeSelector({ visible, onClose }: ThemeSelectorProps) 
                 styles.premiumText,
                 { color: currentTheme.colors.text }
               ]}>
-                Unlock premium themes and more features!
+                {t('themeSelector.unlockPremium')}
               </Text>
               <TouchableOpacity
                 style={[
@@ -189,7 +190,7 @@ export default function ThemeSelector({ visible, onClose }: ThemeSelectorProps) 
                 ]}
                 onPress={handleUpgrade}
               >
-                <Text style={styles.upgradeButtonText}>Upgrade</Text>
+                <Text style={styles.upgradeButtonText}>{t('themeSelector.upgrade')}</Text>
               </TouchableOpacity>
             </View>
           )}

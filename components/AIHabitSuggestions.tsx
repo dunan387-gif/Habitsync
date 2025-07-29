@@ -1,6 +1,6 @@
-import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
-import { Sparkles, Plus, Clock, Target } from 'lucide-react-native';
+import React, { useRef, useState } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Animated, Alert } from 'react-native';
+import { Sparkles, Plus, Clock, Target, Check } from 'lucide-react-native';
 import { useHabits } from '@/context/HabitContext';
 import { useLanguage } from '@/context/LanguageContext';
 import { useTheme } from '@/context/ThemeContext';
@@ -17,12 +17,86 @@ export default function AIHabitSuggestions({ onAddSuggestion }: AIHabitSuggestio
   
   const habitSuggestions = getAIHabitSuggestions();
   const reminderSuggestions = getSmartReminderSuggestions();
+  const [addedSuggestions, setAddedSuggestions] = useState<Set<string>>(new Set());
 
   if (habitSuggestions.length === 0 && reminderSuggestions.length === 0) {
     return null;
   }
 
   const styles = createStyles(currentTheme.colors);
+
+  const handleAddSuggestion = (suggestion: AIHabitSuggestion) => {
+    // Add to added suggestions set
+    setAddedSuggestions(prev => new Set([...prev, suggestion.id]));
+    
+    // Call the original function
+    onAddSuggestion(suggestion);
+    
+    // Show success popup with properly translated title
+    const habitTitle = suggestion.title.includes('_') ? t(suggestion.title) : suggestion.title;
+    Alert.alert(
+      `🎉 ${t('awesome')}`,
+      `"${habitTitle}" ${t('habit_added_ai_message')}`,
+      [{ text: t('lets_go'), style: 'default' }],
+      { cancelable: true }
+    );
+    
+    // Reset after 3 seconds
+    setTimeout(() => {
+      setAddedSuggestions(prev => {
+        const newSet = new Set(prev);
+        newSet.delete(suggestion.id);
+        return newSet;
+      });
+    }, 3000);
+  };
+
+  const AnimatedAddButton = ({ suggestion, children }: { suggestion: AIHabitSuggestion; children: React.ReactNode }) => {
+    const scaleAnim = useRef(new Animated.Value(1)).current;
+    const isAdded = addedSuggestions.has(suggestion.id);
+
+    const handlePress = () => {
+      // Scale animation
+      Animated.sequence([
+        Animated.timing(scaleAnim, {
+          toValue: 0.95,
+          duration: 100,
+          useNativeDriver: true,
+        }),
+        Animated.timing(scaleAnim, {
+          toValue: 1.05,
+          duration: 150,
+          useNativeDriver: true,
+        }),
+        Animated.timing(scaleAnim, {
+          toValue: 1,
+          duration: 100,
+          useNativeDriver: true,
+        }),
+      ]).start();
+
+      handleAddSuggestion(suggestion);
+    };
+
+    return (
+      <Animated.View style={{ transform: [{ scale: scaleAnim }] }}>
+        <TouchableOpacity 
+          style={[styles.addButton, isAdded && styles.addedButton]}
+          onPress={handlePress}
+          disabled={isAdded}
+        >
+          {isAdded ? (
+            <>
+              <Check size={16} color="white" />
+              <Text style={[styles.addButtonText, { color: 'white' }]}>{t('added')}</Text>
+            </>
+          ) : (
+            children
+          )}
+        </TouchableOpacity>
+      </Animated.View>
+    );
+  };
 
   return (
     <View style={styles.container}>
@@ -50,13 +124,10 @@ export default function AIHabitSuggestions({ onAddSuggestion }: AIHabitSuggestio
               </Text>
             </View>
             
-            <TouchableOpacity 
-              style={styles.addButton}
-              onPress={() => onAddSuggestion(suggestion)}
-            >
+            <AnimatedAddButton suggestion={suggestion}>
               <Plus size={16} color="white" />
               <Text style={styles.addButtonText}>{t('add_habit_button')}</Text>
-            </TouchableOpacity>
+            </AnimatedAddButton>
           </View>
         ))}
         
@@ -161,14 +232,17 @@ const createStyles = (colors: any) => StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    paddingVertical: 6, // Reduced from 8
-    paddingHorizontal: 10, // Reduced from 12
+    paddingVertical: 6,
+    paddingHorizontal: 10,
     borderRadius: 8,
+  },
+  addedButton: {
+    backgroundColor: '#10B981',
   },
   addButtonText: {
     color: 'white',
     fontWeight: '500',
-    fontSize: 13, // Added smaller font size
+    fontSize: 13,
     marginLeft: 4,
   },
 });

@@ -12,6 +12,7 @@ import { StatusBar } from 'expo-status-bar';
 import { ArrowLeft, Link, Unlink } from 'lucide-react-native';
 import { useRouter } from 'expo-router';
 import { useTheme } from '@/context/ThemeContext';
+import { useLanguage } from '@/context/LanguageContext';
 import { useAuth } from '@/context/AuthContext';
 
 interface LinkedAccount {
@@ -24,6 +25,7 @@ interface LinkedAccount {
 
 export default function LinkedAccountsScreen() {
   const { currentTheme } = useTheme();
+  const { t } = useLanguage();
   const { user } = useAuth();
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
@@ -70,11 +72,11 @@ export default function LinkedAccountsScreen() {
         )
       );
       
-      const action = currentStatus ? 'disconnected from' : 'connected to';
+      const action = currentStatus ? t('linkedAccounts.alerts.successDisconnected') : t('linkedAccounts.alerts.successConnected');
       const account = linkedAccounts.find(acc => acc.id === accountId);
-      Alert.alert('Success', `Successfully ${action} ${account?.provider}`);
+      Alert.alert(t('linkedAccounts.alerts.success'), `${action} ${account?.provider}`);
     } catch (error) {
-      Alert.alert('Error', 'Failed to update account connection');
+      Alert.alert(t('linkedAccounts.alerts.error'), t('linkedAccounts.alerts.failedToUpdate'));
     } finally {
       setIsLoading(false);
     }
@@ -96,7 +98,7 @@ export default function LinkedAccountsScreen() {
         )}
         {account.connectedAt && (
           <Text style={styles.connectedDate}>
-            Connected on {new Date(account.connectedAt).toLocaleDateString()}
+            {t('linkedAccounts.connectedOn')} {new Date(account.connectedAt).toLocaleDateString()}
           </Text>
         )}
       </View>
@@ -119,12 +121,19 @@ export default function LinkedAccountsScreen() {
         <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
           <ArrowLeft size={24} color={currentTheme.colors.text} />
         </TouchableOpacity>
-        <Text style={styles.title}>Linked Accounts</Text>
+        <Text style={styles.title}>{t('linkedAccounts.title')}</Text>
       </View>
 
       <View style={styles.content}>
+        <View style={styles.futureUpdateNotice}>
+          <Text style={styles.futureUpdateTitle}>{t('linkedAccounts.comingSoon')}</Text>
+          <Text style={styles.futureUpdateText}>
+            {t('linkedAccounts.comingSoonMessage')}
+          </Text>
+        </View>
+        
         <Text style={styles.description}>
-          Connect your accounts to enable seamless sign-in and data synchronization.
+          {t('linkedAccounts.description')}
         </Text>
         
         <View style={styles.accountsList}>
@@ -132,12 +141,9 @@ export default function LinkedAccountsScreen() {
         </View>
         
         <View style={styles.infoSection}>
-          <Text style={styles.infoTitle}>About Linked Accounts</Text>
+          <Text style={styles.infoTitle}>{t('linkedAccounts.aboutTitle')}</Text>
           <Text style={styles.infoText}>
-            • Linking accounts allows you to sign in with multiple providers{"\n"}
-            • Your data remains secure and is not shared between providers{"\n"}
-            • You can disconnect accounts at any time{"\n"}
-            • Primary account cannot be disconnected
+            {t('linkedAccounts.aboutText')}
           </Text>
         </View>
       </View>
@@ -230,5 +236,24 @@ const createStyles = (colors: any) => StyleSheet.create({
     fontSize: 14,
     color: colors.textMuted,
     lineHeight: 20,
+  },
+  futureUpdateNotice: {
+    backgroundColor: colors.primary + '15',
+    padding: 16,
+    borderRadius: 12,
+    marginBottom: 20,
+    borderWidth: 1,
+    borderColor: colors.primary + '30',
+  },
+  futureUpdateTitle: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: colors.primary,
+    marginBottom: 4,
+  },
+  futureUpdateText: {
+    fontSize: 14,
+    color: colors.text,
+    lineHeight: 18,
   },
 });

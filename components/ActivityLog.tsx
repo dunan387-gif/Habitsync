@@ -2,6 +2,7 @@ import React, { useMemo } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { useHabits } from '@/context/HabitContext';
 import { useTheme } from '@/context/ThemeContext';
+import { useLanguage } from '@/context/LanguageContext';
 import { CheckCircle, Calendar, Clock, TrendingUp } from 'lucide-react-native';
 
 type ActivityItem = {
@@ -16,6 +17,7 @@ type ActivityItem = {
 export default function ActivityLog() {
   const { habits } = useHabits();
   const { currentTheme } = useTheme();
+  const { t } = useLanguage();
 
   const activityItems = useMemo(() => {
     if (!habits) return [];
@@ -85,7 +87,7 @@ export default function ActivityLog() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>📋 Activity Log</Text>
+      <Text style={styles.title}>📋 {t('activity.title')}</Text>
       {activityItems.length > 0 ? (
         <View style={styles.list}>
           {activityItems.map(renderActivityItem)}
@@ -93,8 +95,8 @@ export default function ActivityLog() {
       ) : (
         <View style={styles.emptyState}>
           <Calendar size={48} color={currentTheme.colors.textMuted} />
-          <Text style={styles.emptyText}>No activity yet</Text>
-          <Text style={styles.emptySubtext}>Complete some habits to see your activity log</Text>
+          <Text style={styles.emptyText}>{t('activity.noActivity')}</Text>
+          <Text style={styles.emptySubtext}>{t('activity.completeHabits')}</Text>
         </View>
       )}
     </View>

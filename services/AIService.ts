@@ -15,7 +15,7 @@ class AIService {
     
     // Suggestion 1: Complement existing strong habits
     consistentHabits.forEach(habit => {
-      const complementaryHabits = this.findComplementaryHabits(habit, userHabits);
+      const complementaryHabits = this.findComplementaryHabits(habit, userHabits, t);
       complementaryHabits.forEach(suggestion => {
         suggestions.push({
           id: `ai-${Date.now()}-${Math.random()}`,
@@ -31,7 +31,7 @@ class AIService {
     
     // Suggestion 2: Easier alternatives for struggling habits
     strugglingHabits.forEach(habit => {
-      const easierAlternatives = this.findEasierAlternatives(habit);
+      const easierAlternatives = this.findEasierAlternatives(habit, t);
       easierAlternatives.forEach(alternative => {
         suggestions.push({
           id: `ai-${Date.now()}-${Math.random()}`,
@@ -70,7 +70,7 @@ class AIService {
   /**
    * Generate smart reminder time suggestions based on user's completion patterns
    */
-  generateSmartReminderSuggestions(userHabits: Habit[]): SmartReminderSuggestion[] {
+  generateSmartReminderSuggestions(userHabits: Habit[], t: (key: string, params?: any) => string): SmartReminderSuggestion[] {
     const suggestions: SmartReminderSuggestion[] = [];
     
     userHabits.forEach(habit => {
@@ -79,7 +79,7 @@ class AIService {
         suggestions.push({
           habitId: habit.id,
           suggestedTime: optimalTime,
-          reason: `Based on your completion pattern, ${optimalTime} seems to work best for you.`,
+          reason: t('ai_smart_reminder_reason', { time: optimalTime }),
           confidence: this.calculateTimeConfidence(habit.completionTimes, optimalTime)
         });
       }
@@ -91,7 +91,7 @@ class AIService {
   /**
    * Generate motivational messages based on user's current state
    */
-  generateMotivationalMessage(userHabits: Habit[]): MotivationalMessage | null {
+  generateMotivationalMessage(userHabits: Habit[], t: (key: string, params?: any) => string): MotivationalMessage | null {
     const now = new Date();
     const today = now.toISOString().split('T')[0];
     
@@ -113,7 +113,7 @@ class AIService {
       const habit = milestoneHabits[0];
       return {
         id: `motivational-${Date.now()}`,
-        message: `🎉 Amazing! You've hit a ${habit.streak}-day streak with "${habit.title}"! You're building real momentum.`,
+        message: t('ai_milestone_message', { streak: habit.streak, title: habit.title }),
         type: 'milestone',
         condition: 'streak_milestone'
       };
@@ -122,7 +122,7 @@ class AIService {
     if (completionRate === 1.0 && totalHabits > 0) {
       return {
         id: `motivational-${Date.now()}`,
-        message: `🌟 Perfect day! You've completed all your habits. You're unstoppable!`,
+        message: t('ai_perfect_day_message'),
         type: 'encouragement',
         condition: 'perfect_day'
       };
@@ -131,7 +131,7 @@ class AIService {
     if (strugglingHabits.length > 0 && completionRate < 0.5) {
       return {
         id: `motivational-${Date.now()}`,
-        message: `💪 Every expert was once a beginner. Start small today - even 1% progress counts!`,
+        message: t('ai_low_completion_message'),
         type: 'streak_recovery',
         condition: 'low_completion'
       };
@@ -140,24 +140,26 @@ class AIService {
     if (longestStreak >= 3) {
       return {
         id: `motivational-${Date.now()}`,
-        message: `🔥 Your ${longestStreak}-day streak shows you've got what it takes. Keep the momentum going!`,
+        message: t('ai_good_streak_message', { streak: longestStreak }),
         type: 'encouragement',
         condition: 'good_streak'
       };
     }
     
     // Default encouraging message
-    const encouragingMessages = [
-      "🌱 Small steps lead to big changes. You've got this!",
-      "⭐ Progress, not perfection. Every day is a new opportunity.",
-      "🚀 You're building the future you want, one habit at a time.",
-      "💎 Consistency is the mother of mastery. Keep going!",
-      "🌈 Your future self will thank you for the work you do today."
+    const encouragingKeys = [
+      'ai_encouraging_1',
+      'ai_encouraging_2', 
+      'ai_encouraging_3',
+      'ai_encouraging_4',
+      'ai_encouraging_5'
     ];
+    
+    const randomKey = encouragingKeys[Math.floor(Math.random() * encouragingKeys.length)];
     
     return {
       id: `motivational-${Date.now()}`,
-      message: encouragingMessages[Math.floor(Math.random() * encouragingMessages.length)],
+      message: t(randomKey),
       type: 'encouragement',
       condition: 'general'
     };
@@ -195,53 +197,58 @@ class AIService {
     return 'wellness'; // default
   }
   
-  private findComplementaryHabits(habit: Habit, existingHabits: Habit[]) {
+  private findComplementaryHabits(habit: Habit, existingHabits: Habit[], t: (key: string, params?: any) => string) {
     const existingTitles = new Set(existingHabits.map(h => h.title.toLowerCase()));
     const category = habit.category || this.inferCategory(habit.title);
     
     const complementaryMap: Record<string, any[]> = {
       wellness: [
-        { title: 'Take a 5-minute walk', description: 'Light movement to complement your wellness routine', category: 'wellness' },
-        { title: 'Drink a glass of water', description: 'Stay hydrated throughout the day', category: 'wellness' }
+        { titleKey: 'ai_complementary_walk', descKey: 'ai_complementary_walk_desc', category: 'wellness' },
+        { titleKey: 'ai_complementary_water', descKey: 'ai_complementary_water_desc', category: 'wellness' }
       ],
       mindfulness: [
-        { title: 'Practice gratitude', description: 'Write down 3 things you\'re grateful for', category: 'mindfulness' },
-        { title: 'Deep breathing exercise', description: '5 minutes of focused breathing', category: 'mindfulness' }
+        { titleKey: 'ai_complementary_gratitude', descKey: 'ai_complementary_gratitude_desc', category: 'mindfulness' },
+        { titleKey: 'ai_complementary_breathing', descKey: 'ai_complementary_breathing_desc', category: 'mindfulness' }
       ],
       learning: [
-        { title: 'Review daily notes', description: 'Spend 5 minutes reviewing what you learned', category: 'learning' },
-        { title: 'Practice a new skill', description: 'Dedicate time to skill development', category: 'learning' }
+        { titleKey: 'ai_complementary_review', descKey: 'ai_complementary_review_desc', category: 'learning' },
+        { titleKey: 'ai_complementary_skill', descKey: 'ai_complementary_skill_desc', category: 'learning' }
       ]
     };
     
     return (complementaryMap[category] || [])
+      .map(suggestion => ({
+        title: t(suggestion.titleKey),
+        description: t(suggestion.descKey),
+        category: suggestion.category
+      }))
       .filter(suggestion => !existingTitles.has(suggestion.title.toLowerCase()));
   }
   
-  private findEasierAlternatives(habit: Habit) {
+  private findEasierAlternatives(habit: Habit, t: (key: string, params?: any) => string) {
     const title = habit.title.toLowerCase();
     const alternatives = [];
     
     if (title.includes('exercise') || title.includes('workout')) {
       alternatives.push({
-        title: 'Do 5 jumping jacks',
-        description: 'A quick burst of movement to get started',
+        title: t('ai_alternative_jumping_jacks'),
+        description: t('ai_alternative_jumping_jacks_desc'),
         category: 'wellness'
       });
     }
     
     if (title.includes('read')) {
       alternatives.push({
-        title: 'Read one page',
-        description: 'Start small with just one page per day',
+        title: t('ai_alternative_one_page'),
+        description: t('ai_alternative_one_page_desc'),
         category: 'learning'
       });
     }
     
     if (title.includes('meditat')) {
       alternatives.push({
-        title: 'Take 3 deep breaths',
-        description: 'A micro-meditation to build the habit',
+        title: t('ai_alternative_three_breaths'),
+        description: t('ai_alternative_three_breaths_desc'),
         category: 'mindfulness'
       });
     }

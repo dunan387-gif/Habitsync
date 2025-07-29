@@ -21,7 +21,7 @@ const PREMIUM_STORAGE_KEY = '@productivity_app_premium';
 export function ThemeProvider({ children }: { children: ReactNode }) {
   const [currentTheme, setCurrentTheme] = useState<Theme>(LIGHT_THEME);
   const [isLoading, setIsLoading] = useState(true);
-  const [isPremiumUser, setIsPremiumUser] = useState(false);
+  const [isPremiumUser, setIsPremiumUser] = useState(true); // Changed from false to true
 
   // Load theme preference on app start
   useEffect(() => {

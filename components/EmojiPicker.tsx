@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Modal } from 'react-native';
 import { X } from 'lucide-react-native';
 import { useTheme } from '@/context/ThemeContext';
+import { useLanguage } from '@/context/LanguageContext';
 
 type EmojiPickerProps = {
   visible: boolean;
@@ -47,6 +48,7 @@ const EMOJI_CATEGORIES = [
 
 export default function EmojiPicker({ visible, onClose, onSelect, selectedEmoji }: EmojiPickerProps) {
   const { currentTheme } = useTheme();
+  const { t } = useLanguage();
   const [selectedCategory, setSelectedCategory] = useState(0);
   
   const styles = createStyles(currentTheme.colors);
@@ -61,7 +63,7 @@ export default function EmojiPicker({ visible, onClose, onSelect, selectedEmoji 
       <View style={styles.modalContainer}>
         <View style={styles.modalContent}>
           <View style={styles.header}>
-            <Text style={styles.headerTitle}>Choose an Icon</Text>
+            <Text style={styles.headerTitle}>{t('choose_icon')}</Text>
             <TouchableOpacity style={styles.closeButton} onPress={onClose}>
               <X size={24} color={currentTheme.colors.text} />
             </TouchableOpacity>
@@ -86,7 +88,7 @@ export default function EmojiPicker({ visible, onClose, onSelect, selectedEmoji 
                   styles.categoryText,
                   selectedCategory === index && styles.categoryTextActive
                 ]}>
-                  {category.name}
+                  {t(category.name)}
                 </Text>
               </TouchableOpacity>
             ))}
@@ -115,7 +117,7 @@ export default function EmojiPicker({ visible, onClose, onSelect, selectedEmoji 
             style={styles.clearButton}
             onPress={() => onSelect('')}
           >
-            <Text style={styles.clearButtonText}>No Icon</Text>
+            <Text style={styles.clearButtonText}>{t('No Icon')}</Text>
           </TouchableOpacity>
         </View>
       </View>

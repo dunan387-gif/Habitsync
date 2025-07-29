@@ -1,9 +1,11 @@
 import { Tabs } from 'expo-router';
-import { Home, BookOpen, BarChart3, Settings, Trophy } from 'lucide-react-native';
+import { Home, BookOpen, Heart, BarChart3, Trophy, MoreHorizontal } from 'lucide-react-native';
 import { useTheme } from '@/context/ThemeContext';
+import { useLanguage } from '@/context/LanguageContext';
 
 export default function TabLayout() {
   const { currentTheme } = useTheme();
+  const { t } = useLanguage();
 
   return (
     <Tabs
@@ -17,39 +19,71 @@ export default function TabLayout() {
         headerShown: false,
       }}
     >
-      <Tabs.Screen
+      <Tabs.Screen 
         name="index"
         options={{
-          title: 'Home',
-          tabBarIcon: ({ color, size }) => <Home size={size} color={color} />,
+          title: t('tabs.home'),
+          tabBarIcon: ({ color, focused }) => (
+            <Home size={24} color={color} />
+          ),
         }}
       />
-      <Tabs.Screen
+      <Tabs.Screen 
         name="library"
         options={{
-          title: 'Library',
-          tabBarIcon: ({ color, size }) => <BookOpen size={size} color={color} />,
+          title: t('tabs.library'),
+          tabBarIcon: ({ color, focused }) => (
+            <BookOpen size={24} color={color} />
+          ),
         }}
       />
-      <Tabs.Screen
+      <Tabs.Screen 
+        name="wellness"
+        options={{
+          title: t('tabs.wellness'),
+          tabBarIcon: ({ color, focused }) => (
+            <Heart size={24} color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen 
         name="stats"
         options={{
-          title: 'Stats',
-          tabBarIcon: ({ color, size }) => <BarChart3 size={size} color={color} />,
+          title: t('tabs.analytics'),
+          tabBarIcon: ({ color, focused }) => (
+            <BarChart3 size={24} color={color} />
+          ),
         }}
       />
-      <Tabs.Screen
+      <Tabs.Screen 
         name="gamification"
         options={{
-          title: 'Rewards',
-          tabBarIcon: ({ color, size }) => <Trophy size={size} color={color} />,
+          title: t('tabs.rewards'),
+          tabBarIcon: ({ color, focused }) => (
+            <Trophy size={24} color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen 
+        name="settings"
+        options={{
+          title: t('tabs.more'),
+          tabBarIcon: ({ color, focused }) => (
+            <MoreHorizontal size={24} color={color} />
+          ),
+        }}
+      />
+      {/* Hide these tabs from navigation */}
+      <Tabs.Screen
+        name="mood"
+        options={{
+          href: null,
         }}
       />
       <Tabs.Screen
-        name="settings"
+        name="community"
         options={{
-          title: 'Settings',
-          tabBarIcon: ({ color, size }) => <Settings size={size} color={color} />,
+          href: null,
         }}
       />
     </Tabs>

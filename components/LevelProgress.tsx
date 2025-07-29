@@ -2,11 +2,13 @@ import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { useGamification } from '@/context/GamificationContext';
 import { useTheme } from '@/context/ThemeContext';
+import { useLanguage } from '@/context/LanguageContext';
 import { TrendingUp, Zap } from 'lucide-react-native';
 
 export default function LevelProgress() {
   const { gamificationData } = useGamification();
   const { currentTheme } = useTheme();
+  const { t } = useLanguage();
 
   if (!gamificationData) return null;
 
@@ -20,11 +22,11 @@ export default function LevelProgress() {
       <View style={styles.header}>
         <View style={styles.levelBadge}>
           <TrendingUp size={16} color={currentTheme.colors.primary} />
-          <Text style={styles.levelText}>Level {userLevel.level}</Text>
+          <Text style={styles.levelText}>{t('gamification.levelProgress.level')} {userLevel.level}</Text>
         </View>
         <View style={styles.xpContainer}>
           <Zap size={14} color={currentTheme.colors.accent} />
-          <Text style={styles.xpText}>+{gamificationData.dailyXPEarned} XP today</Text>
+          <Text style={styles.xpText}>+{gamificationData.dailyXPEarned} {t('gamification.levelProgress.xpToday')}</Text>
         </View>
       </View>
       
@@ -37,12 +39,12 @@ export default function LevelProgress() {
           />
         </View>
         <Text style={styles.progressText}>
-          {userLevel.currentXP} / {userLevel.xpToNextLevel} XP
+          {userLevel.currentXP} / {userLevel.xpToNextLevel} {t('gamification.levelProgress.xp')}
         </Text>
       </View>
       
       <View style={styles.perksContainer}>
-        <Text style={styles.perksTitle}>Level Perks:</Text>
+        <Text style={styles.perksTitle}>{t('gamification.levelProgress.levelPerks')}</Text>
         {userLevel.perks.map((perk, index) => (
           <Text key={index} style={styles.perk}>• {perk}</Text>
         ))}

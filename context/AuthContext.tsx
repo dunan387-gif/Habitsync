@@ -2,15 +2,11 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as SecureStore from 'expo-secure-store';
 import { User, ProfileUpdateData } from '@/types';
-import { getApiUrl, API_CONFIG } from '@/constants/api';
+import { OFFLINE_MODE } from '@/constants/api';
+import { PrivacyService, PrivacySettings } from '@/services/PrivacyService';
+import { useCallback } from 'react';
 
-// Remove this duplicate interface definition:
-// interface User {
-//   id: string;
-//   email: string;
-//   name: string;
-//   avatar?: string;
-// }
+
 
 interface AuthContextType {
   user: User | null;
@@ -24,6 +20,10 @@ interface AuthContextType {
   updateProfile: (data: ProfileUpdateData) => Promise<void>;
   uploadAvatar: (imageUri: string) => Promise<void>;
   deleteAccount: () => Promise<void>;
+  privacySettings: PrivacySettings | null;
+  updatePrivacySetting: (key: keyof PrivacySettings, value: boolean) => Promise<void>;
+  canShowProfileData: () => Promise<boolean>;
+  canCollectAnalytics: () => Promise<boolean>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -31,19 +31,27 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [privacySettings, setPrivacySettings] = useState<PrivacySettings | null>(null);
 
   useEffect(() => {
     checkAuthState();
+    loadPrivacySettings();
   }, []);
+
+  const loadPrivacySettings = async () => {
+    try {
+      const settings = await PrivacyService.getPrivacySettings();
+      setPrivacySettings(settings);
+    } catch (error) {
+      console.error('Failed to load privacy settings:', error);
+    }
+  };
 
   const checkAuthState = async () => {
     try {
-      const token = await SecureStore.getItemAsync('authToken');
-      if (token) {
-        const userData = await AsyncStorage.getItem('userData');
-        if (userData) {
-          setUser(JSON.parse(userData));
-        }
+      const userData = await AsyncStorage.getItem('userData');
+      if (userData) {
+        setUser(JSON.parse(userData));
       }
     } catch (error) {
       console.error('Auth check failed:', error);
@@ -55,22 +63,29 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const login = async (email: string, password: string) => {
     setIsLoading(true);
     try {
-      const response = await fetch(getApiUrl(API_CONFIG.ENDPOINTS.LOGIN), {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ email, password }),
-      });
-  
-      const data = await response.json();
-      
-      if (response.ok) {
-        await SecureStore.setItemAsync('authToken', data.token);
-        await AsyncStorage.setItem('userData', JSON.stringify(data.user));
-        setUser(data.user);
+      if (OFFLINE_MODE) {
+        const existingAccounts = await AsyncStorage.getItem('registeredAccounts');
+        const accounts = existingAccounts ? JSON.parse(existingAccounts) : [];
+        
+        const existingUser = accounts.find((acc: any) => 
+          acc.email === email && acc.password === password
+        );
+        
+        if (!existingUser) {
+          throw new Error('Invalid email or password');
+        }
+        
+        const userData = await AsyncStorage.getItem(`userData_${existingUser.id}`);
+        if (userData) {
+          const user = JSON.parse(userData);
+          await AsyncStorage.setItem('userData', userData);
+          await SecureStore.setItemAsync('authToken', 'offline-token-' + Date.now());
+          setUser(user);
+        } else {
+          throw new Error('User data not found');
+        }
       } else {
-        throw new Error(data.message || 'Login failed');
+        // Original API login code (for future backend integration)
       }
     } catch (error) {
       throw error;
@@ -82,22 +97,41 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const register = async (email: string, password: string, name: string) => {
     setIsLoading(true);
     try {
-      const response = await fetch(getApiUrl(API_CONFIG.ENDPOINTS.REGISTER), {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ email, password, name }),
-      });
-  
-      const data = await response.json();
-      
-      if (response.ok) {
-        await SecureStore.setItemAsync('authToken', data.token);
-        await AsyncStorage.setItem('userData', JSON.stringify(data.user));
-        setUser(data.user);
+      if (OFFLINE_MODE) {
+        const existingAccounts = await AsyncStorage.getItem('registeredAccounts');
+        const accounts = existingAccounts ? JSON.parse(existingAccounts) : [];
+        
+        if (accounts.find((acc: any) => acc.email === email)) {
+          throw new Error('Email already registered');
+        }
+        
+        const newUser: User = {
+          id: Date.now().toString(),
+          email,
+          name,
+          avatar: undefined,
+          joinedAt: new Date().toISOString(), // Remove createdAt, use joinedAt instead
+          preferences: {
+            notifications: true,
+            emailUpdates: true,
+            publicProfile: false,
+          },
+          stats: {
+            totalHabits: 0,
+            completedHabits: 0,
+            currentStreak: 0,
+            longestStreak: 0,
+          },
+        };
+        
+        accounts.push({ id: newUser.id, email, password });
+        await AsyncStorage.setItem('registeredAccounts', JSON.stringify(accounts));
+        await AsyncStorage.setItem(`userData_${newUser.id}`, JSON.stringify(newUser));
+        await AsyncStorage.setItem('userData', JSON.stringify(newUser));
+        await SecureStore.setItemAsync('authToken', 'offline-token-' + Date.now());
+        setUser(newUser);
       } else {
-        throw new Error(data.message || 'Registration failed');
+        // Original API register code
       }
     } catch (error) {
       throw error;
@@ -113,58 +147,49 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setUser(null);
     } catch (error) {
       console.error('Logout failed:', error);
+      throw error;
     }
   };
 
   const loginWithGoogle = async () => {
-    // Implement Google Sign-In
-    // This requires additional setup with Google Console
+    // TODO: Implement Google login
+    throw new Error('Google login not implemented yet');
   };
 
   const loginWithApple = async () => {
-    // Implement Apple Sign-In
-    // This requires additional setup with Apple Developer
+    // TODO: Implement Apple login
+    throw new Error('Apple login not implemented yet');
   };
 
   const updateProfile = async (data: ProfileUpdateData) => {
     if (!user) throw new Error('No user logged in');
     
-    setIsLoading(true);
     try {
-      // In a real app, this would be an API call
-      const updatedUser: User = {
-        ...user,
+      const updatedUser = { 
+        ...user, 
         ...data,
-        // Ensure preferences are properly merged with existing values
         preferences: {
           ...user.preferences,
-          ...data.preferences,
-        },
+          ...data.preferences
+        }
       };
-      
-      // Update local storage
       await AsyncStorage.setItem('userData', JSON.stringify(updatedUser));
+      await AsyncStorage.setItem(`userData_${user.id}`, JSON.stringify(updatedUser));
       setUser(updatedUser);
-      
-      // TODO: Send to backend API
-      // await api.updateProfile(user.id, data);
     } catch (error) {
       console.error('Profile update failed:', error);
       throw error;
-    } finally {
-      setIsLoading(false);
     }
   };
 
   const uploadAvatar = async (imageUri: string) => {
-    if (!user) throw new Error('No user logged in');
-    
     setIsLoading(true);
     try {
-      // In a real app, upload to cloud storage and get URL
-      const avatarUrl = imageUri; // For now, use local URI
-      
-      await updateProfile({ avatar: avatarUrl });
+      const avatarUrl = imageUri;
+      await updateProfile({ 
+        avatar: avatarUrl,
+        preferences: {}
+      });
     } catch (error) {
       console.error('Avatar upload failed:', error);
       throw error;
@@ -177,10 +202,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     if (!user) throw new Error('No user logged in');
     
     try {
-      // TODO: Call backend API to delete account
-      // await api.deleteAccount(user.id);
-      
-      // Clear local data
       await SecureStore.deleteItemAsync('authToken');
       await AsyncStorage.multiRemove(['userData', 'habitData']);
       setUser(null);
@@ -189,6 +210,26 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       throw error;
     }
   };
+
+  const updatePrivacySetting = async (key: keyof PrivacySettings, value: boolean) => {
+    try {
+      await PrivacyService.updatePrivacySetting(key, value);
+      const updatedSettings = await PrivacyService.getPrivacySettings();
+      setPrivacySettings(updatedSettings);
+    } catch (error) {
+      console.error('Failed to update privacy setting:', error);
+      throw error;
+    }
+  };
+
+  // Fix line 219 - use correct method name
+  const canShowProfileData = useCallback(async (): Promise<boolean> => {
+    return await PrivacyService.shouldShowProfileData(); // Changed from canShowProfileData
+  }, []);
+  
+  const canCollectAnalytics = useCallback(async (): Promise<boolean> => {
+    return await PrivacyService.canCollectAnalytics();
+  }, []);
 
   const value = {
     user,
@@ -202,6 +243,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     updateProfile,
     uploadAvatar,
     deleteAccount,
+    privacySettings,
+    updatePrivacySetting,
+    canShowProfileData,
+    canCollectAnalytics,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

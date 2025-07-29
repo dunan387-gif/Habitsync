@@ -3,12 +3,14 @@ import { View, Text, StyleSheet, FlatList } from 'react-native';
 import { useGamification } from '@/context/GamificationContext';
 import { useHabits } from '@/context/HabitContext';
 import { useTheme } from '@/context/ThemeContext';
+import { useLanguage } from '@/context/LanguageContext';
 import { Flame, Trophy, Star } from 'lucide-react-native';
 
 export default function StreakMilestones() {
   const { gamificationData } = useGamification();
   const { habits } = useHabits();
   const { currentTheme } = useTheme();
+  const { t } = useLanguage();
 
   const styles = createStyles(currentTheme.colors);
 
@@ -38,9 +40,9 @@ export default function StreakMilestones() {
         </View>
         <View style={styles.milestoneContent}>
           <Text style={styles.milestoneTitle}>
-            {item.streakLength}-Day Streak!
+            {t('gamification.streakMilestones.dayStreak', { days: item.streakLength })}
           </Text>
-          <Text style={styles.habitTitle}>{habit?.title || 'Unknown Habit'}</Text>
+          <Text style={styles.habitTitle}>{habit?.title || t('gamification.streakMilestones.unknownHabit')}</Text>
           <Text style={styles.milestoneDate}>
             {new Date(item.achievedAt).toLocaleDateString()}
           </Text>
@@ -57,12 +59,12 @@ export default function StreakMilestones() {
       <View style={styles.container}>
         <View style={styles.header}>
           <Flame size={20} color={currentTheme.colors.primary} />
-          <Text style={styles.title}>Streak Milestones</Text>
+          <Text style={styles.title}>{t('gamification.streakMilestones.title')}</Text>
         </View>
         <View style={styles.emptyState}>
           <Flame size={48} color={currentTheme.colors.textMuted} />
-          <Text style={styles.emptyText}>No milestones yet</Text>
-          <Text style={styles.emptySubtext}>Keep building streaks to unlock milestones!</Text>
+          <Text style={styles.emptyText}>{t('gamification.streakMilestones.noMilestones')}</Text>
+          <Text style={styles.emptySubtext}>{t('gamification.streakMilestones.keepBuilding')}</Text>
         </View>
       </View>
     );
@@ -72,7 +74,7 @@ export default function StreakMilestones() {
     <View style={styles.container}>
       <View style={styles.header}>
         <Flame size={20} color={currentTheme.colors.primary} />
-        <Text style={styles.title}>Recent Streak Milestones</Text>
+        <Text style={styles.title}>{t('gamification.streakMilestones.recentTitle')}</Text>
       </View>
       
       <FlatList

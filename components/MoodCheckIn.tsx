@@ -1,103 +1,119 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, TextInput, Alert } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import { useGamification } from '@/context/GamificationContext';
 import { useTheme } from '@/context/ThemeContext';
-import { Heart, MessageCircle } from 'lucide-react-native';
+import { useLanguage } from '@/context/LanguageContext';
+import { useHabits } from '@/context/HabitContext';
+import { Heart } from 'lucide-react-native';
+import { MoodEntry } from '@/types';
+import { useRouter } from 'expo-router';
 
-const MOOD_EMOJIS = ['😢', '😕', '😐', '😊', '😄'];
-const MOOD_LABELS = ['Very Bad', 'Bad', 'Okay', 'Good', 'Excellent'];
-const MOOD_TAGS = [
-  ['stressed', 'tired', 'overwhelmed'],
-  ['anxious', 'frustrated', 'low'],
-  ['neutral', 'calm', 'stable'],
-  ['happy', 'motivated', 'positive'],
-  ['energetic', 'excited', 'amazing']
+type MoodState = 'happy' | 'sad' | 'anxious' | 'energetic' | 'tired' | 'stressed' | 'calm';
+
+const MOOD_STATES: Array<{id: MoodState, emoji: string, color: string, labelKey: string}> = [
+  { id: 'happy', emoji: '😊', color: '#10B981', labelKey: 'moodCheckIn.moodTags.happy' },
+  { id: 'sad', emoji: '😢', color: '#6B7280', labelKey: 'moodCheckIn.moodTags.sad' },
+  { id: 'anxious', emoji: '😰', color: '#F59E0B', labelKey: 'moodCheckIn.moodTags.anxious' },
+  { id: 'energetic', emoji: '⚡', color: '#EF4444', labelKey: 'moodCheckIn.moodTags.energetic' },
+  { id: 'tired', emoji: '😴', color: '#8B5CF6', labelKey: 'moodCheckIn.moodTags.tired' },
+  { id: 'stressed', emoji: '😤', color: '#DC2626', labelKey: 'moodCheckIn.moodTags.stressed' },
+  { id: 'calm', emoji: '😌', color: '#06B6D4', labelKey: 'moodCheckIn.moodTags.calm' }
 ];
 
-export default function MoodCheckIn() {
+interface MoodCheckInProps {
+  onMoodSubmit?: () => void;
+}
+
+export default function MoodCheckIn({ onMoodSubmit }: MoodCheckInProps) {
+  const router = useRouter();
   const { addMoodEntry, getTodaysMoodEntry, canCheckMoodToday } = useGamification();
+  const { triggerSmartNotifications } = useHabits();
   const { currentTheme } = useTheme();
-  const [selectedMood, setSelectedMood] = useState<number | null>(null);
-  const [note, setNote] = useState('');
-  const [selectedTags, setSelectedTags] = useState<string[]>([]);
+  const { t } = useLanguage();
+  
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submittedMoodData, setSubmittedMoodData] = useState<any>(null);
 
-  const todaysMood = getTodaysMoodEntry();
   const canCheck = canCheckMoodToday();
-
-  // Reset form when mood is already recorded
-  useEffect(() => {
-    if (!canCheck && todaysMood) {
-      setSelectedMood(null);
-      setNote('');
-      setSelectedTags([]);
-    }
-  }, [canCheck, todaysMood]);
-
   const styles = createStyles(currentTheme.colors);
+  const todaysMood = getTodaysMoodEntry();
 
-  const handleMoodSelect = (mood: number) => {
-    setSelectedMood(mood);
-    setSelectedTags([]); // Reset tags when mood changes
-  };
-
-  const toggleTag = (tag: string) => {
-    setSelectedTags(prev => 
-      prev.includes(tag) 
-        ? prev.filter(t => t !== tag)
-        : [...prev, tag]
-    );
-  };
-
-  const handleSubmit = async () => {
-    if (selectedMood === null) {
-      Alert.alert('Please select a mood', 'Choose how you\'re feeling today');
-      return;
+  const handleDetailedModePress = () => {
+    try {
+      router.navigate('/mood/detailed-mood-tracking');
+    } catch (error) {
+      console.error('Navigation error:', error);
     }
+  };
 
+  const handleQuickMoodSelect = async (moodState: MoodState) => {
+    if (!canCheck) return;
+    
     setIsSubmitting(true);
     try {
-      await addMoodEntry(selectedMood + 1, note || undefined, selectedTags.length > 0 ? selectedTags : undefined);
-      setSelectedMood(null);
-      setNote('');
-      setSelectedTags([]);
-      Alert.alert('Mood Recorded! 🎉', 'Thanks for checking in. You earned 5 XP!');
+      await addMoodEntry(moodState, 5, undefined, []);
+      
+      const moodData = {
+        moodState,
+        intensity: 5,
+        triggers: [],
+        note: undefined,
+        timestamp: new Date().toISOString()
+      };
+      
+      setSubmittedMoodData(moodData);
+      
+      await triggerSmartNotifications();
     } catch (error) {
-      // Handle the specific error message
-      const errorMessage = error instanceof Error ? error.message : 'Failed to record mood. Please try again.';
-      if (errorMessage.includes('already recorded')) {
-        Alert.alert('Already Recorded', 'You have already recorded your mood for today. Come back tomorrow!');
-      } else {
-        Alert.alert('Error', errorMessage);
-      }
+      Alert.alert(t('common.error'), t('moodCheckIn.alerts.saveFailed'));
     } finally {
       setIsSubmitting(false);
     }
+
+    onMoodSubmit?.();
   };
 
-  if (!canCheck && todaysMood) {
+  const renderSubmittedMood = () => {
+    if (!submittedMoodData) return null;
+
+    const moodData = MOOD_STATES.find(m => m.id === submittedMoodData.moodState);
+
+    return (
+      <View style={styles.submittedMoodContainer}>
+        <Text style={styles.submittedMoodTitle}>{t('moodCheckIn.quickMoodSelector.todaysMoodEntry')}</Text>
+        <View style={styles.submittedMoodCard}>
+          <View style={styles.submittedMoodHeader}>
+            <Text style={styles.submittedMoodEmoji}>
+              {moodData?.emoji}
+            </Text>
+            <View style={styles.submittedMoodInfo}>
+              <Text style={styles.submittedMoodState}>
+                {moodData ? t(moodData.labelKey) : ''}
+              </Text>
+              <Text style={styles.submittedMoodIntensity}>
+                {t('moodCheckIn.quickMoodSelector.intensityLabel')}: {submittedMoodData.intensity}/10
+              </Text>
+            </View>
+          </View>
+        </View>
+      </View>
+    );
+  };
+
+  // Show completed state if mood already recorded today
+  if (todaysMood) {
+    const todayMoodData = MOOD_STATES.find(m => m.id === todaysMood.moodState);
+    
     return (
       <View style={styles.container}>
-        <View style={styles.header}>
-          <Heart size={20} color={currentTheme.colors.primary} />
-          <Text style={styles.title}>Today's Mood</Text>
-        </View>
         <View style={styles.completedContainer}>
-          <Text style={styles.completedEmoji}>{MOOD_EMOJIS[todaysMood.mood - 1]}</Text>
-          <Text style={styles.completedLabel}>{MOOD_LABELS[todaysMood.mood - 1]}</Text>
-          {todaysMood.note && (
-            <Text style={styles.completedNote}>"{todaysMood.note}"</Text>
-          )}
-          {todaysMood.tags && todaysMood.tags.length > 0 && (
-            <View style={styles.tagsContainer}>
-              {todaysMood.tags.map(tag => (
-                <View key={tag} style={styles.tag}>
-                  <Text style={styles.tagText}>{tag}</Text>
-                </View>
-              ))}
-            </View>
-          )}
+          <Text style={styles.completedEmoji}>✅</Text>
+          <Text style={styles.completedLabel}>{t('moodCheckIn.alerts.alreadyRecorded')}</Text>
+          <Text style={styles.completedNote}>
+            {todayMoodData?.emoji} {todayMoodData ? t(todayMoodData.labelKey) : todaysMood.moodState} ({t('moodCheckIn.quickMoodSelector.intensityLabel')}: {todaysMood.intensity}/10)
+          </Text>
         </View>
+        {renderSubmittedMood()}
       </View>
     );
   }
@@ -106,77 +122,42 @@ export default function MoodCheckIn() {
     <View style={styles.container}>
       <View style={styles.header}>
         <Heart size={20} color={currentTheme.colors.primary} />
-        <Text style={styles.title}>Daily Mood Check-in</Text>
-        <Text style={styles.xpBadge}>+5 XP</Text>
+        <Text style={styles.title}>{t('moodCheckIn.question')}</Text>
+        <Text style={styles.xpBadge}>{t('moodCheckIn.xpReward')}</Text>
       </View>
-      
-      <Text style={styles.question}>How are you feeling today?</Text>
-      
-      <View style={styles.moodSelector}>
-        {MOOD_EMOJIS.map((emoji, index) => (
+
+      <Text style={styles.question}>{t('moodCheckIn.quickMoodSelector.title')}</Text>
+
+      {/* Mode Toggle */}
+      <View style={styles.modeToggle}>
+        <TouchableOpacity
+          style={[styles.modeButton, styles.activeModeButton]}
+        >
+          <Text style={[styles.modeText, styles.activeModeText]}>{t('moodCheckIn.quickMoodSelector.quickMode')}</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.modeButton}
+          onPress={handleDetailedModePress}
+        >
+          <Text style={styles.modeText}>{t('moodCheckIn.quickMoodSelector.moreOptionsButton')}</Text>
+        </TouchableOpacity>
+      </View>
+
+      <View style={styles.moodGrid}>
+        {MOOD_STATES.map((mood) => (
           <TouchableOpacity
-            key={index}
-            style={[
-              styles.moodButton,
-              selectedMood === index && styles.selectedMoodButton
-            ]}
-            onPress={() => handleMoodSelect(index)}
+            key={mood.id}
+            style={styles.moodCard}
+            onPress={() => handleQuickMoodSelect(mood.id)}
+            disabled={isSubmitting}
           >
-            <Text style={styles.moodEmoji}>{emoji}</Text>
-            <Text style={styles.moodLabel}>{MOOD_LABELS[index]}</Text>
+            <Text style={styles.moodCardEmoji}>{mood.emoji}</Text>
+            <Text style={styles.moodCardLabel}>{t(mood.labelKey)}</Text>
           </TouchableOpacity>
         ))}
       </View>
-      
-      {selectedMood !== null && (
-        <>
-          <View style={styles.tagsSection}>
-            <Text style={styles.tagsTitle}>How would you describe it?</Text>
-            <View style={styles.tagsContainer}>
-              {MOOD_TAGS[selectedMood].map(tag => (
-                <TouchableOpacity
-                  key={tag}
-                  style={[
-                    styles.tag,
-                    selectedTags.includes(tag) && styles.selectedTag
-                  ]}
-                  onPress={() => toggleTag(tag)}
-                >
-                  <Text style={[
-                    styles.tagText,
-                    selectedTags.includes(tag) && styles.selectedTagText
-                  ]}>
-                    {tag}
-                  </Text>
-                </TouchableOpacity>
-              ))}
-            </View>
-          </View>
-          
-          <View style={styles.noteSection}>
-            <Text style={styles.noteTitle}>Add a note (optional)</Text>
-            <TextInput
-              style={styles.noteInput}
-              placeholder="What's on your mind?"
-              placeholderTextColor={currentTheme.colors.textMuted}
-              value={note}
-              onChangeText={setNote}
-              multiline
-              maxLength={200}
-            />
-          </View>
-          
-          <TouchableOpacity
-            style={[styles.submitButton, isSubmitting && styles.disabledButton]}
-            onPress={handleSubmit}
-            disabled={isSubmitting}
-          >
-            <Text style={styles.submitButtonText}>
-              {isSubmitting ? 'Recording...' : 'Record Mood'}
-            </Text>
-          </TouchableOpacity>
-        </>
-      )}
+
+      {renderSubmittedMood()}
     </View>
   );
 }
@@ -215,95 +196,58 @@ const createStyles = (colors: any) => StyleSheet.create({
     marginBottom: 16,
     textAlign: 'center',
   },
-  moodSelector: {
+  modeToggle: {
     flexDirection: 'row',
+    backgroundColor: colors.surface,
+    borderRadius: 8,
+    padding: 4,
+    marginBottom: 16,
+  },
+  modeButton: {
+    flex: 1,
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    borderRadius: 6,
+    alignItems: 'center',
+  },
+  activeModeButton: {
+    backgroundColor: colors.primary,
+  },
+  modeText: {
+    fontSize: 14,
+    fontWeight: '500',
+    color: colors.textSecondary,
+  },
+  activeModeText: {
+    color: 'white',
+  },
+  moodGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
     justifyContent: 'space-between',
     marginBottom: 20,
   },
-  moodButton: {
+  moodCard: {
+    width: '30%',
+    aspectRatio: 1,
+    backgroundColor: colors.surface,
+    borderRadius: 12,
+    borderWidth: 2,
+    borderColor: colors.border,
     alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 12,
     padding: 8,
-    borderRadius: 8,
-    flex: 1,
-    marginHorizontal: 2,
   },
-  selectedMoodButton: {
-    backgroundColor: colors.primary + '20',
-  },
-  moodEmoji: {
+  moodCardEmoji: {
     fontSize: 24,
     marginBottom: 4,
   },
-  moodLabel: {
-    fontSize: 10,
-    color: colors.textSecondary,
-    textAlign: 'center',
-  },
-  tagsSection: {
-    marginBottom: 16,
-  },
-  tagsTitle: {
-    fontSize: 14,
-    fontWeight: '500',
-    color: colors.text,
-    marginBottom: 8,
-  },
-  tagsContainer: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 8,
-  },
-  tag: {
-    backgroundColor: colors.surface,
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 16,
-    borderWidth: 1,
-    borderColor: colors.border,
-  },
-  selectedTag: {
-    backgroundColor: colors.primary + '20',
-    borderColor: colors.primary,
-  },
-  tagText: {
+  moodCardLabel: {
     fontSize: 12,
-    color: colors.textSecondary,
-  },
-  selectedTagText: {
-    color: colors.primary,
-    fontWeight: '500',
-  },
-  noteSection: {
-    marginBottom: 16,
-  },
-  noteTitle: {
-    fontSize: 14,
     fontWeight: '500',
     color: colors.text,
-    marginBottom: 8,
-  },
-  noteInput: {
-    backgroundColor: colors.surface,
-    borderRadius: 8,
-    padding: 12,
-    color: colors.text,
-    fontSize: 14,
-    minHeight: 60,
-    textAlignVertical: 'top',
-  },
-  submitButton: {
-    backgroundColor: colors.primary,
-    borderRadius: 8,
-    padding: 12,
-    alignItems: 'center',
-  },
-  disabledButton: {
-    opacity: 0.6,
-  },
-  submitButtonText: {
-    color: 'white',
-    fontSize: 14,
-    fontWeight: '600',
+    textAlign: 'center',
   },
   completedContainer: {
     alignItems: 'center',
@@ -325,5 +269,43 @@ const createStyles = (colors: any) => StyleSheet.create({
     fontStyle: 'italic',
     textAlign: 'center',
     marginBottom: 12,
+  },
+  submittedMoodContainer: {
+    marginTop: 20,
+    backgroundColor: colors.surface,
+    borderRadius: 12,
+    padding: 16,
+  },
+  submittedMoodTitle: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: colors.text,
+    marginBottom: 12,
+  },
+  submittedMoodCard: {
+    backgroundColor: colors.card,
+    borderRadius: 8,
+    padding: 12,
+  },
+  submittedMoodHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 8,
+  },
+  submittedMoodEmoji: {
+    fontSize: 24,
+    marginRight: 12,
+  },
+  submittedMoodInfo: {
+    flex: 1,
+  },
+  submittedMoodState: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: colors.text,
+  },
+  submittedMoodIntensity: {
+    fontSize: 14,
+    color: colors.textSecondary,
   },
 });

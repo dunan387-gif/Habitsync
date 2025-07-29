@@ -26,7 +26,7 @@ const LanguageContext = createContext<LanguageContextType | undefined>(undefined
 const LANGUAGE_STORAGE_KEY = '@productivity_app_language';
 
 // Translation map for static imports
-const TRANSLATION_MAP: Record<string, Record<string, string>> = {
+const TRANSLATION_MAP: Record<string, any> = {
   en: enTranslations,
   es: esTranslations,
   fr: frTranslations,
@@ -45,7 +45,7 @@ const DEFAULT_LANGUAGE = AVAILABLE_LANGUAGES[0]; // English
 export function LanguageProvider({ children }: { children: ReactNode }) {
   const [currentLanguage, setCurrentLanguage] = useState<Language>(DEFAULT_LANGUAGE);
   const [isLoading, setIsLoading] = useState(true);
-  const [translations, setTranslations] = useState<Record<string, string>>({});
+  const [translations, setTranslations] = useState<any>({});
 
   useEffect(() => {
     loadLanguagePreference();
@@ -105,12 +105,29 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
   };
 
   const t = (key: string, params?: Record<string, any>): string => {
-    let translation = translations[key] || key;
+    // Handle nested keys like 'stats.title'
+    const keys = key.split('.');
+    let translation: any = translations;
+    
+    for (const k of keys) {
+      if (translation && typeof translation === 'object' && k in translation) {
+        translation = translation[k];
+      } else {
+        // If key not found, return the original key
+        translation = key;
+        break;
+      }
+    }
+    
+    // Ensure we have a string
+    if (typeof translation !== 'string') {
+      translation = key;
+    }
     
     // Replace parameters in the translation string
-    if (params) {
+    if (params && typeof translation === 'string') {
       Object.keys(params).forEach(paramKey => {
-        const placeholder = `{{${paramKey}}}`;
+        const placeholder = `{${paramKey}}`;
         translation = translation.replace(new RegExp(placeholder, 'g'), String(params[paramKey]));
       });
     }
