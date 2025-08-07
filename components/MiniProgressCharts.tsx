@@ -2,11 +2,13 @@ import React from 'react';
 import { View, Text, StyleSheet, ScrollView } from 'react-native';
 import { useHabits } from '@/context/HabitContext';
 import { useTheme } from '@/context/ThemeContext';
+import { useLanguage } from '@/context/LanguageContext';
 import { TrendingUp, TrendingDown, Minus } from 'lucide-react-native';
 
 export default function MiniProgressCharts() {
   const { habits, getDailyCompletionData } = useHabits();
   const { currentTheme } = useTheme();
+  const { t } = useLanguage();
 
   // Get last 7 days data
   const weekData = getDailyCompletionData(7);
@@ -49,12 +51,12 @@ export default function MiniProgressCharts() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>📊 Mini Progress Charts</Text>
+      <Text style={styles.title}>📊 {t('miniProgressCharts.title')}</Text>
       
       {/* Weekly Overview */}
       <View style={styles.weeklyOverview}>
         <View style={styles.overviewHeader}>
-          <Text style={styles.overviewTitle}>7-Day Overview</Text>
+          <Text style={styles.overviewTitle}>{t('miniProgressCharts.weeklyOverview')}</Text>
           <View style={styles.trendContainer}>
             {renderTrendIcon(weekTrend)}
             <Text style={[
@@ -66,7 +68,7 @@ export default function MiniProgressCharts() {
           </View>
         </View>
         {renderMiniChart(weekData.map(day => day.completionRate))}
-        <Text style={styles.chartLabel}>Last 7 days completion rate</Text>
+        <Text style={styles.chartLabel}>{t('miniProgressCharts.last7DaysCompletionRate')}</Text>
       </View>
 
       {/* Individual Habit Charts */}
@@ -80,7 +82,7 @@ export default function MiniProgressCharts() {
             <View key={habit.id} style={styles.habitChart}>
               <Text style={styles.habitTitle} numberOfLines={1}>{habit.title}</Text>
               {renderMiniChart(habitData)}
-              <Text style={styles.habitStreak}>{habit.streak} day streak</Text>
+              <Text style={styles.habitStreak}>{habit.streak} {t('miniProgressCharts.dayStreak')}</Text>
             </View>
           );
         })}

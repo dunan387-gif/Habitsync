@@ -28,7 +28,7 @@ export default function SleepTrackingForm({ onSave, onCancel }: SleepTrackingFor
 
   const handleSave = async () => {
     if (!formData.bedtime || !formData.wakeTime) {
-      Alert.alert('Missing Information', 'Please set both bedtime and wake time to continue.');
+      Alert.alert(t('wellnessForms.sleep.missingInfo'), t('wellnessForms.sleep.missingInfoMessage'));
       return;
     }
 
@@ -46,10 +46,10 @@ export default function SleepTrackingForm({ onSave, onCancel }: SleepTrackingFor
       };
 
       await WellnessIntegrationService.saveSleepData(sleepData);
-      Alert.alert('Success! 🌙', 'Your sleep data has been saved successfully.');
+      Alert.alert(t('wellnessForms.sleep.success'), t('wellnessForms.sleep.successMessage'));
       if (onSave) onSave();
     } catch (error) {
-      Alert.alert('Error', 'Failed to save sleep data. Please try again.');
+      Alert.alert(t('wellnessForms.sleep.error'), t('wellnessForms.sleep.errorMessage'));
     } finally {
       setLoading(false);
     }
@@ -96,7 +96,7 @@ export default function SleepTrackingForm({ onSave, onCancel }: SleepTrackingFor
 
   const renderQualitySelector = () => (
     <View style={styles.section}>
-      <Text style={styles.sectionTitle}>How was your sleep quality?</Text>
+      <Text style={styles.sectionTitle}>{t('wellnessForms.sleep.sleepQuality')}</Text>
       <View style={styles.qualityContainer}>
         {[1, 2, 3, 4, 5].map((rating) => (
           <TouchableOpacity
@@ -110,7 +110,7 @@ export default function SleepTrackingForm({ onSave, onCancel }: SleepTrackingFor
               fill={formData.quality === rating ? '#FFD700' : 'none'}
             />
             <Text style={[styles.qualityText, formData.quality === rating && styles.selectedQualityText]}>
-              {['Poor', 'Fair', 'Good', 'Great', 'Excellent'][rating - 1]}
+              {t(`wellnessForms.sleep.quality.${['poor', 'fair', 'good', 'great', 'excellent'][rating - 1]}`)}
             </Text>
           </TouchableOpacity>
         ))}
@@ -120,7 +120,7 @@ export default function SleepTrackingForm({ onSave, onCancel }: SleepTrackingFor
 
   const renderInterruptionsCounter = () => (
     <View style={styles.section}>
-      <Text style={styles.sectionTitle}>Sleep Interruptions</Text>
+      <Text style={styles.sectionTitle}>{t('wellnessForms.sleep.sleepInterruptions')}</Text>
       <View style={styles.counterContainer}>
         <TouchableOpacity
           style={styles.counterButton}
@@ -130,7 +130,7 @@ export default function SleepTrackingForm({ onSave, onCancel }: SleepTrackingFor
         </TouchableOpacity>
         <View style={styles.counterDisplay}>
           <Text style={styles.counterValue}>{formData.interruptions || 0}</Text>
-          <Text style={styles.counterLabel}>times</Text>
+          <Text style={styles.counterLabel}>{t('wellnessForms.sleep.times')}</Text>
         </View>
         <TouchableOpacity
           style={styles.counterButton}
@@ -149,14 +149,14 @@ export default function SleepTrackingForm({ onSave, onCancel }: SleepTrackingFor
           <Moon size={28} color={currentTheme.colors.primary} />
         </View>
         <View>
-          <Text style={styles.title}>Sleep Tracker</Text>
-          <Text style={styles.subtitle}>Log your sleep patterns</Text>
+          <Text style={styles.title}>{t('wellnessForms.sleep.title')}</Text>
+          <Text style={styles.subtitle}>{t('wellnessForms.sleep.subtitle')}</Text>
         </View>
       </View>
 
       {/* Date Card */}
       <View style={styles.card}>
-        <Text style={styles.cardTitle}>Date</Text>
+        <Text style={styles.cardTitle}>{t('wellnessForms.sleep.date')}</Text>
         <TextInput
           style={styles.dateInput}
           value={formData.date}
@@ -168,16 +168,16 @@ export default function SleepTrackingForm({ onSave, onCancel }: SleepTrackingFor
 
       {/* Sleep Times */}
       <View style={styles.card}>
-        <Text style={styles.cardTitle}>Sleep Schedule</Text>
+        <Text style={styles.cardTitle}>{t('wellnessForms.sleep.bedtime')}</Text>
         <View style={styles.timeRow}>
-          {renderTimeSelector('bedtime', <Bed size={20} color={currentTheme.colors.primary} />, 'Bedtime')}
-          {renderTimeSelector('wakeTime', <Sun size={20} color={currentTheme.colors.warning} />, 'Wake Time')}
+          {renderTimeSelector('bedtime', <Bed size={20} color={currentTheme.colors.primary} />, t('wellnessForms.sleep.bedtime'))}
+          {renderTimeSelector('wakeTime', <Sun size={20} color={currentTheme.colors.warning} />, t('wellnessForms.sleep.wakeTime'))}
         </View>
         {formData.bedtime && formData.wakeTime && (
           <View style={styles.durationDisplay}>
             <Clock size={16} color={currentTheme.colors.textSecondary} />
             <Text style={styles.durationText}>
-              {calculateDuration(formData.bedtime, formData.wakeTime).toFixed(1)} hours of sleep
+              {calculateDuration(formData.bedtime, formData.wakeTime).toFixed(1)} {t('wellnessForms.sleep.hoursOfSleep')}
             </Text>
           </View>
         )}
@@ -195,12 +195,12 @@ export default function SleepTrackingForm({ onSave, onCancel }: SleepTrackingFor
 
       {/* Notes */}
       <View style={styles.card}>
-        <Text style={styles.cardTitle}>Notes (Optional)</Text>
+        <Text style={styles.cardTitle}>{t('wellnessForms.sleep.notes')}</Text>
         <TextInput
           style={[styles.input, styles.textArea]}
           value={formData.notes}
           onChangeText={(text) => setFormData({ ...formData, notes: text })}
-          placeholder="How did you sleep? Any factors that affected your sleep?"
+          placeholder={t('wellnessForms.sleep.notesPlaceholder')}
           placeholderTextColor={currentTheme.colors.textSecondary}
           multiline
         />
@@ -209,7 +209,7 @@ export default function SleepTrackingForm({ onSave, onCancel }: SleepTrackingFor
       {/* Action Buttons */}
       <View style={styles.buttonContainer}>
         <TouchableOpacity style={styles.cancelButton} onPress={onCancel}>
-          <Text style={styles.cancelButtonText}>Cancel</Text>
+          <Text style={styles.cancelButtonText}>{t('wellnessForms.sleep.cancel')}</Text>
         </TouchableOpacity>
         <TouchableOpacity 
           style={[styles.saveButton, loading && styles.disabledButton]} 
@@ -217,7 +217,7 @@ export default function SleepTrackingForm({ onSave, onCancel }: SleepTrackingFor
           disabled={loading}
         >
           <Text style={styles.saveButtonText}>
-            {loading ? 'Saving...' : 'Save Sleep Data'}
+            {loading ? t('wellnessForms.sleep.saving') : t('wellnessForms.sleep.save')}
           </Text>
         </TouchableOpacity>
       </View>

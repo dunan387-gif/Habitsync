@@ -38,12 +38,12 @@ const HABIT_EMOJIS = [
 ];
 
 const EMOJI_CATEGORIES = [
-  { name: 'Health & Fitness', emojis: HABIT_EMOJIS.slice(0, 20) },
-  { name: 'Learning & Reading', emojis: HABIT_EMOJIS.slice(20, 40) },
-  { name: 'Daily Life', emojis: HABIT_EMOJIS.slice(40, 60) },
-  { name: 'Productivity', emojis: HABIT_EMOJIS.slice(60, 80) },
-  { name: 'Nature & Environment', emojis: HABIT_EMOJIS.slice(80, 100) },
-  { name: 'Social & Relationships', emojis: HABIT_EMOJIS.slice(100, 120) },
+  { name: 'emoji_category_health_fitness', emojis: HABIT_EMOJIS.slice(0, 20) },
+  { name: 'emoji_category_learning_reading', emojis: HABIT_EMOJIS.slice(20, 40) },
+  { name: 'emoji_category_daily_life', emojis: HABIT_EMOJIS.slice(40, 60) },
+  { name: 'emoji_category_productivity', emojis: HABIT_EMOJIS.slice(60, 80) },
+  { name: 'emoji_category_nature_environment', emojis: HABIT_EMOJIS.slice(80, 100) },
+  { name: 'emoji_category_social_relationships', emojis: HABIT_EMOJIS.slice(100, 120) },
 ];
 
 export default function EmojiPicker({ visible, onClose, onSelect, selectedEmoji }: EmojiPickerProps) {
@@ -117,7 +117,7 @@ export default function EmojiPicker({ visible, onClose, onSelect, selectedEmoji 
             style={styles.clearButton}
             onPress={() => onSelect('')}
           >
-            <Text style={styles.clearButtonText}>{t('No Icon')}</Text>
+            <Text style={styles.clearButtonText}>{t('no_icon')}</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -173,7 +173,7 @@ const createStyles = (colors: any) => StyleSheet.create({
     fontWeight: '500',
   },
   categoryTextActive: {
-    color: '#FFFFFF',
+    color: colors.background,
   },
   emojiContainer: {
     maxHeight: 400, // Set max height instead of flex

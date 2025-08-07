@@ -16,4 +16,4 @@ export const getApiUrl = (endpoint: string) => {
 };
 
 // Add offline mode flag
-export const OFFLINE_MODE = true;
+export const OFFLINE_MODE = false; // Using Firebase now

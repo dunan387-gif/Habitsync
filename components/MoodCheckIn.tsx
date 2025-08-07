@@ -38,9 +38,26 @@ export default function MoodCheckIn({ onMoodSubmit }: MoodCheckInProps) {
   const styles = createStyles(currentTheme.colors);
   const todaysMood = getTodaysMoodEntry();
 
+  // Update submittedMoodData when todaysMood changes (for detailed mood submissions)
+  useEffect(() => {
+    console.log('🔄 MoodCheckIn: todaysMood changed:', todaysMood);
+    console.log('🔄 MoodCheckIn: submittedMoodData:', submittedMoodData);
+    
+    if (todaysMood && !submittedMoodData) {
+      console.log('🔄 MoodCheckIn: Setting submittedMoodData from todaysMood');
+      setSubmittedMoodData({
+        moodState: todaysMood.moodState,
+        intensity: todaysMood.intensity,
+        triggers: todaysMood.triggers || [],
+        note: todaysMood.note,
+        timestamp: todaysMood.date
+      });
+    }
+  }, [todaysMood, submittedMoodData]);
+
   const handleDetailedModePress = () => {
     try {
-      router.navigate('/mood/detailed-mood-tracking');
+      router.navigate('/mood-tracking/detailed');
     } catch (error) {
       console.error('Navigation error:', error);
     }
@@ -49,9 +66,13 @@ export default function MoodCheckIn({ onMoodSubmit }: MoodCheckInProps) {
   const handleQuickMoodSelect = async (moodState: MoodState) => {
     if (!canCheck) return;
     
+    console.log('🎯 Starting mood selection for:', moodState);
     setIsSubmitting(true);
+    
     try {
+      console.log('📝 Adding mood entry...');
       await addMoodEntry(moodState, 5, undefined, []);
+      console.log('✅ Mood entry added successfully');
       
       const moodData = {
         moodState,
@@ -62,11 +83,20 @@ export default function MoodCheckIn({ onMoodSubmit }: MoodCheckInProps) {
       };
       
       setSubmittedMoodData(moodData);
+      console.log('📊 Submitted mood data set');
       
-      await triggerSmartNotifications();
+      // Trigger smart notifications in the background to avoid blocking the UI
+      console.log('🔔 Triggering smart notifications...');
+      triggerSmartNotifications().catch(error => {
+        console.error('Smart notifications error:', error);
+      });
+      
+      console.log('🎉 Mood selection completed successfully');
     } catch (error) {
+      console.error('❌ Mood save error:', error);
       Alert.alert(t('common.error'), t('moodCheckIn.alerts.saveFailed'));
     } finally {
+      console.log('🏁 Finishing mood selection...');
       setIsSubmitting(false);
     }
 
@@ -74,9 +104,12 @@ export default function MoodCheckIn({ onMoodSubmit }: MoodCheckInProps) {
   };
 
   const renderSubmittedMood = () => {
-    if (!submittedMoodData) return null;
+    // Use todaysMood if available, otherwise use submittedMoodData
+    const moodDataToShow = todaysMood || submittedMoodData;
+    console.log('🎨 MoodCheckIn: renderSubmittedMood - moodDataToShow:', moodDataToShow);
+    if (!moodDataToShow) return null;
 
-    const moodData = MOOD_STATES.find(m => m.id === submittedMoodData.moodState);
+    const moodData = MOOD_STATES.find(m => m.id === moodDataToShow.moodState);
 
     return (
       <View style={styles.submittedMoodContainer}>
@@ -91,8 +124,18 @@ export default function MoodCheckIn({ onMoodSubmit }: MoodCheckInProps) {
                 {moodData ? t(moodData.labelKey) : ''}
               </Text>
               <Text style={styles.submittedMoodIntensity}>
-                {t('moodCheckIn.quickMoodSelector.intensityLabel')}: {submittedMoodData.intensity}/10
+                {t('moodCheckIn.quickMoodSelector.intensityLabel')}: {moodDataToShow.intensity}/10
               </Text>
+              {moodDataToShow.note && (
+                <Text style={styles.submittedMoodNote}>
+                  {moodDataToShow.note}
+                </Text>
+              )}
+              {moodDataToShow.triggers && moodDataToShow.triggers.length > 0 && (
+                <Text style={styles.submittedMoodTriggers}>
+                  {t('moodCheckIn.tagsTitle')}: {moodDataToShow.triggers.join(', ')}
+                </Text>
+              )}
             </View>
           </View>
         </View>
@@ -219,7 +262,7 @@ const createStyles = (colors: any) => StyleSheet.create({
     color: colors.textSecondary,
   },
   activeModeText: {
-    color: 'white',
+    color: colors.background,
   },
   moodGrid: {
     flexDirection: 'row',
@@ -307,5 +350,16 @@ const createStyles = (colors: any) => StyleSheet.create({
   submittedMoodIntensity: {
     fontSize: 14,
     color: colors.textSecondary,
+  },
+  submittedMoodNote: {
+    fontSize: 14,
+    color: colors.textSecondary,
+    fontStyle: 'italic',
+    marginTop: 4,
+  },
+  submittedMoodTriggers: {
+    fontSize: 12,
+    color: colors.textSecondary,
+    marginTop: 4,
   },
 });

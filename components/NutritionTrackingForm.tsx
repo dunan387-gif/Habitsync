@@ -25,23 +25,23 @@ export default function NutritionTrackingForm({ onSave, onCancel }: NutritionTra
   const styles = createStyles(currentTheme.colors);
 
   const mealTypes = [
-    { value: 'breakfast', label: 'Breakfast', icon: '🌅', color: '#FF9500' },
-    { value: 'lunch', label: 'Lunch', icon: '☀️', color: '#34C759' },
-    { value: 'dinner', label: 'Dinner', icon: '🌙', color: '#5856D6' },
-    { value: 'snack', label: 'Snack', icon: '🍎', color: '#FF3B30' }
+    { value: 'breakfast', label: t('wellnessForms.nutrition.mealTypes.breakfast'), icon: '🌅', color: '#FF9500' },
+    { value: 'lunch', label: t('wellnessForms.nutrition.mealTypes.lunch'), icon: '☀️', color: '#34C759' },
+    { value: 'dinner', label: t('wellnessForms.nutrition.mealTypes.dinner'), icon: '🌙', color: '#5856D6' },
+    { value: 'snack', label: t('wellnessForms.nutrition.mealTypes.snack'), icon: '🍎', color: '#FF3B30' }
   ];
 
   const moodImpacts = [
-    { value: 'positive', label: 'Great', icon: '😊', color: '#34C759' },
-    { value: 'neutral', label: 'Okay', icon: '😐', color: '#FF9500' },
-    { value: 'negative', label: 'Poor', icon: '😞', color: '#FF3B30' }
+    { value: 'positive', label: t('wellnessForms.nutrition.moodImpacts.positive'), icon: '😊', color: '#34C759' },
+    { value: 'neutral', label: t('wellnessForms.nutrition.moodImpacts.neutral'), icon: '😐', color: '#FF9500' },
+    { value: 'negative', label: t('wellnessForms.nutrition.moodImpacts.negative'), icon: '😞', color: '#FF3B30' }
   ];
 
   const waterPresets = [
-    { amount: 250, label: 'Glass', icon: '🥛' },
-    { amount: 500, label: 'Bottle', icon: '🍼' },
-    { amount: 750, label: 'Large', icon: '🧴' },
-    { amount: 1000, label: 'Liter', icon: '💧' }
+    { amount: 250, label: t('wellnessForms.nutrition.waterPresets.glass'), icon: '🥛' },
+    { amount: 500, label: t('wellnessForms.nutrition.waterPresets.bottle'), icon: '🍼' },
+    { amount: 750, label: t('wellnessForms.nutrition.waterPresets.large'), icon: '🧴' },
+    { amount: 1000, label: t('wellnessForms.nutrition.waterPresets.liter'), icon: '💧' }
   ];
 
   const addMeal = () => {
@@ -131,7 +131,7 @@ export default function NutritionTrackingForm({ onSave, onCancel }: NutritionTra
 
   const handleSave = async () => {
     if (!formData.meals || formData.meals.length === 0) {
-      Alert.alert('Missing Information', 'Please add at least one meal to continue.');
+      Alert.alert(t('wellnessForms.nutrition.missingInfo'), t('wellnessForms.nutrition.missingInfoMessage'));
       return;
     }
 
@@ -147,12 +147,12 @@ export default function NutritionTrackingForm({ onSave, onCancel }: NutritionTra
       };
 
       await WellnessIntegrationService.saveNutritionData(nutritionData);
-      Alert.alert('Success! 🎉', 'Your nutrition data has been saved successfully!');
+      Alert.alert(t('wellnessForms.nutrition.success'), t('wellnessForms.nutrition.successMessage'));
       if (onSave) {
         onSave();
       }
     } catch (error) {
-      Alert.alert('Error', 'Failed to save nutrition data. Please try again.');
+      Alert.alert(t('wellnessForms.nutrition.error'), t('wellnessForms.nutrition.errorMessage'));
     } finally {
       setLoading(false);
     }
@@ -175,7 +175,7 @@ export default function NutritionTrackingForm({ onSave, onCancel }: NutritionTra
 
         {/* Meal Type Selection */}
         <View style={styles.section}>
-          <Text style={styles.subLabel}>Meal Type</Text>
+          <Text style={styles.subLabel}>{t('wellnessForms.nutrition.mealType')}</Text>
           <View style={styles.mealTypeGrid}>
             {mealTypes.map((type) => (
               <TouchableOpacity
@@ -201,7 +201,7 @@ export default function NutritionTrackingForm({ onSave, onCancel }: NutritionTra
         {/* Time and Calories Row */}
         <View style={styles.mealRow}>
           <View style={styles.timeSection}>
-            <Text style={styles.subLabel}>🕐 Time</Text>
+            <Text style={styles.subLabel}>🕐 {t('wellnessForms.nutrition.time')}</Text>
             <View style={styles.timeInputContainer}>
               <Clock size={16} color={currentTheme.colors.textSecondary} />
               <TextInput
@@ -214,7 +214,7 @@ export default function NutritionTrackingForm({ onSave, onCancel }: NutritionTra
             </View>
           </View>
           <View style={styles.caloriesSection}>
-            <Text style={styles.subLabel}>🔥 Calories</Text>
+            <Text style={styles.subLabel}>🔥 {t('wellnessForms.nutrition.calories')}</Text>
             <View style={styles.caloriesInputContainer}>
               <Zap size={16} color={currentTheme.colors.textSecondary} />
               <TextInput
@@ -231,7 +231,7 @@ export default function NutritionTrackingForm({ onSave, onCancel }: NutritionTra
 
         {/* Foods Section */}
         <View style={styles.section}>
-          <Text style={styles.subLabel}>🍽️ Foods</Text>
+          <Text style={styles.subLabel}>🍽️ {t('wellnessForms.nutrition.foods')}</Text>
           {meal.foods.map((food: string, foodIndex: number) => (
             <View key={foodIndex} style={styles.foodRow}>
               <View style={styles.foodInputContainer}>
@@ -240,7 +240,7 @@ export default function NutritionTrackingForm({ onSave, onCancel }: NutritionTra
                   style={styles.foodInput}
                   value={food}
                   onChangeText={(text) => updateFood(index, foodIndex, text)}
-                  placeholder="Enter food item (e.g., Grilled chicken salad)"
+                  placeholder={t('wellnessForms.nutrition.foodPlaceholder')}
                   placeholderTextColor={currentTheme.colors.textSecondary}
                 />
               </View>
@@ -253,13 +253,13 @@ export default function NutritionTrackingForm({ onSave, onCancel }: NutritionTra
           ))}
           <TouchableOpacity onPress={() => addFoodToMeal(index)} style={styles.addFoodButton}>
             <Plus size={16} color={currentTheme.colors.primary} />
-            <Text style={styles.addFoodText}>Add Another Food</Text>
+            <Text style={styles.addFoodText}>{t('wellnessForms.nutrition.addAnotherFood')}</Text>
           </TouchableOpacity>
         </View>
 
         {/* Mood Impact */}
         <View style={styles.section}>
-          <Text style={styles.subLabel}>💭 How did this meal make you feel?</Text>
+          <Text style={styles.subLabel}>💭 {t('wellnessForms.nutrition.moodImpact')}</Text>
           <View style={styles.moodImpactGrid}>
             {moodImpacts.map((impact) => (
               <TouchableOpacity
@@ -296,14 +296,14 @@ export default function NutritionTrackingForm({ onSave, onCancel }: NutritionTra
           <Utensils size={28} color={currentTheme.colors.primary} />
         </View>
         <View>
-          <Text style={styles.title}>Nutrition Tracking</Text>
-          <Text style={styles.subtitle}>Track your meals and hydration</Text>
+          <Text style={styles.title}>{t('wellnessForms.nutrition.title')}</Text>
+          <Text style={styles.subtitle}>{t('wellnessForms.nutrition.subtitle')}</Text>
         </View>
       </View>
 
       {/* Date Section */}
       <View style={styles.dateCard}>
-        <Text style={styles.dateLabel}>📅 Date</Text>
+        <Text style={styles.dateLabel}>📅 {t('wellnessForms.nutrition.date')}</Text>
         <TextInput
           style={styles.dateInput}
           value={formData.date}
@@ -319,19 +319,19 @@ export default function NutritionTrackingForm({ onSave, onCancel }: NutritionTra
           <View style={styles.waterTitleContainer}>
             <Text style={styles.waterIcon}>💧</Text>
             <View>
-              <Text style={styles.waterTitle}>Water Intake</Text>
-              <Text style={styles.waterSubtitle}>Stay hydrated throughout the day</Text>
+              <Text style={styles.waterTitle}>{t('wellnessForms.nutrition.waterIntake')}</Text>
+              <Text style={styles.waterSubtitle}>{t('wellnessForms.nutrition.waterSubtitle')}</Text>
             </View>
           </View>
           <View style={styles.waterAmountContainer}>
             <Text style={styles.waterAmount}>{formData.waterIntake || 0}</Text>
-            <Text style={styles.waterUnit}>ml</Text>
+            <Text style={styles.waterUnit}>{t('wellnessForms.nutrition.ml')}</Text>
           </View>
         </View>
 
         {/* Quick Add Buttons */}
         <View style={styles.waterQuickAdd}>
-          <Text style={styles.waterSectionLabel}>Quick Add</Text>
+          <Text style={styles.waterSectionLabel}>{t('wellnessForms.nutrition.quickAdd')}</Text>
           <View style={styles.waterPresets}>
             {waterPresets.map((preset) => (
               <TouchableOpacity
@@ -349,7 +349,7 @@ export default function NutritionTrackingForm({ onSave, onCancel }: NutritionTra
 
         {/* Custom Amount Input */}
         <View style={styles.waterCustomSection}>
-          <Text style={styles.waterSectionLabel}>Custom Amount</Text>
+          <Text style={styles.waterSectionLabel}>{t('wellnessForms.nutrition.customAmount')}</Text>
           <View style={styles.waterCustomControls}>
             <TextInput
               style={styles.waterCustomInput}
@@ -359,13 +359,13 @@ export default function NutritionTrackingForm({ onSave, onCancel }: NutritionTra
               placeholderTextColor={currentTheme.colors.textSecondary}
               keyboardType="numeric"
             />
-            <Text style={styles.waterCustomUnit}>ml</Text>
+            <Text style={styles.waterCustomUnit}>{t('wellnessForms.nutrition.ml')}</Text>
           </View>
         </View>
 
         {/* Quick Subtract Buttons */}
         <View style={styles.waterSubtractSection}>
-          <Text style={styles.waterSectionLabel}>Remove</Text>
+          <Text style={styles.waterSectionLabel}>{t('wellnessForms.nutrition.remove')}</Text>
           <View style={styles.waterSubtractButtons}>
             {[250, 500].map((amount) => (
               <TouchableOpacity
@@ -378,7 +378,7 @@ export default function NutritionTrackingForm({ onSave, onCancel }: NutritionTra
               </TouchableOpacity>
             ))}
             <TouchableOpacity onPress={resetWater} style={styles.resetWaterButton}>
-              <Text style={styles.resetWaterText}>Reset</Text>
+              <Text style={styles.resetWaterText}>{t('wellnessForms.nutrition.reset')}</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -386,7 +386,7 @@ export default function NutritionTrackingForm({ onSave, onCancel }: NutritionTra
         {/* Enhanced Progress Bar */}
         <View style={styles.waterProgress}>
           <View style={styles.waterProgressHeader}>
-            <Text style={styles.waterProgressLabel}>Daily Goal Progress</Text>
+            <Text style={styles.waterProgressLabel}>{t('wellnessForms.nutrition.dailyGoalProgress')}</Text>
             <Text style={styles.waterProgressPercentage}>
               {Math.round((formData.waterIntake || 0) / 2000 * 100)}%
             </Text>
@@ -409,18 +409,16 @@ export default function NutritionTrackingForm({ onSave, onCancel }: NutritionTra
           </View>
           {(formData.waterIntake || 0) >= 2000 && (
             <View style={styles.waterGoalAchieved}>
-              <Text style={styles.waterGoalAchievedText}>🎉 Daily goal achieved!</Text>
+              <Text style={styles.waterGoalAchievedText}>{t('wellnessForms.nutrition.dailyGoalAchieved')}</Text>
             </View>
           )}
         </View>
 
         {/* Hydration Tips */}
         <View style={styles.waterTips}>
-          <Text style={styles.waterTipsTitle}>💡 Hydration Tips</Text>
+          <Text style={styles.waterTipsTitle}>💡 {t('wellnessForms.nutrition.hydrationTips')}</Text>
           <Text style={styles.waterTipsText}>
-            • Drink a glass when you wake up{"\n"}
-            • Have water with every meal{"\n"}
-            • Keep a bottle nearby while working
+            {t('wellnessForms.nutrition.hydrationTipsText')}
           </Text>
         </View>
       </View>
@@ -428,18 +426,18 @@ export default function NutritionTrackingForm({ onSave, onCancel }: NutritionTra
       {/* Meals Section */}
       <View style={styles.mealsSection}>
         <View style={styles.sectionHeader}>
-          <Text style={styles.sectionTitle}>🍽️ Meals</Text>
+          <Text style={styles.sectionTitle}>🍽️ {t('wellnessForms.nutrition.meals')}</Text>
           <TouchableOpacity onPress={addMeal} style={styles.addMealButton}>
             <Plus size={20} color="white" />
-            <Text style={styles.addMealText}>Add Meal</Text>
+            <Text style={styles.addMealText}>{t('wellnessForms.nutrition.addMeal')}</Text>
           </TouchableOpacity>
         </View>
         {formData.meals?.map((meal, index) => renderMeal(meal, index))}
         {(!formData.meals || formData.meals.length === 0) && (
           <View style={styles.emptyState}>
             <Text style={styles.emptyStateIcon}>🍽️</Text>
-            <Text style={styles.emptyStateText}>No meals added yet</Text>
-            <Text style={styles.emptyStateSubtext}>Tap "Add Meal" to get started</Text>
+            <Text style={styles.emptyStateText}>{t('wellnessForms.nutrition.noMealsAdded')}</Text>
+            <Text style={styles.emptyStateSubtext}>{t('wellnessForms.nutrition.tapAddMeal')}</Text>
           </View>
         )}
       </View>
@@ -447,10 +445,10 @@ export default function NutritionTrackingForm({ onSave, onCancel }: NutritionTra
       {/* Supplements Section */}
       <View style={styles.supplementsCard}>
         <View style={styles.sectionHeader}>
-          <Text style={styles.sectionTitle}>💊 Supplements</Text>
+          <Text style={styles.sectionTitle}>💊 {t('wellnessForms.nutrition.supplements')}</Text>
           <TouchableOpacity onPress={addSupplement} style={styles.addSupplementButton}>
             <Plus size={16} color={currentTheme.colors.primary} />
-            <Text style={styles.addSupplementText}>Add</Text>
+            <Text style={styles.addSupplementText}>{t('wellnessForms.nutrition.add')}</Text>
           </TouchableOpacity>
         </View>
         {formData.supplements?.map((supplement, index) => (
@@ -459,7 +457,7 @@ export default function NutritionTrackingForm({ onSave, onCancel }: NutritionTra
               style={styles.supplementInput}
               value={supplement}
               onChangeText={(text) => updateSupplement(index, text)}
-              placeholder="Enter supplement name"
+              placeholder={t('wellnessForms.nutrition.supplementPlaceholder')}
               placeholderTextColor={currentTheme.colors.textSecondary}
             />
             <TouchableOpacity onPress={() => removeSupplement(index)} style={styles.removeButton}>
@@ -471,12 +469,12 @@ export default function NutritionTrackingForm({ onSave, onCancel }: NutritionTra
 
       {/* Notes Section */}
       <View style={styles.notesCard}>
-        <Text style={styles.sectionTitle}>📝 Notes</Text>
+        <Text style={styles.sectionTitle}>📝 {t('wellnessForms.nutrition.notes')}</Text>
         <TextInput
           style={[styles.input, styles.textArea]}
           value={formData.notes}
           onChangeText={(text) => setFormData({ ...formData, notes: text })}
-          placeholder="Any additional notes about your nutrition today..."
+          placeholder={t('wellnessForms.nutrition.notesPlaceholder')}
           placeholderTextColor={currentTheme.colors.textSecondary}
           multiline
           numberOfLines={4}
@@ -486,7 +484,7 @@ export default function NutritionTrackingForm({ onSave, onCancel }: NutritionTra
       {/* Action Buttons */}
       <View style={styles.buttonContainer}>
         <TouchableOpacity onPress={onCancel} style={styles.cancelButton}>
-          <Text style={styles.cancelButtonText}>Cancel</Text>
+          <Text style={styles.cancelButtonText}>{t('wellnessForms.nutrition.cancel')}</Text>
         </TouchableOpacity>
         <TouchableOpacity 
           onPress={handleSave} 
@@ -494,7 +492,7 @@ export default function NutritionTrackingForm({ onSave, onCancel }: NutritionTra
           disabled={loading}
         >
           <Text style={styles.saveButtonText}>
-            {loading ? 'Saving...' : 'Save Nutrition Data'}
+            {loading ? t('wellnessForms.nutrition.saving') : t('wellnessForms.nutrition.save')}
           </Text>
         </TouchableOpacity>
       </View>

@@ -1,592 +1,847 @@
-import React, { useState, useMemo, useEffect } from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Dimensions } from 'react-native';
-import { useHabits } from '@/context/HabitContext';
-import { useTheme } from '@/context/ThemeContext';
-import { useLanguage } from '@/context/LanguageContext';
-import { AdvancedAnalyticsService, DetailedCorrelationReport, PredictiveMoodHabitModel, AdvancedPatternRecognition, PersonalizedInsight } from '@/services/AdvancedAnalyticsService';
-import { MoodEntry, HabitMoodEntry, Habit } from '@/types';
+import React, { useState, useEffect } from 'react';
+import {
+  View,
+  Text,
+  StyleSheet,
+  ScrollView,
+  TouchableOpacity,
+  Dimensions,
+  Alert,
+} from 'react-native';
+import { useTheme } from '../context/ThemeContext';
+import { useLanguage } from '../context/LanguageContext';
+import { useSubscription } from '../context/SubscriptionContext';
+import { useHabits } from '../context/HabitContext';
+import {
+  BarChart3,
+  TrendingUp,
+  Calendar,
+  Target,
+  Clock,
+  Award,
+  Zap,
+  Activity,
+  Heart,
+  Brain,
+  Users,
+  Download,
+  Filter,
+  RefreshCw,
+} from 'lucide-react-native';
+import { MoodEntry, HabitMoodEntry } from '../types';
 
 const { width } = Dimensions.get('window');
 
-interface AdvancedAnalyticsDashboardProps {
-  moodData: MoodEntry[];
-  habitMoodData: HabitMoodEntry[];
+interface AnalyticsData {
+  habitCompletions: {
+    date: string;
+    completed: number;
+    total: number;
+  }[];
+  streakData: {
+    habitId: string;
+    habitName: string;
+    currentStreak: number;
+    longestStreak: number;
+    completionRate: number;
+  }[];
+  moodTrends: {
+    date: string;
+    averageMood: number;
+    moodCount: number;
+  }[];
+  performanceMetrics: {
+    totalHabits: number;
+    activeHabits: number;
+    completionRate: number;
+    averageStreak: number;
+    bestPerformingHabit: string;
+    needsAttention: string[];
+  };
 }
 
-export default function AdvancedAnalyticsDashboard({ moodData, habitMoodData }: AdvancedAnalyticsDashboardProps) {
-  const { habits } = useHabits();
+interface AdvancedAnalyticsDashboardProps {
+  moodData?: MoodEntry[];
+  habitMoodData?: HabitMoodEntry[];
+}
+
+const AdvancedAnalyticsDashboard: React.FC<AdvancedAnalyticsDashboardProps> = ({ 
+  moodData = [], 
+  habitMoodData = [] 
+}) => {
   const { currentTheme } = useTheme();
   const { t } = useLanguage();
-  const [selectedTab, setSelectedTab] = useState<'correlations' | 'predictions' | 'patterns' | 'insights'>('correlations');
-  const [selectedTimeframe, setSelectedTimeframe] = useState<'week' | 'month' | 'quarter'>('month');
-  const [correlationReports, setCorrelationReports] = useState<DetailedCorrelationReport[]>([]);
-  const [predictiveModels, setPredictiveModels] = useState<PredictiveMoodHabitModel[]>([]);
-  const [patternRecognition, setPatternRecognition] = useState<AdvancedPatternRecognition | null>(null);
-  const [customInsights, setCustomInsights] = useState<PersonalizedInsight[]>([]);
+  const { canAccessAnalytics, showUpgradePrompt } = useSubscription();
+  const { habits, getCompletionRate, getDailyCompletionData, getTotalCompletions, getOverallCompletionRate } = useHabits();
   
-  const analyticsService = useMemo(() => AdvancedAnalyticsService.getInstance(), []);
-  const styles = createStyles(currentTheme.colors);
+  // Safety check for currentTheme
+  if (!currentTheme || !currentTheme.colors) {
+    return (
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <Text>{t('analytics.loading')}</Text>
+      </View>
+    );
+  }
+  const [selectedTimeframe, setSelectedTimeframe] = useState<'7d' | '30d' | '90d' | '365d'>('30d');
+  const [analyticsData, setAnalyticsData] = useState<AnalyticsData | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
 
-  // Load analytics data
   useEffect(() => {
-    const loadAnalyticsData = async () => {
-      if (!habits || habits.length === 0) return;
+    const days = selectedTimeframe === '7d' ? 7 : selectedTimeframe === '30d' ? 30 : selectedTimeframe === '90d' ? 90 : 365;
+    if (canAccessAnalytics(days)) {
+      loadAnalyticsData();
+    }
+  }, [selectedTimeframe, habits, moodData, habitMoodData]);
+
+  const loadAnalyticsData = async () => {
+    setIsLoading(true);
+    try {
+      // Process real data instead of mock data
+      const realData: AnalyticsData = {
+        habitCompletions: generateRealHabitCompletions(),
+        streakData: generateRealStreakData(),
+        moodTrends: generateRealMoodTrends(),
+        performanceMetrics: generateRealPerformanceMetrics(),
+      };
       
-      try {
-        const [correlations, patterns, insights] = await Promise.all([
-          analyticsService.generateDetailedCorrelationReport(habits, moodData, habitMoodData),
-          analyticsService.performAdvancedPatternRecognition(habits, moodData, habitMoodData),
-          analyticsService.generateCustomInsights('user-id', habits, moodData, habitMoodData)
-        ]);
-        
-        // Generate predictive models for each habit
-        const predictions: PredictiveMoodHabitModel[] = [];
-        for (const habit of habits) {
-          const habitEntries = habitMoodData.filter(entry => entry.habitId === habit.id);
-          if (habitEntries.length > 0) {
-            const prediction = await analyticsService.generatePredictiveMoodHabitModel(
-              habit.id,
-              habitEntries,
-              moodData
-            );
-            predictions.push(prediction);
-          }
-        }
-        
-        setCorrelationReports(correlations);
-        setPredictiveModels(predictions);
-        setPatternRecognition(patterns);
-        setCustomInsights(insights);
-      } catch (error) {
-        console.error('Error loading analytics data:', error);
-      }
-    };
-
-    loadAnalyticsData();
-  }, [habits, moodData, habitMoodData, analyticsService]);
-
-  const getCorrelationStrengthColor = (strength: number) => {
-    if (strength >= 0.7) return currentTheme.colors.success;
-    if (strength >= 0.4) return currentTheme.colors.warning;
-    return currentTheme.colors.error;
+      setAnalyticsData(realData);
+    } catch (error) {
+      Alert.alert(t('analytics.error'), t('analytics.loadError'));
+    } finally {
+      setIsLoading(false);
+    }
   };
 
-  const renderTabBar = () => (
-    <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.tabScrollContainer}>
-      <View style={styles.tabContentContainer}>
+  const generateRealHabitCompletions = () => {
+    if (!habits || habits.length === 0) return [];
+    
+    const days = selectedTimeframe === '7d' ? 7 : selectedTimeframe === '30d' ? 30 : selectedTimeframe === '90d' ? 90 : 365;
+    const data = [];
+    
+    for (let i = days - 1; i >= 0; i--) {
+      const date = new Date();
+      date.setDate(date.getDate() - i);
+      const dateStr = date.toISOString().split('T')[0];
+      
+      const completedOnDay = habits.filter(habit => 
+        habit.completedDates.includes(dateStr)
+      ).length;
+      
+      data.push({
+        date: dateStr,
+        completed: completedOnDay,
+        total: habits.length,
+      });
+    }
+    return data;
+  };
+
+  const generateRealStreakData = () => {
+    if (!habits || habits.length === 0) return [];
+    
+    return habits
+      .map(habit => {
+        // Calculate completion rate for the selected timeframe
+        const days = selectedTimeframe === '7d' ? 7 : selectedTimeframe === '30d' ? 30 : selectedTimeframe === '90d' ? 90 : 365;
+        const startDate = new Date();
+        startDate.setDate(startDate.getDate() - days);
+        
+        const completionsInTimeframe = habit.completedDates.filter(date => {
+          const completionDate = new Date(date);
+          return completionDate >= startDate;
+        }).length;
+        
+        const completionRate = Math.round((completionsInTimeframe / days) * 100);
+        
+        return {
+          habitId: habit.id,
+          habitName: `${habit.icon || '📋'} ${habit.title}`,
+          currentStreak: habit.streak,
+          longestStreak: habit.bestStreak || habit.streak,
+          completionRate: Math.max(0, Math.min(100, completionRate)),
+        };
+      })
+      .sort((a, b) => b.completionRate - a.completionRate)
+      .slice(0, 4); // Top 4 habits
+  };
+
+  const generateRealMoodTrends = () => {
+    if (!moodData || moodData.length === 0) return [];
+    
+    const days = selectedTimeframe === '7d' ? 7 : selectedTimeframe === '30d' ? 30 : selectedTimeframe === '90d' ? 90 : 365;
+    const startDate = new Date();
+    startDate.setDate(startDate.getDate() - days);
+    
+    // Filter mood data for the selected timeframe
+    const timeframeMoodData = moodData.filter(entry => {
+      const entryDate = new Date(entry.timestamp);
+      return entryDate >= startDate;
+    });
+    
+    // Group mood data by date
+    const moodByDate = timeframeMoodData.reduce((acc: any, entry) => {
+      const dateStr = new Date(entry.timestamp).toISOString().split('T')[0];
+      if (!acc[dateStr]) {
+        acc[dateStr] = { total: 0, count: 0 };
+      }
+      acc[dateStr].total += entry.intensity || 5; // Default to 5 if no intensity
+      acc[dateStr].count += 1;
+      return acc;
+    }, {});
+    
+    // Convert to array format
+    return Object.entries(moodByDate).map(([date, data]: [string, any]) => ({
+      date,
+      averageMood: Math.round((data.total / data.count) * 10) / 10,
+      moodCount: data.count,
+    })).sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+  };
+
+  const generateRealPerformanceMetrics = () => {
+    if (!habits || habits.length === 0) {
+      return {
+        totalHabits: 0,
+        activeHabits: 0,
+        completionRate: 0,
+        averageStreak: 0,
+        bestPerformingHabit: '',
+        needsAttention: [],
+      };
+    }
+    
+    const days = selectedTimeframe === '7d' ? 7 : selectedTimeframe === '30d' ? 30 : selectedTimeframe === '90d' ? 90 : 365;
+    const startDate = new Date();
+    startDate.setDate(startDate.getDate() - days);
+    
+    // Calculate active habits (habits with completions in timeframe)
+    const activeHabits = habits.filter(habit => {
+      return habit.completedDates.some(date => {
+        const completionDate = new Date(date);
+        return completionDate >= startDate;
+      });
+    });
+    
+    // Calculate completion rate for the timeframe
+    const completionRate = getCompletionRate(days);
+    
+    // Calculate average streak
+    const averageStreak = Math.round(
+      habits.reduce((sum, habit) => sum + habit.streak, 0) / habits.length
+    );
+    
+    // Find best performing habit
+    const bestPerformingHabit = habits
+      .sort((a, b) => b.streak - a.streak)[0];
+    
+    // Find habits that need attention (low completion rate or broken streaks)
+    const needsAttention = habits
+      .filter(habit => {
+        const recentCompletions = habit.completedDates.filter(date => {
+          const completionDate = new Date(date);
+          return completionDate >= startDate;
+        }).length;
+        const recentCompletionRate = (recentCompletions / days) * 100;
+        return recentCompletionRate < 30 || habit.streak === 0;
+      })
+      .slice(0, 2)
+      .map(habit => habit.title);
+    
+    return {
+      totalHabits: habits.length,
+      activeHabits: activeHabits.length,
+      completionRate: Math.round(completionRate),
+      averageStreak,
+      bestPerformingHabit: bestPerformingHabit ? `${bestPerformingHabit.icon || '📋'} ${bestPerformingHabit.title}` : '',
+      needsAttention,
+    };
+  };
+
+  const handleExportData = () => {
+    if (!analyticsData) return;
+    
+    Alert.alert(
+      t('analytics.exportTitle'),
+      t('analytics.exportMessage'),
+      [
+        { text: t('common.cancel'), style: 'cancel' },
+        { 
+          text: t('analytics.export'), 
+          onPress: () => {
+            // Simulate export
+            Alert.alert(t('analytics.exportSuccess'), t('analytics.exportSuccessMessage'));
+          }
+        },
+      ]
+    );
+  };
+
+  const renderTimeframeSelector = () => (
+    <View style={styles.timeframeContainer}>
+      <Text style={[styles.sectionTitle, { color: currentTheme.colors.text }]}>
+        {t('analytics.timeframe')}
+      </Text>
+      <View style={styles.timeframeButtons}>
         {[
-          { key: 'correlations', label: t('advancedAnalytics.tabs.correlations'), icon: '📊' },
-          { key: 'predictions', label: t('advancedAnalytics.tabs.predictions'), icon: '🔮' },
-          { key: 'patterns', label: t('advancedAnalytics.tabs.patterns'), icon: '🧩' },
-          { key: 'insights', label: t('advancedAnalytics.tabs.insights'), icon: '💡' }
-        ].map((tab) => (
+          { key: '7d', label: t('analytics.last7Days') },
+          { key: '30d', label: t('analytics.last30Days') },
+          { key: '90d', label: t('analytics.last90Days') },
+          { key: '365d', label: t('analytics.lastYear') },
+        ].map((timeframe) => (
           <TouchableOpacity
-            key={tab.key}
-            style={[styles.tab, selectedTab === tab.key && styles.activeTab]}
-            onPress={() => setSelectedTab(tab.key as any)}
+            key={timeframe.key}
+            style={[
+              styles.timeframeButton,
+              {
+                backgroundColor: selectedTimeframe === timeframe.key 
+                  ? currentTheme.colors.primary 
+                  : currentTheme.colors.surface,
+                borderColor: currentTheme.colors.border,
+              },
+            ]}
+            onPress={() => setSelectedTimeframe(timeframe.key as any)}
           >
-            <Text style={[styles.tabIcon, selectedTab === tab.key && styles.activeTabIcon]}>
-              {tab.icon}
-            </Text>
-            <Text style={[styles.tabText, selectedTab === tab.key && styles.activeTabText]}>
-              {tab.label}
+            <Text
+              style={[
+                styles.timeframeButtonText,
+                {
+                  color: selectedTimeframe === timeframe.key 
+                    ? "#FFFFFF" 
+                    : currentTheme.colors.text,
+                },
+              ]}
+            >
+              {timeframe.label}
             </Text>
           </TouchableOpacity>
         ))}
       </View>
-    </ScrollView>
+    </View>
   );
 
-  const renderTimeframeSelector = () => (
-    <View style={styles.timeframeContainer}>
-      {['week', 'month', 'quarter'].map((timeframe) => (
-        <TouchableOpacity
-          key={timeframe}
-          style={[styles.timeframeButton, selectedTimeframe === timeframe && styles.activeTimeframeButton]}
-          onPress={() => setSelectedTimeframe(timeframe as any)}
-        >
-          <Text style={[styles.timeframeText, selectedTimeframe === timeframe && styles.activeTimeframeText]}>
-            {t(`advancedAnalytics.timeframes.${timeframe}`)}
+  const renderPerformanceOverview = () => {
+    if (!analyticsData) return null;
+    
+    const { performanceMetrics } = analyticsData;
+    
+    return (
+      <View style={[styles.section, { backgroundColor: currentTheme.colors.card }]}>
+        <View style={styles.sectionHeader}>
+          <BarChart3 size={24} color={currentTheme.colors.primary} />
+          <Text style={[styles.sectionTitle, { color: currentTheme.colors.text }]}>
+            {t('analytics.performanceOverview')}
           </Text>
-        </TouchableOpacity>
-      ))}
-    </View>
-  );
-
-  const getCorrelationStrengthLabel = (strength: number) => {
-    if (strength >= 0.7) return t('advancedAnalytics.correlations.strengthStrong');
-    if (strength >= 0.4) return t('advancedAnalytics.correlations.strengthModerate');
-    return t('advancedAnalytics.correlations.strengthWeak');
-  };
-
-  const renderCorrelationReports = () => (
-    <View style={styles.section}>
-      <Text style={styles.sectionTitle}>{t('advancedAnalytics.sections.correlationsTitle')}</Text>
-      <View style={styles.correlationGrid}>
-        {correlationReports.length > 0 ? correlationReports.map((report, index) => (
-          <View key={index} style={styles.correlationCard}>
-            <View style={styles.correlationHeader}>
-              <Text style={styles.correlationTitle}>{report.habitTitle}</Text>
-              <View style={[styles.strengthBadge, { backgroundColor: getCorrelationStrengthColor(report.correlationStrength) }]}>
-                <Text style={styles.strengthText}>{getCorrelationStrengthLabel(report.correlationStrength)}</Text>
-              </View>
-            </View>
-            <Text style={styles.correlationScore}>{report.correlationStrength > 0 ? '+' : ''}{report.correlationStrength.toFixed(2)}</Text>
-            <Text style={styles.correlationDescription}>
-              {report.correlationStrength > 0.5 ? t('advancedAnalytics.correlations.strongPositive') :
-               report.correlationStrength > 0 ? t('advancedAnalytics.correlations.moderatePositive') :
-               t('advancedAnalytics.correlations.negative')}
+        </View>
+        
+        <View style={styles.metricsGrid}>
+          <View style={styles.metricCard}>
+            <Target size={20} color={currentTheme.colors.success} />
+            <Text style={[styles.metricValue, { color: currentTheme.colors.text }]}>
+              {performanceMetrics.totalHabits}
             </Text>
-            <View style={styles.correlationMetrics}>
-              <View style={styles.metricItem}>
-                <Text style={styles.metricLabel}>{t('advancedAnalytics.correlations.bestTimes')}</Text>
-                <Text style={styles.metricValue}>{report.timePatterns?.bestTimes?.[0] || t('advancedAnalytics.common.notAvailable')}</Text>
-              </View>
-              <View style={styles.metricItem}>
-                <Text style={styles.metricLabel}>{t('advancedAnalytics.correlations.optimalMood')}</Text>
-                <Text style={styles.metricValue}>{report.optimalMoodStates?.[0] || t('advancedAnalytics.common.notAvailable')}</Text>
-              </View>
-            </View>
+            <Text style={[styles.metricLabel, { color: currentTheme.colors.textSecondary }]}>
+              {t('analytics.totalHabits')}
+            </Text>
           </View>
-        )) : (
-          <View style={styles.emptyState}>
-            <Text style={styles.emptyStateText}>{t('advancedAnalytics.correlations.noData')}</Text>
-          </View>
-        )}
-      </View>
-    </View>
-  );
-
-  const renderPredictiveModels = () => (
-    <View style={styles.section}>
-      <Text style={styles.sectionTitle}>🔮 Habit Success Predictions</Text>
-      <View style={styles.predictionGrid}>
-        {predictiveModels.length > 0 ? predictiveModels.map((model, index) => {
-          // Find the habit title from the habits array
-          const habit = habits?.find(h => h.id === model.habitId);
-          const habitTitle = habit?.title || 'Unknown Habit';
           
-          // Calculate average success probability from predictions
-          const avgSuccessProbability = model.predictions?.nextWeek?.length > 0 
-            ? Math.round(model.predictions.nextWeek.reduce((sum, pred) => sum + pred.successProbability, 0) / model.predictions.nextWeek.length)
-            : 50;
-
-          return (
-            <View key={index} style={styles.predictionCard}>
-              <View style={styles.predictionHeader}>
-                <Text style={styles.predictionTitle}>{habitTitle}</Text>
-                <Text style={[styles.predictionProbability, { color: avgSuccessProbability >= 70 ? currentTheme.colors.success : avgSuccessProbability >= 40 ? currentTheme.colors.warning : currentTheme.colors.error }]}>
-                  {avgSuccessProbability}%
+          <View style={styles.metricCard}>
+            <Activity size={20} color={currentTheme.colors.primary} />
+            <Text style={[styles.metricValue, { color: currentTheme.colors.text }]}>
+              {performanceMetrics.activeHabits}
+            </Text>
+            <Text style={[styles.metricLabel, { color: currentTheme.colors.textSecondary }]}>
+              {t('analytics.activeHabits')}
+            </Text>
+          </View>
+          
+          <View style={styles.metricCard}>
+            <TrendingUp size={20} color={currentTheme.colors.accent} />
+            <Text style={[styles.metricValue, { color: currentTheme.colors.text }]}>
+              {performanceMetrics.completionRate}%
+            </Text>
+            <Text style={[styles.metricLabel, { color: currentTheme.colors.textSecondary }]}>
+              {t('analytics.completionRate')}
+            </Text>
+          </View>
+          
+          <View style={styles.metricCard}>
+            <Award size={20} color={currentTheme.colors.warning} />
+            <Text style={[styles.metricValue, { color: currentTheme.colors.text }]}>
+              {performanceMetrics.averageStreak}
+            </Text>
+            <Text style={[styles.metricLabel, { color: currentTheme.colors.textSecondary }]}>
+              {t('analytics.avgStreak')}
+            </Text>
+          </View>
+        </View>
+        
+        {/* Show insights when there's data */}
+        {performanceMetrics.totalHabits > 0 && (
+          <View style={styles.insightsContainer}>
+            {performanceMetrics.bestPerformingHabit && (
+              <View style={styles.insightItem}>
+                <Text style={[styles.insightLabel, { color: currentTheme.colors.textSecondary }]}>
+                  🏆 {t('analytics.bestPerformer')}:
+                </Text>
+                <Text style={[styles.insightValue, { color: currentTheme.colors.success }]}>
+                  {performanceMetrics.bestPerformingHabit}
                 </Text>
               </View>
-              <Text style={styles.predictionSubtitle}>Average Success Probability This Week</Text>
-              <View style={styles.predictionFactors}>
-                {model.riskFactors?.slice(0, 3).map((factor, factorIndex) => (
-                  <Text key={factorIndex} style={styles.factorText}>• {factor.factor}: {factor.impact > 0 ? '+' : ''}{Math.round(factor.impact * 100)}%</Text>
-                )) || [
-                  <Text key="mood" style={styles.factorText}>• Current mood: {t('moodCheckIn.moodTags.calm')} (+15%)</Text>,
-                  <Text key="time" style={styles.factorText}>• Time of day: Evening (+12%)</Text>,
-                  <Text key="streak" style={styles.factorText}>• Recent streak: 5 days (+20%)</Text>
-                ]}
+            )}
+            
+            {performanceMetrics.needsAttention.length > 0 && (
+              <View style={styles.insightItem}>
+                <Text style={[styles.insightLabel, { color: currentTheme.colors.textSecondary }]}>
+                  ⚠️ {t('analytics.needsAttention')}:
+                </Text>
+                <Text style={[styles.insightValue, { color: currentTheme.colors.warning }]}>
+                  {performanceMetrics.needsAttention.join(', ')}
+                </Text>
               </View>
-            </View>
-          );
-        }) : (
-          <View style={styles.emptyState}>
-            <Text style={styles.emptyStateText}>Building predictive models... Complete more habits for accurate predictions!</Text>
+            )}
           </View>
         )}
       </View>
-    </View>
-  );
+    );
+  };
 
-  const renderPatternRecognition = () => {
-    // Handle the case where patternRecognition is a single object, not an array
-    const patterns = patternRecognition ? [
-      ...patternRecognition.cyclicalPatterns.map(p => ({ type: 'Cyclical', title: p.pattern, description: p.description, recommendation: `Optimize for ${p.frequency} patterns` })),
-      ...patternRecognition.triggerEvents.map(t => ({ type: 'Trigger', title: t.trigger, description: t.effect, recommendation: t.examples[0] || 'Monitor this trigger' })),
-      ...patternRecognition.habitChains.map(h => ({ type: 'Chain', title: `${h.sequence.join(' → ')}`, description: `Success rate: ${Math.round(h.successRate * 100)}%`, recommendation: `Best timing: ${h.optimalTiming}` })),
-      ...patternRecognition.moodCascades.map(m => ({ type: 'Mood Cascade', title: `${m.initialMood} cascade`, description: `Leads to ${m.resultingMoods.join(', ')} over ${m.timeframe}`, recommendation: m.interventionPoints[0] || 'Early intervention recommended' }))
-    ] : [];
-
+  const renderStreakAnalysis = () => {
+    if (!analyticsData) return null;
+    
     return (
-      <View style={styles.section}>
-        <Text style={styles.sectionTitle}>🧩 Advanced Pattern Recognition</Text>
-        <View style={styles.patternGrid}>
-          {patterns.length > 0 ? patterns.map((pattern, index) => (
-            <View key={index} style={styles.patternCard}>
-              <Text style={styles.patternType}>{pattern.type}</Text>
-              <Text style={styles.patternTitle}>{pattern.title}</Text>
-              <Text style={styles.patternDescription}>{pattern.description}</Text>
-              <View style={styles.patternRecommendation}>
-                <Text style={styles.recommendationText}>💡 {pattern.recommendation}</Text>
+      <View style={[styles.section, { backgroundColor: currentTheme.colors.card }]}>
+        <View style={styles.sectionHeader}>
+          <Clock size={24} color={currentTheme.colors.primary} />
+          <Text style={[styles.sectionTitle, { color: currentTheme.colors.text }]}>
+            {t('analytics.streakAnalysis')}
+          </Text>
+        </View>
+        
+        {analyticsData.streakData.length === 0 ? (
+          <Text style={[styles.emptyText, { color: currentTheme.colors.textSecondary }]}>
+            {t('analytics.noStreakData')}
+          </Text>
+        ) : (
+          analyticsData.streakData.map((streak, index) => (
+            <View key={streak.habitId} style={styles.streakItem}>
+              <View style={styles.streakHeader}>
+                <Text style={[styles.habitName, { color: currentTheme.colors.text }]}>
+                  {streak.habitName}
+                </Text>
+                <Text style={[styles.completionRate, { color: currentTheme.colors.success }]}>
+                  {streak.completionRate}%
+                </Text>
+              </View>
+              
+              <View style={styles.streakProgress}>
+                <View style={styles.streakInfo}>
+                  <Text style={[styles.streakLabel, { color: currentTheme.colors.textSecondary }]}>
+                    {t('analytics.currentStreak')}
+                  </Text>
+                  <Text style={[styles.streakValue, { color: currentTheme.colors.primary }]}>
+                    {streak.currentStreak} {t('analytics.days')}
+                  </Text>
+                </View>
+                
+                <View style={styles.streakInfo}>
+                  <Text style={[styles.streakLabel, { color: currentTheme.colors.textSecondary }]}>
+                    {t('analytics.longestStreak')}
+                  </Text>
+                  <Text style={[styles.streakValue, { color: currentTheme.colors.accent }]}>
+                    {streak.longestStreak} {t('analytics.days')}
+                  </Text>
+                </View>
+              </View>
+              
+              <View style={[styles.progressBar, { backgroundColor: currentTheme.colors.border }]}>
+                <View 
+                  style={[
+                    styles.progressFill, 
+                    { 
+                      width: `${streak.completionRate}%`,
+                      backgroundColor: currentTheme.colors.success,
+                    }
+                  ]} 
+                />
               </View>
             </View>
-          )) : (
-            <View style={styles.emptyState}>
-              <Text style={styles.emptyStateText}>Analyzing patterns... More data needed for pattern recognition!</Text>
+          ))
+        )}
+      </View>
+    );
+  };
+
+  const renderMoodTrends = () => {
+    if (!analyticsData) return null;
+    
+    const recentMoods = analyticsData.moodTrends.slice(-7);
+    
+    // Don't render if no mood data
+    if (recentMoods.length === 0) {
+      return (
+        <View style={[styles.section, { backgroundColor: currentTheme.colors.card }]}>
+          <View style={styles.sectionHeader}>
+            <Heart size={24} color={currentTheme.colors.primary} />
+            <Text style={[styles.sectionTitle, { color: currentTheme.colors.text }]}>
+              {t('analytics.moodTrends')}
+            </Text>
+          </View>
+          <Text style={[styles.emptyText, { color: currentTheme.colors.textSecondary }]}>
+            {t('analytics.noMoodData')}
+          </Text>
+        </View>
+      );
+    }
+    
+    const averageMood = recentMoods.reduce((sum, mood) => sum + mood.averageMood, 0) / recentMoods.length;
+    
+    return (
+      <View style={[styles.section, { backgroundColor: currentTheme.colors.card }]}>
+        <View style={styles.sectionHeader}>
+          <Heart size={24} color={currentTheme.colors.primary} />
+          <Text style={[styles.sectionTitle, { color: currentTheme.colors.text }]}>
+            {t('analytics.moodTrends')}
+          </Text>
+        </View>
+        
+        <View style={styles.moodOverview}>
+          <View style={styles.moodMetric}>
+            <Text style={[styles.moodValue, { color: currentTheme.colors.text }]}>
+              {averageMood.toFixed(1)}
+            </Text>
+            <Text style={[styles.moodLabel, { color: currentTheme.colors.textSecondary }]}>
+              {t('analytics.avgMood')}
+            </Text>
+          </View>
+          
+          <View style={styles.moodMetric}>
+            <Text style={[styles.moodValue, { color: currentTheme.colors.text }]}>
+              {recentMoods.length}
+            </Text>
+            <Text style={[styles.moodLabel, { color: currentTheme.colors.textSecondary }]}>
+              {t('analytics.moodEntries')}
+            </Text>
+          </View>
+        </View>
+        
+        <View style={styles.moodChart}>
+          {recentMoods.map((mood, index) => (
+            <View key={index} style={styles.moodBar}>
+              <View 
+                style={[
+                  styles.moodBarFill,
+                  { 
+                    height: `${(mood.averageMood / 8) * 100}%`,
+                    backgroundColor: currentTheme.colors.primary,
+                  }
+                ]} 
+              />
+              <Text style={[styles.moodDate, { color: currentTheme.colors.textSecondary }]}>
+                {new Date(mood.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+              </Text>
             </View>
-          )}
+          ))}
         </View>
       </View>
     );
   };
 
-  const renderCustomInsights = () => (
-    <View style={styles.section}>
-      <Text style={styles.sectionTitle}>💡 Personalized Insights</Text>
-      <View style={styles.insightsContainer}>
-        {customInsights.length > 0 ? customInsights.map((insight, index) => {
-          const getInsightIcon = (type: string) => {
-            switch (type) {
-              case 'pattern': return '🔍';
-              case 'opportunity': return '🎯';
-              case 'warning': return '⚠️';
-              case 'achievement': return '🏆';
-              default: return '💡';
-            }
-          };
-
-          return (
-            <View key={index} style={styles.insightCard}>
-              <View style={styles.insightHeader}>
-                <Text style={styles.insightIcon}>{getInsightIcon(insight.type)}</Text>
-                <View style={styles.insightContent}>
-                  <Text style={styles.insightTitle}>{insight.title}</Text>
-                  <Text style={styles.insightConfidence}>{insight.priority} priority</Text>
-                </View>
-              </View>
-              <Text style={styles.insightDescription}>{insight.description}</Text>
-              {insight.actionable && (
-                <TouchableOpacity style={styles.insightAction}>
-                  <Text style={styles.actionText}>Apply Suggestion</Text>
-                </TouchableOpacity>
-              )}
-            </View>
-          );
-        }) : (
-          <View style={styles.emptyState}>
-            <Text style={styles.emptyStateText}>Generating personalized insights... Keep tracking to unlock custom recommendations!</Text>
-          </View>
-        )}
-      </View>
+  const renderActionButtons = () => (
+    <View style={styles.actionButtons}>
+      <TouchableOpacity
+        style={[styles.actionButton, { backgroundColor: currentTheme.colors.surface }]}
+        onPress={loadAnalyticsData}
+        disabled={isLoading}
+      >
+        <RefreshCw size={20} color={currentTheme.colors.primary} />
+        <Text style={[styles.actionButtonText, { color: currentTheme.colors.primary }]}>
+          {isLoading ? t('analytics.refreshing') : t('analytics.refresh')}
+        </Text>
+      </TouchableOpacity>
+      
+      <TouchableOpacity
+        style={[styles.actionButton, { backgroundColor: currentTheme.colors.primary }]}
+        onPress={handleExportData}
+      >
+        <Download size={20} color="#FFFFFF" />
+        <Text style={[styles.actionButtonText, { color: "#FFFFFF" }]}>
+          {t('analytics.export')}
+        </Text>
+      </TouchableOpacity>
     </View>
   );
 
-  const renderContent = () => {
-    switch (selectedTab) {
-      case 'correlations':
-        return renderCorrelationReports();
-      case 'predictions':
-        return renderPredictiveModels();
-      case 'patterns':
-        return renderPatternRecognition();
-      case 'insights':
-        return renderCustomInsights();
-      default:
-        return renderCorrelationReports();
-    }
-  };
+  if (!canAccessAnalytics(30)) {
+    return (
+      <View style={styles.upgradeContainer}>
+        <BarChart3 size={48} color={currentTheme.colors.primary} />
+        <Text style={[styles.upgradeTitle, { color: currentTheme.colors.text }]}>
+          {t('analytics.upgradeRequired')}
+        </Text>
+        <Text style={[styles.upgradeMessage, { color: currentTheme.colors.textSecondary }]}>
+          {t('analytics.upgradeMessage')}
+        </Text>
+        <TouchableOpacity
+          style={[styles.upgradeButton, { backgroundColor: currentTheme.colors.primary }]}
+          onPress={() => showUpgradePrompt('analytics_limit')}
+        >
+          <Text style={[styles.upgradeButtonText, { color: "#FFFFFF" }]}>
+            {t('premium.upgradeToPro')}
+          </Text>
+        </TouchableOpacity>
+      </View>
+    );
+  }
+
+  // Show empty state if no data
+  if (!habits || habits.length === 0) {
+    return (
+      <View style={[styles.upgradeContainer, { backgroundColor: currentTheme.colors.background }]}>
+        <BarChart3 size={48} color={currentTheme.colors.primary} />
+        <Text style={[styles.upgradeTitle, { color: currentTheme.colors.text }]}>
+          {t('analytics.noDataTitle')}
+        </Text>
+        <Text style={[styles.upgradeMessage, { color: currentTheme.colors.textSecondary }]}>
+          {t('analytics.noDataMessage')}
+        </Text>
+      </View>
+    );
+  }
 
   return (
-    <View style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.title}>{t('advancedAnalytics.title')}</Text>
-        <Text style={styles.subtitle}>{t('advancedAnalytics.subtitle')}</Text>
-        {renderTabBar()}
-        {renderTimeframeSelector()}
-      </View>
-      <ScrollView style={styles.content}>
-        {renderContent()}
-      </ScrollView>
-    </View>
+    <ScrollView style={[styles.container, { backgroundColor: currentTheme.colors.background }]}>
+      {renderTimeframeSelector()}
+      {renderPerformanceOverview()}
+      {renderStreakAnalysis()}
+      {renderMoodTrends()}
+      {renderActionButtons()}
+    </ScrollView>
   );
-}
+};
 
-const createStyles = (colors: any) => StyleSheet.create({
+const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.background,
   },
-  header: {
-    backgroundColor: colors.surface,
-    paddingTop: 40,
-    paddingHorizontal: 20,
-    paddingBottom: 16,
-    borderBottomWidth: 1,
-    borderBottomColor: colors.border,
-  },
-  title: {
-    fontSize: 28,
-    fontWeight: 'bold',
-    color: colors.text,
-    marginBottom: 4,
-  },
-  subtitle: {
-    fontSize: 16,
-    color: colors.textSecondary,
-    marginBottom: 20,
-  },
-  tabScrollContainer: {
-    marginHorizontal: -20,
-    marginBottom: 16,
-  },
-  tabContentContainer: {
-    paddingHorizontal: 20,
-    flexDirection: 'row',
-    gap: 12,
-  },
-  tab: {
-    flexDirection: 'row',
+  upgradeContainer: {
+    flex: 1,
+    justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: colors.card,
+    padding: 20,
+  },
+  upgradeTitle: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginTop: 16,
+    marginBottom: 8,
+    textAlign: 'center',
+  },
+  upgradeMessage: {
+    fontSize: 16,
+    textAlign: 'center',
+    lineHeight: 24,
+    marginBottom: 24,
+  },
+  upgradeButton: {
     paddingVertical: 12,
-    paddingHorizontal: 16,
-    borderRadius: 12,
-    minWidth: 100,
+    paddingHorizontal: 24,
+    borderRadius: 8,
   },
-  activeTab: {
-    backgroundColor: colors.primary,
-  },
-  tabIcon: {
+  upgradeButtonText: {
     fontSize: 16,
-    marginRight: 6,
-  },
-  activeTabIcon: {
-    fontSize: 16,
-  },
-  tabText: {
-    fontSize: 14,
     fontWeight: '600',
-    color: colors.textSecondary,
-  },
-  activeTabText: {
-    color: colors.background,
   },
   timeframeContainer: {
+    padding: 20,
+  },
+  timeframeButtons: {
     flexDirection: 'row',
-    backgroundColor: colors.card,
-    borderRadius: 12,
-    padding: 4,
+    gap: 8,
+    marginTop: 12,
   },
   timeframeButton: {
     flex: 1,
     paddingVertical: 8,
-    alignItems: 'center',
+    paddingHorizontal: 12,
     borderRadius: 8,
+    borderWidth: 1,
+    alignItems: 'center',
   },
-  activeTimeframeButton: {
-    backgroundColor: colors.primary,
-  },
-  timeframeText: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: colors.textSecondary,
-  },
-  activeTimeframeText: {
-    color: colors.background,
-  },
-  content: {
-    flex: 1,
+  timeframeButtonText: {
+    fontSize: 12,
+    fontWeight: '500',
   },
   section: {
-    padding: 20,
+    margin: 20,
+    marginTop: 0,
+    borderRadius: 12,
+    padding: 16,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 2,
+  },
+  sectionHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 16,
+    gap: 8,
   },
   sectionTitle: {
-    fontSize: 22,
-    fontWeight: 'bold',
-    color: colors.text,
-    marginBottom: 16,
-  },
-  correlationGrid: {
-    gap: 16,
-  },
-  correlationCard: {
-    backgroundColor: colors.card,
-    padding: 20,
-    borderRadius: 16,
-    borderLeftWidth: 4,
-    borderLeftColor: colors.primary,
-  },
-  correlationHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 12,
-  },
-  correlationTitle: {
     fontSize: 18,
-    fontWeight: 'bold',
-    color: colors.text,
-    flex: 1,
+    fontWeight: '600',
   },
-  strengthBadge: {
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    borderRadius: 12,
-  },
-  strengthText: {
-    fontSize: 12,
-    fontWeight: 'bold',
-    color: colors.background,
-  },
-  correlationScore: {
-    fontSize: 32,
-    fontWeight: 'bold',
-    color: colors.primary,
-    marginBottom: 8,
-  },
-  correlationDescription: {
-    fontSize: 14,
-    color: colors.textSecondary,
-    marginBottom: 16,
-  },
-  correlationMetrics: {
+  metricsGrid: {
     flexDirection: 'row',
-    justifyContent: 'space-around',
+    flexWrap: 'wrap',
+    gap: 12,
   },
-  metricItem: {
+  metricCard: {
+    flex: 1,
+    minWidth: (width - 80) / 2,
     alignItems: 'center',
+    padding: 16,
+    borderRadius: 8,
+    backgroundColor: 'rgba(0, 0, 0, 0.02)',
+  },
+  metricValue: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginTop: 8,
+    marginBottom: 4,
   },
   metricLabel: {
     fontSize: 12,
-    color: colors.textSecondary,
-    marginBottom: 4,
+    textAlign: 'center',
   },
-  metricValue: {
-    fontSize: 14,
-    fontWeight: 'bold',
-    color: colors.text,
+  streakItem: {
+    marginBottom: 16,
   },
-  predictionGrid: {
-    gap: 16,
-  },
-  predictionCard: {
-    backgroundColor: colors.card,
-    padding: 20,
-    borderRadius: 16,
-  },
-  predictionHeader: {
+  streakHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     marginBottom: 8,
   },
-  predictionTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: colors.text,
-    flex: 1,
+  habitName: {
+    fontSize: 16,
+    fontWeight: '500',
   },
-  predictionProbability: {
-    fontSize: 24,
-    fontWeight: 'bold',
-  },
-  predictionSubtitle: {
+  completionRate: {
     fontSize: 14,
-    color: colors.textSecondary,
-    marginBottom: 16,
-  },
-  predictionFactors: {
-    gap: 8,
-  },
-  factorText: {
-    fontSize: 14,
-    color: colors.text,
-  },
-  patternGrid: {
-    gap: 16,
-  },
-  patternCard: {
-    backgroundColor: colors.card,
-    padding: 20,
-    borderRadius: 16,
-  },
-  patternType: {
-    fontSize: 12,
     fontWeight: '600',
-    color: colors.primary,
-    textTransform: 'uppercase',
+  },
+  streakProgress: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
     marginBottom: 8,
   },
-  patternTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: colors.text,
-    marginBottom: 8,
+  streakInfo: {
+    alignItems: 'center',
   },
-  patternDescription: {
-    fontSize: 14,
-    color: colors.textSecondary,
+  streakLabel: {
+    fontSize: 12,
+    marginBottom: 2,
+  },
+  streakValue: {
+    fontSize: 16,
+    fontWeight: '600',
+  },
+  progressBar: {
+    height: 4,
+    borderRadius: 2,
+    overflow: 'hidden',
+  },
+  progressFill: {
+    height: '100%',
+    borderRadius: 2,
+  },
+  moodOverview: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
     marginBottom: 16,
   },
-  patternRecommendation: {
-    backgroundColor: colors.background,
-    padding: 12,
-    borderRadius: 8,
+  moodMetric: {
+    alignItems: 'center',
   },
-  recommendationText: {
-    fontSize: 14,
-    color: colors.text,
+  moodValue: {
+    fontSize: 20,
+    fontWeight: 'bold',
   },
-  insightsContainer: {
-    gap: 16,
+  moodLabel: {
+    fontSize: 12,
+    marginTop: 4,
   },
-  insightCard: {
-    backgroundColor: colors.card,
+  moodChart: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'flex-end',
+    height: 120,
+    paddingHorizontal: 8,
+  },
+  moodBar: {
+    flex: 1,
+    alignItems: 'center',
+    marginHorizontal: 2,
+  },
+  moodBarFill: {
+    width: 20,
+    borderRadius: 2,
+    marginBottom: 8,
+  },
+  moodDate: {
+    fontSize: 10,
+    textAlign: 'center',
+  },
+  actionButtons: {
+    flexDirection: 'row',
+    gap: 12,
     padding: 20,
-    borderRadius: 16,
+    paddingTop: 0,
   },
-  insightHeader: {
+  actionButton: {
+    flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 12,
-  },
-  insightIcon: {
-    fontSize: 24,
-    marginRight: 12,
-  },
-  insightContent: {
-    flex: 1,
-  },
-  insightTitle: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: colors.text,
-    marginBottom: 4,
-  },
-  insightConfidence: {
-    fontSize: 12,
-    color: colors.success,
-    fontWeight: '600',
-  },
-  insightDescription: {
-    fontSize: 14,
-    color: colors.textSecondary,
-    marginBottom: 16,
-  },
-  insightAction: {
-    backgroundColor: colors.primary,
+    justifyContent: 'center',
     paddingVertical: 12,
     paddingHorizontal: 16,
     borderRadius: 8,
-    alignItems: 'center',
+    gap: 8,
   },
-  actionText: {
+  actionButtonText: {
     fontSize: 14,
-    fontWeight: '600',
-    color: colors.background,
+    fontWeight: '500',
   },
-  emptyState: {
-    backgroundColor: colors.card,
-    padding: 40,
-    borderRadius: 16,
+  insightsContainer: {
+    marginTop: 16,
+    paddingTop: 16,
+    borderTopWidth: 1,
+    borderTopColor: 'rgba(0, 0, 0, 0.1)',
+  },
+  insightItem: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
     alignItems: 'center',
+    marginBottom: 8,
   },
-  emptyStateText: {
-    fontSize: 16,
-    color: colors.textSecondary,
+  insightLabel: {
+    fontSize: 12,
+    fontWeight: '500',
+  },
+  insightValue: {
+    fontSize: 12,
+    fontWeight: '600',
+    textAlign: 'right',
+    flex: 1,
+    marginLeft: 8,
+  },
+  emptyText: {
+    fontSize: 14,
     textAlign: 'center',
-    lineHeight: 24,
+    fontStyle: 'italic',
+    padding: 20,
   },
 });
+
+export default AdvancedAnalyticsDashboard;

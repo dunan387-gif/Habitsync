@@ -4,6 +4,7 @@ import { CheckCircle, Circle, TrendingUp, Heart, Zap } from 'lucide-react-native
 import { useTheme } from '@/context/ThemeContext';
 import { useHabits } from '@/context/HabitContext';
 import { useGamification } from '@/context/GamificationContext';
+import { useLanguage } from '@/context/LanguageContext';
 import { Habit, HabitMoodEntry } from '@/types';
 
 interface MoodAwareHabitItemProps {
@@ -39,6 +40,7 @@ export default function MoodAwareHabitItem({ habit, currentMood, onMoodCapture }
   const { currentTheme } = useTheme();
   const { toggleHabitCompletion } = useHabits();
   const { getHabitMoodEntries } = useGamification();
+  const { t } = useLanguage();
   const [showMoodSelector, setShowMoodSelector] = useState(false);
   
   const styles = createStyles(currentTheme.colors);
@@ -98,11 +100,11 @@ export default function MoodAwareHabitItem({ habit, currentMood, onMoodCapture }
     if (isCompleted) {
       // Show post-mood capture option
       Alert.alert(
-        'Habit Completed! 🎉',
-        'Would you like to record how you feel after completing this habit?',
+        t('moodAwareHabitItem.habitCompleted'),
+        t('moodAwareHabitItem.recordMoodPrompt'),
         [
-          { text: 'Skip', style: 'cancel' },
-          { text: 'Record Mood', onPress: () => setShowMoodSelector(true) }
+          { text: t('moodAwareHabitItem.skip'), style: 'cancel' },
+          { text: t('moodAwareHabitItem.recordMood'), onPress: () => setShowMoodSelector(true) }
         ]
       );
     }

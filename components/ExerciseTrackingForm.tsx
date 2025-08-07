@@ -27,25 +27,25 @@ export default function ExerciseTrackingForm({ onSave, onCancel }: ExerciseTrack
   const styles = createStyles(currentTheme.colors);
 
   const exerciseTypes = [
-    { value: 'cardio', label: 'Cardio', icon: '🏃', color: '#FF6B6B' },
-    { value: 'strength', label: 'Strength', icon: '💪', color: '#4ECDC4' },
-    { value: 'yoga', label: 'Yoga', icon: '🧘', color: '#45B7D1' },
-    { value: 'walking', label: 'Walking', icon: '🚶', color: '#96CEB4' },
-    { value: 'sports', label: 'Sports', icon: '⚽', color: '#FFEAA7' },
-    { value: 'other', label: 'Other', icon: '🏋️', color: '#DDA0DD' }
+    { value: 'cardio', label: t('wellnessForms.exercise.types.cardio'), icon: '🏃', color: '#FF6B6B' },
+    { value: 'strength', label: t('wellnessForms.exercise.types.strength'), icon: '💪', color: '#4ECDC4' },
+    { value: 'yoga', label: t('wellnessForms.exercise.types.yoga'), icon: '🧘', color: '#45B7D1' },
+    { value: 'walking', label: t('wellnessForms.exercise.types.walking'), icon: '🚶', color: '#96CEB4' },
+    { value: 'sports', label: t('wellnessForms.exercise.types.sports'), icon: '⚽', color: '#FFEAA7' },
+    { value: 'other', label: t('wellnessForms.exercise.types.other'), icon: '🏋️', color: '#DDA0DD' }
   ];
 
   const intensityLevels = [
-    { value: 'low', label: 'Light', description: 'Easy pace', color: '#4CAF50', icon: '😌' },
-    { value: 'moderate', label: 'Moderate', description: 'Comfortable effort', color: '#FF9800', icon: '😊' },
-    { value: 'high', label: 'Intense', description: 'Challenging pace', color: '#F44336', icon: '😤' }
+    { value: 'low', label: t('wellnessForms.exercise.intensity.low'), description: t('wellnessForms.exercise.intensity.lowDesc'), color: '#4CAF50', icon: '😌' },
+    { value: 'moderate', label: t('wellnessForms.exercise.intensity.moderate'), description: t('wellnessForms.exercise.intensity.moderateDesc'), color: '#FF9800', icon: '😊' },
+    { value: 'high', label: t('wellnessForms.exercise.intensity.high'), description: t('wellnessForms.exercise.intensity.highDesc'), color: '#F44336', icon: '😤' }
   ];
 
   const durationPresets = [15, 30, 45, 60, 90, 120];
 
   const handleSave = async () => {
     if (!formData.duration || formData.duration <= 0) {
-      Alert.alert('Missing Information', 'Please enter a valid workout duration.');
+      Alert.alert(t('wellnessForms.exercise.missingInfo'), t('wellnessForms.exercise.missingInfoMessage'));
       return;
     }
 
@@ -63,10 +63,10 @@ export default function ExerciseTrackingForm({ onSave, onCancel }: ExerciseTrack
       };
 
       await WellnessIntegrationService.saveExerciseData(exerciseData);
-      Alert.alert('Great workout! 💪', 'Your exercise data has been saved successfully.');
+      Alert.alert(t('wellnessForms.exercise.success'), t('wellnessForms.exercise.successMessage'));
       if (onSave) onSave();
     } catch (error) {
-      Alert.alert('Error', 'Failed to save exercise data. Please try again.');
+      Alert.alert(t('wellnessForms.exercise.error'), t('wellnessForms.exercise.errorMessage'));
     } finally {
       setLoading(false);
     }
@@ -74,7 +74,7 @@ export default function ExerciseTrackingForm({ onSave, onCancel }: ExerciseTrack
 
   const renderTypeSelector = () => (
     <View style={styles.section}>
-      <Text style={styles.sectionTitle}>What type of exercise?</Text>
+      <Text style={styles.sectionTitle}>{t('wellnessForms.exercise.exerciseType')}</Text>
       <View style={styles.typeGrid}>
         {exerciseTypes.map((type) => (
           <TouchableOpacity
@@ -103,7 +103,7 @@ export default function ExerciseTrackingForm({ onSave, onCancel }: ExerciseTrack
 
   const renderDurationSelector = () => (
     <View style={styles.section}>
-      <Text style={styles.sectionTitle}>How long did you exercise?</Text>
+      <Text style={styles.sectionTitle}>{t('wellnessForms.exercise.duration')}</Text>
       <View style={styles.durationContainer}>
         <TouchableOpacity
           style={styles.durationButton}
@@ -114,7 +114,7 @@ export default function ExerciseTrackingForm({ onSave, onCancel }: ExerciseTrack
         <View style={styles.durationDisplay}>
           <Timer size={20} color={currentTheme.colors.primary} />
           <Text style={styles.durationValue}>{formData.duration}</Text>
-          <Text style={styles.durationUnit}>minutes</Text>
+          <Text style={styles.durationUnit}>{t('wellnessForms.exercise.minutes')}</Text>
         </View>
         <TouchableOpacity
           style={styles.durationButton}
@@ -147,7 +147,7 @@ export default function ExerciseTrackingForm({ onSave, onCancel }: ExerciseTrack
 
   const renderIntensitySelector = () => (
     <View style={styles.section}>
-      <Text style={styles.sectionTitle}>How intense was your workout?</Text>
+      <Text style={styles.sectionTitle}>{t('wellnessForms.exercise.intensityLevel')}</Text>
       <View style={styles.intensityContainer}>
         {intensityLevels.map((level) => (
           <TouchableOpacity
@@ -182,14 +182,14 @@ export default function ExerciseTrackingForm({ onSave, onCancel }: ExerciseTrack
           <Activity size={28} color={currentTheme.colors.primary} />
         </View>
         <View>
-          <Text style={styles.title}>Exercise Tracker</Text>
-          <Text style={styles.subtitle}>Log your workout session</Text>
+          <Text style={styles.title}>{t('wellnessForms.exercise.title')}</Text>
+          <Text style={styles.subtitle}>{t('wellnessForms.exercise.subtitle')}</Text>
         </View>
       </View>
 
       {/* Date Card */}
       <View style={styles.card}>
-        <Text style={styles.cardTitle}>Workout Date</Text>
+        <Text style={styles.cardTitle}>{t('wellnessForms.exercise.workoutDate')}</Text>
         <TextInput
           style={styles.dateInput}
           value={formData.date}
@@ -216,10 +216,10 @@ export default function ExerciseTrackingForm({ onSave, onCancel }: ExerciseTrack
 
       {/* Optional Details */}
       <View style={styles.card}>
-        <Text style={styles.cardTitle}>Additional Details (Optional)</Text>
+        <Text style={styles.cardTitle}>{t('wellnessForms.exercise.additionalDetails')}</Text>
         <View style={styles.optionalRow}>
           <View style={styles.optionalField}>
-            <Text style={styles.fieldLabel}>Calories Burned</Text>
+            <Text style={styles.fieldLabel}>{t('wellnessForms.exercise.caloriesBurned')}</Text>
             <TextInput
               style={styles.optionalInput}
               value={formData.caloriesBurned?.toString()}
@@ -232,10 +232,10 @@ export default function ExerciseTrackingForm({ onSave, onCancel }: ExerciseTrack
         </View>
         
         {/* Heart Rate Section */}
-        <Text style={[styles.fieldLabel, { marginTop: 16 }]}>Heart Rate</Text>
+        <Text style={[styles.fieldLabel, { marginTop: 16 }]}>{t('wellnessForms.exercise.heartRate')}</Text>
         <View style={styles.optionalRow}>
           <View style={styles.optionalField}>
-            <Text style={styles.fieldLabel}>Average</Text>
+            <Text style={styles.fieldLabel}>{t('wellnessForms.exercise.average')}</Text>
             <TextInput
               style={styles.optionalInput}
               value={formData.heartRate?.average?.toString()}
@@ -253,7 +253,7 @@ export default function ExerciseTrackingForm({ onSave, onCancel }: ExerciseTrack
             />
           </View>
           <View style={styles.optionalField}>
-            <Text style={styles.fieldLabel}>Maximum</Text>
+            <Text style={styles.fieldLabel}>{t('wellnessForms.exercise.maximum')}</Text>
             <TextInput
               style={styles.optionalInput}
               value={formData.heartRate?.max?.toString()}
@@ -275,12 +275,12 @@ export default function ExerciseTrackingForm({ onSave, onCancel }: ExerciseTrack
 
       {/* Notes */}
       <View style={styles.card}>
-        <Text style={styles.cardTitle}>Workout Notes (Optional)</Text>
+        <Text style={styles.cardTitle}>{t('wellnessForms.exercise.workoutNotes')}</Text>
         <TextInput
           style={[styles.input, styles.textArea]}
           value={formData.notes}
           onChangeText={(text) => setFormData({ ...formData, notes: text })}
-          placeholder="How did your workout feel? Any achievements or challenges?"
+          placeholder={t('wellnessForms.exercise.notesPlaceholder')}
           placeholderTextColor={currentTheme.colors.textSecondary}
           multiline
         />
@@ -289,7 +289,7 @@ export default function ExerciseTrackingForm({ onSave, onCancel }: ExerciseTrack
       {/* Action Buttons */}
       <View style={styles.buttonContainer}>
         <TouchableOpacity style={styles.cancelButton} onPress={onCancel}>
-          <Text style={styles.cancelButtonText}>Cancel</Text>
+          <Text style={styles.cancelButtonText}>{t('wellnessForms.exercise.cancel')}</Text>
         </TouchableOpacity>
         <TouchableOpacity 
           style={[styles.saveButton, loading && styles.disabledButton]} 
@@ -297,7 +297,7 @@ export default function ExerciseTrackingForm({ onSave, onCancel }: ExerciseTrack
           disabled={loading}
         >
           <Text style={styles.saveButtonText}>
-            {loading ? 'Saving...' : 'Save Workout'}
+            {loading ? t('wellnessForms.exercise.saving') : t('wellnessForms.exercise.save')}
           </Text>
         </TouchableOpacity>
       </View>

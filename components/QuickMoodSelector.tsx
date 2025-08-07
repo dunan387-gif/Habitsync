@@ -126,8 +126,8 @@ export default function QuickMoodSelector({
       await addMoodEntry(mapToValidMoodState(mood.state), 7);
       setSubmittedMood(moodData);
       Alert.alert(
-        'Mood Recorded! 🎉', 
-        `${mood.emoji} ${t(mood.labelKey)}\nIntensity: 7/10\n\nQuick mood check-in complete. You earned 5 XP!`
+        t('dailyMoodReminder.successTitle'), 
+        `${mood.emoji} ${t(mood.labelKey)}\n${t('quickMoodSelector.intensityLabel')}: 7/10\n\n${t('quickMoodSelector.quickCheckinComplete')}`
       );
     }
     onMoodUpdate?.();
@@ -151,22 +151,22 @@ export default function QuickMoodSelector({
       await addMoodEntry(mapToValidMoodState(selectedMood.state), intensity, note || undefined, filterValidTags(selectedTags));
       setSubmittedMood(moodData);
       
-      let confirmationMessage = `${selectedMood.emoji} ${t(selectedMood.labelKey)}\nIntensity: ${intensity}/10`;
+      let confirmationMessage = `${selectedMood.emoji} ${t(selectedMood.labelKey)}\n${t('quickMoodSelector.intensityLabel')}: ${intensity}/10`;
       
       if (selectedTags.length > 0) {
         const tagLabels = selectedTags.map(tagId => 
           CONTEXT_TAGS.find(tag => tag.id === tagId)?.labelKey ? t(CONTEXT_TAGS.find(tag => tag.id === tagId)!.labelKey) : ''
         ).filter(Boolean).join(', ');
-        confirmationMessage += `\nTriggers: ${tagLabels}`;
+        confirmationMessage += `\n${t('quickMoodSelector.triggersLabel')}: ${tagLabels}`;
       }
       
       if (note) {
-        confirmationMessage += `\nNote: \"${note}\"`;
+        confirmationMessage += `\n${t('quickMoodSelector.noteLabel')}: \"${note}\"`;
       }
       
-      confirmationMessage += '\n\nDetailed mood check-in complete. You earned 10 XP!';
+      confirmationMessage += `\n\n${t('quickMoodSelector.detailedCheckinComplete')}`;
       
-      Alert.alert('Mood Recorded! 🎉', confirmationMessage);
+      Alert.alert(t('dailyMoodReminder.successTitle'), confirmationMessage);
     }
     
     setSelectedMood(null);
@@ -259,8 +259,8 @@ export default function QuickMoodSelector({
       setSubmittedMood(moodData);
       
       Alert.alert(
-        'Mood Recorded! 🎉', 
-        `${selectedMood.emoji} ${t(selectedMood.labelKey)}\nIntensity: ${intensity || 5}/10\n\nMood check-in complete!`
+        t('dailyMoodReminder.successTitle'), 
+        `${selectedMood.emoji} ${t(selectedMood.labelKey)}\n${t('quickMoodSelector.intensityLabel')}: ${intensity || 5}/10\n\n${t('dailyMoodReminder.successMessage')}`
       );
     }
     
@@ -492,7 +492,7 @@ const createStyles = (colors: any) => StyleSheet.create({
     elevation: 4,
   },
   detailedButtonText: {
-    color: '#FFFFFF',
+    color: colors.background,
     fontSize: 16,
     fontWeight: '700',
     letterSpacing: 0.5,
@@ -648,7 +648,7 @@ const createStyles = (colors: any) => StyleSheet.create({
     elevation: 6,
   },
   submitButtonText: {
-    color: '#FFFFFF',
+    color: colors.background,
     fontSize: 18,
     fontWeight: '700',
     letterSpacing: 0.5,

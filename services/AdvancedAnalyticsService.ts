@@ -436,10 +436,10 @@ export class AdvancedAnalyticsService {
     // Detect recurring patterns in mood and habit data
     return [
       {
-        pattern: 'Weekly mood cycle',
+        pattern: 'advancedAnalytics.patterns.sampleData.weeklyMoodCycle',
         frequency: 'weekly' as const,
         strength: 0.7,
-        description: 'Mood tends to dip mid-week and recover on weekends'
+        description: 'advancedAnalytics.patterns.sampleData.weeklyMoodCycleDesc'
       }
     ];
   }
@@ -448,10 +448,10 @@ export class AdvancedAnalyticsService {
     // Identify events that trigger mood or habit changes
     return [
       {
-        trigger: 'Completed morning routine',
-        effect: 'Improved mood for rest of day',
+        trigger: 'advancedAnalytics.patterns.sampleData.completedMorningRoutine',
+        effect: 'advancedAnalytics.patterns.sampleData.improvedMoodEffect',
         confidence: 0.8,
-        examples: ['Exercise → Better mood', 'Meditation → Calmer state']
+        examples: ['advancedAnalytics.patterns.sampleData.exerciseBetterMood', 'advancedAnalytics.patterns.sampleData.meditationCalmerState']
       }
     ];
   }
@@ -460,9 +460,9 @@ export class AdvancedAnalyticsService {
     // Analyze sequences of habits that work well together
     return [
       {
-        sequence: ['Morning meditation', 'Exercise', 'Healthy breakfast'],
+        sequence: ['advancedAnalytics.patterns.sampleData.morningMeditationExerciseBreakfast'],
         successRate: 0.9,
-        optimalTiming: 'Within 2 hours of each other'
+        optimalTiming: 'advancedAnalytics.patterns.sampleData.within2Hours'
       }
     ];
   }
@@ -471,10 +471,10 @@ export class AdvancedAnalyticsService {
     // Analyze how moods cascade and change over time
     return [
       {
-        initialMood: 'stressed',
-        resultingMoods: ['anxious', 'tired', 'overwhelmed'],
-        timeframe: '2-4 hours',
-        interventionPoints: ['Deep breathing', 'Short walk', 'Mindfulness']
+        initialMood: 'advancedAnalytics.patterns.sampleData.stressedCascade',
+        resultingMoods: ['advancedAnalytics.patterns.sampleData.anxiousTiredOverwhelmed'],
+        timeframe: 'advancedAnalytics.patterns.sampleData.twoToFourHours',
+        interventionPoints: ['advancedAnalytics.patterns.sampleData.deepBreathing', 'advancedAnalytics.patterns.sampleData.shortWalk', 'advancedAnalytics.patterns.sampleData.mindfulness']
       }
     ];
   }
@@ -483,7 +483,7 @@ export class AdvancedAnalyticsService {
     return patterns.cyclicalPatterns.map(pattern => ({
       id: `pattern-${Date.now()}-${Math.random()}`,
       type: 'pattern' as const,
-      title: `${pattern.pattern} Detected`,
+      title: 'advancedAnalytics.patterns.sampleData.patternDetected',
       description: pattern.description,
       actionable: true,
       priority: pattern.strength > 0.7 ? 'high' as const : 'medium' as const,

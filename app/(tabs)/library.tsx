@@ -5,6 +5,7 @@ import { Search, Filter, Plus } from 'lucide-react-native';
 import { useHabits } from '@/context/HabitContext';
 import { useTheme } from '@/context/ThemeContext';
 import { useLanguage } from '@/context/LanguageContext';
+import { useSubscription } from '@/context/SubscriptionContext';
 import HabitSuggestion from '@/components/HabitSuggestion';
 import HabitForm from '@/components/HabitForm';
 import { habitCategories } from '@/data/habitSuggestions';
@@ -16,6 +17,7 @@ export default function Library() {
   const { habits, addHabit, updateHabit, deleteHabit } = useHabits();
   const { currentTheme } = useTheme();
   const { t } = useLanguage();
+  const { showUpgradePrompt } = useSubscription();
   const [searchQuery, setSearchQuery] = useState('');
   const [activeCategory, setActiveCategory] = useState('all');
   const [showForm, setShowForm] = useState(false);
@@ -111,7 +113,7 @@ export default function Library() {
   const userHabitSuggestions: HabitSuggestionType[] = filteredUserHabits.map(habit => ({
     id: habit.id,
     title: habit.title,
-    description: habit.notes || 'No description',
+    description: habit.notes || t('noDescription'),
   }));
 
   const styles = createStyles(currentTheme.colors);
@@ -123,6 +125,8 @@ export default function Library() {
         <Text style={styles.title}>{t('habit_library')}</Text>
         <Text style={styles.subtitle}>{t('discover_manage_habits')}</Text>
       </View>
+
+
 
       <View style={styles.searchContainer}>
         <Search size={20} color={currentTheme.colors.textSecondary} style={styles.searchIcon} />
@@ -161,7 +165,7 @@ export default function Library() {
               setShowForm(true);
             }}
           >
-            <Plus size={20} color="#FFFFFF" />
+            <Plus size={20} color={currentTheme.colors.background} />
             <Text style={styles.createButtonText}>{t('create_new_habit')}</Text>
           </TouchableOpacity>
 
@@ -361,7 +365,7 @@ const createStyles = (colors: any) => StyleSheet.create({
     paddingVertical: 12,
   },
   createButtonText: {
-    color: '#FFFFFF',
+    color: colors.background,
     fontSize: 16,
     fontWeight: '600',
     marginLeft: 8,
@@ -399,7 +403,7 @@ const createStyles = (colors: any) => StyleSheet.create({
     textAlign: 'center',
   },
   activeCategoryText: {
-    color: '#FFFFFF',
+    color: colors.background,
   },
   categorySection: {
     marginBottom: 24,

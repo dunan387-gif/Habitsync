@@ -4,28 +4,47 @@ import { Sparkles, Plus, Clock, Target, Check } from 'lucide-react-native';
 import { useHabits } from '@/context/HabitContext';
 import { useLanguage } from '@/context/LanguageContext';
 import { useTheme } from '@/context/ThemeContext';
-import { AIHabitSuggestion } from '@/types';
+import { useSubscription } from '@/context/SubscriptionContext';
+import { AIHabitSuggestion, SmartReminderSuggestion } from '@/types';
 
 type AIHabitSuggestionsProps = {
   onAddSuggestion: (suggestion: AIHabitSuggestion) => void;
 };
 
 export default function AIHabitSuggestions({ onAddSuggestion }: AIHabitSuggestionsProps) {
-  const { getAIHabitSuggestions, getSmartReminderSuggestions } = useHabits();
+  const { getAIHabitSuggestions, getSmartReminderSuggestions, getHabitById, updateHabit } = useHabits();
   const { t } = useLanguage();
   const { currentTheme } = useTheme();
+  const { canUseAI, getUsageStats, trackFeatureUsage, showUpgradePrompt } = useSubscription();
   
   const habitSuggestions = getAIHabitSuggestions();
   const reminderSuggestions = getSmartReminderSuggestions();
   const [addedSuggestions, setAddedSuggestions] = useState<Set<string>>(new Set());
 
+  // Get current AI usage
+  const usageStats = getUsageStats();
+  const currentAIUsage = usageStats.aiSuggestionsThisWeek || 0;
+
+  console.log('AIHabitSuggestions - habitSuggestions:', habitSuggestions);
+  console.log('AIHabitSuggestions - reminderSuggestions:', reminderSuggestions);
+
   if (habitSuggestions.length === 0 && reminderSuggestions.length === 0) {
+    console.log('AIHabitSuggestions - No suggestions found, returning null');
     return null;
   }
 
   const styles = createStyles(currentTheme.colors);
 
   const handleAddSuggestion = (suggestion: AIHabitSuggestion) => {
+    // Check if user can use AI suggestions
+    if (!canUseAI(currentAIUsage)) {
+      showUpgradePrompt('ai_limit');
+      return;
+    }
+
+    // Track AI usage
+    trackFeatureUsage('ai_suggestion_used');
+    
     // Add to added suggestions set
     setAddedSuggestions(prev => new Set([...prev, suggestion.id]));
     
@@ -33,7 +52,7 @@ export default function AIHabitSuggestions({ onAddSuggestion }: AIHabitSuggestio
     onAddSuggestion(suggestion);
     
     // Show success popup with properly translated title
-    const habitTitle = suggestion.title.includes('_') ? t(suggestion.title) : suggestion.title;
+    const habitTitle = suggestion.title;
     Alert.alert(
       `🎉 ${t('awesome')}`,
       `"${habitTitle}" ${t('habit_added_ai_message')}`,
@@ -49,6 +68,36 @@ export default function AIHabitSuggestions({ onAddSuggestion }: AIHabitSuggestio
         return newSet;
       });
     }, 3000);
+  };
+
+  const handleSetReminder = async (suggestion: SmartReminderSuggestion) => {
+    try {
+      const habit = getHabitById(suggestion.habitId);
+      if (!habit) {
+        Alert.alert(t('error'), t('habit_not_found'));
+        return;
+      }
+
+      // Update the habit with the suggested reminder time
+      const updatedHabit = {
+        ...habit,
+        reminderTime: suggestion.suggestedTime,
+        reminderEnabled: true
+      };
+
+      await updateHabit(suggestion.habitId, updatedHabit);
+
+      // Show success message
+      Alert.alert(
+        `⏰ ${t('reminder_set')}`,
+        `${t('reminder_set_for')} "${habit.title}" ${t('at')} ${suggestion.suggestedTime}`,
+        [{ text: t('ok'), style: 'default' }],
+        { cancelable: true }
+      );
+    } catch (error) {
+      console.error('Failed to set reminder:', error);
+      Alert.alert(t('error'), t('failed_to_set_reminder'));
+    }
   };
 
   const AnimatedAddButton = ({ suggestion, children }: { suggestion: AIHabitSuggestion; children: React.ReactNode }) => {
@@ -85,14 +134,14 @@ export default function AIHabitSuggestions({ onAddSuggestion }: AIHabitSuggestio
           onPress={handlePress}
           disabled={isAdded}
         >
-          {isAdded ? (
-            <>
-              <Check size={16} color="white" />
-              <Text style={[styles.addButtonText, { color: 'white' }]}>{t('added')}</Text>
-            </>
-          ) : (
-            children
-          )}
+                      {isAdded ? (
+              <>
+                <Check size={16} color={currentTheme.colors.background} />
+                <Text style={[styles.addButtonText, { color: currentTheme.colors.background }]}>{t('added')}</Text>
+              </>
+            ) : (
+              children
+            )}
         </TouchableOpacity>
       </Animated.View>
     );
@@ -101,8 +150,16 @@ export default function AIHabitSuggestions({ onAddSuggestion }: AIHabitSuggestio
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <Sparkles size={20} color="#6366f1" />
+        <Sparkles size={20} color={currentTheme.colors.primary} />
         <Text style={styles.title}>{t('ai_suggestions')}</Text>
+        {/* Show usage indicator for free users */}
+        {currentAIUsage > 0 && (
+          <View style={styles.usageIndicator}>
+            <Text style={styles.usageText}>
+              {currentAIUsage}/2 {t('this_week')}
+            </Text>
+          </View>
+        )}
       </View>
       
       <ScrollView horizontal showsHorizontalScrollIndicator={false}>
@@ -110,12 +167,12 @@ export default function AIHabitSuggestions({ onAddSuggestion }: AIHabitSuggestio
         {habitSuggestions.map((suggestion) => (
           <View key={suggestion.id} style={styles.suggestionCard}>
             <View style={styles.cardHeader}>
-              <Target size={16} color="#10b981" />
+              <Target size={16} color={currentTheme.colors.success} />
               <Text style={styles.cardTitle}>{t('new_habit')}</Text>
             </View>
             
-            <Text style={styles.habitTitle}>{t(suggestion.title)}</Text>
-            <Text style={styles.reason}>{suggestion.reason}</Text>
+            <Text style={styles.habitTitle}>{suggestion.title}</Text>
+            <Text style={styles.reason}>{suggestion.description}</Text>
             
             <View style={styles.confidenceContainer}>
               <View style={[styles.confidenceBar, { width: `${suggestion.confidence * 100}%` }]} />
@@ -125,7 +182,7 @@ export default function AIHabitSuggestions({ onAddSuggestion }: AIHabitSuggestio
             </View>
             
             <AnimatedAddButton suggestion={suggestion}>
-              <Plus size={16} color="white" />
+              <Plus size={16} color={currentTheme.colors.background} />
               <Text style={styles.addButtonText}>{t('add_habit_button')}</Text>
             </AnimatedAddButton>
           </View>
@@ -135,7 +192,7 @@ export default function AIHabitSuggestions({ onAddSuggestion }: AIHabitSuggestio
         {reminderSuggestions.map((suggestion) => (
           <View key={`reminder-${suggestion.habitId}`} style={styles.suggestionCard}>
             <View style={styles.cardHeader}>
-              <Clock size={16} color="#f59e0b" />
+              <Clock size={16} color={currentTheme.colors.warning} />
               <Text style={styles.cardTitle}>{t('smart_reminder')}</Text>
             </View>
             
@@ -149,8 +206,11 @@ export default function AIHabitSuggestions({ onAddSuggestion }: AIHabitSuggestio
               </Text>
             </View>
             
-            <TouchableOpacity style={styles.addButton}>
-              <Clock size={16} color="white" />
+            <TouchableOpacity 
+              style={styles.addButton}
+              onPress={() => handleSetReminder(suggestion)}
+            >
+              <Clock size={16} color={currentTheme.colors.background} />
               <Text style={styles.addButtonText}>{t('set_reminder')}</Text>
             </TouchableOpacity>
           </View>
@@ -177,8 +237,20 @@ const createStyles = (colors: any) => StyleSheet.create({
     marginLeft: 8,
     color: colors.textMuted,
   },
+  usageIndicator: {
+    backgroundColor: colors.warning,
+    borderRadius: 8,
+    paddingVertical: 4,
+    paddingHorizontal: 8,
+    marginLeft: 10,
+  },
+  usageText: {
+    color: colors.background,
+    fontSize: 12,
+    fontWeight: '500',
+  },
   suggestionCard: {
-    backgroundColor: 'white',
+    backgroundColor: colors.card,
     borderRadius: 12,
     padding: 12, // Reduced from 16
     marginHorizontal: 12,
@@ -199,18 +271,18 @@ const createStyles = (colors: any) => StyleSheet.create({
     fontSize: 11, // Reduced from 12
     fontWeight: '500',
     marginLeft: 4,
-    color: '#6b7280',
+    color: colors.textSecondary,
     textTransform: 'uppercase',
   },
   habitTitle: {
     fontSize: 15, // Reduced from 16
     fontWeight: '600',
-    color: '#1f2937',
+    color: colors.text,
     marginBottom: 6, // Reduced from 8
   },
   reason: {
     fontSize: 13, // Reduced from 14
-    color: '#6b7280',
+    color: colors.textSecondary,
     lineHeight: 18, // Reduced from 20
     marginBottom: 10, // Reduced from 12
   },
@@ -219,16 +291,16 @@ const createStyles = (colors: any) => StyleSheet.create({
   },
   confidenceBar: {
     height: 3, // Reduced from 4
-    backgroundColor: '#10b981',
+    backgroundColor: colors.success,
     borderRadius: 2,
     marginBottom: 4,
   },
   confidenceText: {
     fontSize: 11, // Reduced from 12
-    color: '#6b7280',
+    color: colors.textSecondary,
   },
   addButton: {
-    backgroundColor: '#6366f1',
+    backgroundColor: colors.primary,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
@@ -237,10 +309,10 @@ const createStyles = (colors: any) => StyleSheet.create({
     borderRadius: 8,
   },
   addedButton: {
-    backgroundColor: '#10B981',
+    backgroundColor: colors.success,
   },
   addButtonText: {
-    color: 'white',
+    color: colors.background,
     fontWeight: '500',
     fontSize: 13,
     marginLeft: 4,

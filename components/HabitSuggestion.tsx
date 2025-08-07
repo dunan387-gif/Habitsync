@@ -3,6 +3,7 @@ import { View, Text, TouchableOpacity, StyleSheet, Animated, Alert } from 'react
 import { Plus, Edit2, Trash2, Check } from 'lucide-react-native';
 import { HabitSuggestion as HabitSuggestionType, Habit } from '@/types';
 import { useLanguage } from '@/context/LanguageContext';
+import { useTheme } from '@/context/ThemeContext';
 
 type HabitSuggestionProps = {
   habit: HabitSuggestionType;
@@ -20,6 +21,7 @@ export default function HabitSuggestion({
   onDelete 
 }: HabitSuggestionProps) {
   const { t } = useLanguage();
+  const { currentTheme } = useTheme();
   const isUserHabit = !!userHabit;
   const scaleAnim = useRef(new Animated.Value(1)).current;
   const [isAdded, setIsAdded] = useState(false);
@@ -63,6 +65,8 @@ export default function HabitSuggestion({
     setTimeout(() => setIsAdded(false), 2000);
   };
 
+  const styles = createStyles(currentTheme.colors);
+  
   return (
     <View style={styles.container}>
       <View style={styles.content}>
@@ -120,10 +124,10 @@ export default function HabitSuggestion({
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors: any) => StyleSheet.create({
   container: {
     flexDirection: 'row',
-    backgroundColor: '#FFFFFF',
+    backgroundColor: colors.card,
     borderRadius: 12,
     marginBottom: 12,
     marginHorizontal: 16,
@@ -140,37 +144,37 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#1E293B',
+    color: colors.text,
     marginBottom: 4,
   },
   description: {
     fontSize: 14,
-    color: '#64748B',
+    color: colors.textSecondary,
     marginBottom: 8,
   },
   benefitsContainer: {
-    backgroundColor: '#F1F5F9',
+    backgroundColor: colors.surface,
     padding: 8,
     borderRadius: 8,
   },
   benefitsLabel: {
     fontSize: 12,
     fontWeight: '600',
-    color: '#4ECDC4',
+    color: colors.primary,
     marginBottom: 2,
   },
   benefitsText: {
     fontSize: 12,
-    color: '#64748B',
+    color: colors.textSecondary,
   },
   streakContainer: {
-    backgroundColor: '#F1F5F9',
+    backgroundColor: colors.surface,
     padding: 8,
     borderRadius: 8,
   },
   streakText: {
     fontSize: 12,
-    color: '#64748B',
+    color: colors.textSecondary,
     fontWeight: '500',
   },
   addButton: {
@@ -178,16 +182,16 @@ const styles = StyleSheet.create({
     height: 40,
     borderRadius: 20,
     borderWidth: 2,
-    borderColor: '#4ECDC4',
+    borderColor: colors.primary,
     alignItems: 'center',
     justifyContent: 'center',
     marginLeft: 12,
     alignSelf: 'center',
-    backgroundColor: '#FFFFFF',
+    backgroundColor: colors.card,
   },
   addedButton: {
-    backgroundColor: '#10B981',
-    borderColor: '#10B981',
+    backgroundColor: colors.success,
+    borderColor: colors.success,
   },
   actionsContainer: {
     flexDirection: 'column',
@@ -199,13 +203,13 @@ const styles = StyleSheet.create({
     height: 36,
     borderRadius: 18,
     borderWidth: 2,
-    borderColor: '#4ECDC4',
+    borderColor: colors.primary,
     alignItems: 'center',
     justifyContent: 'center',
     marginBottom: 8,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: colors.card,
   },
   deleteButton: {
-    borderColor: '#EF4444',
+    borderColor: colors.error,
   },
 });

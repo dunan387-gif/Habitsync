@@ -68,7 +68,7 @@ export default function DailyMoodReminder({ children }: DailyMoodReminderProps) 
     Alert.alert(
       t('dailyMoodReminder.successTitle'),
       t('dailyMoodReminder.successMessage'),
-      [{ text: 'Continue', style: 'default' }]
+      [{ text: t('common.continue'), style: 'default' }]
     );
   };
   

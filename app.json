@@ -5,13 +5,13 @@
     "version": "1.0.0",
     "description": "Sync your habits, sync your life. Transform your daily routines with powerful habit tracking, gamification, and AI-powered insights. Build lasting habits with streaks, achievements, and personalized motivation.",
     "orientation": "portrait",
-    "icon": "./assets/images/habit-tracker-icon.png",
+    "icon": "./assets/images/habit-tracker-icon-1024.png",
     "scheme": "habitsync",
     "userInterfaceStyle": "automatic",
     "privacy": "public",
     "primaryColor": "#4F46E5",
     "splash": {
-      "image": "./assets/images/habit-tracker-icon.png",
+      "image": "./assets/images/habit-tracker-icon-1024.png",
       "resizeMode": "contain",
       "backgroundColor": "#4F46E5"
     },
@@ -19,15 +19,18 @@
       "supportsTablet": true,
       "bundleIdentifier": "com.sabbir404.habitsyncproductivity",
       "buildNumber": "1",
+      "icon": "./assets/images/habit-tracker-icon-1024.png",
       "infoPlist": {
         "NSUserNotificationsUsageDescription": "HabitSync uses notifications to remind you about your daily habits and celebrate your achievements."
       }
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/images/habit-tracker-icon.png",
-        "backgroundColor": "#4F46E5"
+        "foregroundImage": "./assets/images/habit-tracker-icon-1024.png",
+        "backgroundColor": "#4F46E5",
+        "monochromeImage": "./assets/images/habit-tracker-icon-96.png"
       },
+      "icon": "./assets/images/habit-tracker-icon-1024.png",
       "package": "com.sabbir404.habitsyncproductivity",
       "versionCode": 1,
       "permissions": [
@@ -39,14 +42,15 @@
     "web": {
       "bundler": "metro",
       "output": "static",
-      "favicon": "./assets/images/favicon.png"
+      "favicon": "./assets/images/habit-tracker-icon-192.png",
+      "icon": "./assets/images/habit-tracker-icon-512.png"
     },
     "plugins": [
       "expo-router",
       [
         "expo-notifications",
         {
-          "icon": "./assets/images/icon.png",
+          "icon": "./assets/images/habit-tracker-icon-96.png",
           "color": "#ffffff"
         }
       ],

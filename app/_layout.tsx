@@ -1,50 +1,113 @@
 import React, { useEffect } from 'react';
-import { Platform } from 'react-native';
-import { useFonts } from 'expo-font';
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
-import * as SplashScreen from 'expo-splash-screen';
-// ✅ Remove this unused import:
+import { Platform } from 'react-native';
+import { useFonts } from 'expo-font';
+import { ErrorProvider, useError } from '@/context/ErrorContext';
+import ErrorToast from '@/components/ErrorToast';
+import { PerformanceAlertsProvider } from '@/context/PerformanceAlertsContext';
+import PerformanceAlerts from '@/components/PerformanceAlerts';
+import { SubscriptionProvider, useSubscription } from '@/context/SubscriptionContext';
+import { GamificationProvider } from '@/context/GamificationContext';
+import { CelebrationProvider, useCelebration } from '@/context/CelebrationContext';
+import CelebrationOverlay from '@/components/CelebrationOverlay';
+import ProtectedRoute from '@/components/ProtectedRoute';
+import MoodHabitOnboarding from '@/components/MoodHabitOnboarding';
+import ErrorBoundary from '@/components/ErrorBoundary';
+import { EncryptionService } from '@/services/EncryptionService';
 // import { useFrameworkReady } from '@/hooks/useFrameworkReady';
 import { HabitProvider } from '@/context/HabitContext';
-import { ThemeProvider } from '@/context/ThemeContext';
+import { ThemeProvider, useTheme } from '@/context/ThemeContext';
 import { LanguageProvider, useLanguage } from '@/context/LanguageContext';
-import { AuthProvider } from '@/context/AuthContext';
+import { AuthProvider, useAuth } from '@/context/AuthContext';
 import { requestNotificationPermissions } from '@/services/NotificationService';
-import { CelebrationProvider } from '@/context/CelebrationContext';
-import CelebrationOverlay from '@/components/CelebrationOverlay';
-import { useCelebration } from '@/context/CelebrationContext';
-import { GamificationProvider } from '@/context/GamificationContext';
-import ProtectedRoute from '@/components/ProtectedRoute';
-import { EncryptionService } from '@/services/EncryptionService';
-import MoodHabitOnboarding from '@/components/MoodHabitOnboarding';
 
 function RootLayoutContent() {
-  const { currentCelebration, hideCelebration } = useCelebration();
   const { t } = useLanguage();
+  const { user, isGuestUser } = useAuth();
+  const { currentTheme } = useTheme();
+  const { currentError } = useError();
+  const { currentCelebration, hideCelebration } = useCelebration();
+
+  console.log('RootLayoutContent - using alert-based upgrade system');
+  console.log('Current user:', user ? (isGuestUser ? 'Guest User' : 'Authenticated User') : 'No User');
+
+  if (!user) {
+    return (
+      <Stack
+        screenOptions={{
+          headerStyle: {
+            backgroundColor: currentTheme.colors.background,
+          },
+          headerTintColor: currentTheme.colors.text,
+          headerTitleStyle: {
+            fontWeight: 'bold',
+          },
+        }}
+      >
+        <Stack.Screen name="(auth)" options={{ headerShown: false }} />
+        <Stack.Screen name="+not-found" />
+      </Stack>
+    );
+  }
+
+  return (
+    <ErrorBoundary>
+      <MoodHabitOnboarding>
+        <ProtectedRoute>
+          <Stack
+            screenOptions={{
+              headerStyle: {
+                backgroundColor: currentTheme.colors.background,
+              },
+              headerTintColor: currentTheme.colors.text,
+              headerTitleStyle: {
+                fontWeight: 'bold',
+              },
+              headerShown: false, // Hide all headers by default
+            }}
+          >
+            <Stack.Screen name="(auth)" options={{ headerShown: false }} />
+            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+            <Stack.Screen name="mood-tracking" options={{ headerShown: false }} />
+            <Stack.Screen name="profile" options={{ headerShown: true, title: t('profile.title') }} />
+            <Stack.Screen name="habit/[id]" options={{ headerShown: true, title: t('habit_details') }} />
+            <Stack.Screen name="settings" options={{ headerShown: false }} />
+            <Stack.Screen name="+not-found" />
+          </Stack>
+          
+          {currentCelebration && (
+            <CelebrationOverlay
+              visible={!!currentCelebration}
+              type={currentCelebration.type}
+              message={currentCelebration.message}
+              onComplete={hideCelebration}
+            />
+          )}
+          
+          {/* Global Performance Alerts */}
+          <PerformanceAlerts />
+          
+          {/* Global Error Toast */}
+          <ErrorToastContainer />
+          
+        </ProtectedRoute>
+      </MoodHabitOnboarding>
+    </ErrorBoundary>
+  );
+}
+
+function ErrorToastContainer() {
+  const { currentError, clearError } = useError();
   
   return (
-    <MoodHabitOnboarding>
-      <ProtectedRoute>
-        <StatusBar style={Platform.OS === 'ios' ? 'dark' : 'auto'} />
-        <Stack>
-          <Stack.Screen name="(auth)" options={{ headerShown: false }} />
-          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-          <Stack.Screen name="profile" options={{ title: 'Profile' }} />
-          <Stack.Screen name="habit/[id]" options={{ title: t('habit_details') }} />
-          <Stack.Screen name="+not-found" />
-        </Stack>
-        
-        {currentCelebration && (
-          <CelebrationOverlay
-            visible={!!currentCelebration}
-            type={currentCelebration.type}
-            message={currentCelebration.message}
-            onComplete={hideCelebration}
-          />
-        )}
-      </ProtectedRoute>
-    </MoodHabitOnboarding>
+    <ErrorToast
+      error={currentError}
+      onDismiss={clearError}
+      autoHide={true}
+      autoHideDelay={5000}
+      position="top"
+    />
   );
 }
 
@@ -64,18 +127,24 @@ export default function RootLayout() {
   }, []);
 
   return (
-    <ThemeProvider>
-      <LanguageProvider>
-        <AuthProvider>
-          <CelebrationProvider>
-            <GamificationProvider>
-              <HabitProvider>
-                <RootLayoutContent />
-              </HabitProvider>
-            </GamificationProvider>
-          </CelebrationProvider>
-        </AuthProvider>
-      </LanguageProvider>
-    </ThemeProvider>
+    <AuthProvider>
+      <SubscriptionProvider>
+        <ThemeProvider>
+          <LanguageProvider>
+            <ErrorProvider>
+              <CelebrationProvider>
+                <GamificationProvider>
+                  <PerformanceAlertsProvider>
+                    <HabitProvider>
+                      <RootLayoutContent />
+                    </HabitProvider>
+                  </PerformanceAlertsProvider>
+                </GamificationProvider>
+              </CelebrationProvider>
+            </ErrorProvider>
+          </LanguageProvider>
+        </ThemeProvider>
+      </SubscriptionProvider>
+    </AuthProvider>
   );
 }

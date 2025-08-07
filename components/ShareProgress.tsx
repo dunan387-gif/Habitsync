@@ -28,7 +28,7 @@ export default function ShareProgress({ visible, onClose }: ShareProgressProps) 
       <Modal visible={visible} animationType="slide" presentationStyle="pageSheet">
         <View style={styles.modalContainer}>
           <View style={styles.modalHeader}>
-            <Text style={styles.modalTitle}>{t('loading_habits')}</Text>
+            <Text style={styles.modalTitle}>{t('shareProgress.loading.loading_habits')}</Text>
             <TouchableOpacity onPress={onClose} style={styles.closeButton}>
               <X size={24} color={currentTheme.colors.text} />
             </TouchableOpacity>
@@ -207,15 +207,15 @@ export default function ShareProgress({ visible, onClose }: ShareProgressProps) 
       const message = template.generator();
       const result = await Share.share({
         message,
-        title: 'My Habit Tracker Progress'
+        title: t('shareProgress.alerts.shareTitle')
       });
       
       if (result.action === Share.sharedAction) {
-        Alert.alert('Success!', 'Your progress has been shared! 🎉');
+        Alert.alert(t('shareProgress.alerts.success'), t('shareProgress.alerts.successMessage'));
         setShowPreview(false);
       }
     } catch (error) {
-      Alert.alert('Error', 'Failed to share progress. Please try again.');
+      Alert.alert(t('shareProgress.alerts.error'), t('shareProgress.alerts.errorMessage'));
     } finally {
       setIsSharing(false);
     }

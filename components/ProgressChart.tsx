@@ -2,6 +2,7 @@ import React from 'react';
 import { View, Text, StyleSheet, Dimensions } from 'react-native';
 import { useHabits } from '@/context/HabitContext';
 import { useTheme } from '@/context/ThemeContext';
+import { useLanguage } from '@/context/LanguageContext';
 
 type ProgressChartProps = {
   chartType: 'bar' | 'line';
@@ -12,6 +13,7 @@ const { width: screenWidth } = Dimensions.get('window');
 export default function ProgressChart({ chartType = 'bar' }: ProgressChartProps) {
   const { getDailyCompletionData } = useHabits();
   const { currentTheme } = useTheme();
+  const { t } = useLanguage();
   const dailyData = getDailyCompletionData(7);
 
   // Get max value for scaling bars and lines
@@ -148,21 +150,21 @@ export default function ProgressChart({ chartType = 'bar' }: ProgressChartProps)
     <View style={styles.container}>
       {dailyData.length === 0 ? (
         <View style={styles.emptyState}>
-          <Text style={styles.emptyTitle}>No Data Yet</Text>
-          <Text style={styles.emptyText}>Start completing habits to see your progress here!</Text>
+          <Text style={styles.emptyTitle}>{t('progressChart.noDataYet')}</Text>
+          <Text style={styles.emptyText}>{t('progressChart.startCompletingHabits')}</Text>
         </View>
       ) : (
         <>
           <View style={styles.chartHeader}>
-            <Text style={styles.chartTitle}>7-Day Progress</Text>
+            <Text style={styles.chartTitle}>{t('progressChart.sevenDayProgress')}</Text>
             <View style={styles.legendContainer}>
               <View style={styles.legendItem}>
                 <View style={[styles.legendDot, { backgroundColor: currentTheme.colors.success }]} />
-                <Text style={styles.legendText}>Completed</Text>
+                <Text style={styles.legendText}>{t('progressChart.completed')}</Text>
               </View>
               <View style={styles.legendItem}>
                 <View style={[styles.legendDot, { backgroundColor: currentTheme.colors.primary }]} />
-                <Text style={styles.legendText}>Today</Text>
+                <Text style={styles.legendText}>{t('progressChart.today')}</Text>
               </View>
             </View>
           </View>

@@ -2,9 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Alert, FlatList, Modal } from 'react-native';
 import { useTheme } from '@/context/ThemeContext';
 import { useLanguage } from '@/context/LanguageContext';
+import { useSubscription } from '@/context/SubscriptionContext';
 import { WellnessIntegrationService, SleepData, ExerciseData, NutritionData, MeditationData, SocialActivityData, WellnessCorrelation } from '@/services/WellnessIntegrationService';
 import { MoodEntry } from '@/types';
-import { Moon, Activity, Heart, Brain, Users, TrendingUp, AlertCircle, Plus, ArrowLeft, Calendar, Clock, Star } from 'lucide-react-native';
+import { Moon, Activity, Heart, Brain, Users, TrendingUp, AlertCircle, Plus, ArrowLeft, Calendar, Clock, Star, Crown } from 'lucide-react-native';
 
 // Import the tracking forms
 import SleepTrackingForm from './SleepTrackingForm';
@@ -20,6 +21,17 @@ interface WellnessIntegrationDashboardProps {
 export default function WellnessIntegrationDashboard({ moodData }: WellnessIntegrationDashboardProps) {
   const { currentTheme } = useTheme();
   const { t } = useLanguage();
+  const { canUseWellnessIntegration, showUpgradePrompt } = useSubscription();
+  
+  // Safety check for currentTheme
+  if (!currentTheme || !currentTheme.colors) {
+    return (
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <Text>Loading...</Text>
+      </View>
+    );
+  }
+  
   const [sleepData, setSleepData] = useState<SleepData[]>([]);
   const [exerciseData, setExerciseData] = useState<ExerciseData[]>([]);
   const [nutritionData, setNutritionData] = useState<NutritionData[]>([]);
@@ -32,6 +44,23 @@ export default function WellnessIntegrationDashboard({ moodData }: WellnessInteg
   const [showForm, setShowForm] = useState<string | null>(null);
 
   const styles = createStyles(currentTheme.colors);
+
+  // Check if user can access wellness integration
+  if (!canUseWellnessIntegration()) {
+    return (
+      <View style={styles.upgradeContainer}>
+        <Crown size={48} color={currentTheme.colors.primary} />
+        <Text style={styles.upgradeTitle}>{t('wellness.upgradeRequired')}</Text>
+        <Text style={styles.upgradeMessage}>{t('wellness.upgradeMessage')}</Text>
+        <TouchableOpacity 
+          style={styles.upgradeButton}
+          onPress={() => showUpgradePrompt('wellness_integration')}
+        >
+                      <Text style={styles.upgradeButtonText}>{t('premium.upgradeToPro')}</Text>
+        </TouchableOpacity>
+      </View>
+    );
+  }
 
   useEffect(() => {
     loadWellnessData();
@@ -108,7 +137,7 @@ export default function WellnessIntegrationDashboard({ moodData }: WellnessInteg
       });
     } catch (error) {
       console.error('Error loading wellness data:', error);
-      Alert.alert('Error', 'Failed to load wellness data. Please try again later.');
+      Alert.alert(t('common.error'), t('wellness.loadError'));
     } finally {
       setLoading(false);
     }
@@ -142,7 +171,46 @@ export default function WellnessIntegrationDashboard({ moodData }: WellnessInteg
       social: { icon: '👥', label: t('wellness.social') }
     };
     const tabInfo = tabData[tab as keyof typeof tabData];
-    return tabInfo ? `${tabInfo.icon} ${tabInfo.label}` : 'Select Category';
+    return tabInfo ? `${tabInfo.icon} ${tabInfo.label}` : t('wellness.selectCategory');
+  };
+
+  const getActivityTypeLabel = (type: string, category: string) => {
+    switch (category) {
+      case 'exercise':
+        switch (type) {
+          case 'cardio': return t('wellnessForms.exercise.types.cardio');
+          case 'strength': return t('wellnessForms.exercise.types.strength');
+          case 'yoga': return t('wellnessForms.exercise.types.yoga');
+          case 'walking': return t('wellnessForms.exercise.types.walking');
+          case 'sports': return t('wellnessForms.exercise.types.sports');
+          case 'other': return t('wellnessForms.exercise.types.other');
+          default: return t('wellness.exercise');
+        }
+      case 'meditation':
+        switch (type) {
+          case 'mindfulness': return t('wellnessForms.meditation.types.mindfulness');
+          case 'breathing': return t('wellnessForms.meditation.types.breathing');
+          case 'guided': return t('wellnessForms.meditation.types.guided');
+          case 'movement': return t('wellnessForms.meditation.types.movement');
+          case 'other': return t('wellnessForms.meditation.types.other');
+          default: return t('wellness.meditation');
+        }
+      case 'social':
+        switch (type) {
+          case 'family_time': return t('wellnessForms.social.activityTypes.familyTime');
+          case 'friends_hangout': return t('wellnessForms.social.activityTypes.friends');
+          case 'date_night': return t('wellnessForms.social.activityTypes.dateNight');
+          case 'party': return t('wellnessForms.social.activityTypes.party');
+          case 'networking': return t('wellnessForms.social.activityTypes.networking');
+          case 'team_building': return t('wellnessForms.social.activityTypes.teamBuilding');
+          case 'community_event': return t('wellnessForms.social.activityTypes.community');
+          case 'volunteer_work': return t('wellnessForms.social.activityTypes.volunteer');
+          case 'group_hobby': return t('wellnessForms.social.activityTypes.groupHobby');
+          default: return t('wellness.social');
+        }
+      default:
+        return type;
+    }
   };
 
   const renderTabBar = () => (
@@ -236,7 +304,7 @@ export default function WellnessIntegrationDashboard({ moodData }: WellnessInteg
             <Text style={styles.insightTitle}>{t('wellness.positivePatterns')}</Text>
           </View>
           {correlation.insights.positive_patterns.map((pattern, index) => (
-            <Text key={index} style={styles.insightText}>• {pattern}</Text>
+            <Text key={index} style={styles.insightText}>• {t(pattern)}</Text>
           ))}
         </View>
       )}
@@ -248,7 +316,7 @@ export default function WellnessIntegrationDashboard({ moodData }: WellnessInteg
             <Text style={styles.insightTitle}>{t('wellness.negativePatterns')}</Text>
           </View>
           {correlation.insights.negative_patterns.map((pattern, index) => (
-            <Text key={index} style={styles.insightText}>• {pattern}</Text>
+            <Text key={index} style={styles.insightText}>• {t(pattern)}</Text>
           ))}
         </View>
       )}
@@ -259,9 +327,31 @@ export default function WellnessIntegrationDashboard({ moodData }: WellnessInteg
             <Brain size={20} color={currentTheme.colors.primary} />
             <Text style={styles.insightTitle}>{t('wellness.recommendations')}</Text>
           </View>
-          {correlation.insights.recommendations.map((rec, index) => (
-            <Text key={index} style={styles.insightText}>• {rec}</Text>
-          ))}
+          {correlation.insights.recommendations.map((rec, index) => {
+            // Handle translation keys with parameters (e.g., "wellness.insightsData.exercise.mostEffective:cardio")
+            if (rec.includes(':')) {
+              const [key, param] = rec.split(':');
+              // Determine the category from the key to translate the parameter
+              let translatedParam = param;
+              if (key.includes('exercise.mostEffective')) {
+                translatedParam = getActivityTypeLabel(param, 'exercise');
+              } else if (key.includes('meditation.mostEffective')) {
+                translatedParam = getActivityTypeLabel(param, 'meditation');
+              } else if (key.includes('social.mostBeneficial')) {
+                translatedParam = getActivityTypeLabel(param, 'social');
+              }
+              return (
+                <Text key={index} style={styles.insightText}>
+                  • {t(key, { type: translatedParam, technique: translatedParam })}
+                </Text>
+              );
+            }
+            return (
+              <Text key={index} style={styles.insightText}>
+                • {t(rec)}
+              </Text>
+            );
+          })}
         </View>
       )}
     </View>
@@ -342,40 +432,40 @@ export default function WellnessIntegrationDashboard({ moodData }: WellnessInteg
         case 'sleep':
           const sleepItem = item as SleepData;
           return {
-            primary: sleepItem.duration ? `${sleepItem.duration}h sleep` : 'Sleep logged',
-            secondary: `Quality: ${sleepItem.quality}/5`,
+            primary: sleepItem.duration ? `${sleepItem.duration}h ${t('wellness.sleep')}` : t('wellness.logged'),
+            secondary: `${t('wellness.quality')}: ${sleepItem.quality}/5`,
             tertiary: sleepItem.notes ? sleepItem.notes.substring(0, 50) + '...' : ''
           };
         case 'exercise':
           const exerciseItem = item as ExerciseData;
           return {
-            primary: `${exerciseItem.type || 'Exercise'}`,
-            secondary: `${exerciseItem.duration || 0} min • ${exerciseItem.intensity || 'Medium'} intensity`,
+            primary: getActivityTypeLabel(exerciseItem.type || '', 'exercise'),
+            secondary: `${exerciseItem.duration || 0} ${t('wellness.min')} • ${exerciseItem.intensity || t('wellnessForms.exercise.intensity.moderate')} ${t('wellness.intensity')}`,
             tertiary: exerciseItem.notes ? exerciseItem.notes.substring(0, 50) + '...' : ''
           };
         case 'nutrition':
           const nutritionItem = item as NutritionData;
           return {
-            primary: `${nutritionItem.meals?.[0]?.type || 'Meal'} logged`,
-            secondary: `${nutritionItem.meals?.[0]?.calories || 0} cal • ${nutritionItem.waterIntake || 0} glasses water`,
+            primary: `${nutritionItem.meals?.[0]?.type || t('wellnessForms.nutrition.mealTypes.breakfast')} ${t('wellness.logged')}`,
+            secondary: `${nutritionItem.meals?.[0]?.calories || 0} cal • ${nutritionItem.waterIntake || 0} ${t('wellnessForms.nutrition.waterPresets.glass')} ${t('wellnessForms.nutrition.waterIntake')}`,
             tertiary: nutritionItem.notes ? nutritionItem.notes.substring(0, 50) + '...' : ''
           };
         case 'meditation':
           const meditationItem = item as MeditationData;
           return {
-            primary: `${meditationItem.type || 'Meditation'} - ${meditationItem.duration || 0} min`,
-            secondary: `Effectiveness: ${meditationItem.effectiveness || 0}/5`,
+            primary: `${getActivityTypeLabel(meditationItem.type || '', 'meditation')} - ${meditationItem.duration || 0} ${t('wellness.min')}`,
+            secondary: `${t('wellness.effectiveness')}: ${meditationItem.effectiveness || 0}/5`,
             tertiary: meditationItem.notes ? meditationItem.notes.substring(0, 50) + '...' : ''
           };
         case 'social':
           const socialItem = item as SocialActivityData;
           return {
-            primary: `${socialItem.type || 'Social activity'}`,
-            secondary: `${socialItem.duration || 0} min • Satisfaction: ${socialItem.satisfaction || 0}/5`,
+            primary: getActivityTypeLabel(socialItem.type || '', 'social'),
+            secondary: `${socialItem.duration || 0} ${t('wellness.min')} • ${t('wellness.satisfaction')}: ${socialItem.satisfaction || 0}/5`,
             tertiary: socialItem.notes ? socialItem.notes.substring(0, 50) + '...' : ''
           };
         default:
-          return { primary: 'Activity logged', secondary: '', tertiary: '' };
+          return { primary: t('wellness.logged'), secondary: '', tertiary: '' };
       }
     };
 
@@ -952,5 +1042,37 @@ const createStyles = (colors: any) => StyleSheet.create({
   },
   insightsSection: {
     marginTop: 8,
+  },
+  upgradeContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 20,
+    backgroundColor: colors.background,
+  },
+  upgradeTitle: {
+    fontSize: 20,
+    fontWeight: '700',
+    color: colors.text,
+    marginTop: 16,
+    textAlign: 'center',
+  },
+  upgradeMessage: {
+    fontSize: 14,
+    color: colors.textSecondary,
+    marginTop: 8,
+    textAlign: 'center',
+    marginBottom: 24,
+  },
+  upgradeButton: {
+    backgroundColor: colors.primary,
+    paddingVertical: 12,
+    paddingHorizontal: 24,
+    borderRadius: 24,
+  },
+  upgradeButtonText: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: '600',
   },
 });

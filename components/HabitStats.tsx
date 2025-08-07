@@ -19,7 +19,7 @@ export default function HabitStats({ habits }: HabitStatsProps) {
   return (
     <View style={styles.container}>
       {sortedHabits.length === 0 ? (
-        <Text style={styles.emptyText}>{t('add_habits_statistics')}</Text>
+        <Text style={styles.emptyText}>{t('habitStats.addHabitsStatistics')}</Text>
       ) : (
         sortedHabits.map(habit => {
           // Calculate completion percentage
@@ -36,7 +36,7 @@ export default function HabitStats({ habits }: HabitStatsProps) {
             <View key={habit.id} style={styles.habitStats}>
               <View style={styles.habitInfo}>
                 <Text style={styles.habitTitle}>{habit.title}</Text>
-                <Text style={styles.habitStreak}>{habit.streak} {t('day_streak')}</Text>
+                <Text style={styles.habitStreak}>{habit.streak} {t('habitStats.dayStreak')}</Text>
               </View>
               
               <View style={styles.progressContainer}>
@@ -49,7 +49,7 @@ export default function HabitStats({ habits }: HabitStatsProps) {
                   />
                 </View>
                 <Text style={styles.progressText}>
-                  {Math.round(completionRate)}% completion rate
+                  {Math.round(completionRate)}% {t('habitStats.completionRate')}
                 </Text>
               </View>
             </View>

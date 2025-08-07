@@ -1,13 +1,19 @@
-import React, { useState, useMemo } from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Dimensions, Modal } from 'react-native';
+import React, { useState, useMemo, useEffect } from 'react';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Dimensions, Modal, Alert } from 'react-native';
 import { useHabits } from '@/context/HabitContext';
 import { useTheme } from '@/context/ThemeContext';
 import { useLanguage } from '@/context/LanguageContext';
+import { useSubscription } from '@/context/SubscriptionContext';
 import { HabitMoodCorrelation, MoodHabitAnalytics } from '@/types';
+import AdaptiveThresholdService from '@/services/AdaptiveThresholdService';
+import RecommendationFeedback from '@/components/RecommendationFeedback';
 
 const { width } = Dimensions.get('window');
 
 export default function MoodHabitDashboard() {
+  const [showFeedbackModal, setShowFeedbackModal] = useState(false);
+  const [selectedRecommendation, setSelectedRecommendation] = useState<any>(null);
+  
   const { 
     getMoodHabitAnalytics, 
     getHabitMoodCorrelations, 
@@ -22,6 +28,50 @@ export default function MoodHabitDashboard() {
   } = useHabits();
   const { currentTheme } = useTheme();
   const { t, currentLanguage } = useLanguage();
+  const { canUseMoodHabitCorrelations, showUpgradePrompt } = useSubscription();
+  
+  // Safety check for currentTheme
+  if (!currentTheme || !currentTheme.colors) {
+    return (
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <Text>Loading...</Text>
+      </View>
+    );
+  }
+  
+  const styles = createStyles(currentTheme.colors);
+
+  // Check if user can access mood-habit correlations
+  if (!canUseMoodHabitCorrelations()) {
+    return (
+      <View style={styles.upgradeContainer}>
+        <Text style={styles.upgradeTitle}>{t('moodAnalytics.upgradeRequired')}</Text>
+        <Text style={styles.upgradeMessage}>{t('moodAnalytics.upgradeMessage')}</Text>
+        <TouchableOpacity 
+          style={styles.upgradeButton}
+          onPress={() => showUpgradePrompt('mood_correlations')}
+        >
+                      <Text style={styles.upgradeButtonText}>{t('premium.upgradeToPro')}</Text>
+        </TouchableOpacity>
+      </View>
+    );
+  }
+  
+  // Initialize adaptive threshold service
+  const adaptiveThresholdService = useMemo(() => {
+    const service = AdaptiveThresholdService.getInstance();
+    return service;
+  }, []);
+
+  // Load adaptive threshold data on component mount
+  useEffect(() => {
+    const loadThresholdData = async () => {
+      await adaptiveThresholdService.loadPatterns();
+      await adaptiveThresholdService.loadThresholds();
+    };
+    loadThresholdData();
+  }, [adaptiveThresholdService]);
+
   console.log('Current language:', currentLanguage);
   console.log('Translation test:', t('moodAnalytics.title'));
   
@@ -33,6 +83,78 @@ export default function MoodHabitDashboard() {
       return fallback || key.split('.').pop() || key;
     }
     return translated;
+  };
+
+  // Helper function to translate dynamic content
+  const translateDynamicContent = (content: string, type: 'reasoning' | 'moodBasedRecommendation' | 'activity' | 'suggestion') => {
+    // Debug logging
+    console.log(`Translating dynamic content: "${content}" (type: ${type})`);
+    
+    // If content is already a translation key (starts with 'dynamicContent.' or 'moodAnalytics.'), use it directly
+    if (content.startsWith('dynamicContent.') || content.startsWith('moodAnalytics.')) {
+      const translated = t(content);
+      console.log(`Direct translation key: "${content}" -> "${translated}"`);
+      if (translated !== content) {
+        return translated;
+      }
+    }
+    
+    // Try to find a matching translation key
+    const contentLower = content.toLowerCase();
+    
+    // Map common patterns to translation keys
+    const translationMap: Record<string, string> = {
+      // Reasoning patterns
+      'good mood': 'dynamicContent.reasoning.goodMood',
+      'consistent time': 'dynamicContent.reasoning.consistentTime',
+      'optimal conditions': 'dynamicContent.reasoning.optimalConditions',
+      'momentum': 'dynamicContent.reasoning.momentum',
+      'recovery': 'dynamicContent.reasoning.recovery',
+      
+      // Mood-based recommendation patterns
+      'morning': 'dynamicContent.moodBasedRecommendation.morning',
+      'afternoon': 'dynamicContent.moodBasedRecommendation.afternoon',
+      'evening': 'dynamicContent.moodBasedRecommendation.evening',
+      'high energy': 'dynamicContent.moodBasedRecommendation.highEnergy',
+      'low energy': 'dynamicContent.moodBasedRecommendation.lowEnergy',
+      'stressful': 'dynamicContent.moodBasedRecommendation.stressful',
+      
+      // Activity patterns
+      'meditation': 'dynamicContent.activities.meditation',
+      'exercise': 'dynamicContent.activities.exercise',
+      'reading': 'dynamicContent.activities.reading',
+      'walking': 'dynamicContent.activities.walking',
+      'deep breathing': 'dynamicContent.activities.deepBreathing',
+      'gratitude': 'dynamicContent.activities.gratitude',
+      'social call': 'dynamicContent.activities.socialCall',
+      'music': 'dynamicContent.activities.music',
+      'nature': 'dynamicContent.activities.nature',
+      'creative': 'dynamicContent.activities.creative',
+      'plan your day': 'dynamicContent.activities.planYourDay',
+      
+      // Suggestion patterns
+      'break it down': 'dynamicContent.suggestions.breakItDown',
+      'set reminder': 'dynamicContent.suggestions.setReminder',
+      'find accountability': 'dynamicContent.suggestions.findAccountability',
+      'adjust timing': 'dynamicContent.suggestions.adjustTiming',
+      'reduce complexity': 'dynamicContent.suggestions.reduceComplexity',
+      'celebrate progress': 'dynamicContent.suggestions.celebrateProgress'
+    };
+    
+    // Try to find a matching translation
+    for (const [pattern, translationKey] of Object.entries(translationMap)) {
+      if (contentLower.includes(pattern)) {
+        const translated = t(translationKey);
+        console.log(`Found pattern "${pattern}" -> "${translationKey}" -> "${translated}"`);
+        if (translated !== translationKey) {
+          return translated;
+        }
+      }
+    }
+    
+    // Fallback if no translation found
+    console.log(`No translation found for: "${content}"`);
+    return content;
   };
   
   const [selectedTab, setSelectedTab] = useState<TabKey>('dashboard');
@@ -107,8 +229,6 @@ export default function MoodHabitDashboard() {
     return getAIPredictiveAnalytics(currentMood);
   }, [getAIPredictiveAnalytics, currentMood]);
   
-  const styles = createStyles(currentTheme.colors);
-  
   // Enhanced data processing functions
   const getWeeklyReport = () => {
     const weeklyData = analytics.moodTrends.slice(-7);
@@ -122,7 +242,7 @@ export default function MoodHabitDashboard() {
     return {
       totalHabits,
       avgMood: avgMood.toFixed(1),
-      bestDay: new Date(bestDay.date).toLocaleDateString('en-US', { weekday: 'long' }),
+      bestDay: t(`moodAnalytics.weekdays.${['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'][new Date(bestDay.date).getDay()]}`),
       improvingTrend,
       weeklyData
     };
@@ -191,7 +311,7 @@ export default function MoodHabitDashboard() {
                   </View>
                 </View>
                 
-                <Text style={styles.predictionReasoning}>{prediction.reasoning}</Text>
+                <Text style={styles.predictionReasoning}>{translateDynamicContent(prediction.reasoning, 'reasoning')}</Text>
                 
                 <View style={styles.enhancedFactorsContainer}>
                   <Text style={styles.factorsTitle}>{t('moodAnalytics.aiInsights.keyFactors')}</Text>
@@ -255,7 +375,7 @@ export default function MoodHabitDashboard() {
                   {alert.suggestions.map((suggestion, idx) => (
                     <View key={idx} style={styles.suggestionItem}>
                       <Text style={styles.suggestionBullet}>•</Text>
-                      <Text style={styles.suggestion}>{suggestion}</Text>
+                      <Text style={styles.suggestion}>{translateDynamicContent(suggestion, 'suggestion')}</Text>
                     </View>
                   ))}
                 </View>
@@ -288,7 +408,7 @@ export default function MoodHabitDashboard() {
                   <Text style={styles.timingBest}>{timing.bestTimeToday}</Text>
                 </View>
                 
-                <Text style={styles.timingReason}>{timing.moodBasedRecommendation}</Text>
+                <Text style={styles.timingReason}>{translateDynamicContent(timing.moodBasedRecommendation, 'moodBasedRecommendation')}</Text>
                 
                 <View style={styles.enhancedAlternativeTimesContainer}>
                   <Text style={styles.alternativeLabel}>{t('moodAnalytics.aiInsights.alternativeTimes')}</Text>
@@ -329,7 +449,7 @@ export default function MoodHabitDashboard() {
                   </View>
                 </View>
                 
-                <Text style={styles.recommendationReason}>{rec.reasoning}</Text>
+                <Text style={styles.recommendationReason}>{translateDynamicContent(rec.reasoning, 'reasoning')}</Text>
                 
                 <View style={styles.enhancedBenefitContainer}>
                   <Text style={styles.benefitLabel}>{t('moodAnalytics.aiInsights.expectedMoodBoost')}</Text>
@@ -348,7 +468,7 @@ export default function MoodHabitDashboard() {
                   {moodRecommendations.moodBoostingActivities.map((activity, idx) => (
                     <View key={idx} style={styles.boostingActivityItem}>
                       <Text style={styles.boostingActivityBullet}>✨</Text>
-                      <Text style={styles.boostingActivity}>{activity}</Text>
+                      <Text style={styles.boostingActivity}>{translateDynamicContent(activity, 'activity')}</Text>
                     </View>
                   ))}
                 </View>
@@ -393,7 +513,7 @@ export default function MoodHabitDashboard() {
                     {forecast.riskDays.map((riskDay, idx) => (
                       <View key={idx} style={styles.riskDayChip}>
                         <Text style={styles.riskDayText}>
-                          {new Date(riskDay.date).toLocaleDateString('en-US', { weekday: 'short' })}
+                          {t(`moodAnalytics.weekdays.${['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'][new Date(riskDay.date).getDay()]}`).substring(0, 3)}
                         </Text>
                        <Text style={styles.riskDayLevel}>{t(`moodAnalytics.riskLevels.${riskDay.riskLevel}`)}</Text>
                       </View>
@@ -411,7 +531,7 @@ export default function MoodHabitDashboard() {
                 {weeklyForecast.insights.map((insight, idx) => (
                   <View key={idx} style={styles.weeklyInsightItem}>
                     <Text style={styles.weeklyInsightBullet}>💡</Text>
-                    <Text style={styles.weeklyInsight}>{insight}</Text>
+                    <Text style={styles.weeklyInsight}>{t(`moodAnalytics.weeklyInsights.${insight}`)}</Text>
                   </View>
                 ))}
               </View>
@@ -499,12 +619,12 @@ export default function MoodHabitDashboard() {
     
     return (
       <View style={styles.section}>
-        <Text style={styles.sectionTitle}>{translate('moodAnalytics.weeklyInsights.moodImprovementTracking', '📈 Mood Improvement Tracking')}</Text>
+        <Text style={styles.sectionTitle}>{t('moodAnalytics.weeklyInsights.moodImprovementTracking')}</Text>
         
         {/* Trend Summary Cards */}
         <View style={styles.trendCardsContainer}>
           <View style={styles.trendCard}>
-            <Text style={styles.trendCardTitle}>{translate('moodAnalytics.weeklyInsights.thirtyDayTrend', '30-Day Trend')}</Text>
+            <Text style={styles.trendCardTitle}>{t('moodAnalytics.weeklyInsights.thirtyDayTrend')}</Text>
             <Text style={[styles.trendCardValue, {
               color: monthlyTrend > 0 ? currentTheme.colors.success : 
                      monthlyTrend < 0 ? currentTheme.colors.error : currentTheme.colors.warning
@@ -519,7 +639,7 @@ export default function MoodHabitDashboard() {
           </View>
           
           <View style={styles.trendCard}>
-            <Text style={styles.trendCardTitle}>{translate('moodAnalytics.weeklyInsights.ninetyDayTrend', '90-Day Trend')}</Text>
+            <Text style={styles.trendCardTitle}>{t('moodAnalytics.weeklyInsights.ninetyDayTrend')}</Text>
             <Text style={[styles.trendCardValue, {
               color: quarterlyTrend > 0 ? currentTheme.colors.success : 
                      quarterlyTrend < 0 ? currentTheme.colors.error : currentTheme.colors.warning
@@ -536,7 +656,7 @@ export default function MoodHabitDashboard() {
         
         {/* Weekly Mood Progress Chart */}
         <View style={styles.chartCard}>
-          <Text style={styles.cardTitle}>{translate('moodAnalytics.charts.weeklyMoodProgress', 'Weekly Mood Progress')}</Text>
+          <Text style={styles.cardTitle}>{t('moodAnalytics.charts.weeklyMoodProgress')}</Text>
           <View style={styles.weeklyMoodChart}>
             {last30Days.filter((_, index) => index % 7 === 0).map((week, index) => {
               const weekData = last30Days.slice(index * 7, (index + 1) * 7);
@@ -554,7 +674,7 @@ export default function MoodHabitDashboard() {
                     }]}
                   />
                   <Text style={styles.moodChartValue}>{avgMood.toFixed(1)}</Text>
-                  <Text style={styles.moodChartLabel}>W{index + 1}</Text>
+                  <Text style={styles.moodChartLabel}>{t(`moodAnalytics.charts.weekLabels.week${index + 1}`)}</Text>
                 </View>
               );
             })}
@@ -568,6 +688,12 @@ export default function MoodHabitDashboard() {
   const renderHabitSuccessByMood = () => {
     const correlations = getHabitMoodCorrelations();
     const moodStates = ['happy', 'calm', 'energetic', 'tired', 'stressed', 'anxious', 'sad'];
+    
+    // Helper function to get translated mood states
+    const getTranslatedMoodStates = () => moodStates.map(mood => ({
+      key: mood,
+      label: t(`moodCheckIn.moodTags.${mood}`)
+    }));
     
     const getMoodSuccessData = () => {
       const moodData: any = {};
@@ -590,19 +716,19 @@ export default function MoodHabitDashboard() {
     
     return (
       <View style={styles.section}>
-        <Text style={styles.sectionTitle}>{t('moodAnalytics.smartInsights.successByMoodState')}</Text>
+        <Text style={styles.sectionTitle}>{t('moodAnalytics.smartInsights.successByMoodState.title')}</Text>
         
         {/* Success Rate by Mood Chart */}
         <View style={styles.chartCard}>
           <Text style={styles.cardTitle}>{t('moodAnalytics.charts.successRatesByMood')}</Text>
           <View style={styles.moodSuccessChart}>
-            {moodStates.map(mood => {
-              const data = moodSuccessData[mood];
+            {getTranslatedMoodStates().map(({ key, label }) => {
+              const data = moodSuccessData[key];
               const successRate = data.successRate;
               const height = successRate;
               
               return (
-                <View key={mood} style={styles.moodSuccessBar}>
+                <View key={key} style={styles.moodSuccessBar}>
                   <View 
                     style={[styles.moodSuccessBarFill, {
                       height: `${height}%`,
@@ -612,7 +738,7 @@ export default function MoodHabitDashboard() {
                     }]}
                   />
                   <Text style={styles.moodSuccessValue}>{Math.round(successRate)}%</Text>
-                  <Text style={styles.moodSuccessLabel}>{t(`moodCheckIn.moodTags.${mood}`)}</Text>
+                  <Text style={styles.moodSuccessLabel}>{label}</Text>
                 </View>
               );
             })}
@@ -658,11 +784,11 @@ export default function MoodHabitDashboard() {
   
   // Helper function to convert averageMood to mood state
   const getMoodState = (averageMood: number): string => {
-    if (averageMood >= 8) return 'happy';
-    if (averageMood >= 6) return 'calm';
-    if (averageMood >= 4) return 'tired';
-    if (averageMood >= 2) return 'sad';
-    return 'stressed';
+    if (averageMood >= 8) return t('moodCheckIn.moodTags.happy');
+    if (averageMood >= 6) return t('moodCheckIn.moodTags.calm');
+    if (averageMood >= 4) return t('moodCheckIn.moodTags.tired');
+    if (averageMood >= 2) return t('moodCheckIn.moodTags.sad');
+    return t('moodCheckIn.moodTags.stressed');
   };
   
 
@@ -733,12 +859,12 @@ export default function MoodHabitDashboard() {
         <View style={styles.insightHeaderLeft}>
          <Text style={styles.enhancedInsightTitle}>{t('moodAnalytics.smartInsights.emotionalJourney.title', { month: getMonthName(new Date(currentYear, currentMonth)) })}</Text>
           <Text style={styles.enhancedInsightSubtitle}>
-            {patterns.totalDaysTracked} days tracked • Overall mood: {patterns.averageMood.toFixed(1)}/10
+            {patterns.totalDaysTracked} {t('moodAnalytics.emotionalJourney.daysTracked')} • {t('moodAnalytics.emotionalJourney.overallMood')}: {patterns.averageMood.toFixed(1)}/10
           </Text>
         </View>
         <View style={styles.monthlyScoreContainer}>
           <Text style={styles.monthlyScoreValue}>{patterns.averageMood.toFixed(1)}</Text>
-          <Text style={styles.monthlyScoreLabel}>Avg Mood</Text>
+          <Text style={styles.monthlyScoreLabel}>{t('moodAnalytics.emotionalJourney.avgMood')}</Text>
         </View>
       </View>
       
@@ -748,11 +874,11 @@ export default function MoodHabitDashboard() {
           <View style={styles.patternCardHeader}>
             <Text style={styles.patternCardEmoji}>{topMoodDisplay?.emoji || '😐'}</Text>
             <View style={styles.patternCardInfo}>
-              <Text style={styles.enhancedPatternLabel}>Dominant Mood</Text>
+              <Text style={styles.enhancedPatternLabel}>{t('moodAnalytics.emotionalJourney.dominantMood')}</Text>
               <Text style={[styles.enhancedPatternValue, { color: topMoodDisplay?.color || '#757575' }]}>
                 {topMoodDisplay?.label || 'N/A'}
               </Text>
-              <Text style={styles.enhancedPatternSubtext}>{topMood?.[1] || 0} days ({((topMood?.[1] || 0) / patterns.totalDaysTracked * 100).toFixed(0)}%)</Text>
+              <Text style={styles.enhancedPatternSubtext}>{topMood?.[1] || 0} {t('moodAnalytics.emotionalJourney.daysTracked')} ({((topMood?.[1] || 0) / patterns.totalDaysTracked * 100).toFixed(0)}%)</Text>
             </View>
           </View>
         </View>
@@ -761,11 +887,11 @@ export default function MoodHabitDashboard() {
           <View style={styles.patternCardHeader}>
             <Text style={styles.patternCardEmoji}>{stabilityScore >= 70 ? '🎯' : stabilityScore >= 50 ? '📈' : '📊'}</Text>
             <View style={styles.patternCardInfo}>
-              <Text style={styles.enhancedPatternLabel}>Emotional Stability</Text>
+              <Text style={styles.enhancedPatternLabel}>{t('moodAnalytics.emotionalJourney.emotionalStability')}</Text>
               <Text style={[styles.enhancedPatternValue, { color: stabilityLevel.color }]}>
                 {stabilityLevel.label}
               </Text>
-              <Text style={styles.enhancedPatternSubtext}>{stabilityScore.toFixed(0)}% consistent</Text>
+              <Text style={styles.enhancedPatternSubtext}>{stabilityScore.toFixed(0)}% {t('moodAnalytics.emotionalJourney.consistent')}</Text>
             </View>
           </View>
           <View style={[styles.stabilityProgressBar, { backgroundColor: stabilityLevel.color + '20' }]}>
@@ -786,18 +912,18 @@ export default function MoodHabitDashboard() {
             return (
               <View key={index} style={styles.enhancedWeeklyTrendItem}>
                 <View style={styles.weeklyTrendHeader}>
-                  <Text style={styles.enhancedWeekLabel}>Week {week.week}</Text>
+                  <Text style={styles.enhancedWeekLabel}>{t(`moodAnalytics.charts.weekLabels.week${week.week}`)}</Text>
                   <Text style={styles.weeklyTrendEmoji}>{weekMoodDisplay.emoji}</Text>
                 </View>
                 <View style={styles.enhancedTrendMetrics}>
                   <View style={styles.weeklyMetricItem}>
-                    <Text style={styles.weeklyMetricLabel}>Mood</Text>
+                    <Text style={styles.weeklyMetricLabel}>{t('moodAnalytics.emotionalJourney.overallMood')}</Text>
                     <Text style={[styles.enhancedTrendScore, { color: weekMoodDisplay.color }]}>
                       {week.avgMood.toFixed(1)}
                     </Text>
                   </View>
                   <View style={styles.weeklyMetricItem}>
-                    <Text style={styles.weeklyMetricLabel}>Days</Text>
+                    <Text style={styles.weeklyMetricLabel}>{t('moodAnalytics.emotionalJourney.daysTracked')}</Text>
                     <Text style={styles.enhancedTrendScore}>{week.daysTracked}</Text>
                   </View>
                 </View>
@@ -851,11 +977,11 @@ export default function MoodHabitDashboard() {
   const renderMoodHabitCorrelations = () => {
     // Helper function to convert averageMood to mood state
     const getMoodState = (averageMood: number): string => {
-      if (averageMood >= 8) return 'happy';
-      if (averageMood >= 6) return 'calm';
-      if (averageMood >= 4) return 'tired';
-      if (averageMood >= 2) return 'sad';
-      return 'stressed';
+      if (averageMood >= 8) return t('moodCheckIn.moodTags.happy');
+      if (averageMood >= 6) return t('moodCheckIn.moodTags.calm');
+      if (averageMood >= 4) return t('moodCheckIn.moodTags.tired');
+      if (averageMood >= 2) return t('moodCheckIn.moodTags.sad');
+      return t('moodCheckIn.moodTags.stressed');
     };
     
     // Calculate correlations between moods and habit completion
@@ -932,31 +1058,31 @@ export default function MoodHabitDashboard() {
     
     const progressMetrics = [
       {
-        label: "Mood Stability",
+        label: t('moodAnalytics.wellnessSummary.moodStability'),
         value: ((10 - (Math.max(...last30Days.map(d => d.averageMood)) - Math.min(...last30Days.map(d => d.averageMood)))) / 10 * 100),
         target: 80,
         unit: "%"
       },
       {
-        label: "Habit Consistency",
+        label: t('moodAnalytics.wellnessSummary.habitConsistency'),
         value: (streakData.current / Math.max(streakData.longest, 1) * 100),
         target: 90,
         unit: "%"
       },
       {
-        label: "Weekly Improvement",
+        label: t('moodAnalytics.wellnessSummary.weeklyImprovement'),
         value: Math.max(0, moodImprovement * 10),
         target: 5,
-        unit: "pts"
+        unit: t('moodAnalytics.emotionalWellnessSummary.points')
       }
     ];
     
     return (
       <View style={styles.insightCard}>
-        <Text style={styles.insightTitle}>Emotional Wellness Summary</Text>
+        <Text style={styles.insightTitle}>{t('moodAnalytics.emotionalWellnessSummary.title')}</Text>
         
         <View style={styles.wellnessScoreCard}>
-          <Text style={styles.wellnessScoreLabel}>Overall Wellness Score</Text>
+          <Text style={styles.wellnessScoreLabel}>{t('moodAnalytics.emotionalWellnessSummary.overallWellnessScore')}</Text>
           <Text style={styles.wellnessScoreValue}>{wellnessScore.toFixed(0)}/100</Text>
           <View style={styles.wellnessScoreBar}>
             <View style={[styles.wellnessScoreFill, {width: `${wellnessScore}%`}]} />
@@ -971,7 +1097,7 @@ export default function MoodHabitDashboard() {
                 <Text style={styles.metricValue}>
                   {metric.value.toFixed(1)}{metric.unit}
                 </Text>
-                <Text style={styles.metricTarget}>Target: {metric.target}{metric.unit}</Text>
+                <Text style={styles.metricTarget}>{t('moodAnalytics.emotionalWellnessSummary.target')} {metric.target}{metric.unit}</Text>
               </View>
               <View style={styles.metricProgressBar}>
                 <View style={[
@@ -988,64 +1114,297 @@ export default function MoodHabitDashboard() {
   };
   
   const renderPersonalizedRecommendations = () => {
-    // Replace the entire recommendations array around lines 990-1040
-const recommendations = [
-  {
-    category: t('moodAnalytics.recommendations.categories.moodOptimization'),
-    priority: t('moodAnalytics.priorities.high'),
-    suggestions: [
-      t('moodAnalytics.recommendations.suggestions.meditation'),
-      t('moodAnalytics.recommendations.suggestions.socialActivities'),
-      t('moodAnalytics.recommendations.suggestions.sunlightExposure')
-    ],
-    expectedImpact: t('moodAnalytics.recommendations.impacts.moodStability')
-  },
-  {
-    category: t('moodAnalytics.recommendations.categories.habitEfficiency'),
-    priority: t('moodAnalytics.priorities.medium'),
-    suggestions: [
-      t('moodAnalytics.recommendations.suggestions.groupHabits'),
-      t('moodAnalytics.recommendations.suggestions.reminders'),
-      t('moodAnalytics.recommendations.suggestions.habitStacking')
-    ],
-    expectedImpact: t('moodAnalytics.recommendations.impacts.completionRate')
-  },
-  {
-    category: t('moodAnalytics.recommendations.categories.wellnessIntegration'),
-    priority: t('moodAnalytics.priorities.medium'),
-    suggestions: [
-      t('moodAnalytics.recommendations.suggestions.breathing'),
-      t('moodAnalytics.recommendations.suggestions.sleepTracking'),
-      t('moodAnalytics.recommendations.suggestions.reflection')
-    ],
-    expectedImpact: t('moodAnalytics.recommendations.impacts.overallWellness')
-  }
-];
+    // Generate dynamic recommendations based on actual user data
+    const dynamicRecommendations = generateDynamicRecommendations();
     
     return (
       <View style={styles.insightCard}>
-      // Around line 1025 - Fix the title
-<Text style={styles.insightTitle}>{t('moodAnalytics.recommendations.title')}</Text>
+        <Text style={styles.insightTitle}>{t('moodAnalytics.personalizedRecommendations.title')}</Text>
         
-        {recommendations.map((rec, index) => (
-          <View key={index} style={styles.recommendationDetailCard}>
+        {dynamicRecommendations.map((recommendation, index) => (
+          <View key={index} style={styles.recommendationCard}>
             <View style={styles.recommendationHeader}>
-              <Text style={styles.recommendationCategory}>{rec.category}</Text>
-              <View style={[styles.priorityBadge, 
-                {backgroundColor: rec.priority === 'High' ? '#F44336' : '#FF9800'}]}>
-               <Text style={styles.priorityText}>{t(`moodAnalytics.priorities.${rec.priority.toLowerCase()}`)}</Text>
+              <Text style={styles.recommendationCategory}>{recommendation.category}</Text>
+              <View style={[styles.priorityBadge, { backgroundColor: getPriorityColor(recommendation.priority) }]}>
+                <Text style={styles.priorityText}>{t(`moodAnalytics.moodPriorities.${recommendation.priority}`)}</Text>
               </View>
             </View>
             
-            {rec.suggestions.map((suggestion, idx) => (
-              <Text key={idx} style={styles.suggestionText}>• {suggestion}</Text>
-            ))}
+            <Text style={styles.recommendationDescription}>{recommendation.description}</Text>
             
-            <Text style={styles.expectedImpact}>Expected Impact: {rec.expectedImpact}</Text>
+            <View style={styles.suggestionsContainer}>
+              {recommendation.suggestions.map((suggestion, suggestionIndex) => (
+                <View key={suggestionIndex} style={styles.suggestionItem}>
+                  <Text style={styles.suggestionText}>• {suggestion}</Text>
+                </View>
+              ))}
+            </View>
+            
+            <View style={styles.impactContainer}>
+              <Text style={styles.impactLabel}>{t('moodAnalytics.moodRecommendations.expectedImpact')}</Text>
+              <Text style={styles.impactValue}>{recommendation.expectedImpact}</Text>
+            </View>
+            
+            {recommendation.confidence && (
+              <View style={styles.confidenceContainer}>
+                <Text style={styles.confidenceLabel}>{t('moodAnalytics.moodRecommendations.confidence')}</Text>
+                <View style={styles.confidenceBar}>
+                  <View style={[styles.confidenceFill, { width: `${recommendation.confidence * 100}%` }]} />
+                </View>
+                <Text style={styles.confidenceValue}>{Math.round(recommendation.confidence * 100)}%</Text>
+              </View>
+            )}
+            
+            <TouchableOpacity
+              style={styles.feedbackButton}
+              onPress={() => handleFeedbackRequest(recommendation)}
+            >
+              <Text style={styles.feedbackButtonText}>{t('moodAnalytics.moodRecommendations.provideFeedback')}</Text>
+            </TouchableOpacity>
           </View>
         ))}
       </View>
     );
+  };
+
+  // Generate dynamic recommendations based on actual user data
+  const generateDynamicRecommendations = () => {
+    const recommendations = [];
+    
+    // Analyze current mood patterns
+    const recentMoodData = analytics.moodTrends.slice(-7); // Last 7 days
+    const avgMood = recentMoodData.reduce((sum, trend) => sum + trend.averageMood, 0) / recentMoodData.length;
+    const moodVolatility = calculateMoodVolatility(recentMoodData);
+    
+    // Record mood pattern for adaptive thresholds
+    adaptiveThresholdService.recordPattern({
+      userId: 'current-user', // In real app, get from auth
+      patternType: 'mood',
+      metric: 'average_mood',
+      value: avgMood,
+      timestamp: new Date().toISOString(),
+      context: { volatility: moodVolatility }
+    });
+    
+    // Analyze habit completion patterns
+    const habitCompletionRate = calculateHabitCompletionRate();
+    const strugglingHabits = identifyStrugglingHabits();
+    const successfulHabits = identifySuccessfulHabits();
+    
+    // Record habit completion pattern
+    adaptiveThresholdService.recordPattern({
+      userId: 'current-user',
+      patternType: 'habit',
+      metric: 'completion_rate',
+      value: habitCompletionRate,
+      timestamp: new Date().toISOString(),
+      context: { strugglingCount: strugglingHabits.length, successfulCount: successfulHabits.length }
+    });
+    
+    // Get adaptive thresholds for comparison
+    const moodThreshold = adaptiveThresholdService.getThreshold('current-user', 'mood', 'average_mood');
+    const habitThreshold = adaptiveThresholdService.getThreshold('current-user', 'habit', 'completion_rate');
+    
+    // Recommendation 1: Mood Stability (using adaptive thresholds)
+    const moodVolatilityThreshold = 0.3;
+    const shouldRecommendMoodStability = moodVolatility > moodVolatilityThreshold || 
+      (moodThreshold && adaptiveThresholdService.isBelowThreshold('current-user', 'mood', 'average_mood', avgMood));
+    
+    if (shouldRecommendMoodStability) {
+      const confidence = moodThreshold ? moodThreshold.confidence : 0.85;
+      recommendations.push({
+        category: t('moodAnalytics.moodRecommendations.categories.moodStability'),
+        priority: 'high',
+        description: t('moodAnalytics.moodRecommendations.descriptions.moodStability', { 
+          volatility: Math.round(moodVolatility * 100),
+          threshold: moodThreshold ? Math.round(moodThreshold.current * 10) / 10 : 5
+        }),
+        suggestions: generateMoodStabilitySuggestions(avgMood, moodVolatility),
+        expectedImpact: t('moodAnalytics.moodRecommendations.impacts.moodStability'),
+        confidence: confidence
+      });
+    }
+    
+    // Recommendation 2: Habit Optimization (using adaptive thresholds)
+    const habitCompletionThreshold = 0.7;
+    const shouldRecommendHabitOptimization = habitCompletionRate < habitCompletionThreshold || 
+      (habitThreshold && adaptiveThresholdService.isBelowThreshold('current-user', 'habit', 'completion_rate', habitCompletionRate));
+    
+    if (shouldRecommendHabitOptimization) {
+      const confidence = habitThreshold ? habitThreshold.confidence : 0.78;
+      recommendations.push({
+        category: t('moodAnalytics.moodRecommendations.categories.habitOptimization'),
+        priority: 'high',
+                  description: t('moodAnalytics.moodRecommendations.descriptions.habitOptimization', { 
+          rate: Math.round(habitCompletionRate * 100),
+          threshold: habitThreshold ? Math.round(habitThreshold.current * 100) : 70
+        }),
+        suggestions: generateHabitOptimizationSuggestions(strugglingHabits),
+                  expectedImpact: t('moodAnalytics.moodRecommendations.impacts.habitCompletion'),
+        confidence: confidence
+      });
+    }
+    
+    // Recommendation 3: Mood-Habit Synergy (based on correlations)
+    const moodHabitCorrelations = getMoodHabitCorrelations();
+    if (moodHabitCorrelations.length > 0) {
+      recommendations.push({
+        category: t('moodAnalytics.moodRecommendations.categories.moodHabitSynergy'),
+        priority: 'medium',
+                  description: t('moodAnalytics.moodRecommendations.descriptions.moodHabitSynergy'),
+        suggestions: generateMoodHabitSynergySuggestions(moodHabitCorrelations),
+                  expectedImpact: t('moodAnalytics.moodRecommendations.impacts.moodHabitSynergy'),
+        confidence: 0.72
+      });
+    }
+    
+    // Recommendation 4: Wellness Integration (if gaps detected)
+    const wellnessGaps = identifyWellnessGaps();
+    if (wellnessGaps.length > 0) {
+      recommendations.push({
+        category: t('moodAnalytics.moodRecommendations.categories.wellnessIntegration'),
+        priority: 'medium',
+                  description: t('moodAnalytics.moodRecommendations.descriptions.wellnessIntegration'),
+        suggestions: generateWellnessIntegrationSuggestions(wellnessGaps),
+                  expectedImpact: t('moodAnalytics.moodRecommendations.impacts.wellnessIntegration'),
+        confidence: 0.68
+      });
+    }
+    
+    return recommendations;
+  };
+
+  // Helper functions for dynamic recommendations
+  const calculateMoodVolatility = (moodData: any[]) => {
+    if (moodData.length < 2) return 0;
+    const values = moodData.map(d => d.averageMood);
+    const mean = values.reduce((sum, val) => sum + val, 0) / values.length;
+    const variance = values.reduce((sum, val) => sum + Math.pow(val - mean, 2), 0) / values.length;
+    return Math.sqrt(variance) / 10; // Normalize to 0-1
+  };
+
+  const calculateHabitCompletionRate = () => {
+    if (!habits || habits.length === 0) return 0;
+    const totalCompletions = habits.reduce((sum, habit) => sum + habit.completedDates.length, 0);
+    const totalDays = habits.length * 30; // Assume 30 days of tracking
+    return Math.min(1, totalCompletions / totalDays);
+  };
+
+  const identifyStrugglingHabits = () => {
+    if (!habits) return [];
+    return habits.filter(habit => habit.streak < 3 && habit.completedDates.length < 5);
+  };
+
+  const identifySuccessfulHabits = () => {
+    if (!habits) return [];
+    return habits.filter(habit => habit.streak >= 7 && habit.completedDates.length >= 10);
+  };
+
+  const getMoodHabitCorrelations = () => {
+    // This would use the actual correlation data from analytics
+    return analytics.insights.moodBoostingHabits || [];
+  };
+
+  const identifyWellnessGaps = (): string[] => {
+    const gaps: string[] = [];
+    const categories = ['physical', 'mental', 'social', 'creative', 'spiritual'];
+    
+    categories.forEach(category => {
+      const categoryHabits = habits?.filter(h => h.category === category) || [];
+      if (categoryHabits.length === 0) {
+        gaps.push(category);
+      }
+    });
+    
+    return gaps;
+  };
+
+  const generateMoodStabilitySuggestions = (avgMood: number, volatility: number) => {
+    const suggestions = [];
+    
+    if (avgMood < 5) {
+              suggestions.push(t('moodAnalytics.moodRecommendations.suggestions.lowMoodActivities'));
+        suggestions.push(t('moodAnalytics.moodRecommendations.suggestions.gratitudePractice'));
+    }
+    
+    if (volatility > 0.5) {
+              suggestions.push(t('moodAnalytics.moodRecommendations.suggestions.meditation'));
+        suggestions.push(t('moodAnalytics.moodRecommendations.suggestions.breathingExercises'));
+    }
+    
+            suggestions.push(t('moodAnalytics.moodRecommendations.suggestions.consistentSleep'));
+    
+    return suggestions;
+  };
+
+  const generateHabitOptimizationSuggestions = (strugglingHabits: any[]) => {
+    const suggestions = [];
+    
+    if (strugglingHabits.length > 0) {
+              suggestions.push(t('moodAnalytics.moodRecommendations.suggestions.simplifyHabits'));
+        suggestions.push(t('moodAnalytics.moodRecommendations.suggestions.habitStacking'));
+    }
+    
+            suggestions.push(t('moodAnalytics.moodRecommendations.suggestions.reminders'));
+        suggestions.push(t('moodAnalytics.moodRecommendations.suggestions.progressTracking'));
+    
+    return suggestions;
+  };
+
+  const generateMoodHabitSynergySuggestions = (correlations: any[]) => {
+    const suggestions = [];
+    
+    correlations.forEach(correlation => {
+      if (correlation.correlation > 0.7) {
+        suggestions.push(t('moodAnalytics.moodRecommendations.suggestions.leverageCorrelation', { 
+          habit: correlation.habitTitle 
+        }));
+      }
+    });
+    
+            suggestions.push(t('moodAnalytics.moodRecommendations.suggestions.moodBasedScheduling'));
+    
+    return suggestions;
+  };
+
+  const generateWellnessIntegrationSuggestions = (gaps: string[]) => {
+    const suggestions = [];
+    
+    gaps.forEach(gap => {
+              suggestions.push(t(`moodAnalytics.moodRecommendations.suggestions.add${gap.charAt(0).toUpperCase() + gap.slice(1)}Habits`));
+    });
+    
+          suggestions.push(t('moodAnalytics.moodRecommendations.suggestions.balancedRoutine'));
+    
+    return suggestions;
+  };
+
+  const getPriorityColor = (priority: string) => {
+    switch (priority) {
+      case 'high': return '#FF6B6B';
+      case 'medium': return '#FFA726';
+      case 'low': return '#66BB6A';
+      default: return '#9E9E9E';
+    }
+  };
+
+  // Feedback handling functions
+  const handleFeedbackRequest = (recommendation: any) => {
+    setSelectedRecommendation(recommendation);
+    setShowFeedbackModal(true);
+  };
+
+  const handleFeedbackSubmitted = (feedback: any) => {
+    console.log('Feedback submitted:', feedback);
+    // The feedback is already recorded in the AI service
+    // You can add additional analytics here
+    setShowFeedbackModal(false);
+    setSelectedRecommendation(null);
+  };
+
+  const handleFeedbackClose = () => {
+    setShowFeedbackModal(false);
+    setSelectedRecommendation(null);
   };
   
   const renderComparativePerformance = () => {
@@ -1121,12 +1480,12 @@ const periods = [
             <Text style={styles.periodTitle}>{period.name}</Text>
             <View style={styles.periodMetrics}>
               <View style={styles.periodMetric}>
-                <Text style={styles.periodMetricLabel}>{translate('avgMood', '平均心情')}</Text>
+                <Text style={styles.periodMetricLabel}>{t('moodAnalytics.common.avgMood')}</Text>
                 <Text style={styles.periodMetricValue}>{period.data.avgMood.toFixed(1)}/10</Text>
               </View>
               <View style={styles.periodMetric}>
-               <Text style={styles.periodMetricLabel}>{translate('habits', '习惯')}</Text>
-               <Text style={styles.periodMetricValue}>{period.data.habitCompletion.toFixed(0)} {translate('days', '天')}</Text>
+               <Text style={styles.periodMetricLabel}>{t('moodAnalytics.common.habits')}</Text>
+               <Text style={styles.periodMetricValue}>{period.data.habitCompletion.toFixed(0)} {t('moodAnalytics.common.days')}</Text>
               </View>
               <View style={styles.periodMetric}>
                 <Text style={styles.periodMetricLabel}>{t('moodAnalytics.performance.stability')}</Text>
@@ -1238,22 +1597,22 @@ const periods = [
     
     return (
       <View style={styles.section}>
-        <Text style={styles.sectionTitle}>🔥 Mood-Habit Streak Tracking</Text>
+        <Text style={styles.sectionTitle}>🔥 {t('moodAnalytics.progress.streakTracking')}</Text>
         
         {/* Current Streaks */}
         <View style={styles.chartCard}>
-          <Text style={styles.cardTitle}>Active Streaks</Text>
+          <Text style={styles.cardTitle}>{t('moodAnalytics.progress.activeStreaks')}</Text>
           {topStreaks.map((streak: any, index) => (
             <View key={`streak-${index}`} style={styles.streakItem}>
               <View style={styles.streakInfo}>
                 <Text style={styles.streakTitle}>{streak.title}</Text>
                 <Text style={styles.streakSubtitle}>
-                  Longest: {streak.longestStreak} days • Total: {streak.totalCompletions}
+                  {t('moodAnalytics.progress.longestCurrent')}: {streak.longestStreak} {t('moodAnalytics.common.days')} • {t('moodAnalytics.common.total')}: {streak.totalCompletions}
                 </Text>
               </View>
               <View style={styles.streakBadge}>
                 <Text style={styles.streakDays}>{streak.currentStreak}</Text>
-                <Text style={styles.streakLabel}>days</Text>
+                <Text style={styles.streakLabel}>{t('moodAnalytics.common.days')}</Text>
               </View>
             </View>
           ))}
@@ -1265,19 +1624,19 @@ const periods = [
             <Text style={styles.streakStatValue}>
               {Math.max(...Object.values(streakData).map((s: any) => s.currentStreak))}
             </Text>
-            <Text style={styles.streakStatLabel}>Longest Current</Text>
+            <Text style={styles.streakStatLabel}>{t('moodAnalytics.progress.longestCurrent')}</Text>
           </View>
           <View style={styles.streakStatCard}>
             <Text style={styles.streakStatValue}>
               {Math.max(...Object.values(streakData).map((s: any) => s.longestStreak))}
             </Text>
-            <Text style={styles.streakStatLabel}>All-Time Best</Text>
+            <Text style={styles.streakStatLabel}>{t('moodAnalytics.progress.allTimeBest')}</Text>
           </View>
           <View style={styles.streakStatCard}>
             <Text style={styles.streakStatValue}>
               {Object.values(streakData).filter((s: any) => s.currentStreak > 0).length}
             </Text>
-            <Text style={styles.streakStatLabel}>Active Streaks</Text>
+            <Text style={styles.streakStatLabel}>{t('moodAnalytics.progress.activeStreaksCount')}</Text>
           </View>
         </View>
       </View>
@@ -1323,7 +1682,7 @@ const periods = [
     
     return (
       <View style={styles.section}>
-        <Text style={styles.sectionTitle}>📊 Monthly Wellness Report</Text>
+        <Text style={styles.sectionTitle}>{t('moodAnalytics.reports.monthlyWellnessReport')}</Text>
         <Text style={styles.reportSubtitle}>{monthName}</Text>
         
         {/* Monthly Overview Cards - 2x2 Grid */}
@@ -1333,13 +1692,13 @@ const periods = [
             <View style={styles.reportCard}>
               <Text style={styles.reportCardIcon}>😊</Text>
               <Text style={styles.reportCardValue}>{monthlyReport.avgMood.toFixed(1)}</Text>
-              <Text style={styles.reportCardLabel}>Average Mood</Text>
+              <Text style={styles.reportCardLabel}>{t('moodAnalytics.reports.averageMood')}</Text>
             </View>
             
             <View style={styles.reportCard}>
               <Text style={styles.reportCardIcon}>✅</Text>
               <Text style={styles.reportCardValue}>{monthlyReport.totalHabits}</Text>
-              <Text style={styles.reportCardLabel}>Habits Completed</Text>
+              <Text style={styles.reportCardLabel}>{t('moodAnalytics.reports.habitsCompleted')}</Text>
             </View>
           </View>
           
@@ -1348,20 +1707,20 @@ const periods = [
             <View style={styles.reportCard}>
               <Text style={styles.reportCardIcon}>📈</Text>
               <Text style={styles.reportCardValue}>{monthlyReport.avgDailyHabits.toFixed(1)}</Text>
-              <Text style={styles.reportCardLabel}>Daily Average</Text>
+              <Text style={styles.reportCardLabel}>{t('moodAnalytics.reports.dailyAverage')}</Text>
             </View>
             
             <View style={styles.reportCard}>
               <Text style={styles.reportCardIcon}>📅</Text>
               <Text style={styles.reportCardValue}>{monthlyReport.daysTracked}</Text>
-              <Text style={styles.reportCardLabel}>Days Tracked</Text>
+              <Text style={styles.reportCardLabel}>{t('moodAnalytics.reports.daysTracked')}</Text>
             </View>
           </View>
         </View>
         
         {/* Mood Distribution */}
         <View style={styles.chartCard}>
-          <Text style={styles.cardTitle}>Mood Distribution This Month</Text>
+          <Text style={styles.cardTitle}>{t('moodAnalytics.reports.moodDistributionThisMonth')}</Text>
           <View style={styles.moodDistributionChart}>
             {Object.entries(monthlyReport.moodDistribution).map(([mood, count]) => {
               const percentage = ((count as number) / monthlyReport.daysTracked) * 100;
@@ -1378,7 +1737,7 @@ const periods = [
                       }]}
                     />
                   </View>
-                  <Text style={styles.distributionLabel}>{mood}: {count as number} days ({percentage.toFixed(0)}%)</Text>
+                  <Text style={styles.distributionLabel}>{mood}: {count as number} {t('advancedAnalytics.days')} ({percentage.toFixed(0)}%)</Text>
                 </View>
               );
             })}
@@ -1452,7 +1811,7 @@ const periods = [
     
     return (
       <View style={styles.section}>
-        <Text style={styles.sectionTitle}>🛡️ Emotional Resilience Score</Text>
+        <Text style={styles.sectionTitle}>{t('moodAnalytics.resilience.title')}</Text>
         
         {/* Main Resilience Score */}
         <View style={styles.resilienceMainCard}>
@@ -1461,12 +1820,12 @@ const periods = [
           <Text style={[styles.resilienceLevel, { color: resilienceLevel.color }]}>
             {resilienceLevel.level}
           </Text>
-          <Text style={styles.resilienceSubtext}>Emotional Resilience Score</Text>
+          <Text style={styles.resilienceSubtext}>{t('moodAnalytics.resilience.emotionalResilienceScore')}</Text>
         </View>
         
         {/* Resilience Factors Breakdown */}
         <View style={styles.chartCard}>
-          <Text style={styles.cardTitle}>Resilience Factors</Text>
+          <Text style={styles.cardTitle}>{t('moodAnalytics.resilience.resilienceFactors')}</Text>
           {Object.entries(resilience.factors).map(([factor, score]) => {
             const factorNames: any = {
               stability: t('moodAnalytics.resilienceFactors.stability'),
@@ -1582,8 +1941,8 @@ const periods = [
         
         <View style={styles.heroCard}>
           <Text style={styles.heroValue}>{insights.weeklyReport.totalHabits}</Text>
-          <Text style={styles.heroLabel}>{translate('moodAnalytics.dashboard.habitsThisWeek', 'Habits This Week')}</Text>
-          <Text style={styles.heroSubtext}>{translate('moodAnalytics.dashboard.keepItUp', 'Keep it up!')}</Text>
+                      <Text style={styles.heroLabel}>{t('moodAnalytics.dashboard.habitsThisWeek')}</Text>
+          <Text style={styles.heroSubtext}>{t('moodAnalytics.dashboard.keepItUp')}</Text>
         </View>
         </View>
         
@@ -1612,7 +1971,7 @@ const periods = [
         
         {/* Top Mood Boosters */}
         <View style={styles.boostersContainer}>
-          <Text style={styles.sectionTitle}>{translate('moodAnalytics.topMoodBoosters.title', '🚀 Top Mood Boosters')}</Text>
+          <Text style={styles.sectionTitle}>{t('moodAnalytics.topMoodBoosters.title')}</Text>
         {insights.topMoodBoosters.map((habit, index) => (
           <View key={habit.habitId} style={styles.boosterCard}>
             <View style={styles.boosterRank}>
@@ -1621,12 +1980,12 @@ const periods = [
             <View style={styles.boosterInfo}>
               <Text style={styles.boosterTitle}>{habit.habitTitle}</Text>
               <Text style={styles.boosterImpact}>
-                {translate('moodAnalytics.dashboard.moodBoost', '+{boost} mood boost').replace('{boost}', habit.moodImprovement.toFixed(1))}
+                {t('moodAnalytics.dashboard.moodBoost', { boost: habit.moodImprovement.toFixed(1) })}
               </Text>
             </View>
             <View style={styles.boosterStats}>
               <Text style={styles.boosterRate}>{habit.completionRate.toFixed(0)}%</Text>
-              <Text style={styles.boosterLabel}>{translate('common.success', 'success')}</Text>
+              <Text style={styles.boosterLabel}>{t('common.success')}</Text>
             </View>
           </View>
         ))}
@@ -1634,7 +1993,7 @@ const periods = [
         
         {/* Weekly Mood Chart */}
         <View style={styles.chartContainer}>
-         <Text style={styles.sectionTitle}>{translate('thisWeeksMood', 'This Week\'s Mood')}</Text>
+         <Text style={styles.sectionTitle}>{t('moodAnalytics.dashboard.thisWeeksMood')}</Text>
         <View style={styles.weeklyChart}>
           {insights.weeklyReport.weeklyData.map((day, index) => {
             const date = new Date(day.date);
@@ -1868,7 +2227,7 @@ const renderAnalytics = () => {
               <View style={styles.tipContent}>
                    <Text style={styles.tipTitle}>{t('moodAnalytics.smartInsights.personalizedTips.optimalTiming')}</Text>
                 <Text style={styles.tipText}>
-                  You're most successful when feeling {analytics.insights.bestMoodForHabits}
+                  {t('moodAnalytics.smartInsights.personalizedTips.successfulWhenFeeling', { feeling: t(`moodCheckIn.moodTags.${analytics.insights.bestMoodForHabits}`) })}
                 </Text>
               </View>
             </View>
@@ -1878,7 +2237,7 @@ const renderAnalytics = () => {
               <View style={styles.tipContent}>
                 <Text style={styles.tipTitle}>{t('moodAnalytics.smartInsights.personalizedTips.moodBoosters')}</Text>
                 <Text style={styles.tipText}>
-                  Try {analytics.insights.moodBoostingHabits.slice(0, 2).join(' or ')} to improve your mood
+                  {t('moodAnalytics.smartInsights.personalizedTips.tryToImproveMood', { habits: analytics.insights.moodBoostingHabits.slice(0, 2).join(' 或 ') })}
                 </Text>
               </View>
             </View>
@@ -1905,41 +2264,41 @@ const renderAnalytics = () => {
     
     return (
       <View style={styles.section}>
-        <Text style={styles.sectionTitle}>📈 Mood Trends</Text>
+        <Text style={styles.sectionTitle}>{t('moodAnalytics.trends.title')}</Text>
         
         {/* Trend Summary */}
         <View style={styles.trendSummaryCard}>
-          <Text style={styles.cardTitle}>30-Day Overview</Text>
+          <Text style={styles.cardTitle}>{t('moodAnalytics.trends.thirtyDayOverview')}</Text>
           <View style={styles.trendStats}>
             <View style={styles.trendStat}>
               <Text style={styles.trendStatValue}>
                 {(last30Days.reduce((sum, day) => sum + day.averageMood, 0) / last30Days.length).toFixed(1)}
               </Text>
-              <Text style={styles.trendStatLabel}>Avg Mood</Text>
+              <Text style={styles.trendStatLabel}>{t('moodAnalytics.trends.avgMood')}</Text>
             </View>
             <View style={styles.trendStat}>
               <Text style={styles.trendStatValue}>
                 {last30Days.reduce((sum, day) => sum + day.habitsCompleted, 0)}
               </Text>
-              <Text style={styles.trendStatLabel}>Total Habits</Text>
+              <Text style={styles.trendStatLabel}>{t('moodAnalytics.trends.totalHabits')}</Text>
             </View>
           </View>
         </View>
         
         {/* Weekly Breakdown */}
         <View style={styles.weeklyBreakdownCard}>
-          <Text style={styles.cardTitle}>Weekly Breakdown</Text>
+          <Text style={styles.cardTitle}>{t('moodAnalytics.trends.weeklyBreakdown')}</Text>
           {weeklyAverages.map((week, index) => (
             <View key={index} style={styles.weekItem}>
-              <Text style={styles.weekLabel}>Week {week.week}</Text>
+              <Text style={styles.weekLabel}>{t('moodAnalytics.trends.week')} {week.week}</Text>
               <View style={styles.weekStats}>
                 <View style={styles.weekStat}>
                   <Text style={styles.weekStatValue}>{week.avgMood.toFixed(1)}</Text>
-                  <Text style={styles.weekStatLabel}>mood</Text>
+                  <Text style={styles.weekStatLabel}>{t('moodAnalytics.trends.mood')}</Text>
                 </View>
                 <View style={styles.weekStat}>
                   <Text style={styles.weekStatValue}>{week.totalHabits}</Text>
-                  <Text style={styles.weekStatLabel}>habits</Text>
+                  <Text style={styles.weekStatLabel}>{t('moodAnalytics.trends.habits')}</Text>
                 </View>
               </View>
             </View>
@@ -1954,10 +2313,10 @@ const renderAnalytics = () => {
     if (!habits || habits.length === 0) {
       return (
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>📝 Habit Analytics</Text>
+          <Text style={styles.sectionTitle}>{t('moodAnalytics.habits.analytics')}</Text>
           <View style={styles.analysisCard}>
-            <Text style={styles.cardTitle}>No Habits Found</Text>
-            <Text style={styles.cardSubtitle}>Start tracking habits to see detailed analytics here.</Text>
+            <Text style={styles.cardTitle}>{t('moodAnalytics.habits.noHabitsFound')}</Text>
+                          <Text style={styles.cardSubtitle}>{t('moodAnalytics.habits.startTrackingHabits')}</Text>
           </View>
         </View>
       );
@@ -1978,12 +2337,12 @@ const renderAnalytics = () => {
 
     return (
       <View style={styles.section}>
-        <Text style={styles.sectionTitle}>📝 Habit Analytics</Text>
+        <Text style={styles.sectionTitle}>{t('moodAnalytics.habits.analytics')}</Text>
         
         {/* Habit Performance Overview */}
         <View style={styles.analysisCard}>
-          <Text style={styles.cardTitle}>Habit Performance Overview</Text>
-          <Text style={styles.cardSubtitle}>Your habits ranked by completion rate</Text>
+          <Text style={styles.cardTitle}>{t('moodAnalytics.habits.performanceOverview')}</Text>
+                      <Text style={styles.cardSubtitle}>{t('moodAnalytics.habits.habitsRankedByCompletion')}</Text>
           
           {habitStats.slice(0, 5).map((habit, index) => (
             <View key={habit.id} style={styles.habitAnalysisCard}>
@@ -1997,22 +2356,22 @@ const renderAnalytics = () => {
                   }]}>
                     {habit.completionRate.toFixed(0)}%
                   </Text>
-                  <Text style={styles.scoreLabel}>Success Rate</Text>
+                  <Text style={styles.scoreLabel}>{t('moodAnalytics.common.success')}</Text>
                 </View>
               </View>
               
               <View style={styles.habitMetrics}>
                 <View style={styles.metric}>
                   <Text style={styles.metricValue}>{habit.totalCompletions}</Text>
-                  <Text style={styles.metricLabel}>Completions</Text>
+                  <Text style={styles.metricLabel}>{t('moodAnalytics.habits.completions')}</Text>
                 </View>
                 <View style={styles.metric}>
                   <Text style={styles.metricValue}>{habit.streak}</Text>
-                  <Text style={styles.metricLabel}>Current Streak</Text>
+                  <Text style={styles.metricLabel}>{t('moodAnalytics.habits.currentStreak')}</Text>
                 </View>
                 <View style={styles.metric}>
                   <Text style={styles.metricValue}>#{index + 1}</Text>
-                  <Text style={styles.metricLabel}>Rank</Text>
+                  <Text style={styles.metricLabel}>{t('moodAnalytics.habits.rank')}</Text>
                 </View>
               </View>
               
@@ -2036,23 +2395,23 @@ const renderAnalytics = () => {
         
         {/* Quick Stats */}
         <View style={styles.analysisCard}>
-          <Text style={styles.cardTitle}>Quick Stats</Text>
+          <Text style={styles.cardTitle}>{t('moodAnalytics.habits.quickStats')}</Text>
           <View style={styles.habitMetrics}>
             <View style={styles.metric}>
               <Text style={styles.metricValue}>{habits.length}</Text>
-              <Text style={styles.metricLabel}>Total Habits</Text>
+              <Text style={styles.metricLabel}>{t('moodAnalytics.habits.totalHabits')}</Text>
             </View>
             <View style={styles.metric}>
               <Text style={styles.metricValue}>
                 {habitStats.filter(h => h.completionRate >= 80).length}
               </Text>
-              <Text style={styles.metricLabel}>High Performers</Text>
+              <Text style={styles.metricLabel}>{t('moodAnalytics.habits.highPerformers')}</Text>
             </View>
             <View style={styles.metric}>
               <Text style={styles.metricValue}>
                 {(habitStats.reduce((sum, h) => sum + h.completionRate, 0) / habits.length).toFixed(0)}%
               </Text>
-              <Text style={styles.metricLabel}>Average Rate</Text>
+              <Text style={styles.metricLabel}>{t('moodAnalytics.habits.averageRate')}</Text>
             </View>
           </View>
         </View>
@@ -2094,11 +2453,11 @@ const renderAnalytics = () => {
     
     return (
       <View style={styles.section}>
-        <Text style={styles.sectionTitle}>📅 Mood Calendar</Text>
+        <Text style={styles.sectionTitle}>{t('moodAnalytics.calendar.title')}</Text>
         <View style={styles.calendarContainer}>
           <View style={styles.calendarHeader}>
             <Text style={styles.monthTitle}>
-              {new Date(currentYear, currentMonth).toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
+              {getMonthName(new Date(currentYear, currentMonth))} {currentYear}
             </Text>
           </View>
           
@@ -2135,19 +2494,19 @@ const renderAnalytics = () => {
           
           {/* Legend */}
           <View style={styles.calendarLegend}>
-            <Text style={styles.legendTitle}>Mood Scale:</Text>
+            <Text style={styles.legendTitle}>{t('moodAnalytics.calendar.moodScale')}</Text>
             <View style={styles.legendRow}>
               <View style={styles.legendItem}>
                 <View style={[styles.legendColor, { backgroundColor: currentTheme.colors.success }]} />
-                <Text style={styles.legendText}>Excellent (8-10)</Text>
+                <Text style={styles.legendText}>{t('moodAnalytics.calendar.excellent')}</Text>
               </View>
               <View style={styles.legendItem}>
                 <View style={[styles.legendColor, { backgroundColor: currentTheme.colors.warning }]} />
-                <Text style={styles.legendText}>Good (4-7)</Text>
+                <Text style={styles.legendText}>{t('moodAnalytics.calendar.good')}</Text>
               </View>
               <View style={styles.legendItem}>
                 <View style={[styles.legendColor, { backgroundColor: currentTheme.colors.error }]} />
-                <Text style={styles.legendText}>Poor (1-3)</Text>
+                <Text style={styles.legendText}>{t('moodAnalytics.calendar.poor')}</Text>
               </View>
             </View>
           </View>
@@ -2426,14 +2785,14 @@ const dayName = dayNames[new Date(day.date).getDay()];
             </View>
             <View style={styles.pieChartStat}>
               <Text style={styles.pieChartStatValue}>
-                {moodData.find(item => item.mood === 'Excellent')?.count || 0}
+                {moodData.find(item => item.mood === t('moodAnalytics.moodDistribution.categories.excellent'))?.count || 0}
               </Text>
              <Text style={styles.pieChartStatLabel}>{t('moodAnalytics.moodDistribution.excellentDays')}</Text>
             </View>
             <View style={styles.pieChartStat}>
-              <Text style={styles.pieChartStatValue}>
-                {((moodData.find(item => item.mood === 'Excellent')?.count || 0) + 
-                  (moodData.find(item => item.mood === 'Good')?.count || 0))}
+                            <Text style={styles.pieChartStatValue}>
+                {((moodData.find(item => item.mood === t('moodAnalytics.moodDistribution.categories.excellent'))?.count || 0) +
+                  (moodData.find(item => item.mood === t('moodAnalytics.moodDistribution.categories.good'))?.count || 0))}
               </Text>
               <Text style={styles.pieChartStatLabel}>{t('moodAnalytics.moodDistribution.goodPlusDays')}</Text>
             </View>
@@ -2448,6 +2807,12 @@ const dayName = dayNames[new Date(day.date).getDay()];
     const correlations = getHabitMoodCorrelations();
     const moodStates = ['happy', 'calm', 'energetic', 'tired', 'stressed', 'anxious', 'sad'];
     
+    // Helper function to get translated mood states
+    const getTranslatedMoodStates = () => moodStates.map(mood => ({
+      key: mood,
+      label: t(`moodCheckIn.moodTags.${mood}`)
+    }));
+    
     const getCorrelationColor = (correlation: number) => {
       const intensity = Math.abs(correlation);
       if (correlation > 0) {
@@ -2459,15 +2824,15 @@ const dayName = dayNames[new Date(day.date).getDay()];
     
     return (
       <View style={styles.section}>
-        <Text style={styles.sectionTitle}>🔥 Mood-Habit Correlation Heat Map</Text>
+        <Text style={styles.sectionTitle}>{t('moodAnalytics.correlationHeatMap.title')}</Text>
         <ScrollView horizontal showsHorizontalScrollIndicator={false}>
           <View style={styles.heatMapContainer}>
             {/* Header row with mood states */}
             <View style={styles.heatMapRow}>
               <View style={styles.heatMapCell} />
-              {moodStates.map(mood => (
-                <View key={mood} style={styles.heatMapHeaderCell}>
-                  <Text style={styles.heatMapHeaderText}>{mood}</Text>
+              {getTranslatedMoodStates().map(({ key, label }) => (
+                <View key={key} style={styles.heatMapHeaderCell}>
+                  <Text style={styles.heatMapHeaderText}>{label}</Text>
                 </View>
               ))}
             </View>
@@ -2478,13 +2843,13 @@ const dayName = dayNames[new Date(day.date).getDay()];
                 <View style={styles.heatMapLabelCell}>
                   <Text style={styles.heatMapLabelText}>{habit.habitTitle}</Text>
                 </View>
-                {moodStates.map(mood => {
-                  const moodData = habit.successfulMoods.find(m => m.moodState === mood);
+                {getTranslatedMoodStates().map(({ key }) => {
+                  const moodData = habit.successfulMoods.find(m => m.moodState === key);
                   const correlation = moodData ? (moodData.successRate - 50) / 50 : 0;
                   
                   return (
                     <View 
-                      key={mood} 
+                      key={key} 
                       style={[
                         styles.heatMapDataCell,
                         { backgroundColor: getCorrelationColor(correlation) }
@@ -2503,23 +2868,23 @@ const dayName = dayNames[new Date(day.date).getDay()];
         
         {/* Heat map legend */}
         <View style={styles.heatMapLegend}>
-          <Text style={styles.legendTitle}>Correlation Strength:</Text>
+          <Text style={styles.legendTitle}>{t('moodAnalytics.correlationHeatMap.correlationStrength')}</Text>
           <View style={styles.legendRow}>
             <View style={styles.legendItem}>
               <View style={[styles.legendColor, { backgroundColor: 'rgba(76, 175, 80, 0.8)' }]} />
-              <Text style={styles.legendText}>Strong Positive</Text>
+              <Text style={styles.legendText}>{t('moodAnalytics.correlationHeatMap.strongPositive')}</Text>
             </View>
             <View style={styles.legendItem}>
               <View style={[styles.legendColor, { backgroundColor: 'rgba(76, 175, 80, 0.3)' }]} />
-              <Text style={styles.legendText}>Weak Positive</Text>
+              <Text style={styles.legendText}>{t('moodAnalytics.correlationHeatMap.weakPositive')}</Text>
             </View>
             <View style={styles.legendItem}>
               <View style={[styles.legendColor, { backgroundColor: 'rgba(244, 67, 54, 0.3)' }]} />
-              <Text style={styles.legendText}>Weak Negative</Text>
+              <Text style={styles.legendText}>{t('moodAnalytics.correlationHeatMap.weakNegative')}</Text>
             </View>
             <View style={styles.legendItem}>
               <View style={[styles.legendColor, { backgroundColor: 'rgba(244, 67, 54, 0.8)' }]} />
-              <Text style={styles.legendText}>Strong Negative</Text>
+              <Text style={styles.legendText}>{t('moodAnalytics.correlationHeatMap.strongNegative')}</Text>
             </View>
           </View>
         </View>
@@ -2631,11 +2996,100 @@ const dayName = dayNames[new Date(day.date).getDay()];
         {selectedTab === 'reports' && renderMonthlyReports()}
         {selectedTab === 'calendar' && renderMoodCalendar()}
       </ScrollView>
+      
+      {/* Feedback Modal */}
+      <Modal
+        visible={showFeedbackModal}
+        transparent={true}
+        animationType="slide"
+        onRequestClose={handleFeedbackClose}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.feedbackModalContent}>
+            <Text style={styles.feedbackModalTitle}>
+              {t('moodAnalytics.moodRecommendations.provideFeedback')}
+            </Text>
+            
+            {selectedRecommendation && (
+              <View style={styles.feedbackRecommendationInfo}>
+                <Text style={styles.feedbackRecommendationCategory}>
+                  {selectedRecommendation.category}
+                </Text>
+                <Text style={styles.feedbackRecommendationDescription}>
+                  {selectedRecommendation.description}
+                </Text>
+              </View>
+            )}
+            
+            <View style={styles.feedbackForm}>
+              <Text style={styles.feedbackLabel}>
+                {t('moodAnalytics.feedback.howHelpful')}
+              </Text>
+              <View style={styles.feedbackRatingContainer}>
+                {[1, 2, 3, 4, 5].map((rating) => (
+                  <TouchableOpacity
+                    key={rating}
+                    style={styles.feedbackRatingButton}
+                    onPress={() => handleFeedbackSubmitted({
+                      recommendation: selectedRecommendation,
+                      rating: rating,
+                      timestamp: new Date().toISOString()
+                    })}
+                  >
+                    <Text style={styles.feedbackRatingText}>{rating}</Text>
+                  </TouchableOpacity>
+                ))}
+              </View>
+            </View>
+            
+            <TouchableOpacity
+              style={styles.feedbackCancelButton}
+              onPress={handleFeedbackClose}
+            >
+              <Text style={styles.feedbackCancelButtonText}>
+                {t('common.cancel')}
+              </Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 }
 
 const createStyles = (colors: any) => StyleSheet.create({
+  upgradeContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 20,
+    backgroundColor: colors.background,
+  },
+  upgradeTitle: {
+    fontSize: 20,
+    fontWeight: '700',
+    color: colors.text,
+    marginTop: 16,
+    textAlign: 'center',
+  },
+  upgradeMessage: {
+    fontSize: 14,
+    color: colors.textSecondary,
+    marginTop: 8,
+    textAlign: 'center',
+    marginBottom: 24,
+  },
+  upgradeButton: {
+    backgroundColor: colors.primary,
+    paddingVertical: 12,
+    paddingHorizontal: 24,
+    borderRadius: 24,
+  },
+  upgradeButtonText: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: '600',
+  },
   container: {
     flex: 1,
     backgroundColor: colors.background,
@@ -2956,6 +3410,64 @@ const createStyles = (colors: any) => StyleSheet.create({
     borderRadius: 16,
     borderLeftWidth: 4,
     borderLeftColor: colors.primary,
+  },
+  recommendationDescription: {
+    fontSize: 14,
+    color: colors.textSecondary,
+    marginBottom: 12,
+    lineHeight: 20,
+  },
+  impactContainer: {
+    marginTop: 8,
+    padding: 8,
+    backgroundColor: colors.background,
+    borderRadius: 6,
+  },
+  impactLabel: {
+    fontSize: 12,
+    color: colors.textSecondary,
+    marginBottom: 4,
+  },
+  impactValue: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: colors.text,
+  },
+  confidenceContainer: {
+    marginTop: 8,
+  },
+  confidenceLabel: {
+    fontSize: 12,
+    color: colors.textSecondary,
+    marginBottom: 4,
+  },
+  confidenceBar: {
+    height: 4,
+    backgroundColor: colors.border,
+    borderRadius: 2,
+    marginBottom: 4,
+  },
+  confidenceFill: {
+    height: '100%',
+    backgroundColor: colors.primary,
+    borderRadius: 2,
+  },
+  confidenceValue: {
+    fontSize: 12,
+    color: colors.textSecondary,
+    textAlign: 'right',
+  },
+  feedbackButton: {
+    marginTop: 12,
+    padding: 8,
+    backgroundColor: colors.primary,
+    borderRadius: 6,
+    alignItems: 'center',
+  },
+  feedbackButtonText: {
+    fontSize: 12,
+    fontWeight: '500',
+    color: colors.background,
   },
   tipContainer: {
     gap: 16,
@@ -5036,6 +5548,83 @@ const createStyles = (colors: any) => StyleSheet.create({
   periodMetricValue: {
     fontSize: 14,
     fontWeight: 'bold',
+    color: colors.text,
+  },
+  // Feedback Modal Styles
+  feedbackModalContent: {
+    backgroundColor: colors.card,
+    borderRadius: 16,
+    padding: 24,
+    marginHorizontal: 20,
+    shadowColor: colors.shadow,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.15,
+    shadowRadius: 8,
+    elevation: 8,
+  },
+  feedbackModalTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: colors.text,
+    marginBottom: 20,
+    textAlign: 'center',
+  },
+  feedbackRecommendationInfo: {
+    backgroundColor: colors.background,
+    padding: 16,
+    borderRadius: 12,
+    marginBottom: 20,
+  },
+  feedbackRecommendationCategory: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: colors.text,
+    marginBottom: 8,
+  },
+  feedbackRecommendationDescription: {
+    fontSize: 14,
+    color: colors.textSecondary,
+    lineHeight: 20,
+  },
+  feedbackForm: {
+    marginBottom: 24,
+  },
+  feedbackLabel: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: colors.text,
+    marginBottom: 16,
+    textAlign: 'center',
+  },
+  feedbackRatingContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    marginBottom: 20,
+  },
+  feedbackRatingButton: {
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+    backgroundColor: colors.primary,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginHorizontal: 4,
+  },
+  feedbackRatingText: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: colors.background,
+  },
+  feedbackCancelButton: {
+    backgroundColor: colors.border,
+    paddingVertical: 12,
+    paddingHorizontal: 24,
+    borderRadius: 8,
+    alignItems: 'center',
+  },
+  feedbackCancelButtonText: {
+    fontSize: 16,
+    fontWeight: '600',
     color: colors.text,
   },
 });

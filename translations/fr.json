@@ -7,47 +7,91 @@
     "rewards": "Récompenses",
     "more": "Plus",
     "mood": "Humeur",
-    "community": "Communauté"
+    "community": "Communauté",
+    "gamification": "Gamification"
   },
-  "today_progress": "Progrès d'aujourd'hui",
-  "select_all": "tout sélectionner",
-  "delete": "supprimer",
-  "to_complete": "à compléter",
-  "habit_details": "Détails de l'Habitude",
-  "habit_name": "nom de l'habitude",
-  "notes": "notes",
-  "habits_completed": "habitudes complétées",
-  "delete_habit": "supprimer l'habitude",
-  "add_notes_about_habit": "ajouter des notes sur l'habitude",
-  "select_multiple": "sélectionner plusieurs",
-  "completed": "terminé",
-  "selected": "sélectionné",
+  "analytics": {
+    "loading": "Chargement des analyses...",
+    "timeframe": "Période",
+    "last7Days": "7 derniers jours",
+    "last30Days": "30 derniers jours",
+    "last90Days": "90 derniers jours",
+    "lastYear": "Année dernière",
+    "performanceOverview": "Aperçu des performances",
+    "totalHabits": "Total des habitudes",
+    "activeHabits": "Habitudes actives",
+    "completionRate": "Taux de réussite",
+    "currentStreak": "Réussite actuelle",
+    "longestStreak": "Réussite la plus longue",
+    "weeklyProgress": "Progrès hebdomadaire",
+    "monthlyProgress": "Progrès mensuel",
+    "yearlyProgress": "Progrès annuel",
+    "avgStreak": "Réussite moyenne",
+    "avgCompletionRate": "Taux de réussite moyen",
+    "avgMood": "Humeur moyenne",
+    "export": "Exporter",
+    "exportCSV": "Exporter en CSV",
+    "exportPDF": "Exporter en PDF",
+    "exportExcel": "Exporter en Excel",
+    "error": "Erreur",
+    "loadError": "Erreur lors du chargement des données d'analyse",
+    "streakAnalysis": "Analyse de la réussite",
+    "days": "jours",
+    "moodTrends": "Tendances de humeur",
+    "moodEntries": "Entrées",
+    "refresh": "Actualiser",
+    "refreshing": "Actualisation...",
+    "exportTitle": "Exporter les données d'analyse",
+    "exportMessage": "Exporter vos données d'analyse en CSV ?",
+    "mockHabits": {
+      "morningExercise": "Exercice matinal",
+      "read30Minutes": "Lire 30 minutes",
+      "drinkWater": "Boire de l'eau",
+      "meditation": "Méditation",
+      "eveningWalk": "Promenade du soir"
+    }
+  },
+  "premium": {
+    "upgradeToPro": "Upgrade to Pro"
+  },
+  "this_week": "Cette semaine",
+  "this_month": "Ce mois",
+  "this_year": "Cette année",
+  "last_week": "La semaine dernière",
+  "last_month": "Le mois dernier",
+  "last_year": "L'année dernière",
+  "all_time": "Tout le temps",
+  "navigation": {
+    "settings": "Paramètres"
+  },
   "loading_habits": "Chargement des habitudes...",
   "no_habits_yet": "Aucune habitude pour le moment",
   "add_first_habit": "Ajoutez votre première habitude pour commencer !",
-  "add_habit": "Ajouter une Habitude",
-  "edit_habit": "Modifier l'Habitude",
-  "create_new_habit": "Créer une Nouvelle Habitude",
-  "icon": "Icône",
-  "change_icon": "Changer l'Icône",
-  "choose_icon": "Choisir une icône",
-  "title": "Titre",
-  "enter_habit_title": "Entrez le titre de l'habitude",
-  "notes_optional": "Notes (Optionnel)",
-  "add_notes_habit": "Ajoutez des notes sur cette habitude",
-  "custom_reminder": "Rappel Personnalisé",
-  "reminder_days": "Jours de Rappel",
-  "all_days": "Tous les Jours",
-  "weekdays": "Jours de Semaine",
-  "weekends": "Week-ends",
-  "no_days_selected": "Aucun jour sélectionné",
-  "reminders_on": "Rappels le :",
+  "add_habit": "Ajouter une habitude",
+  "today_progress": "Progrès d'aujourd'hui",
+  "of": "sur",
+  "habits_completed": "habitudes terminées",
+  "to_complete": "à terminer",
+  "completed": "Terminé",
+  "delete_habits": "Supprimer les habitudes",
+  "delete_confirmation": "Êtes-vous sûr de vouloir supprimer les habitudes sélectionnées ? Cette action ne peut pas être annulée.",
   "cancel": "Annuler",
-  "save_changes": "Enregistrer les Modifications",
-  "create_habit": "Créer l'Habitude",
-  "error": "Erreur",
-  "please_enter_habit_title": "Veuillez entrer un titre pour l'habitude",
-  "please_select_reminder_days": "Veuillez sélectionner au moins un jour pour les rappels",
+  "delete": "Supprimer",
+  "selected": "Sélectionné",
+  "select_all": "Tout sélectionner",
+  "select_multiple": "Sélection multiple",
+  "habit_not_found": "Habitude non trouvée",
+  "reminder_set": "Rappel Configuré",
+  "reminder_set_for": "Rappel configuré pour",
+  "failed_to_set_reminder": "Échec de la configuration du rappel",
+  "at": "à",
+  "habit_details": "Détails de l'habitude",
+  "edit_habit": "Modifier l'habitude",
+  "habit_name": "Nom de l'habitude",
+  "enter_habit_name": "Entrez le nom de l'habitude",
+  "enter_habit_title_validation": "Veuillez entrer le titre de l'habitude",
+  "select_reminder_days_validation": "Veuillez sélectionner au moins un jour pour les rappels",
+  "go_back": "Retour",
   "sunday": "Dimanche",
   "monday": "Lundi",
   "tuesday": "Mardi",
@@ -62,11 +106,3451 @@
   "thu": "Jeu",
   "fri": "Ven",
   "sat": "Sam",
+  "please_enter_habit_title": "Veuillez entrer le titre de l'habitude",
+  "please_select_reminder_days": "Veuillez sélectionner au moins un jour pour les rappels",
+  "delete_habit_title": "Supprimer l'habitude",
+  "delete_habit": "Supprimer l'habitude",
+  "delete_habit_confirmation": "Êtes-vous sûr de vouloir supprimer cette habitude ? Cette action ne peut pas être annulée.",
+  "notes": "Notes",
+  "add_notes_about_habit": "Ajouter des notes sur cette habitude",
+  "custom_reminder": "Rappel personnalisé",
+  "reminder_days": "Jours de rappel",
+  "all_days": "Tous les jours",
+  "weekdays": "Jours de semaine",
+  "weekends": "Weekends",
+  "no_days_selected": "Aucun jour sélectionné",
+  "reminders_on": "Rappels activés :",
+  "habit_library": "Bibliothèque d'habitudes",
+  "discover_manage_habits": "Découvrez et gérez vos habitudes",
+  "search_habits": "Rechercher des habitudes...",
+  "my_habits": "Mes habitudes",
+  "suggestions": "Suggestions",
+  "create_new_habit": "Créer une nouvelle habitude",
+  "no_habits_found": "Aucune habitude trouvée",
+  "create_habit_or_add_suggestion": "Créez une nouvelle habitude ou ajoutez depuis nos suggestions",
+  "all": "Tout",
+  "success": "✅ Succès !",
+  "habit_added_success": "Ajouté à vos habitudes !",
+  "great": "Excellent !",
+  "awesome": "🎉 Fantastique !",
+  "habit_added_start_building": "Ajouté à vos habitudes ! Commencez à construire cette habitude positive aujourd'hui.",
+  "lets_go": "C'est parti !",
+  "icon": "Icône",
+  "change_icon": "Changer l'icône",
+  "choose_icon": "Choisir une icône",
+  "title": "Titre",
+  "enter_habit_title": "Entrez le titre de l'habitude",
+  "notes_optional": "Notes (optionnel)",
+  "add_notes_habit": "Ajouter des notes sur cette habitude",
+  "save_changes": "Sauvegarder les modifications",
+  "create_habit": "Créer l'habitude",
+  "benefits": "Avantages",
+  "day_streak": "jours consécutifs",
+  "added": "Ajouté",
+  "ai_suggestions": "Suggestions IA",
+  "new_habit": "Nouvelle habitude",
+  "match": "Correspondance",
+  "add_habit_button": "Ajouter l'habitude",
+  "smart_reminder": "Rappel intelligent",
+  "optimal_time": "Heure optimale",
+  "confidence": "Confiance",
+  "set_reminder": "Définir un rappel",
+  "productivity": "Productivité",
+  "learning": "Apprentissage",
+  "mindfulness": "Pleine conscience",
+  "fitness": "Fitness",
+  "social": "Social",
+  "creativity": "Créativité",
+  "finance": "Finance",
+  "drink_water": "Boire de l'eau",
+  "drink_water_desc": "Rester hydraté tout au long de la journée",
+  "drink_water_benefits": "Améliore l'énergie, la santé de la peau et les fonctions cérébrales",
+  "stretch_break": "Pause d'étirement",
+  "stretch_break_desc": "Faire des étirements simples pour soulager la tension",
+  "stretch_break_benefits": "Réduit la tension musculaire, améliore la flexibilité, augmente l'énergie",
+  "deep_breathing": "Respiration profonde",
+  "deep_breathing_desc": "Pratiquer la respiration profonde pendant 2 minutes",
+  "deep_breathing_benefits": "Réduit le stress, abaisse la tension artérielle, améliore la concentration",
+  "sunlight": "Lumière du soleil",
+  "sunlight_desc": "Passer 10 minutes à la lumière naturelle du soleil",
+  "sunlight_benefits": "Augmente la vitamine D, améliore l'humeur, régule le cycle du sommeil",
+  "meditation": "Méditation",
+  "meditation_desc": "Pratiquer la méditation de pleine conscience pendant 5 minutes",
+  "meditation_benefits": "Réduit l'anxiété, améliore la concentration, renforce la conscience de soi",
+  "gratitude": "Pratique de gratitude",
+  "gratitude_desc": "Écrire 3 choses pour lesquelles vous êtes reconnaissant",
+  "gratitude_benefits": "Améliore l'humeur, augmente la satisfaction de vie, renforce les relations",
+  "device_break": "Pause de détox numérique",
+  "device_break_desc": "Rester loin de tous les appareils pendant 30 minutes",
+  "device_break_benefits": "Réduit la fatigue oculaire, améliore la concentration, renforce la connexion avec le monde réel",
+  "single_task": "Concentration sur une seule tâche",
+  "single_task_desc": "Se concentrer sur une tâche à la fois pendant 25 minutes",
+  "single_task_benefits": "Augmente la productivité, réduit le stress, améliore la qualité du travail",
+  "daily_priorities": "Définir les priorités quotidiennes",
+  "daily_priorities_desc": "Identifier vos 3 priorités principales pour aujourd'hui",
+  "daily_priorities_benefits": "Augmente la concentration, améliore la gestion du temps, réduit le stress",
+  "clear_workspace": "Nettoyer l'espace de travail",
+  "clear_workspace_desc": "Organiser et nettoyer votre zone de travail",
+  "clear_workspace_benefits": "Améliore la concentration, réduit les distractions, stimule la productivité",
+  "planning_session": "Planification hebdomadaire",
+  "planning_session_desc": "Passer 15 minutes à planifier votre semaine",
+  "planning_session_benefits": "Améliore l'organisation, réduit le stress, augmente la réalisation des objectifs",
+  "learn_new": "Apprendre quelque chose de nouveau",
+  "learn_new_desc": "Passer 10 minutes à apprendre une nouvelle compétence ou connaissance",
+  "learn_new_benefits": "Stimule la croissance cérébrale, augmente les connaissances, renforce la confiance",
+  "squats": "Faire des squats",
+  "squats_desc": "Faire 10 squats au poids du corps",
+  "squats_benefits": "Renforce les jambes, améliore la posture, stimule le métabolisme",
+  "walk": "Faire une promenade",
+  "walk_desc": "Aller faire une promenade de 10 minutes à l'extérieur",
+  "walk_benefits": "Améliore la santé cardiovasculaire, améliore l'humeur, augmente l'énergie",
+  "jumping_jacks": "Jumping jacks",
+  "jumping_jacks_desc": "Faire 20 jumping jacks pour faire monter votre rythme cardiaque",
+  "jumping_jacks_benefits": "Améliore la santé cardiovasculaire, brûle des calories, active le corps",
+  "take_stairs": "Prendre les escaliers",
+  "take_stairs_desc": "Choisir les escaliers plutôt que les ascenseurs quand c'est possible",
+  "take_stairs_benefits": "Renforce les jambes, améliore la santé cardiovasculaire, brûle des calories supplémentaires",
+  "doodle": "Gribouillage créatif",
+  "doodle_desc": "Passer 5 minutes à dessiner ou gribouiller librement",
+  "doodle_benefits": "Stimule la créativité, réduit le stress, améliore la concentration",
+  "micro_story": "Écrire une micro-histoire",
+  "micro_story_desc": "Écrire une très courte histoire en 50 mots ou moins",
+  "micro_story_benefits": "Améliore la créativité, améliore les compétences d'écriture, stimule l'imagination",
+  "different_route": "Prendre un chemin différent",
+  "different_route_desc": "Utiliser un chemin différent pour atteindre une destination familière",
+  "different_route_benefits": "Stimule la plasticité cérébrale, augmente la conscience, stimule la créativité",
+  "observe_details": "Observer les détails",
+  "observe_details_desc": "Passer 5 minutes à remarquer les détails dans votre environnement",
+  "observe_details_benefits": "Améliore la pleine conscience, améliore la créativité, augmente la conscience",
+  "exercise_daily": "Exercice quotidien",
+  "exercise_daily_desc": "S'engager dans au moins 30 minutes d'activité physique",
+  "exercise_daily_benefits": "Améliore l'humeur, améliore la santé, augmente l'énergie",
+  "meditate": "Méditer",
+  "meditate_desc": "Pratiquer la pleine conscience pendant 10 minutes",
+  "meditate_benefits": "Réduit le stress, améliore la concentration, améliore le bien-être",
+  "read_books": "Lire des livres",
+  "read_books_desc": "Lire pendant au moins 20 minutes par jour",
+  "read_books_benefits": "Élargit les connaissances, améliore le vocabulaire, réduit le stress",
+  "plan_day": "Planifier votre journée",
+  "plan_day_desc": "Passer 10 minutes à planifier vos tâches quotidiennes",
+  "plan_day_benefits": "Augmente la productivité, réduit le stress, améliore la concentration",
+  "ai_consistent_pairs_well": "Comme vous faites régulièrement '{habitTitle}' depuis {streak} jours, cela s'accorde bien avec votre routine",
+  "ai_trouble_easier_version": "Des difficultés avec '{habitTitle}' ? Essayez cette version plus facile pour construire l'élan",
+  "ai_no_category_habits": "Vous n'avez pas encore d'habitudes {category}. Cela pourrait être un excellent ajout",
+  "category_wellness": "bien-être",
+  "category_productivity": "productivité",
+  "category_learning": "apprentissage",
+  "category_mindfulness": "pleine conscience",
+  "category_fitness": "fitness",
+  "category_creativity": "créativité",
+  "category_social": "social",
+  "category_finance": "finance",
+  "ai_milestone_message": "🎉 Fantastique ! Vous avez atteint {streak} jours consécutifs pour '{title}' ! Vous construisez un véritable élan.",
+  "ai_perfect_day_message": "🌟 Journée parfaite ! Vous avez terminé toutes vos habitudes. Vous êtes imparable !",
+  "ai_low_completion_message": "💪 Chaque expert était un débutant. Commencez petit aujourd'hui - même 1% de progrès compte !",
+  "ai_good_streak_message": "🔥 Vos {streak} jours consécutifs montrent votre capacité. Gardez l'élan et continuez !",
+  "ai_encouraging_1": "🌱 Les petits pas mènent à de grands changements. Vous pouvez le faire !",
+  "ai_encouraging_2": "⭐ Progrès, pas perfection. Chaque jour est une nouvelle opportunité.",
+  "ai_encouraging_3": "🚀 Vous construisez l'avenir que vous voulez, une habitude à la fois.",
+  "ai_encouraging_4": "💎 La persévérance est la mère de la maîtrise. Continuez !",
+  "ai_encouraging_5": "🌈 Votre futur vous remerciera pour le travail que vous faites aujourd'hui.",
+  "ai": {
+    "mlOptimization": {
+      "title": "Optimiser {habitTitle}",
+      "description": "Basé sur vos modèles, cette habitude a un taux de réussite de {probability}%. Considérez la programmer à {optimalTime} pour de meilleurs résultats.",
+      "reason": "Notre analyse IA montre que {habitTitle} pourrait être plus efficace avec ces modifications : {modifications}"
+    },
+    "mlComplementaryReason": "Puisque vous vous en sortez bien avec {habitTitle} (série de {streak} jours), voici des habitudes complémentaires qui fonctionnent bien ensemble : {insights}",
+    "mlAlternativeReason": "Si {habitTitle} semble difficile, essayez cette alternative plus facile. L'analyse montre : {analysis}",
+    "mlGapFilling": "Il vous manque des habitudes dans la catégorie {category}. Basé sur vos préférences ({preferences}), voici ce que nous recommandons :",
+    "complementaryHabit": "Habitude complémentaire {category}",
+    "complementaryDescription": "Cette habitude complète votre routine existante de {habit}",
+    "easierAlternative": "Alternative plus facile à {habit}",
+    "easierAlternativeDescription": "Une version plus simple qui construit le même comportement positif",
+    "categorySuggestion": "Ajouter une habitude {category}",
+    "categorySuggestionDescription": "Élargissez votre routine avec cette habitude {category}"
+  },
+  "ai_complementary_walk": "Marche de 5 minutes",
+  "ai_complementary_walk_desc": "Exercice léger pour compléter vos habitudes de santé",
+  "ai_complementary_water": "Boire un verre d'eau",
+  "ai_complementary_water_desc": "Rester hydraté toute la journée",
+  "ai_complementary_gratitude": "Pratiquer la gratitude",
+  "ai_complementary_gratitude_desc": "Écrire 3 choses pour lesquelles vous êtes reconnaissant",
+  "ai_smart_reminder_reason": "Suggéré de définir un rappel à {time}, c'est quand vous terminez habituellement cette habitude",
+  "ai_complementary_breathing": "Exercice de respiration profonde",
+  "ai_complementary_breathing_desc": "Faire 3 respirations profondes pour compléter vos habitudes de pleine conscience",
+  "ai_complementary_review": "Réviser le contenu d'apprentissage",
+  "ai_complementary_review_desc": "Passer 5 minutes à réviser ce que vous avez appris aujourd'hui",
+  "ai_complementary_skill": "Pratiquer une compétence",
+  "ai_complementary_skill_desc": "Passer 10 minutes à pratiquer la compétence que vous apprenez",
+  "ai_alternative_jumping_jacks": "Jumping jacks",
+  "ai_alternative_jumping_jacks_desc": "Faire 10 jumping jacks comme alternative d'exercice simple",
+  "ai_alternative_one_page": "Lire une page",
+  "ai_alternative_one_page_desc": "Lire seulement une page comme alternative de lecture simple",
+  "ai_alternative_three_breaths": "Trois respirations profondes",
+  "ai_alternative_three_breaths_desc": "Faire trois respirations profondes comme alternative de méditation simple",
+  "habit_added_message": "Ajouté à vos habitudes !",
+  "habit_added_ai_message": "Ajouté à vos habitudes ! Commencez à construire cette habitude positive.",
+  "noDescription": "Aucune description",
+  "no_icon": "Aucune icône",
+  "emoji_category_health_fitness": "Santé et fitness",
+  "emoji_category_learning_reading": "Apprentissage et lecture",
+  "emoji_category_daily_life": "Vie quotidienne",
+  "emoji_category_productivity": "Productivité",
+  "emoji_category_nature_environment": "Nature et environnement",
+  "emoji_category_social_relationships": "Social et relations",
+  "moodCheckIn": {
+    "title": "Suivi détaillé de l'humeur",
+    "question": "Comment vous sentez-vous maintenant ?",
+    "xpReward": "+5 XP",
+    "quickMode": "Mode rapide",
+    "moodTags": {
+      "happy": "Heureux",
+      "calm": "Calme",
+      "energetic": "Énergique",
+      "tired": "Fatigué",
+      "stressed": "Stressé",
+      "anxious": "Anxieux",
+      "sad": "Triste",
+      "excited": "Excité",
+      "frustrated": "Frustré",
+      "content": "Content",
+      "neutral": "Neutre",
+      "overwhelmed": "Débordé",
+      "peaceful": "Paisible",
+      "focused": "Concentré",
+      "relaxed": "Détendu",
+      "confident": "Confiant",
+      "nervous": "Nerveux"
+    },
+    "selectMood": "Sélectionner l'humeur",
+    "selectMoodMessage": "Veuillez sélectionner vos sentiments avant de terminer cette habitude.",
+    "howAreYouFeeling": "Comment vous sentez-vous maintenant ?",
+    "intensity": "Intensité",
+    "submit": "Soumettre",
+    "quickMoodSelector": {
+      "title": "Sélection rapide d'humeur",
+      "quickMode": "Mode rapide",
+      "backToQuickSelect": "Retour à la sélection",
+      "intensityLabel": "Intensité",
+      "intensityLow": "Faible intensité",
+      "intensityHigh": "Forte intensité",
+      "moreOptionsButton": "Plus d'options",
+      "todaysMoodEntry": "Entrée d'Humeur d'Aujourd'hui"
+    },
+    "moodLabels": {
+      "happy": "Heureux",
+      "sad": "Triste",
+      "anxious": "Anxieux",
+      "energetic": "Énergique",
+      "tired": "Fatigué",
+      "stressed": "Stressé",
+      "calm": "Calme"
+    },
+    "contextTags": {
+      "work": "Travail",
+      "family": "Famille",
+      "health": "Santé",
+      "social": "Social",
+      "finance": "Finance",
+      "exercise": "Exercice",
+      "sleep": "Sommeil",
+      "weather": "Météo",
+      "relationships": "Relations",
+      "money": "Argent",
+      "travel": "Voyage",
+      "food": "Nourriture",
+      "entertainment": "Divertissement"
+    },
+    "tagsTitle": "Sélectionner les facteurs qui influencent l'humeur",
+    "noteTitle": "Ajouter une note",
+    "notePlaceholder": "Écrivez vos pensées, sentiments ou tout ce que vous voulez enregistrer...",
+    "recordMood": "Enregistrer l'humeur",
+    "recording": "Enregistrement...",
+    "alerts": {
+      "alreadyRecorded": "Humeur déjà enregistrée aujourd'hui",
+      "moodRecorded": "Humeur enregistrée",
+      "detailedTrackingComplete": "Suivi détaillé terminé",
+      "detailedTrackingMessage": "Votre humeur {mood} a été enregistrée avec succès !",
+      "saveFailed": "Échec de la sauvegarde, veuillez réessayer"
+    }
+  },
+  "wellness_tabs": {
+    "analysis": "Analyse",
+    "aiCoach": "Coach IA",
+    "integration": "Intégration",
+    "checkin": "Point d'humeur"
+  },
   "wellness": {
+    "title": "Centre de bien-être",
+    "subtitle": "Prenez soin de votre santé physique et mentale",
+    "loading": "Chargement...",
+    "todaysMoodJourney": "Parcours d'humeur d'aujourd'hui",
+    "amazingWork": "Excellent travail !",
+    "completedDetailedCheckin": "Vous avez terminé le point d'humeur détaillé",
+    "moodCheckinTitle": "Point d'humeur",
+    "howFeelingToday": "Comment vous sentez-vous aujourd'hui ?",
+    "letsCheckin": "Faisons un point",
+    "reflectionPrompt": "Prenez un moment pour réfléchir à vos sentiments d'aujourd'hui, cela aide à mieux se comprendre",
+    "recordedAt": "Enregistré à :",
+    "feeling": "Sentiment",
+    "intensity": "Intensité",
+    "addDetailsPrompt": "Voulez-vous ajouter plus de détails pour mieux comprendre votre humeur ?",
+    "addDetails": "Ajouter des détails",
+    "trackingBenefits": "Suivre l'humeur aide à identifier les modèles et améliorer le bien-être général",
+    "startStreak": "Commencez votre parcours de suivi d'humeur",
+    "oneDayStreak": "1 jour consécutif",
+    "multiDayStreak": "{count} jours consécutifs",
     "tabs": {
+      "checkin": "Point",
       "analysis": "Analyse",
       "aiCoach": "Coach IA",
       "integration": "Intégration"
+    },
+    "overview": {
+      "overallScore": "Score global"
+    },
+    "pillars": {
+      "title": "Piliers du bien-être"
+    },
+    "categories": {
+      "physical": "Physique",
+      "physicalSubtitle": "Exercice, sommeil et nutrition",
+      "mental": "Mental",
+      "mentalSubtitle": "Méditation, pleine conscience et gestion du stress",
+      "social": "Social",
+      "socialSubtitle": "Relations, communication et communauté",
+      "spiritual": "Spirituel",
+      "spiritualSubtitle": "But, valeurs et développement personnel"
+    },
+    "metrics": {
+      "title": "Indicateurs de bien-être"
+    },
+    "sleep": "Sommeil",
+    "exercise": "Exercice",
+    "nutrition": "Nutrition",
+    "meditation": "Méditation",
+    "social": "Social",
+    "correlationOverview": "Aperçu des corrélations",
+    "positiveImpact": "Impact positif",
+    "negativeImpact": "Impact négatif",
+    "dataPoints": "Points de données",
+    "positivePatterns": "Modèles positifs",
+    "negativePatterns": "Modèles négatifs",
+    "recommendations": "Recommandations",
+    "entries": "Entrées",
+    "correlations": "Corrélations",
+    "moodCorrelation": "Corrélation d'humeur",
+    "totalEntries": "Total des entrées",
+    "daysSinceLastEntry": "Jours depuis la dernière entrée",
+    "recentActivity": "Activité récente",
+    "viewAllEntries": "Voir toutes les entrées",
+    "quality": "Qualité",
+    "min": "minutes",
+    "effectiveness": "Efficacité",
+    "satisfaction": "Satisfaction",
+    "logged": "Enregistré",
+    "today": "Aujourd'hui",
+    "yesterday": "Hier",
+    "this_week": "cette semaine",
+    "addSleep": "Ajouter le sommeil",
+    "addExercise": "Ajouter l'exercice",
+    "addNutrition": "Ajouter la nutrition",
+    "addMeditation": "Ajouter la méditation",
+    "addSocial": "Ajouter le social",
+    "noSleepData": "Aucune donnée de sommeil",
+    "noExerciseData": "Aucune donnée d'exercice",
+    "noNutritionData": "Aucune donnée de nutrition",
+    "noMeditationData": "Aucune donnée de méditation",
+    "noSocialData": "Aucune donnée sociale",
+    "startSleepTracking": "Commencer le suivi du sommeil",
+    "startExerciseTracking": "Commencer le suivi de l'exercice",
+    "startNutritionTracking": "Commencer le suivi de la nutrition",
+    "startMeditationTracking": "Commencer le suivi de la méditation",
+    "startSocialTracking": "Commencer le suivi social",
+    "addFirstSleep": "Ajouter le premier enregistrement de sommeil",
+    "addFirstExercise": "Ajouter le premier enregistrement d'exercice",
+    "addFirstNutrition": "Ajouter le premier enregistrement de nutrition",
+    "addFirstMeditation": "Ajouter la première méditation",
+    "addFirstSocial": "Ajouter le premier enregistrement social",
+    "selectCategory": "Sélectionner une Catégorie de Bien-être",
+    "backToWellness": "Retour au Bien-être",
+    "loadError": "Échec du chargement des données de bien-être. Veuillez réessayer plus tard.",
+    "insights": "Aperçus",
+    "insightsData": {
+      "sleep": {
+        "maintainHygiene": "Maintenez une hygiène de sommeil cohérente",
+        "createRoutine": "Créez une routine relaxante avant le coucher",
+        "aimHours": "Visez 7-9 heures de sommeil par nuit",
+        "establishTimes": "Établissez des heures de sommeil et de réveil régulières",
+        "improveEnvironment": "Envisagez d'améliorer votre environnement de sommeil",
+        "limitScreenTime": "Limitez le temps d'écran avant le coucher",
+        "avoidCaffeine": "Évitez la caféine plus tard dans la journée"
+      },
+      "exercise": {
+        "maintainDuration": "Maintenez une durée d'exercice régulière",
+        "increaseTime": "Si possible, augmentez progressivement le temps d'exercice",
+        "includeIntensity": "Incluez des exercices d'intensité modérée à élevée",
+        "mixIntensities": "Mélangez différentes intensités d'exercice au cours de la semaine",
+        "mostEffective": "L'exercice {type} semble le plus efficace pour votre humeur"
+      },
+      "nutrition": {
+        "continueFoods": "Continuez à vous concentrer sur les aliments qui améliorent l'humeur",
+        "maintainTiming": "Maintenez des heures de repas régulières",
+        "keepHydration": "Maintenez une hydratation adéquate",
+        "aimWater": "Visez plus de 8 verres d'eau par jour",
+        "reduceProcessed": "Envisagez de réduire les aliments transformés",
+        "includeOmega3": "Augmentez les aliments riches en oméga-3",
+        "addFruitsVeggies": "Ajoutez plus de fruits et légumes à vos repas"
+      },
+      "meditation": {
+        "increaseDuration": "Augmentez progressivement la durée des sessions de méditation",
+        "aimMinutes": "Visez au moins 10-15 minutes par session",
+        "focusTechniques": "Concentrez-vous sur les techniques qui semblent les plus efficaces",
+        "trackTypes": "Suivez quel type de méditation vous est le plus efficace",
+        "mostEffective": "{technique} semble le plus efficace pour vous"
+      },
+      "social": {
+        "prioritizeQuality": "Priorisez les interactions sociales de qualité",
+        "spendTime": "Passez du temps avec des personnes qui vous dynamisent",
+        "chooseActivities": "Choisissez des activités sociales qui vous font vous sentir énergisé",
+        "balanceTime": "Équilibrez le temps social avec le temps de recharge personnelle",
+        "mostBeneficial": "Les activités {type} semblent les plus bénéfiques pour votre humeur"
+      },
+      "patterns": {
+        "sleep": {
+          "betterQualityMood": "Une meilleure qualité de sommeil est associée à une humeur améliorée",
+          "adequateDurationMood": "Une durée de sommeil adéquate améliore l'humeur",
+          "consistentSchedule": "Un horaire de sommeil régulier soutient la stabilité émotionnelle",
+          "poorQualityMood": "Une mauvaise qualité de sommeil a un impact négatif sur l'humeur",
+          "insufficientDurationMood": "Une durée de sommeil insuffisante a un impact négatif sur l'humeur",
+          "noDataFound": "Aucune donnée de sommeil et d'humeur correspondante trouvée pour l'analyse de corrélation",
+          "addMoodEntries": "Ajoutez des entrées d'humeur pour les mêmes dates que vos données de sommeil pour voir les corrélations"
+        },
+        "exercise": {
+          "regularDurationMood": "Une durée d'exercice régulière améliore l'humeur",
+          "higherIntensityMood": "Une intensité d'exercice plus élevée améliore l'humeur",
+          "consistentRoutine": "Une routine d'exercice régulière soutient la santé émotionnelle",
+          "lackExerciseMood": "Le manque d'exercice est associé à une humeur plus basse"
+        },
+        "nutrition": {
+          "balancedMealsMood": "Des repas équilibrés sont associés à une meilleure humeur",
+          "regularHydration": "Une hydratation régulière soutient la stabilité émotionnelle",
+          "processedFoodsMood": "Les aliments transformés peuvent avoir un impact négatif sur l'humeur"
+        },
+        "meditation": {
+          "longerSessionsMood": "Des sessions de méditation plus longues sont associées à une humeur améliorée",
+          "effectiveTechniques": "Des techniques de méditation efficaces améliorent la santé émotionnelle",
+          "consistentPractice": "Une pratique de méditation régulière soutient la stabilité émotionnelle",
+          "shortSessionsMood": "Des sessions très courtes peuvent ne pas fournir suffisamment d'avantages"
+        },
+        "social": {
+          "qualityInteractionsMood": "Des interactions sociales de qualité sont associées à une meilleure humeur",
+          "energizingActivities": "Les activités sociales énergisantes améliorent l'humeur",
+          "balancedSocialTime": "Un temps social équilibré soutient la santé émotionnelle",
+          "unsatisfyingInteractionsMood": "Des interactions sociales insatisfaisantes peuvent aggraver l'humeur",
+          "drainingActivitiesMood": "Les activités sociales épuisantes ont un impact négatif sur l'humeur"
+        }
+      }
     }
+  },
+  "quickMoodSelector": {
+    "title": "Sélectionnez votre humeur",
+    "subtitle": "Sélectionnez l'humeur qui correspond le mieux à vos sentiments actuels",
+    "intensityLabel": "Intensité",
+    "triggersLabel": "Déclencheurs",
+    "noteLabel": "Note",
+    "skipButton": "Passer",
+    "quickCheckinComplete": "Point rapide terminé !",
+    "detailedCheckinComplete": "Point détaillé terminé !",
+    "todaysMoodEntry": "Entrée d'humeur d'aujourd'hui",
+    "moodInfluenceTitle": "Facteurs influençant l'humeur",
+    "optionalLabel": "(Optionnel)",
+    "notePlaceholder": "Écrivez vos pensées ou sentiments...",
+    "recordMoodButton": "Enregistrer l'humeur",
+    "moreOptionsButton": "Plus d'options",
+    "backButton": "Retour",
+    "lowLabel": "Faible",
+    "highLabel": "Élevé",
+    "intensityLow": "Faible intensité",
+    "intensityHigh": "Forte intensité"
+  },
+  "dailyMoodReminder": {
+    "title": "Rappel d'humeur quotidien",
+    "subtitle": "Prenez une minute pour enregistrer votre humeur d'aujourd'hui et aidez à suivre vos modèles émotionnels",
+    "whyTrack": "Pourquoi suivre l'humeur ?",
+    "benefit1": "Comprendre vos modèles émotionnels et déclencheurs",
+    "benefit2": "Identifier les habitudes et comportements qui affectent l'humeur",
+    "benefit3": "Améliorer la santé mentale et le bien-être général",
+    "checkinNow": "Faire un point maintenant",
+    "remindLater": "Rappeler plus tard",
+    "howFeeling": "Comment vous sentez-vous maintenant ?",
+    "successTitle": "Humeur enregistrée avec succès",
+    "successMessage": "Merci d'avoir enregistré votre humeur d'aujourd'hui !"
+  },
+  "common": {
+    "error": "Erreur",
+    "great": "Excellent",
+    "characters": "caractères",
+    "continue": "Continuer",
+    "success": "Taux de réussite",
+    "pro": "Pro",
+    "unknown": "Inconnu",
+    "notSet": "Non défini",
+    "uncategorized": "Non catégorisé",
+    "unnamedHabit": "Habitude sans nom",
+    "noNote": "Aucune note",
+    "noContext": "Aucun contexte",
+    "noData": "Aucune donnée",
+    "ok": "OK",
+    "cancel": "Annuler",
+    "anonymous": "Anonyme",
+    "untitled": "Sans titre",
+    "timeAgo": "Il y a 2 heures",
+    "back": "Retour",
+    "getStarted": "Commencer",
+    "skip": "Passer",
+    "close": "✕",
+    "enable": "Activer",
+    "noNotes": "Aucune note",
+    "couldNotParse": "Impossible d'analyser les données",
+    "invalidData": "Données invalides",
+    "loading": "Chargement..."
+  },
+  "moodAnalytics": {
+    "personalizedRecommendations": {
+      "title": "Recommandations Personnalisées"
+    },
+    "moodRecommendations": {
+      "categories": {
+        "moodStability": "Stabilité de l'Humeur",
+        "habitOptimization": "Optimisation des Habitudes",
+        "moodHabitSynergy": "Synergie Humeur-Habitudes",
+        "wellnessIntegration": "Intégration du Bien-être"
+      },
+      "descriptions": {
+        "moodStability": "Votre volatilité d'humeur est de {{volatility}}%. Considérez ces stratégies pour améliorer la stabilité.",
+        "habitOptimization": "Votre taux de réussite des habitudes est de {{rate}}%. Voici des moyens d'améliorer la constance.",
+        "moodHabitSynergy": "Basé sur vos corrélations humeur-habitudes, voici des améliorations synergiques.",
+        "wellnessIntegration": "Nous avons identifié des lacunes dans votre routine de bien-être. Voici des suggestions pour les combler."
+      },
+      "impacts": {
+        "moodStability": "Amélioration de la constance de l'humeur et de l'équilibre émotionnel",
+        "habitCompletion": "Taux de réussite des habitudes plus élevés et meilleure constance",
+        "moodHabitSynergy": "Meilleur alignement entre l'humeur et le succès des habitudes",
+        "wellnessIntegration": "Routine de bien-être plus équilibrée et complète"
+      },
+      "suggestions": {
+        "meditation": "Pratiquez la méditation quotidienne",
+        "breathingExercises": "Essayez des exercices de respiration profonde",
+        "consistentSleep": "Maintenez un horaire de sommeil constant",
+        "lowMoodActivities": "Participez à des activités qui améliorent l'humeur",
+        "gratitudePractice": "Pratiquez la gratitude quotidienne",
+        "simplifyHabits": "Simplifiez les habitudes complexes",
+        "habitStacking": "Utilisez la technique d'empilement d'habitudes",
+        "reminders": "Configurez des rappels intelligents",
+        "progressTracking": "Suivez votre progression visuellement",
+        "leverageCorrelation": "Exploitez la corrélation positive avec {{habit}}",
+        "moodBasedScheduling": "Planifiez les habitudes selon vos modèles d'humeur",
+        "addPhysicalHabits": "Ajoutez des habitudes de bien-être physique",
+        "addMentalHabits": "Ajoutez des habitudes de bien-être mental",
+        "addSocialHabits": "Ajoutez des habitudes de bien-être social",
+        "addCreativeHabits": "Ajoutez des habitudes de bien-être créatif",
+        "addSpiritualHabits": "Ajoutez des habitudes de bien-être spirituel",
+        "balancedRoutine": "Créez une routine de bien-être équilibrée"
+      },
+      "confidence": "Confiance",
+      "provideFeedback": "Fournir des Commentaires",
+      "expectedImpact": "Impact Attendu"
+    },
+    "moodPriorities": {
+      "high": "Haute Priorité",
+      "medium": "Priorité Moyenne",
+      "low": "Basse Priorité"
+    },
+    "title": "🧠 Analyse de l'humeur",
+    "subtitle": "Aperçus d'habitudes alimentés par l'IA",
+    "selectView": "Sélectionner la vue",
+    "tabs": {
+      "overview": "Aperçu",
+      "analytics": "Analyses",
+      "aiInsights": "Aperçus IA",
+      "progress": "Progrès",
+      "correlations": "Corrélations",
+      "wellness": "Bien-être",
+      "reports": "Rapports",
+      "calendar": "Calendrier",
+      "trends": "Tendances",
+      "distribution": "Distribution",
+      "insights": "Aperçus",
+      "patterns": "Modèles",
+      "discoveries": "Découvertes",
+      "tips": "Conseils",
+      "compare": "Comparer",
+      "habits": "Habitudes",
+      "successRates": "Taux de réussite",
+      "moodProgress": "Progrès de l'humeur",
+      "successByMood": "Réussite par humeur",
+      "streaks": "Séries",
+      "monthlyReport": "Rapport mensuel",
+      "resilience": "Résilience"
+    },
+    "subTabs": {
+      "trends": "Tendances",
+      "successRates": "Taux de réussite",
+      "distribution": "Distribution",
+      "compare": "Comparer",
+      "summary": "Résumé",
+      "resilience": "Résilience"
+    },
+    "dashboard": {
+      "averageMood": "Humeur moyenne",
+      "habitsThisWeek": "Habitudes cette semaine",
+      "keepItUp": "Continuez comme ça !",
+      "thisWeeksMood": "Humeur de cette semaine",
+      "moodBoost": "+{boost} Amélioration de l'humeur"
+    },
+    "quickInsights": {
+      "title": "Aperçus rapides",
+      "bestMood": "Meilleure humeur",
+      "watchOut": "Attention"
+    },
+    "topMoodBoosters": {
+      "title": "Meilleures habitudes pour améliorer l'humeur"
+    },
+    "calendar": {
+      "title": "📅 Calendrier de l'humeur",
+      "moodScale": "Échelle d'humeur :",
+      "excellent": "Excellent (8-10)",
+      "good": "Bon (6-7)",
+      "fair": "Moyen (4-5)",
+      "poor": "Mauvais (2-3)",
+      "veryPoor": "Très mauvais (0-1)"
+    },
+    "moodImprovement": {
+      "improving": "📈 Amélioration",
+      "stable": "📊 Stable"
+    },
+    "analytics": {
+      "title": "Analyses détaillées",
+      "distribution": "Distribution",
+      "needsAttention": "Nécessite attention",
+      "compare": "Comparer",
+      "timeframe": "Période",
+      "last7Days": "7 derniers jours",
+      "last30Days": "30 derniers jours",
+      "last90Days": "90 derniers jours",
+      "lastYear": "Dernière année",
+      "performanceOverview": "Aperçu des performances",
+      "totalHabits": "Total des habitudes",
+      "activeHabits": "Habitudes actives",
+      "completionRate": "Taux de réussite",
+      "currentStreak": "Série actuelle",
+      "longestStreak": "Série la plus longue",
+      "weeklyProgress": "Progrès hebdomadaire",
+      "monthlyProgress": "Progrès mensuel",
+      "yearlyProgress": "Progrès annuel",
+      "habitPerformance": "Performance des habitudes",
+      "moodAnalytics": "Analyses d'humeur",
+      "wellnessAnalytics": "Analyses de bien-être",
+      "advancedAnalytics": "Analyses avancées",
+      "insights": "Aperçus",
+      "patterns": "Modèles",
+      "trends": "Tendances",
+      "recommendations": "Recommandations",
+      "keyInsights": "Aperçus clés",
+      "patternAnalysis": "Analyse des modèles",
+      "correlationAnalysis": "Analyse des corrélations",
+      "predictiveInsights": "Aperçus prédictifs",
+      "sampleData": {
+        "weeklyMoodCycleDesc": "Votre humeur suit un cycle hebdomadaire avec des pics le week-end",
+        "completedMorningRoutine": "compléter votre routine matinale",
+        "improvedMoodEffect": "humeur améliorée tout au long de la journée",
+        "stressedCascade": "stressé",
+        "anxiousTiredOverwhelmed": "anxieux, fatigué et dépassé",
+        "twoToFourHours": "2-4 heures"
+      },
+      "loading": "Chargement des analyses...",
+      "error": "Erreur",
+      "loadError": "Échec du chargement des données d'analyse",
+      "streakAnalysis": "Analyse des séries",
+      "days": "jours",
+      "moodTrends": "Tendances de l'humeur",
+      "avgMood": "Humeur moyenne",
+      "moodEntries": "Entrées",
+      "refresh": "Actualiser",
+      "refreshing": "Actualisation...",
+      "exportTitle": "Exporter les données d'analyse",
+      "exportMessage": "Exporter vos données d'analyse en fichier CSV ?",
+      "exportSuccess": "Exportation réussie",
+      "exportSuccessMessage": "Vos données d'analyse ont été exportées avec succès.",
+      "upgradeRequired": "Passer à Pro",
+      "upgradeMessage": "Obtenez des analyses détaillées, des aperçus de performance et des rapports avancés avec Pro.",
+      "mockHabits": {
+        "morningExercise": "Exercice Matinal",
+        "read30Minutes": "Lire 30 minutes",
+        "drinkWater": "Boire de l'Eau",
+        "meditation": "Méditation",
+        "eveningWalk": "Promenade du Soir"
+      },
+      "bestPerformer": "Meilleur Performeur",
+      "noStreakData": "Aucune donnée de série disponible",
+      "noMoodData": "Aucune donnée d'humeur disponible",
+      "noDataTitle": "Aucune Donnée Disponible",
+      "noDataMessage": "Commencez à suivre vos habitudes pour voir des analyses détaillées et des insights."
+    },
+    "emotionalWellnessTrends": {
+      "title": "Tendances du bien-être émotionnel",
+      "thirtyDayMoodTrend": "Tendance de l'humeur sur 30 jours",
+      "improving": "📈 Amélioration",
+      "declining": "📉 Déclin",
+      "stable": "📊 Stable",
+      "averageMood": "Humeur moyenne",
+      "peakMood": "Humeur maximale",
+      "lowestMood": "Humeur minimale"
+    },
+    "successRateAnalysis": {
+      "title": "Analyse du taux de réussite",
+      "weeklySuccessRates": "Taux de réussite hebdomadaires",
+      "habitSpecificRates": "Taux de réussite spécifiques aux habitudes"
+    },
+    "moodDistribution": {
+      "title": "Distribution de l'humeur",
+      "lastThirtyDays": "30 derniers jours",
+      "mood": "Humeur",
+      "distribution": "Distribution",
+      "totalDays": "Jours totaux",
+      "excellentDays": "Jours excellents",
+      "goodPlusDays": "Jours excellents + bons",
+      "categories": {
+        "excellent": "Excellent",
+        "good": "Bon",
+        "neutral": "Neutre",
+        "poor": "Mauvais",
+        "veryPoor": "Très mauvais"
+      }
+    },
+    "performance": {
+      "title": "Comparaison de performance",
+      "thirtyDayTrendAnalysis": "Analyse des tendances sur 30 jours",
+      "moodImprovement": "Amélioration de l'humeur",
+      "habitProgress": "Progrès des habitudes",
+      "stability": "Stabilité",
+      "lastThirtyDays": "30 derniers jours",
+      "previousThirtyDays": "30 jours précédents"
+    },
+    "trends": {
+      "longTermGrowth": "🚀 Croissance à long terme",
+      "needsAttention": "⚠️ Nécessite attention",
+      "consistent": "🔄 Cohérent"
+    },
+    "wellnessSummary": {
+      "moodStability": "Stabilité de l'humeur",
+      "habitConsistency": "Cohérence des habitudes",
+      "weeklyImprovement": "Amélioration hebdomadaire"
+    },
+    "emotionalWellnessSummary": {
+      "title": "Résumé du bien-être émotionnel",
+      "overallWellnessScore": "Score de bien-être global",
+      "target": "Objectif",
+      "points": "points"
+    },
+    "correlationHeatMap": {
+      "title": "🔥 Carte de chaleur des corrélations humeur-habitudes",
+      "correlationStrength": "Force de corrélation :",
+      "strongPositive": "Corrélation positive forte",
+      "weakPositive": "Corrélation positive faible",
+      "weakNegative": "Corrélation négative faible",
+      "strongNegative": "Corrélation négative forte"
+    },
+    "resilience": {
+      "title": "🛡️ Résilience émotionnelle",
+      "emotionalResilienceScore": "Score de résilience émotionnelle",
+      "resilienceFactors": "Facteurs de résilience"
+    },
+    "resilienceLevels": {
+      "excellent": "Excellent",
+      "good": "Bon",
+      "moderate": "Modéré",
+      "developing": "En développement"
+    },
+    "resilienceFactors": {
+      "stability": "Stabilité de l'humeur",
+      "recovery": "Taux de récupération",
+      "consistency": "Cohérence des habitudes",
+      "trend": "Tendance globale"
+    },
+    "resilienceTips": {
+      "title": "Conseils pour développer la résilience",
+      "mindfulness": "Pratiquez la pleine conscience pour améliorer la stabilité émotionnelle",
+      "consistency": "Maintenez la cohérence des habitudes même en cas de baisse d'humeur",
+      "improvement": "Concentrez-vous sur l'amélioration progressive plutôt que sur la perfection"
+    },
+    "months": {
+      "january": "Janvier",
+      "february": "Février",
+      "march": "Mars",
+      "april": "Avril",
+      "may": "Mai",
+      "june": "Juin",
+      "july": "Juillet",
+      "august": "Août",
+      "september": "Septembre",
+      "october": "Octobre",
+      "november": "Novembre",
+      "december": "Décembre"
+    },
+    "weekdays": {
+      "sunday": "Dimanche",
+      "monday": "Lundi",
+      "tuesday": "Mardi",
+      "wednesday": "Mercredi",
+      "thursday": "Jeudi",
+      "friday": "Vendredi",
+      "saturday": "Samedi"
+    },
+    "correlations": {
+      "habitAnalysis": "Analyse des habitudes",
+      "heatMap": "Carte de chaleur",
+      "successRates": "Taux de réussite"
+    },
+    "reports": {
+      "monthlyWellnessReport": "Rapport de bien-être mensuel",
+      "averageMood": "Humeur moyenne",
+      "habitsCompleted": "Habitudes terminées",
+      "dailyAverage": "Moyenne quotidienne",
+      "daysTracked": "Jours suivis",
+      "moodDistributionThisMonth": "Distribution de l'humeur ce mois-ci"
+    },
+    "progress": {
+      "streakTracking": "Suivi des séries",
+      "improvement": "Amélioration",
+      "performance": "Performance",
+      "activeStreaks": "Séries actives",
+      "longestCurrent": "Plus longue actuelle",
+      "allTimeBest": "Meilleure de tous les temps",
+      "activeStreaksCount": "Nombre de séries actives"
+    },
+    "smartInsights": {
+      "title": "Aperçus intelligents",
+      "bestMood": "Meilleure humeur",
+      "challengingMood": "Humeur difficile",
+      "successRate": "Taux de réussite",
+      "emotionalJourney": {
+        "title": "Voyage émotionnel de {month}"
+      },
+      "weeklyProgression": {
+        "title": "Progression hebdomadaire"
+      },
+      "weeklyInsights": {
+        "intensity": "Intensité"
+      },
+      "monthlyInsights": {
+        "title": "Aperçus mensuels",
+        "variableMoodTip": "Votre humeur varie beaucoup, il est recommandé de maintenir un horaire régulier",
+        "greatMonthTip": "Ce mois a été excellent ! Continuez à maintenir cet élan positif",
+        "trackMoreTip": "Enregistrez plus de données d'humeur pour obtenir des aperçus plus précis"
+      },
+      "correlationDiscoveries": {
+        "title": "Découvertes de corrélations",
+        "highEnergyCorrelation": {
+          "title": "Corrélation haute énergie",
+          "description": "En état de haute énergie, votre taux de réussite des habitudes augmente de 25%",
+          "actionable": "Planifiez des habitudes importantes pendant les périodes de haute énergie"
+        },
+        "morningMoodBoost": {
+          "title": "Amélioration de l'humeur matinale",
+          "description": "Après avoir terminé des habitudes le matin, l'humeur moyenne de la journée augmente de 1,5 point",
+          "actionable": "Priorisez l'achèvement des habitudes clés le matin"
+        },
+        "socialConnectionImpact": {
+          "title": "Impact des connexions sociales",
+          "description": "Après les activités sociales, votre humeur et votre taux de réussite des habitudes augmentent considérablement",
+          "actionable": "Planifiez l'achèvement des habitudes après les activités sociales"
+        }
+      },
+      "successByMoodState": {
+        "title": "Taux de réussite par état d'humeur",
+        "subtitle": "Comprendre votre achèvement d'habitudes sous différentes humeurs"
+      },
+      "personalizedTips": {
+        "title": "Conseils personnalisés",
+        "optimalTiming": "Timing optimal",
+        "successfulWhenFeeling": "Votre taux de réussite des habitudes est le plus élevé quand vous vous sentez {feeling}",
+        "moodBoosters": "Améliorateurs d'humeur",
+        "tryToImproveMood": "Essayez {habits} pour améliorer votre humeur"
+      }
+    },
+    "insights": {
+      "smartInsights": "Aperçus intelligents",
+      "aiAnalysis": "Analyse IA",
+      "recommendations": "Recommandations"
+    },
+    "common": {
+      "avgMood": "Humeur moyenne",
+      "habits": "Habitudes",
+      "days": "jours",
+      "total": "Total"
+    },
+    "emotionalJourney": {
+      "avgMood": "Humeur moyenne",
+      "daysTracked": "Jours suivis",
+      "overallMood": "Humeur globale",
+      "dominantMood": "Humeur dominante",
+      "emotionalStability": "Stabilité émotionnelle",
+      "consistent": "Cohérence"
+    },
+    "moodStates": {
+      "excellent": "Excellent",
+      "good": "Bon",
+      "neutral": "Neutre",
+      "poor": "Mauvais",
+      "terrible": "Terrible"
+    },
+    "stabilityLevels": {
+      "veryStable": "Très stable",
+      "stable": "Stable",
+      "moderate": "Modéré",
+      "variable": "Variable"
+    },
+    "charts": {
+      "weeklyMoodProgress": "Progression de l'humeur hebdomadaire",
+      "successRatesByMood": "Taux de réussite par humeur",
+      "weekLabels": {
+        "week1": "Semaine 1",
+        "week2": "Semaine 2",
+        "week3": "Semaine 3",
+        "week4": "Semaine 4",
+        "week5": "Semaine 5"
+      }
+    },
+    "weeklyInsights": {
+      "intensity": "Intensité",
+      "moodImprovementTracking": "Suivi de l'amélioration de l'humeur",
+      "thirtyDayTrend": "Tendance sur 30 jours",
+      "ninetyDayTrend": "Tendance sur 90 jours",
+      "tuesdayWednesdayOptimal": "Mardi et mercredi sont les meilleurs moments pour terminer les habitudes",
+      "fridayChallenging": "Vendredi peut être plus difficile, ajustez vos attentes",
+      "weekendPotential": "Le week-end a le potentiel d'améliorer les taux de réussite"
+    },
+    "aiInsights": {
+      "title": "🤖 Intelligence prédictive IA",
+      "description": "Aperçus et recommandations personnalisés basés sur l'IA",
+      "currentMoodCheckIn": {
+        "title": "Vérification d'humeur actuelle",
+        "subtitle": "Dites-nous comment vous vous sentez pour obtenir des aperçus personnalisés",
+        "intensity": "Intensité : {intensity}/10"
+      },
+      "successPredictions": {
+        "title": "📊 Prédictions de réussite",
+        "subtitle": "Prédictions de réussite des habitudes alimentées par l'IA",
+        "moodAlignment": "Alignement de l'humeur",
+        "timing": "Timing",
+        "buildingModels": "Construction des modèles prédictifs... Terminez plus d'habitudes pour des prédictions précises !"
+      },
+      "riskAlerts": {
+        "title": "⚠️ Alertes de risque",
+        "subtitle": "Habitudes à risque d'être ignorées",
+        "urgency": "Urgence : {urgency}"
+      },
+      "optimalTiming": {
+        "title": "⏰ Timing optimal",
+        "subtitle": "Meilleur timing des habitudes basé sur l'humeur",
+        "bestTimeToday": "Meilleur moment aujourd'hui : {time}",
+        "alternativeTimes": "Heures alternatives :"
+      },
+      "moodBasedRecommendations": {
+        "title": "💡 Recommandations basées sur l'humeur",
+        "subtitle": "Habitudes qui correspondent à votre état émotionnel actuel",
+        "expectedMoodBoost": "Amélioration d'humeur attendue :",
+        "quickMoodBoosters": "Améliorateurs d'humeur rapides :"
+      },
+      "weeklyForecast": {
+        "title": "📅 Prévisions hebdomadaires",
+        "subtitle": "Prédictions de réussite des habitudes pour la semaine prochaine",
+        "confidence": "Confiance : {confidence}%"
+      },
+      "keyFactors": "Facteurs clés",
+      "moodAlignment": "Alignement de l'humeur",
+      "timing": "Timing",
+      "urgencyLevel": "Niveau d'urgence",
+      "suggestions": "Suggestions",
+      "bestTimeToday": "Meilleur moment aujourd'hui",
+      "predictedCompletions": "Complétions prédites",
+      "successRate": "Taux de réussite",
+      "riskDays": "Jours à risque",
+      "weeklyInsights": "Aperçus hebdomadaires",
+      "successPredictionMessages": {
+        "insufficientData": "Données insuffisantes pour des prédictions précises"
+      },
+      "optimalTimingMessages": {
+        "moodBasedRecommendation": "Basé sur votre état d'humeur actuel, c'est le meilleur moment pour terminer cette habitude"
+      },
+      "quickMoodBoosters": "Améliorateurs d'humeur rapides",
+      "alternativeTimes": "Heures alternatives :"
+    },
+    "patterns": {
+      "analyzing": "Analyse des modèles en cours... Plus de données nécessaires pour la reconnaissance des modèles !"
+    },
+    "riskLevels": {
+      "low": "Risque faible",
+      "medium": "Risque moyen",
+      "high": "Risque élevé",
+      "critical": "Risque critique"
+    },
+    "urgencyLevels": {
+      "low": "Faible",
+      "medium": "Moyen",
+      "high": "Élevé",
+      "critical": "Urgent"
+    },
+    "analyticsRecommendations": {
+      "title": "Recommandations personnalisées",
+      "expectedImpact": "Impact attendu",
+      "categories": {
+        "moodOptimization": "Optimisation de l'humeur",
+        "habitEfficiency": "Efficacité des habitudes",
+        "wellnessIntegration": "Intégration du bien-être"
+      },
+      "suggestions": {
+        "meditation": "Essayez la méditation ou les exercices de respiration profonde",
+        "socialActivities": "Augmentez les activités sociales",
+        "sunlightExposure": "Augmentez l'exposition au soleil",
+        "groupHabits": "Groupez les habitudes similaires",
+        "reminders": "Définissez des rappels plus fréquents",
+        "habitStacking": "Utilisez la technique d'empilement d'habitudes",
+        "breathing": "Pratiquez les techniques de respiration profonde",
+        "sleepTracking": "Suivez la qualité du sommeil",
+        "reflection": "Réfléchissez et enregistrez régulièrement"
+      },
+      "impacts": {
+        "moodStability": "Améliorer la stabilité de l'humeur",
+        "completionRate": "Augmenter le taux de réussite",
+        "overallWellness": "Améliorer le bien-être global"
+      }
+    },
+    "analyticsPriorities": {
+      "high": "Élevé",
+      "medium": "Moyen",
+      "low": "Faible"
+    }
+  },
+  "dynamicContent": {
+    "reasoning": {
+      "highEnergy": "Haute énergie",
+      "goodMood": "Bonne humeur",
+      "consistentTime": "Heure régulière",
+      "optimalConditions": "Conditions optimales",
+      "momentum": "Élan",
+      "recovery": "Récupération"
+    },
+    "moodBasedRecommendation": {
+      "morning": "Matin",
+      "afternoon": "Après-midi",
+      "evening": "Soir",
+      "highEnergy": "Haute énergie",
+      "lowEnergy": "Faible énergie",
+      "stressful": "Stressé"
+    },
+    "activities": {
+      "meditation": "Méditation",
+      "exercise": "Exercice",
+      "reading": "Lecture",
+      "walking": "Marche",
+      "deepBreathing": "Respiration Profonde",
+      "gratitude": "Gratitude",
+      "socialCall": "Appel Social",
+      "music": "Musique",
+      "nature": "Nature",
+      "creative": "Créatif",
+      "planYourDay": "Planifiez votre Journée",
+      "take5DeepBreaths": "Prenez 5 Respirations Profondes",
+      "goForShortWalk": "Allez Faire une Petite Marche",
+      "listenToCalmingMusic": "Écoutez de la Musique Apaisante",
+      "practiceMindfulness": "Pratiquez la Pleine Conscience",
+      "writeInJournal": "Écrivez dans votre Journal",
+      "doGentleStretching": "Faites des Étirements Doux",
+      "callFriend": "Appelez un Ami",
+      "watchSomethingUplifting": "Regardez Quelque Chose d'Inspirant",
+      "practiceGratitude": "Pratiquez la Gratitude",
+      "takePowerNap": "Faites une Sieste Courte",
+      "drinkWater": "Buvez de l'Eau",
+      "getFreshAir": "Prenez l'Air Frais",
+      "tackleChallengingTasks": "Affrontez des Tâches Difficiles",
+      "beCreative": "Soyez Créatif",
+      "shareMood": "Partagez votre Humeur",
+      "trySomethingNew": "Essayez Quelque Chose de Nouveau",
+      "helpOthers": "Aidez les Autres"
+    },
+    "avoidance": {
+      "avoidOverwhelmingTasks": "Évitez les Tâches Accablantes",
+      "skipIntenseWorkouts": "Évitez les Entraînements Intenses",
+      "avoidCaffeine": "Évitez la Caféine",
+      "skipSocialMedia": "Évitez les Réseaux Sociaux",
+      "avoidIsolation": "Évitez l'Isolement",
+      "skipNegativeContent": "Évitez le Contenu Négatif",
+      "avoidHeavyMeals": "Évitez les Repas Lourds",
+      "skipLateNightActivities": "Évitez les Activités Nocturnes",
+      "avoidSittingTooLong": "Évitez de Rester Assis Trop Longtemps",
+      "skipBoringTasks": "Évitez les Tâches Ennuyeuses",
+      "avoidOvercommitting": "Évitez de Trop Vous Engager",
+      "skipRiskyDecisions": "Évitez les Décisions Risquées",
+      "avoidRushing": "Évitez de Vous Presser",
+      "skipStressfulConversations": "Évitez les Conversations Stressantes"
+    },
+    "suggestions": {
+      "breakItDown": "Divisez la tâche",
+      "setReminder": "Définissez un rappel",
+      "findAccountability": "Trouvez de la responsabilité",
+      "adjustTiming": "Ajustez le timing",
+      "reduceComplexity": "Réduisez la complexité",
+      "celebrateProgress": "Célébrez les progrès"
+    }
+  },
+  "professional": {
+    "dashboard": {
+      "title": "Tableau de bord professionnel",
+      "clientOverview": "Aperçu du client"
+    },
+    "generateReport": "Générer un rapport",
+    "generatingReport": "Génération du rapport complet...",
+    "createDetailedSummary": "Créer un résumé clinique détaillé",
+    "shareData": "Partager les données",
+    "sharingData": "Partage des données du tableau de bord...",
+    "share": "Partager",
+    "scheduleSession": "Planifier une session",
+    "openingCalendar": "Ouverture du calendrier...",
+    "schedule": "Planifier",
+    "quickActions": "Actions rapides",
+    "insufficientData": "Données d'aperçus cliniques insuffisantes",
+    "noDataAvailable": "Aucune donnée disponible",
+    "startTrackingMessage": "Commencez à suivre l'humeur et les habitudes pour voir les aperçus et analyses professionnels ici.",
+    "getStarted": "Commencer",
+    "loadingDashboard": "Chargement du tableau de bord",
+    "analyzingData": "Analyse de vos données...",
+    "unableToLoadDashboard": "Impossible de charger le tableau de bord",
+    "tryAgain": "Réessayer",
+    "clientOverview": "Aperçu du client",
+    "alertAction": "Action d'alerte",
+    "takingAction": "Prise d'action pour les éléments suivants",
+    "timePeriod": "Time Period",
+    "overviewMetrics": "Overview Metrics",
+    "moodScore": "Mood Score",
+    "averageThis": "Average this {timeframe}",
+    "habitCompletion": "Habit Completion",
+    "successRate": "Success rate",
+    "riskAssessment": "Risk Assessment",
+    "currentRiskLevel": "Current Risk Level",
+    "riskDescription": "Based on recent mood patterns and activity levels",
+    "alerts": "Alerts",
+    "allClear": "All Clear",
+    "noAlertsMessage": "No alerts or concerns at this time",
+    "takeAction": "Take Action",
+    "clinicalInsights": "Clinical Insights",
+    "behavioralPatterns": "Behavioral Patterns",
+    "habitImpactAnalysis": "Habit Impact Analysis",
+    "adherenceRate": "Adherence Rate",
+    "moodImpact": "Mood Impact",
+    "clinicalNote": "Clinical Note"
+  },
+  "advancedAnalytics": {
+    "title": "Analyses avancées",
+    "subtitle": "Aperçu approfondi de vos modèles habitudes-humeur",
+    "currentMood": "Humeur actuelle",
+    "timeOfDay": "Moment de la journée",
+    "evening": "Soir",
+    "recentStreak": "Série récente",
+    "days": "jours",
+    "priority": "Priorité",
+    "applySuggestion": "Appliquer la suggestion",
+    "generatingInsights": "Génération d'aperçus personnalisés... Continuez à suivre pour débloquer des recommandations personnalisées !",
+    "patternRecognition": {
+      "title": "Reconnaissance de modèles avancée"
+    },
+    "personalizedInsights": {
+      "title": "Aperçus personnalisés"
+    },
+    "tabs": {
+      "correlations": "Corrélations",
+      "predictions": "Prédictions",
+      "patterns": "Modèles",
+      "insights": "Aperçus"
+    },
+    "timeframes": {
+      "week": "Semaine",
+      "month": "Mois",
+      "quarter": "Trimestre"
+    },
+    "sections": {
+      "correlationsTitle": "📊 Corrélations détaillées humeur-habitudes",
+      "predictionsTitle": "🔮 Prédictions de réussite des habitudes",
+      "patternsTitle": "🧩 Reconnaissance de modèles avancée",
+      "insightsTitle": "💡 Aperçus personnalisés"
+    },
+    "correlations": {
+      "strengthStrong": "Forte",
+      "strengthModerate": "Modérée",
+      "strengthWeak": "Faible",
+      "bestTimes": "Meilleurs moments",
+      "optimalMood": "Humeur optimale",
+      "strongPositive": "Corrélation positive forte avec l'amélioration de l'humeur",
+      "moderatePositive": "Corrélation positive modérée avec l'humeur",
+      "negative": "Corrélation négative - peut nécessiter un ajustement",
+      "noData": "Aucune donnée de corrélation disponible. Terminez plus d'habitudes pour voir les aperçus !"
+    },
+    "predictions": {
+      "averageSuccess": "Probabilité de réussite moyenne cette semaine",
+      "buildingModels": "Construction des modèles prédictifs... Terminez plus d'habitudes pour des prédictions précises !"
+    },
+    "patterns": {
+      "cyclical": "Cyclique",
+      "trigger": "Déclencheur",
+      "chain": "Chaîne",
+      "moodCascade": "Cascade d'humeur",
+      "optimizeFor": "Optimiser le modèle {frequency}",
+      "monitorTrigger": "Surveiller ce déclencheur",
+      "successRate": "Taux de réussite : {rate}%",
+      "bestTiming": "Meilleur timing : {timing}",
+      "leadsTo": "Mène à {moods} dans {timeframe}",
+      "cascade": "Cascade {mood}",
+      "earlyIntervention": "Intervention précoce recommandée",
+      "analyzing": "Analyse des modèles en cours... Plus de données nécessaires pour la reconnaissance des modèles !",
+      "sampleData": {
+        "weeklyMoodCycle": "Cycle d'humeur hebdomadaire",
+        "weeklyMoodCycleDesc": "L'humeur a tendance à baisser au milieu de la semaine et à se rétablir le week-end",
+        "completedMorningRoutine": "Routine matinale terminée",
+        "improvedMoodEffect": "Améliore l'humeur pour le reste de la journée",
+        "exerciseBetterMood": "Exercice → Meilleure humeur",
+        "meditationCalmerState": "Méditation → État plus calme",
+        "morningMeditationExerciseBreakfast": "Méditation matinale → Exercice → Petit-déjeuner sain",
+        "within2Hours": "Dans les 2 heures l'un de l'autre",
+        "stressedCascade": "Cascade de stress",
+        "anxiousTiredOverwhelmed": "Anxieux, fatigué, dépassé",
+        "deepBreathing": "Respiration profonde",
+        "shortWalk": "Courte promenade",
+        "mindfulness": "Pleine conscience",
+        "weekly": "Hebdomadaire",
+        "twoToFourHours": "2-4 heures",
+        "patternDetected": "Modèle détecté"
+      }
+    },
+    "insights": {
+      "applySuggestion": "Appliquer la suggestion",
+      "priorityHigh": "Élevé",
+      "priorityMedium": "Moyen",
+      "priorityLow": "Faible",
+      "generating": "Génération d'aperçus personnalisés... Continuez à suivre pour débloquer des recommandations personnalisées !"
+    },
+    "common": {
+      "unknownHabit": "Habitude inconnue",
+      "notAvailable": "Non disponible",
+      "back": "Retour"
+    }
+  },
+  "csv": {
+    "exportHeader": "Export des statistiques d'habitudes",
+    "exportDate": "Date d'export",
+    "totalHabits": "Nombre total d'habitudes",
+    "currentStreak": "Série actuelle",
+    "longestStreak": "Plus longue série",
+    "weeklyCompletionRate": "Taux de réussite hebdomadaire",
+    "monthlyCompletionRate": "Taux de réussite mensuel",
+    "totalCompletedToday": "Total terminé aujourd'hui",
+    "totalCompletedAllTime": "Total terminé de tous temps",
+    "habitDetails": "Détails de l'habitude",
+    "habitDetailsHeader": "Titre,Icône,Série actuelle,Meilleure série,Total terminé,Date de création"
+  },
+  "aiCoaching": {
+    "title": "Coaching amélioré",
+    "subtitle": "Guidance personnalisée alimentée par l'IA",
+    "tabs": {
+      "coaching": "🤖 Coach IA",
+      "strategies": "🎯 Stratégies",
+      "resilience": "💪 Résilience",
+      "plans": "📋 Plans"
+    },
+    "loading": "Chargement du Coaching IA...",
+    "preparingSession": "Préparation de votre session de coaching personnalisée. Veuillez patienter pendant que nous analysons vos données.",
+    "session": {
+      "title": "🤖 Session de coaching IA",
+      "sessionTypes": {
+        "daily_check_in": "Vérification quotidienne",
+        "habit_optimization": "Optimisation des habitudes",
+        "mood_coaching": "Coaching d'humeur",
+        "resilience_training": "Entraînement à la résilience"
+      },
+      "sessionTime": "Session de 5 minutes",
+      "sessionTitle": "Session",
+      "exerciseDuration": "3 minutes",
+      "keyInsights": "💡 Aperçus clés",
+      "recommendations": "🎯 Recommandations",
+      "coachingExercises": "🧘 Exercices de coaching",
+      "confidence": "Confiance",
+      "difficulty": {
+        "easy": "Facile",
+        "medium": "Moyen",
+        "challenging": "Difficile"
+      }
+    },
+    "strategies": {
+      "title": "🎯 Stratégies personnalisées",
+      "highImpact": "Impact élevé",
+      "expectedImprovement": "Amélioration attendue : +{percentage}%",
+      "implementationTime": "Temps de mise en œuvre : {timeframe}",
+      "applyStrategy": "Appliquer la stratégie",
+      "emptyState": "Génération de stratégies personnalisées... Terminez plus d'habitudes pour débloquer des stratégies personnalisées !"
+    },
+    "resilience": {
+      "title": "💪 Entraînement à la résilience émotionnelle",
+      "currentScore": "Score de résilience actuel",
+      "aboveAverage": "Au-dessus de la moyenne",
+      "beginner": "Débutant",
+      "trainingModules": "Modules d'entraînement",
+      "newModule": "Nouveau module",
+      "exercisesCompleted": "Exercices terminés",
+      "moduleDuration": {
+        "short": "15 minutes",
+        "medium": "20 minutes",
+        "long": "10 minutes"
+      },
+      "modules": {
+        "cognitiveReframing": {
+          "title": "Reframing cognitif",
+          "description": "Apprenez à reframer les pensées négatives sur les revers d'habitudes"
+        },
+        "stressResponse": {
+          "title": "Gestion de la réponse au stress",
+          "description": "Développez des réponses saines au stress qui soutiennent vos habitudes"
+        },
+        "emotionalAwareness": {
+          "title": "Conscience émotionnelle",
+          "description": "Développez la conscience des modèles et déclencheurs émotionnels"
+        }
+      }
+    },
+    "welcome": {
+      "title": "Bonjour ! Je suis votre Coach IA",
+      "subtitle": "Prêt à vous aider à construire de meilleures habitudes et améliorer votre bien-être"
+    },
+    "quickStart": {
+      "title": "Sessions de Démarrage Rapide",
+      "dailyCheckIn": "Check-in Quotidien",
+      "habitOptimization": "Optimisation des Habitudes", 
+      "moodCoaching": "Coaching de l'Humeur",
+      "resilienceTraining": "Formation à la Résilience"
+    },
+    "sessionTypes": {
+      "daily_check_in": "Check-in Quotidien",
+      "habit_optimization": "Optimisation des Habitudes",
+      "mood_coaching": "Coaching de l'Humeur",
+      "resilience_training": "Formation à la Résilience"
+    },
+    "messages": {
+      "dailyCheckIn": {
+        "greeting": "Bonjour ! Comment vous sentez-vous aujourd'hui ? Vérifions votre progression et établissons des intentions pour la journée."
+      },
+      "habitOptimization": {
+        "greeting": "Je vois que vous travaillez sur vos habitudes. Quel domaine aimeriez-vous améliorer aujourd'hui ?"
+      },
+      "moodCoaching": {
+        "greeting": "Je comprends que l'humeur peut affecter nos habitudes. Qu'est-ce qui influence votre humeur aujourd'hui ?"
+      },
+      "resilienceTraining": {
+        "greeting": "La résilience se construit étape par étape. Quel défi aimeriez-vous aborder aujourd'hui ?"
+      }
+    },
+    "response": {
+      "title": "Comment vous sentez-vous ?",
+      "dailyCheckIn": {
+        "option1": "Je me sens énergisé et motivé",
+        "option2": "Je suis un peu fatigué mais bien",
+        "option3": "Aujourd'hui a été une journée difficile"
+      },
+      "habitOptimization": {
+        "option1": "Je veux améliorer ma cohérence",
+        "option2": "J'ai besoin d'aide avec la motivation",
+        "option3": "J'aimerais ajouter de nouvelles habitudes"
+      },
+      "moodCoaching": {
+        "option1": "Je me sens stressé par le travail",
+        "option2": "Je suis inquiet pour quelque chose de personnel",
+        "option3": "Je me sens bien mais je veux le maintenir"
+      },
+      "resilienceTraining": {
+        "option1": "Je veux mieux gérer le stress",
+        "option2": "J'aimerais être plus patient",
+        "option3": "J'ai besoin d'aide avec l'auto-compassion"
+      }
+    },
+    "progress": {
+      "step": "Étape {{current}} sur {{total}}"
+    },
+    "actions": {
+      "pause": "Pause",
+      "resume": "Reprendre",
+      "save": "Sauvegarder",
+      "share": "Partager"
+    },
+    "recent": {
+      "title": "Sessions Récentes",
+      "dailyCheckIn": "Check-in Quotidien",
+      "habitOptimization": "Optimisation des Habitudes"
+    },
+    "beta": {
+      "title": "Fonctionnalité Bêta",
+      "description": "Cette fonctionnalité de coaching IA est en développement précoce. Nous testons et améliorons en nous basant sur les retours des utilisateurs. Essayez-la et dites-nous ce que vous en pensez !",
+      "feedbackButton": "Envoyer un Retour",
+      "feedbackModal": {
+        "subtitle": "Aidez-nous à améliorer la fonctionnalité de coaching IA en partageant votre expérience !",
+        "ratingTitle": "Comment évalueriez-vous votre expérience ?",
+        "ratingLabels": {
+          "select": "Sélectionnez une évaluation",
+          "poor": "Mauvaise",
+          "fair": "Moyenne",
+          "good": "Bonne",
+          "veryGood": "Très Bonne",
+          "excellent": "Excellente"
+        },
+        "feedbackTitle": "Retour Supplémentaire (Optionnel)",
+        "feedbackPlaceholder": "Partagez vos pensées, suggestions ou signalez tout problème...",
+        "cancel": "Annuler",
+        "submit": "Envoyer le Retour",
+        "submitting": "Envoi en cours...",
+        "validation": {
+          "ratingRequired": "Veuillez sélectionner une évaluation avant d'envoyer le retour."
+        },
+        "success": {
+          "title": "Retour Envoyé !",
+          "message": "Merci pour votre retour. Nous l'utiliserons pour améliorer la fonctionnalité de coaching IA."
+        },
+        "error": {
+          "title": "Erreur",
+          "message": "Échec de l'envoi du retour. Veuillez réessayer."
+        },
+        "emailError": {
+          "title": "Application Email Non Trouvée",
+          "message": "Veuillez vous assurer d'avoir une application email installée sur votre appareil."
+        }
+      }
+    },
+    "plans": {
+      "title": "📋 Plans d'habitudes d'optimisation de l'humeur",
+      "adaptive": "Adaptatif",
+      "moodBasedSchedule": "Horaire basé sur l'humeur",
+      "adaptiveModifications": "Modifications adaptatives",
+      "defaultHabitTitle": "Habitude d'exercice",
+      "emptyState": "Création de plans d'optimisation de l'humeur... Suivez votre humeur pour débloquer la planification adaptative !"
+    },
+    "sampleData": {
+      "insight": "Quand vous dormez plus de 7 heures, votre taux de réussite des habitudes matinales augmente de 23%",
+      "moodInsight": "L'humeur a tendance à baisser au milieu de la semaine et à se rétablir le week-end",
+      "defaultTimeframe": "1 semaine",
+      "defaultScore": "7.2",
+      "defaultProgress": "3/5",
+      "defaultConfidence": "70%",
+      "recommendation": {
+        "title": "Optimiser l'horaire de sommeil",
+        "description": "Avancez l'heure du coucher de 30 minutes pour améliorer le taux de réussite des habitudes matinales",
+        "steps": {
+          "0": "Définissez une alarme téléphonique pour rappeler l'heure du coucher",
+          "1": "Créez une routine de relaxation du soir",
+          "2": "Suivez la qualité du sommeil pendant 1 semaine"
+        }
+      },
+      "exercise": {
+        "title": "Réflexion consciente sur les habitudes",
+        "description": "Réflexion guidée de 3 minutes sur vos modèles d'habitudes"
+      },
+      "moodExercise": {
+        "title": "Vérification de la conscience de l'humeur",
+        "description": "Développez la conscience de votre état d'humeur actuel et des déclencheurs"
+      },
+      "resilienceExercise": {
+        "title": "Reframing des défis",
+        "description": "Transformez les défis en opportunités de croissance"
+      },
+      "strategy": {
+        "title": "Constructeur de motivation matinale",
+        "category": "Optimisation du temps",
+        "description": "Commencez par les habitudes les plus simples pour construire l'élan de la journée"
+      },
+      "moodSchedule": {
+        "energetic": "😊 Énergique",
+        "calm": "😌 Calme",
+        "lowEnergy": "😔 Faible énergie",
+        "times": {
+          "energetic": "7h00 - Exercice de haute intensité",
+          "calm": "18h00 - Yoga ou étirements",
+          "lowEnergy": "À tout moment - 10 minutes de marche"
+        }
+      },
+      "adaptiveElements": {
+        "lowMood": "• Humeur basse : Intensité réduite de 50%",
+        "highMood": "• Humeur élevée : Ajoutez 10 minutes de récompense",
+        "neutralMood": "• Neutre : Suivez la procédure standard"
+      },
+      "moodStates": {
+        "lowMood": "Humeur basse",
+        "highMood": "Humeur élevée",
+        "neutralMood": "Neutre"
+      },
+      "exerciseInstructions": {
+        "moodAwareness": {
+          "takeBreaths": "Prenez trois respirations profondes",
+          "noticeMood": "Observez votre humeur actuelle sans jugement",
+          "identifyInfluence": "Identifiez ce qui pourrait avoir influencé cette humeur",
+          "rateIntensity": "Évaluez l'intensité de votre humeur de 1 à 10",
+          "setIntention": "Fixez une intention pour la prochaine heure"
+        },
+        "challengeReframing": {
+          "identifyChallenge": "Identifiez un défi actuel",
+          "writeThoughts": "Écrivez vos pensées initiales à ce sujet",
+          "askQuestion": "Demandez-vous : \"Que peut m'apprendre cela ?\"",
+          "listOutcomes": "Listez trois résultats positifs potentiels",
+          "createPlan": "Créez un plan d'action pour un résultat"
+        }
+      },
+      "expectedOutcomes": {
+        "moodAwareness": "Conscience accrue de l'humeur et régulation émotionnelle",
+        "challengeReframing": "Résilience améliorée et état d'esprit positif"
+      },
+      "timeSlots": {
+        "morning": "Matin",
+        "afternoon": "Après-midi",
+        "evening": "Soir",
+        "earlyAfternoon": "Début d'après-midi",
+        "lateEvening": "Fin de soirée"
+      },
+      "dayNames": {
+        "sunday": "Dimanche",
+        "monday": "Lundi",
+        "tuesday": "Mardi",
+        "wednesday": "Mercredi",
+        "thursday": "Jeudi",
+        "friday": "Vendredi",
+        "saturday": "Samedi"
+      },
+      "stressTriggers": {
+        "morningStress": "Stress matinal",
+        "afternoonOverwhelm": "Surcharge de l'après-midi",
+        "eveningFatigue": "Fatigue du soir"
+      }
+    }
+  },
+  "wellnessIntegration": "Intégration du bien-être",
+  "viewAllEntries": "Voir toutes les entrées",
+  "correlations": "Corrélations",
+  "positiveImpact": "Impact positif",
+  "negativePatterns": "Modèles négatifs",
+  "addSleep": "Ajouter le sommeil",
+  "addExercise": "Ajouter l'exercice",
+  "addNutrition": "Ajouter la nutrition",
+  "addMeditation": "Ajouter la méditation",
+  "addSocial": "Ajouter le social",
+  "wellnessForms": {
+    "sleep": {
+      "title": "Suiveur de sommeil",
+      "subtitle": "Enregistrez vos modèles de sommeil",
+      "date": "Date",
+      "sleepSchedule": "Horaire de sommeil",
+      "bedtime": "Heure du coucher",
+      "wakeTime": "Heure de réveil",
+      "hoursOfSleep": "Heures de sommeil",
+      "sleepQuality": "Comment était votre qualité de sommeil ?",
+      "sleepInterruptions": "Interruptions de sommeil",
+      "times": "fois",
+      "notes": "Notes (optionnel)",
+      "notesPlaceholder": "Comment avez-vous dormi ? Y a-t-il des facteurs qui ont affecté votre sommeil ?",
+      "cancel": "Annuler",
+      "save": "Sauvegarder les données de sommeil",
+      "saving": "Sauvegarde...",
+      "missingInfo": "Informations manquantes",
+      "missingInfoMessage": "Veuillez définir l'heure du coucher et de réveil pour continuer.",
+      "success": "Succès ! 🌙",
+      "successMessage": "Vos données de sommeil ont été sauvegardées avec succès.",
+      "error": "Erreur",
+      "errorMessage": "Échec de la sauvegarde des données de sommeil. Veuillez réessayer.",
+      "quality": {
+        "poor": "Mauvais",
+        "fair": "Moyen",
+        "good": "Bon",
+        "great": "Très bon",
+        "excellent": "Excellent"
+      }
+    },
+    "exercise": {
+      "title": "Suiveur d'exercice",
+      "subtitle": "Enregistrez vos séances d'entraînement",
+      "date": "Date",
+      "workoutDate": "Date d'entraînement",
+      "exerciseType": "Type d'exercice",
+      "duration": "Durée (minutes)",
+      "minutes": "minutes",
+      "intensityLevel": "Niveau d'intensité",
+      "caloriesBurned": "Calories brûlées",
+      "heartRate": "Fréquence cardiaque",
+      "average": "Moyenne",
+      "maximum": "Maximum",
+      "notes": "Notes (optionnel)",
+      "workoutNotes": "Notes d'entraînement (optionnel)",
+      "notesPlaceholder": "Comment vous êtes-vous senti pendant l'entraînement ? Avez-vous des notes ?",
+      "cancel": "Annuler",
+      "save": "Sauvegarder les données d'exercice",
+      "saving": "Sauvegarde...",
+      "missingInfo": "Informations manquantes",
+      "missingInfoMessage": "Veuillez remplir tous les champs obligatoires.",
+      "success": "Succès ! 💪",
+      "successMessage": "Vos données d'exercice ont été sauvegardées avec succès.",
+      "error": "Erreur",
+      "errorMessage": "Échec de la sauvegarde des données d'exercice. Veuillez réessayer.",
+      "types": {
+        "cardio": "Cardio",
+        "strength": "Musculation",
+        "yoga": "Yoga",
+        "walking": "Marche",
+        "sports": "Sports",
+        "other": "Autre"
+      },
+      "intensity": {
+        "low": "Faible intensité",
+        "lowDesc": "Rythme facile",
+        "moderate": "Intensité modérée",
+        "moderateDesc": "Effort confortable",
+        "high": "Haute intensité",
+        "highDesc": "Rythme difficile"
+      },
+      "additionalDetails": "Détails supplémentaires"
+    },
+    "nutrition": {
+      "title": "Suiveur de nutrition",
+      "subtitle": "Enregistrez vos repas et votre consommation d'eau",
+      "date": "Date",
+      "meals": "Repas",
+      "mealType": "Type de repas",
+      "time": "Heure",
+      "calories": "Calories",
+      "foods": "Aliments",
+      "foodPlaceholder": "Entrez les aliments (ex: salade de poulet grillé)",
+      "addAnotherFood": "Ajouter un autre aliment",
+      "moodImpact": "Comment ce repas vous fait-il sentir ?",
+      "waterIntake": "Consommation d'eau",
+      "waterSubtitle": "Restez hydraté toute la journée",
+      "ml": "ml",
+      "quickAdd": "Ajout rapide",
+      "customAmount": "Quantité personnalisée",
+      "remove": "Supprimer",
+      "reset": "Réinitialiser",
+      "dailyGoalProgress": "Progrès de l'objectif quotidien",
+      "dailyGoalAchieved": "🎉 Objectif quotidien atteint !",
+      "hydrationTips": "💡 Conseils d'hydratation",
+      "hydrationTipsText": "• Buvez un verre d'eau au réveil\n• Buvez de l'eau à chaque repas\n• Gardez une bouteille d'eau à portée de main au travail",
+      "addMeal": "Ajouter un repas",
+      "noMealsAdded": "Aucun repas ajouté",
+      "tapAddMeal": "Appuyez sur Ajouter un repas pour commencer",
+      "supplements": "Suppléments",
+      "add": "Ajouter",
+      "supplementPlaceholder": "Entrez le nom du supplément",
+      "notes": "Notes (optionnel)",
+      "notesPlaceholder": "Comment vous êtes-vous senti après avoir mangé ? Observations ?",
+      "cancel": "Annuler",
+      "save": "Sauvegarder les données nutritionnelles",
+      "saving": "Sauvegarde...",
+      "missingInfo": "Informations manquantes",
+      "missingInfoMessage": "Veuillez ajouter au moins un repas pour continuer.",
+      "success": "Succès ! 🎉",
+      "successMessage": "Vos données nutritionnelles ont été sauvegardées avec succès !",
+      "error": "Erreur",
+      "errorMessage": "Échec de la sauvegarde des données nutritionnelles. Veuillez réessayer.",
+      "mealTypes": {
+        "breakfast": "Petit-déjeuner",
+        "lunch": "Déjeuner",
+        "dinner": "Dîner",
+        "snack": "En-cas"
+      },
+      "moodImpacts": {
+        "positive": "Très bien",
+        "neutral": "Moyen",
+        "negative": "Pas bien"
+      },
+      "waterPresets": {
+        "glass": "Verre",
+        "bottle": "Bouteille",
+        "large": "Grand verre",
+        "liter": "Litre"
+      }
+    },
+    "meditation": {
+      "title": "Suivi de méditation",
+      "subtitle": "Enregistrez vos séances de méditation",
+      "date": "Date",
+      "sessionDate": "Date de la séance",
+      "meditationType": "Type de méditation",
+      "duration": "Durée (minutes)",
+      "minutes": "minutes",
+      "preMeditationMood": "Humeur avant la méditation",
+      "howWereYouFeeling": "Comment vous sentiez-vous ?",
+      "postMeditationMood": "Humeur après la méditation",
+      "howDoYouFeelNow": "Comment vous sentez-vous maintenant ?",
+      "describeMood": "Ou décrivez votre humeur...",
+      "intensity": "Intensité",
+      "sessionEffectiveness": "Efficacité de la séance",
+      "howEffectiveWasSession": "Quelle a été l'efficacité de cette séance ?",
+      "techniquesUsed": "Techniques utilisées",
+      "whatTechniquesDidYouPractice": "Quelles techniques avez-vous pratiquées ?",
+      "addCustomTechnique": "Ajouter une technique personnalisée...",
+      "sessionNotes": "Notes de séance",
+      "anyInsightsOrObservations": "Des idées ou observations ?",
+      "notesPlaceholder": "Décrivez votre expérience, vos idées ou tout défi...",
+      "notes": "Notes (optionnel)",
+      "cancel": "Annuler",
+      "save": "Sauvegarder les données de méditation",
+      "saving": "Sauvegarde...",
+      "missingInfo": "Informations manquantes",
+      "missingInfoMessage": "Veuillez remplir tous les champs obligatoires.",
+      "success": "Succès",
+      "successMessage": "La séance de méditation a été sauvegardée avec succès !",
+      "error": "Erreur",
+      "errorMessage": "Échec de la sauvegarde des données de méditation. Veuillez réessayer.",
+      "types": {
+        "mindfulness": "Pleine conscience",
+        "mindfulnessDesc": "Conscience du moment présent",
+        "breathing": "Respiration",
+        "breathingDesc": "Concentration sur la respiration",
+        "guided": "Guidée",
+        "guidedDesc": "Méditation guidée audio",
+        "movement": "Mouvement",
+        "movementDesc": "Marche ou yoga",
+        "other": "Autre",
+        "otherDesc": "Exercice personnalisé"
+      },
+      "techniques": {
+        "deepBreathing": "Respiration profonde",
+        "bodyScan": "Scan corporel",
+        "lovingKindness": "Bienveillance",
+        "visualization": "Visualisation",
+        "mantra": "Mantra"
+      },
+      "effectiveness": {
+        "poor": "Mauvais",
+        "fair": "Moyen",
+        "good": "Bon",
+        "veryGood": "Très bon",
+        "excellent": "Excellent"
+      }
+    },
+    "social": {
+      "title": "Suivi d'activité sociale",
+      "subtitle": "Enregistrez vos interactions sociales",
+      "date": "Date",
+      "when": "Quand",
+      "activityType": "Type d'activité",
+      "durationAndPeople": "Durée et nombre de personnes",
+      "duration": "Durée (minutes)",
+      "numberOfParticipants": "Nombre de participants",
+      "setting": "Lieu",
+      "preActivityMood": "Humeur avant l'activité",
+      "howWereYouFeelingBefore": "Comment vous sentiez-vous avant l'activité ?",
+      "quickSelect": "Sélection rapide",
+      "intensity": "Intensité",
+      "postActivityMood": "Humeur après l'activité",
+      "howDoYouFeelNow": "Comment vous sentez-vous maintenant ?",
+      "satisfactionLevel": "Niveau de satisfaction",
+      "energyLevelAfter": "Niveau d'énergie après l'activité",
+      "notes": "Notes (optionnel)",
+      "notesPlaceholder": "Notes supplémentaires sur cette activité sociale...",
+      "cancel": "Annuler",
+      "save": "Sauvegarder l'activité",
+      "saving": "Sauvegarde...",
+      "missingInfo": "Informations manquantes",
+      "missingInfoMessage": "Veuillez remplir tous les champs obligatoires.",
+      "success": "Succès",
+      "successMessage": "L'activité sociale a été enregistrée avec succès !",
+      "error": "Erreur",
+      "errorMessage": "Échec de la sauvegarde de l'activité sociale.",
+      "activityTypes": {
+        "familyTime": "Temps en famille",
+        "friends": "Sortie entre amis",
+        "dateNight": "Soirée en amoureux",
+        "party": "Fête",
+        "networking": "Réseautage",
+        "teamBuilding": "Cohésion d'équipe",
+        "community": "Activité communautaire",
+        "volunteer": "Bénévolat",
+        "groupHobby": "Loisir de groupe"
+      },
+      "settings": {
+        "home": "À la maison",
+        "restaurant": "Restaurant",
+        "park": "Parc",
+        "cafe": "Café",
+        "gym": "Salle de sport",
+        "office": "Bureau",
+        "outdoors": "En plein air",
+        "online": "En ligne"
+      },
+      "energyLevels": {
+        "drained": "Épuisé",
+        "tired": "Fatigué",
+        "neutral": "Neutre",
+        "energized": "Énergisé",
+        "pumped": "Survolté"
+      },
+      "satisfaction": {
+        "poor": "Mauvais",
+        "fair": "Moyen",
+        "good": "Bon",
+        "veryGood": "Très bon",
+        "excellent": "Excellent"
+      }
+    }
+  },
+  "stats": {
+    "title": "Analyses",
+    "subtitle": "Suivez votre progression et vos insights",
+    "analyticsTabs": {
+      "wholeAnalytics": "Analyses Complètes",
+      "mood": "Humeur",
+      "wellness": "Bien-être",
+      "aiCoachingSession": "Session de Coaching IA"
+    },
+    "aiCoaching": {
+      "loading": "Chargement du Coaching IA...",
+      "preparingSession": "Préparation de votre session de coaching personnalisée. Veuillez patienter pendant que nous analysons vos données.",
+      "title": "Session de Coaching IA",
+      "subtitle": "Obtenez des insights personnalisés et des recommandations"
+    },
+    "wellness": {
+      "trackYourWellness": "Suivez votre Bien-être",
+      "addWellnessActivity": "Ajouter une Activité de Bien-être",
+      "addWellnessSubtitle": "Ajoutez vos activités quotidiennes de bien-être pour améliorer vos insights",
+      "selectCategory": "Sélectionner une Catégorie de Bien-être",
+      "backToWellness": "Retour au Bien-être",
+      "categories": {
+        "sleep": {
+          "title": "Sommeil",
+          "desc": "Suivez vos heures de sommeil et qualité"
+        },
+        "exercise": {
+          "title": "Exercice",
+          "desc": "Enregistrez vos entraînements et pas"
+        },
+        "nutrition": {
+          "title": "Nutrition",
+          "desc": "Surveillez vos repas et hydratation"
+        },
+        "meditation": {
+          "title": "Méditation",
+          "desc": "Enregistrez les activités de pleine conscience"
+        },
+        "social": {
+          "title": "Social",
+          "desc": "Suivez les interactions sociales"
+        }
+      },
+      "recommendations": {
+        "title": "Recommandations",
+        "increaseMovement": "Augmenter le Mouvement Quotidien",
+        "increaseMovementDesc": "Essayez d'ajouter une marche de 10 minutes pour atteindre votre objectif de 5k pas",
+        "optimizeSleep": "Optimiser l'Horaire de Sommeil",
+        "optimizeSleepDesc": "Allez vous coucher 30 minutes plus tôt pour améliorer la qualité du sommeil",
+        "deepBreathing": "Exercice de Respiration Profonde",
+        "deepBreathingDesc": "Pratiquez des exercices de respiration de 5 minutes pour réduire le stress"
+      },
+      "metrics": {
+        "avgSleep": "Sommeil Moyen",
+        "dailySteps": "Pas Quotidiens",
+        "meditation": "Méditation",
+        "waterGlasses": "Verres d'Eau"
+      }
+    },
+    "export": {
+      "title": "Exporter les données",
+      "message": "Choisissez votre format d'export préféré :",
+      "json": "Exporter en JSON",
+      "csv": "Exporter en CSV",
+      "error": "Échec de l'exportation des données. Veuillez réessayer."
+    },
+    "share": {
+      "title": "Partager les progrès"
+    },
+    "activity": {
+      "title": "Journal d'activité",
+      "filter": "Filtrer",
+      "filterTitle": "Filtrer les activités",
+      "filterMessage": "Choisissez les activités à afficher :",
+      "all": "Toutes les activités",
+      "completed": "Seulement terminées",
+      "missed": "Seulement manquées"
+    },
+    "invite": {
+      "title": "Inviter des amis",
+      "message": "Rejoignez-moi pour créer de meilleures habitudes ! Téléchargez l'application et suivons nos progrès ensemble.",
+      "error": "Échec de l'invitation des amis. Veuillez réessayer."
+    },
+    "filters": {
+      "today": "Aujourd'hui",
+      "week": "Cette semaine",
+      "month": "Ce mois-ci"
+    },
+    "thisWeek": "cette semaine",
+    "analytics": {
+      "title": "Tableau de Bord Analytique"
+    },
+    "tabs": {
+      "overview": "Aperçu",
+      "overviewDesc": "Statistiques et insights rapides",
+      "mood": "Humeur",
+      "moodDesc": "Insights émotionnels",
+      "wellness": "Bien-être",
+      "wellnessDesc": "Suivi de santé",
+      "advanced": "Avancé",
+      "advancedDesc": "Analyses alimentées par l'IA"
+    },
+    "quickStats": {
+      "today": "Aujourd'hui",
+      "allTime": "Total",
+      "thirtyDayRate": "Taux sur 30 jours"
+    },
+    "topHabit": {
+      "title": "Habitude la plus performante",
+      "noHabits": "Aucune habitude pour l'instant",
+      "dayStreak": "{{count}} jours d'affilée",
+      "keepItUp": "Continuez comme ça !"
+    },
+    "summary": {
+      "title": "Résumé",
+      "totalHabits": "Nombre total d'habitudes",
+      "currentStreak": "Série en cours",
+      "longestStreak": "Série la plus longue",
+      "completionRate": "Taux de réussite"
+    },
+    "charts": {
+      "title": "Graphiques de performance",
+      "subtitle": "Aperçus visuels de vos progrès"
+    },
+    "metrics": {
+      "currentStreak": "Série en cours",
+      "successRate": "Taux de réussite",
+      "today": "Aujourd'hui"
+    },
+    "leaderboard": {
+      "title": "Classement des habitudes",
+      "completion": "Terminé",
+      "noHabitsDisplay": "Aucune habitude à afficher"
+    },
+    "heatmap": {
+      "weeklyTitle": "Activité hebdomadaire",
+      "less": "Moins",
+      "more": "Plus"
+    },
+    "habitHeatmap": {
+      "title": "Carte thermique des habitudes",
+      "subtitle": "Visualisez votre constance sur l'année",
+      "thisYear": "Cette année",
+      "longestStreak": "Série la plus longue",
+      "currentStreak": "Série en cours"
+    },
+    "habits": {
+      "title": "Habitudes personnelles",
+      "export": "Exporter"
+    },
+    "social": {
+      "title": "Fonctionnalités sociales",
+      "share": "Partager les progrès",
+      "invite": "Inviter des amis"
+    },
+    "mood": {
+      "title": "Suivi de l'Humeur",
+      "subtitle": "Suivez vos modèles émotionnels et insights",
+      "upgradeMessage": "Passez à Pro pour débloquer les analyses avancées de l'humeur et les insights"
+    },
+    "advanced": {
+      "title": "Analytics Avancé",
+      "subtitle": "Insights et prédictions alimentées par l'IA"
+    },
+    "loading": "Chargement des données d'analytics..."
+  },
+  "activity": {
+    "title": "Activité",
+    "noActivity": "Aucune activité pour l'instant",
+    "completeHabits": "Terminez quelques habitudes pour voir vos activités ici"
+  },
+  "habitStats": {
+    "addHabitsStatistics": "Ajoutez quelques habitudes pour voir les statistiques",
+    "dayStreak": "Jours consécutifs",
+    "completionRate": "Taux de réussite"
+  },
+  "miniProgressCharts": {
+    "title": "Graphiques de progression",
+    "weeklyOverview": "7 jours d'aperçu",
+    "last7DaysCompletionRate": "Taux de réussite sur les 7 derniers jours",
+    "dayStreak": "Jours consécutifs"
+  },
+  "habitHeatmap": {
+    "months": {
+      "january": "Janvier",
+      "february": "Février",
+      "march": "Mars",
+      "april": "Avril",
+      "may": "Mai",
+      "june": "Juin",
+      "july": "Juillet",
+      "august": "Août",
+      "september": "Septembre",
+      "october": "Octobre",
+      "november": "Novembre",
+      "december": "Décembre"
+    },
+    "weekdays": {
+      "sun": "Dimanche",
+      "mon": "Lundi",
+      "tue": "Mardi",
+      "wed": "Mercredi",
+      "thu": "Jeudi",
+      "fri": "Vendredi",
+      "sat": "Samedi"
+    }
+  },
+  "weeklyActivity": {
+    "days": {
+      "mon": "Lundi",
+      "tue": "Mardi",
+      "wed": "Mercredi",
+      "thu": "Jeudi",
+      "fri": "Vendredi",
+      "sat": "Samedi",
+      "sun": "Dimanche"
+    }
+  },
+  "patternInsights": {
+    "weeklyPatterns": "🔄 Modèles hebdomadaires",
+    "dailyRhythms": "⏰ Rythmes quotidiens",
+    "triggerPatterns": "🎯 Modèles de déclencheurs",
+    "habitSuccessPatterns": "📈 Modèles de réussite des habitudes",
+    "moodCycles": "🌊 Cycles d'humeur",
+    "environmentalCorrelations": "🌍 Corrélations environnementales",
+    "avgMood": "Humeur moyenne",
+    "improving": "Amélioration",
+    "declining": "Déclin",
+    "stable": "Stable",
+    "weekdays": {
+      "sunday": "Dimanche",
+      "monday": "Lundi",
+      "tuesday": "Mardi",
+      "wednesday": "Mercredi",
+      "thursday": "Jeudi",
+      "friday": "Vendredi",
+      "saturday": "Samedi"
+    }
+  },
+  "shareProgress": {
+    "title": "Partager vos progrès",
+    "subtitle": "Choisissez un modèle et partagez votre parcours d'habitudes !",
+    "templates": {
+      "default": {
+        "name": "Par défaut",
+        "description": "Résumé de progression simple et clair"
+      },
+      "minimalist": {
+        "name": "Minimaliste",
+        "description": "Informations simples et ciblées"
+      },
+      "achievement": {
+        "name": "Réussite",
+        "description": "Mettez en avant vos réalisations"
+      },
+      "motivational": {
+        "name": "Motivation",
+        "description": "Un ton inspirant"
+      },
+      "statsHeavy": {
+        "name": "Statistiques détaillées",
+        "description": "Indicateurs de progression détaillés"
+      },
+      "milestone": {
+        "name": "Étape importante",
+        "description": "Célébrez les grandes réalisations"
+      },
+      "weeklySummary": {
+        "name": "Résumé hebdomadaire",
+        "description": "Rapport de progression axé sur la semaine"
+      }
+    }
+  },
+  "gamification": {
+    "title": "Gamefication",
+    "subtitle": "Améliorez votre parcours d'habitudes",
+    "tabs": {
+      "overview": "Aperçu",
+      "achievements": "Réalisations",
+      "mood": "Humeur",
+      "milestones": "Étapes importantes"
+    },
+    "perks": {
+      "dailyHabitTracking": "Suivi quotidien des habitudes",
+      "advancedStatistics": "Statistiques avancées",
+      "customThemes": "Thèmes personnalisés",
+      "aiHabitSuggestions": "Suggestions d'habitudes IA",
+      "premiumFeatures": "Fonctionnalités premium"
+    },
+    "levelProgress": {
+      "level": "Niveau",
+      "xp": "Points d'expérience",
+      "xpToday": "Points d'expérience aujourd'hui",
+      "levelPerks": "Avantages de niveau :"
+    },
+    "achievements": {
+      "title": "Réalisations",
+      "xp": "Points d'expérience",
+      "rarity": {
+        "common": "Commun",
+        "rare": "Rare",
+        "epic": "Épique",
+        "legendary": "Légendaire"
+      },
+      "firstSteps": {
+        "title": "🌱 Première étape",
+        "description": "Accomplissez votre première habitude"
+      },
+      "weekWarrior": {
+        "title": "⚡ Guerrier de la semaine",
+        "description": "Maintenez 7 jours de suite"
+      },
+      "monthMaster": {
+        "title": "🏆 Maître du mois",
+        "description": "Maintenez 30 jours de suite"
+      },
+      "centuryClub": {
+        "title": "💎 Club du siècle",
+        "description": "Maintenez 100 jours de suite"
+      },
+      "moodTracker": {
+        "title": "😊 Suiveur d'humeur",
+        "description": "Suivez votre humeur 7 jours sur 7"
+      },
+      "habitCollector": {
+        "title": "📚 Collecteur d'habitudes",
+        "description": "Créez 10 habitudes différentes"
+      },
+      "perfectWeek": {
+        "title": "⭐ Semaine parfaite",
+        "description": "Accomplissez toutes vos habitudes en 7 jours"
+      },
+      "moodWarrior": {
+        "title": "🛡️ Guerrier d'humeur",
+        "description": "Suivez votre humeur 30 jours sur 30"
+      },
+      "patternFinder": {
+        "title": "🔍 Découvreur de modèles",
+        "description": "Découvrez 5 habitudes associées à votre humeur"
+      },
+      "resilienceBuilder": {
+        "title": "💪 Constructeur de résilience",
+        "description": "Accomplissez 20 habitudes en état de basse humeur"
+      },
+      "moodBooster": {
+        "title": "🌈 Améliorateur d'humeur",
+        "description": "Améliorez votre humeur 15 fois grâce à vos habitudes"
+      },
+      "emotionalIntelligence": {
+        "title": "🧠 Intelligence émotionnelle",
+        "description": "Maintenez vos habitudes dans tous les états d'humeur"
+      },
+      "adaptiveChampion": {
+        "title": "🎯 Champion adapté",
+        "description": "Accomplissez 10 défis adaptés à votre humeur"
+      },
+      "resilienceMaster": {
+        "title": "🏔️ Maître de la résilience",
+        "description": "Accomplissez 5 défis de résilience émotionnelle"
+      },
+      "moodStreakLegend": {
+        "title": "🔥 Légende continue d'humeur",
+        "description": "Accomplissez 14 jours de progression continue d'humeur"
+      },
+      "difficultMoodMaster": {
+        "title": "⚔️ Maître d'humeur difficile",
+        "description": "Accomplissez 30 habitudes en état de haute humeur"
+      },
+      "balanceKeeper": {
+        "title": "⚖️ Gardien de l'équilibre",
+        "description": "Maintenez 21 jours de habitudes équilibrées"
+      }
+    },
+    "moodCheckIn": {
+      "title": "Vérification quotidienne de l'humeur",
+      "todaysMood": "Humeur d'aujourd'hui",
+      "xpReward": "+5 points d'expérience",
+      "question": "Comment vous sentez-vous aujourd'hui ?",
+      "tagsTitle": "Comment le décrireriez-vous ?",
+      "noteTitle": "Ajoutez un commentaire (facultatif)",
+      "notePlaceholder": "Vous pensez à quoi ?",
+      "recordMood": "Enregistrer l'humeur",
+      "recording": "Enregistrement...",
+      "quickMoodSelector": {
+        "title": "Vérification rapide de l'humeur",
+        "subtitle": "Comment vous sentez-vous maintenant ?",
+        "fullSelectorTitle": "Comment vous sentez-vous ?",
+        "fullSelectorSubtitle": "Sélectionnez votre humeur actuelle",
+        "moreOptionsButton": "Plus d'options et de détails",
+        "intensityLabel": "Intensité",
+        "intensityLow": "Faible",
+        "intensityHigh": "Élevée",
+        "influencingMoodTitle": "Qu'affecte votre humeur ?",
+        "backToQuickSelect": "← Retour à la sélection rapide",
+        "notePlaceholder": "Vous pensez à quoi ? Vous pensez à quoi ?",
+        "attachmentsTitle": "Ajouter des pièces jointes",
+        "photoButton": "Photo",
+        "voiceButton": "Voix",
+        "recordingButton": "Enregistrement...",
+        "imageButton": "Image",
+        "fileButton": "Fichier"
+      },
+      "moodLabels": {
+        "veryBad": "Très mauvais",
+        "bad": "Mauvais",
+        "okay": "Moyen",
+        "good": "Bien",
+        "excellent": "Excellent"
+      },
+      "moodTags": {
+        "stressed": "Stressé",
+        "tired": "Fatigué",
+        "overwhelmed": "Trop chargé",
+        "anxious": "Anxieux",
+        "frustrated": "Frustré",
+        "low": "Bas",
+        "neutral": "Neutre",
+        "calm": "Calme",
+        "stable": "Stable",
+        "happy": "Heureux",
+        "motivated": "Motivé",
+        "positive": "Positif",
+        "energetic": "Énergique",
+        "excited": "Excédé",
+        "amazing": "Génial"
+      },
+      "alerts": {
+        "selectMood": "Veuillez sélectionner une humeur",
+        "chooseFeelings": "Choisissez vos sentiments d'aujourd'hui",
+        "moodRecorded": "Humeur enregistrée ! 🎉",
+        "thanksMessage": "Merci pour votre vérification. Vous avez obtenu 5 points d'expérience !",
+        "alreadyRecorded": "Déjà enregistré",
+        "alreadyRecordedMessage": "Vous avez déjà enregistré votre humeur aujourd'hui. Revenez demain !",
+        "error": "Erreur",
+        "failedRecord": "Échec de l'enregistrement de l'humeur. Veuillez réessayer."
+      }
+    },
+    "streakMilestones": {
+      "title": "Étapes de réalisation",
+      "recentTitle": "Étapes de réalisation les plus récentes",
+      "dayStreak": "{days} jours de suite !",
+      "unknownHabit": "Habitude inconnue",
+      "noMilestones": "Pas encore d'étapes importantes",
+      "keepBuilding": "Continuez à construire des séries de réalisation pour déverrouiller des étapes importantes !"
+    },
+    "inviteFriends": {
+      "title": "Inviter des amis",
+      "subtitle": "Partagez votre parcours et obtenez des points d'expérience ! Les amis qui utilisent mon code d'invitation obtiendront également des points d'expérience. ",
+      "xpPerInvite": "+10 points d'expérience / invitation",
+      "yourLevel": "Votre niveau",
+      "totalXP": "Total des points d'expérience",
+      "friendsInvited": "Amis invités",
+      "referralCode": "Votre code d'invitation",
+      "codeHint": "Partagez ce code pour obtenir des points d'expérience !",
+      "chooseHowToInvite": "Choisissez comment vous souhaitez être invité",
+      "shareAnywhere": "Partager partout",
+      "shareViaAnyApp": "Partager via n'importe quelle application",
+      "whatsapp": "WhatsApp",
+      "shareWithContacts": "Partager avec des contacts",
+      "email": "Email",
+      "sendViaEmail": "Envoyer par email",
+      "referralRewards": "Récompenses de parrainage",
+      "referralRewardsText": "Vous et vos amis obtiendrez 50 points d'expérience chacun lorsqu'ils accompliront leur première habitude !",
+      "inviteSent": "Invitation envoyée ! 🎉",
+      "earnedXP": "Vous avez obtenu 10 points d'expérience grâce à l'invitation d'un ami !",
+      "error": "Erreur",
+      "failedToSend": "Échec de l'envoi de l'invitation. Veuillez réessayer.",
+      "copied": "Copié !",
+      "codeCopied": "Code d'invitation copié dans le presse-papiers",
+      "failedToCopy": "Échec de la copie du code d'invitation",
+      "joinMe": "Rejoignez-moi pour construire de meilleures habitudes !",
+      "inviteMessage": "Je partage ce très bon suivi d'habitudes que j'utilise depuis longtemps, et je suis maintenant niveau {level} ! 🚀\n\n✨ Suivi quotidien des habitudes\n🏆 Réalisations\n📊 Voir votre progression\n🎮 Expérience de jeu\n\nUtilisez mon code d'invitation : {code}\nNous obtiendrons tous des points d'expérience ! 💪\n\nTéléchargez-le ici : {url}",
+      "joinMeTitle": "Rejoignez-moi pour construire de meilleures habitudes !"
+    },
+    "levelTitles": {
+      "habitBeginner": "Débutant en habitudes",
+      "routineBuilder": "Constructeur de routine",
+      "consistencySeeker": "Chasseur de cohérence",
+      "habitEnthusiast": "Adepte des habitudes",
+      "routineMaster": "Maître de routine",
+      "habitChampion": "Champion des habitudes",
+      "lifestyleArchitect": "Architecte de style de vie",
+      "habitLegend": "Légende des habitudes"
+    },
+    "messages": {
+      "levelUp": "🎉 Niveau supérieur ! Vous êtes maintenant niveau {level} !",
+      "achievementUnlocked": "🏆 Réalisation déverrouillée : {title} !"
+    }
+  },
+  "settings": {
+    "title": "Paramètres",
+    "subtitle": "Personnalisez votre expérience",
+    "user": {
+      "guest": "Utilisateur invité",
+      "status": "Actif"
+    },
+    "userProfile": {
+      "guestUser": "Utilisateur invité",
+      "welcomeBack": "Bienvenue de retour !"
+    },
+    "sections": {
+      "quickActions": "Actions rapides",
+      "appExperience": "Expérience d'application",
+      "professionalTools": "Outils professionnels",
+      "accountSecurity": "Compte et sécurité",
+      "dataSupport": "Données et support",
+      "account": "Compte",
+      "preferences": "Préférences de l'application",
+      "professional": "Fonctionnalités professionnelles",
+      "privacy": "Confidentialité et données",
+      "support": "Support",
+      "danger": "Zone de danger"
+    },
+    "quickActions": {
+      "themes": "Thèmes",
+      "language": "Langue",
+      "profile": "Profil",
+      "notifications": "Notifications"
+    },
+    "premium": {
+      "upgradeToPro": "Passer à la version professionnelle",
+      "unlockFeatures": "Déverrouiller toutes les fonctionnalités et analyses avancées",
+      "unlockDescription": "Débloquer des habitudes illimitées, des analyses avancées et plus",
+      "proPlanActive": "Plan Pro Actif",
+      "proPlanDescription": "Vous avez accès à toutes les fonctionnalités premium",
+      "pro": "Pro"
+    },
+    "preferences": {
+      "theme": "Thème",
+      "language": "Langue",
+      "animations": "Effets d'animation",
+      "wellnessTracking": "Suivi de la santé",
+      "timezone": "Fuseau Horaire"
+    },
+    "timezone": {
+      "title": "Paramètres de Fuseau Horaire",
+      "currentTimezone": "Fuseau Horaire Actuel",
+      "selectTimezone": "Sélectionner le Fuseau Horaire",
+      "currentTime": "Heure Actuelle",
+      "autoDetected": "Détecté automatiquement",
+      "loading": "Chargement des fuseaux horaires...",
+      "error": "Erreur lors du chargement des fuseaux horaires",
+      "success": "Fuseau horaire mis à jour avec succès",
+      "regions": {
+        "americas": "Amériques",
+        "europe": "Europe",
+        "asia": "Asie",
+        "africa": "Afrique",
+        "oceania": "Océanie"
+      }
+    },
+    "experience": {
+      "animations": "Effets d'animation",
+      "wellnessTracking": "Suivi de la santé",
+      "professionalSharing": "Partage professionnel"
+    },
+    "professional": {
+      "professionalDashboard": "Tableau de bord professionnel",
+      "sharing": "Partage professionnel",
+      "dashboard": "Tableau de bord professionnel",
+      "performance": "Tableau de bord de performance",
+      "recommendations": "Recommandations de performance"
+    },
+    "account": {
+      "changePassword": "Changer le mot de passe",
+      "linkedAccounts": "Comptes associés",
+      "privacySettings": "Paramètres de confidentialité",
+      "profile": "Profil",
+      "notifications": "Notifications"
+    },
+    "privacy": {
+      "privacySettings": "Paramètres de confidentialité",
+      "dataExport": "Exporter les données"
+    },
+    "data": {
+      "exportData": "Exporter les données",
+      "appVersion": "Version de l'application",
+      "deleteAccount": "Supprimer le compte"
+    },
+    "actions": {
+      "signOut": "Se déconnecter"
+    },
+    "modals": {
+      "close": "Fermer"
+    },
+    "export": {
+      "exporting": "Exportation en cours...",
+      "exportingMessage": "Veuillez patienter, nous préparons vos données.",
+      "exportComplete": "Exportation terminée ! 🎉",
+      "exportCompleteMessage": "Vos données ont été exportées avec succès !\n\n📈 {totalDays} jours de données\n🎯 {totalHabits} habitudes suivies\n😊 {totalMoodEntries} enregistrements d'humeur\n\nLes fichiers sont organisés, avec des chapitres clairs et des résumés, faciles à lire.",
+      "exportFailed": "Échec de l'exportation",
+      "exportFailedMessage": "Erreur lors de l'exportation des données. Veuillez réessayer.",
+      "professionalSharingDisabled": "Partage professionnel désactivé",
+      "professionalSharingDisabledMessage": "Le partage de données professionnel est désactivé. Vos données resteront confidentielles.",
+      "professionalSharingDisabledAccess": "Veuillez d'abord activer le partage professionnel pour accéder au tableau de bord.",
+      "enableNow": "Activer maintenant",
+      "error": "Erreur",
+      "failedToUpdateSetting": "Échec de la mise à jour des paramètres de partage professionnel",
+      "appName": "Productivity Habit Tracker",
+      "dialogTitle": "Exporter les Données",
+      "notes": {
+        "dataPrivacy": "Cette exportation contient vos données personnelles d'habitudes et d'humeur. Veuillez les garder en sécurité.",
+        "dataFormat": "Toutes les dates sont au format ISO (YYYY-MM-DD). Les heures sont au format 24 heures.",
+        "moodScale": "L'intensité de l'humeur est évaluée sur une échelle de 1 à 10, où 1 est très bas et 10 est très élevé.",
+        "completionRate": "Les taux de réussite sont calculés depuis la date de création de l'habitude jusqu'à aujourd'hui.",
+        "support": "Si vous avez des questions sur ces données, veuillez contacter notre équipe de support."
+      }
+    },
+    "support": {
+      "termsOfService": "Conditions d'utilisation",
+      "privacyPolicy": "Politique de confidentialité",
+      "errorHandling": "Exemples de gestion d'erreurs"
+    },
+    "danger": {
+      "deleteAccount": "Supprimer le compte",
+      "signOut": "Se déconnecter"
+    },
+    "alerts": {
+      "deleteAccount": {
+        "title": "Supprimer le compte",
+        "message": "Êtes-vous sûr de vouloir supprimer votre compte ? Cette action est irréversible.",
+        "cancel": "Annuler",
+        "confirm": "Supprimer"
+      },
+      "logout": {
+        "title": "Se déconnecter",
+        "message": "Êtes-vous sûr de vouloir vous déconnecter ?",
+        "cancel": "Annuler",
+        "confirm": "Se déconnecter"
+      }
+    }
+  },
+  "profile": {
+    "title": "Profil",
+    "success": "Succès",
+    "profileUpdated": "Profil mis à jour avec succès !",
+    "error": "Erreur",
+    "failedToUpdate": "Échec de la mise à jour du profil. Veuillez réessayer.",
+    "permissionRequired": "Autorisation requise",
+    "photoLibraryAccess": "Veuillez autoriser l'accès à votre bibliothèque photo pour télécharger une image de profil.",
+    "coverImageAccess": "Veuillez autoriser l'accès à votre bibliothèque photo pour télécharger une image de couverture.",
+    "uploadFailed": "Échec du téléchargement",
+    "avatarUploadFailed": "Échec du téléchargement de l'image de profil. Veuillez réessayer.",
+    "coverUploadFailed": "Échec du téléchargement de l'image de couverture. Veuillez réessayer.",
+    "pleaseLogin": "Veuillez vous connecter pour voir votre profil.",
+    "addCoverPhoto": "Ajouter une photo de couverture",
+    "personalInfo": "Informations personnelles",
+    "basicProfileInfo": "🧑‍💼 Informations de base",
+    "name": "Nom",
+    "enterName": "Entrez votre nom",
+    "email": "Email",
+    "emailAddress": "Adresse email",
+    "location": "Localisation",
+    "enterLocation": "Entrez votre localisation",
+    "bio": "Biographie",
+    "bioDescription": "Biographie / Présentation",
+    "tellAboutYourself": "Parlez-nous de vous...",
+    "noBioAdded": "Biographie non ajoutée",
+    "readOnly": "Lecture seule",
+    "cancel": "Annuler",
+    "save": "Sauvegarder",
+    "saveChanges": "Sauvegarder les modifications",
+    "charactersRemaining": "Caractères restants"
+  },
+  "themeSelector": {
+    "title": "Sélectionner un thème",
+    "done": "Terminé",
+    "availableThemes": "Thèmes disponibles",
+    "darkTheme": "Thème sombre",
+    "lightTheme": "Thème clair",
+    "premium": "Version premium",
+    "premiumTheme": "Thème premium",
+    "premiumMessage": "C'est un thème premium. Upgradez pour déverrouiller tous les thèmes et fonctionnalités exclusives !",
+    "maybeLater": "Peut-être plus tard",
+    "upgradeNow": "Mettre à niveau maintenant",
+    "comingSoon": "Prochainement",
+    "premiumFeatures": "Fonctionnalités premium prochainement !",
+    "unlockPremium": "Déverrouiller le thème premium et plus de fonctionnalités !",
+    "upgrade": "Mettre à niveau",
+    "error": "Erreur",
+    "failedToChange": "Échec de la modification du thème. Veuillez réessayer."
+  },
+  "languageSelector": {
+    "title": "Sélectionner une langue",
+    "selectLanguage": "Sélectionner une langue",
+    "done": "Terminé",
+    "availableLanguages": "Langues disponibles",
+    "currentLanguage": "Langue actuelle",
+    "languageChanged": "Langue modifiée",
+    "languageChangeFailed": "Échec de la modification de la langue"
+  },
+  "notificationPreferences": {
+    "title": "Préférences de notification",
+    "pushNotifications": "Notifications push",
+    "emailNotifications": "Notifications par email",
+    "inAppNotifications": "Notifications dans l'application",
+    "habitReminders": "Rappels d'habitude",
+    "habitRemindersDesc": "Recevez des rappels lorsque vous devez accomplir une habitude",
+    "streakAchievements": "Réalisations de série",
+    "streakAchievementsDesc": "Fêtez de nouvelles réalisations de série",
+    "weeklyProgress": "Progression hebdomadaire",
+    "weeklyProgressDesc": "Résumé hebdomadaire de la progression des habitudes",
+    "dailySummary": "Résumé quotidien",
+    "dailySummaryDesc": "Rétrospective quotidienne des habitudes accomplies et manquées",
+    "monthlyReports": "Rapports mensuels",
+    "monthlyReportsDesc": "Rapport mensuel détaillé de la progression des habitudes",
+    "tipsMotivation": "Conseils et motivation",
+    "tipsMotivationDesc": "Conseils utiles et contenu motivant",
+    "notificationSettings": "Paramètres de notification",
+    "notificationInfo": "Vous pouvez personnaliser le moment et la manière dont vous recevez des notifications. Les notifications push nécessitent des autorisations dans les paramètres de l'appareil.",
+    "error": "Erreur",
+    "failedToUpdate": "Échec de la mise à jour des préférences de notification"
+  },
+  "changePassword": {
+    "title": "Changer le mot de passe",
+    "currentPassword": "Mot de passe actuel",
+    "newPassword": "Nouveau mot de passe",
+    "confirmPassword": "Confirmer le nouveau mot de passe",
+    "currentPasswordPlaceholder": "Entrez le mot de passe actuel",
+    "newPasswordPlaceholder": "Entrez le nouveau mot de passe",
+    "confirmPasswordPlaceholder": "Confirmer le nouveau mot de passe",
+    "passwordHint": "Le mot de passe doit comporter au moins 8 caractères",
+    "changePasswordButton": "Changer le mot de passe",
+    "changingPassword": "Modification du mot de passe en cours...",
+    "alerts": {
+      "fillAllFields": "Veuillez remplir tous les champs",
+      "passwordsDoNotMatch": "Les mots de passe ne correspondent pas",
+      "passwordTooShort": "Le mot de passe doit comporter au moins 8 caractères",
+      "success": "Succès",
+      "successMessage": "Votre mot de passe a été modifié avec succès",
+      "error": "Erreur",
+      "failedToChange": "Échec de la modification du mot de passe. Veuillez réessayer."
+    }
+  },
+  "privacySettings": {
+    "title": "Paramètres de confidentialité",
+    "categories": {
+      "visibility": "Visibilité des informations personnelles",
+      "data": "Collecte de données",
+      "sharing": "Partage et social"
+    },
+    "settings": {
+      "publicProfile": {
+        "title": "Profil public",
+        "description": "Autoriser les autres à voir vos informations personnelles et réalisations"
+      },
+      "showStreakCount": {
+        "title": "Afficher la série de réalisation",
+        "description": "Afficher la série de réalisation actuelle sur votre profil"
+      },
+      "showHabitList": {
+        "title": "Afficher la liste des habitudes",
+        "description": "Autoriser les autres à voir les habitudes que vous suivez"
+      },
+      "analyticsCollection": {
+        "title": "Collecte de données d'analyse",
+        "description": "Aide à améliorer l'application en partageant des données anonymes"
+      },
+      "crashReports": {
+        "title": "Rapports de crash",
+        "description": "Envoi automatique de rapports de crash pour aider à réparer les erreurs"
+      },
+      "performanceData": {
+        "title": "Données de performance",
+        "description": "Partage des données de performance d'application pour améliorer l'expérience utilisateur"
+      },
+      "socialSharing": {
+        "title": "Partage social",
+        "description": "Autoriser le partage de réalisations sur les réseaux sociaux"
+      },
+      "friendRecommendations": {
+        "title": "Recommandations d'amis",
+        "description": "Basées sur les suggestions de vos contacts"
+      }
+    },
+    "privacyInfo": {
+      "title": "Informations de confidentialité",
+      "description": "Découvrez comment nous protégeons votre vie privée et la sécurité de vos données.",
+      "viewPrivacyPolicy": "Consulter la politique de confidentialité",
+      "viewTermsOfService": "Consulter les conditions d'utilisation"
+    },
+    "alerts": {
+      "error": "Erreur",
+      "failedToUpdate": "Échec de la mise à jour des paramètres de confidentialité"
+    }
+  },
+  "deleteAccount": {
+    "title": "Supprimer le compte",
+    "warning": {
+      "title": "Supprimer le compte",
+      "subtitle": "Cette action supprimera définitivement votre compte et toutes les données associées.",
+      "whatWillBeDeleted": "Ce qui sera supprimé :",
+      "consequences": {
+        "habits": "• Toutes vos habitudes et données de suivi",
+        "profile": "• Vos informations personnelles et paramètres",
+        "streaks": "• Toutes les séries de réalisation et réalisations",
+        "premium": "• Toutes les avantages de l'abonnement premium",
+        "appData": "• Toutes les données d'application et les paramètres de préférence"
+      },
+      "alternatives": {
+        "title": "Considérez ces alternatives :",
+        "exportData": {
+          "title": "Exporter vos données",
+          "description": "Télécharger une copie de vos données avant suppression"
+        },
+        "temporaryDisable": {
+          "title": "Désactiver temporairement",
+          "description": "Prendre une pause sans perdre vos données"
+        }
+      },
+      "continueButton": "Continuer la suppression"
+    },
+    "confirmation": {
+      "title": "Dernière étape",
+      "subtitle": "Pour confirmer la suppression du compte, veuillez entrer \"DELETE\" dans le champ ci-dessous :",
+      "inputLabel": "Entrez \"DELETE\" pour confirmer :",
+      "placeholder": "DELETE",
+      "backButton": "Retour",
+      "deleteButton": "Supprimer le compte",
+      "deleting": "Suppression en cours..."
+    },
+    "alerts": {
+      "confirmationError": {
+        "title": "Erreur",
+        "message": "Veuillez entrer \"DELETE\" pour confirmer la suppression du compte"
+      },
+      "finalConfirmation": {
+        "title": "Confirmation finale",
+        "message": "Êtes-vous sûr de vouloir supprimer votre compte ? Cette action est irréversible.",
+        "cancel": "Annuler",
+        "confirm": "Supprimer le compte"
+      },
+      "success": {
+        "title": "Compte supprimé",
+        "message": "Votre compte a été supprimé avec succès.",
+        "ok": "OK"
+      },
+      "error": {
+        "title": "Erreur",
+        "message": "Échec de la suppression du compte. Veuillez réessayer."
+      }
+    }
+  },
+  "linkedAccounts": {
+    "title": "Linked Accounts",
+    "description": "Gérez vos connexions aux comptes externes pour vous connecter et synchroniser les données plus facilement.",
+    "comingSoon": "Coming Soon",
+    "comingSoonMessage": "La fonctionnalité de connexion aux comptes est en cours de développement, prochainement disponible !",
+    "connectedOn": "Connecté le",
+    "aboutTitle": "About Linked Accounts",
+    "aboutText": "La connexion aux comptes vous permet d'utiliser des services externes (comme Google, Apple, Facebook) pour vous connecter et de choisir de synchroniser certaines données. Vous pouvez toujours déconnecter ces connexions.",
+    "alerts": {
+      "success": "Succès",
+      "successConnected": "Connecté avec succès",
+      "successDisconnected": "Déconnecté avec succès",
+      "error": "Erreur",
+      "failedToUpdate": "Échec de la mise à jour de la connexion aux comptes"
+    }
+  },
+  "privacyPolicy": {
+    "title": "Politique de confidentialité",
+    "lastUpdated": "Dernière mise à jour :",
+    "sections": {
+      "introduction": {
+        "title": "1. Introduction",
+        "content": "Bienvenue sur le suivi des habitudes de productivité (nous, nos, ou nous) ! Nous nous engageons à protéger votre vie privée et à assurer la sécurité de vos informations personnelles. Cette politique de confidentialité explique comment nous collectons, utilisons, divulguons et protégeons vos informations lorsque vous utilisez notre application mobile."
+      },
+      "informationCollection": {
+        "title": "2. Les informations que nous collectons",
+        "personalInfo": {
+          "title": "2.1 Informations personnelles",
+          "content": "• Informations de compte (adresse électronique, nom d'utilisateur, image de profil)\n• Données de suivi d'habitude et de progression\n• Données de santé et d'humeur\n• Préférences et paramètres de l'utilisateur\n• Informations sur les appareils et l'analyse d'utilisation"
+        },
+        "automaticInfo": {
+          "title": "2.2 Informations collectées automatiquement",
+          "content": "• Type d'appareil, système d'exploitation et version\n• Données de mode d'utilisation et de performance\n• Rapports de crash et journaux d'erreurs\n• Adresses IP et données de position générale"
+        }
+      },
+      "informationUse": {
+        "title": "3. Comment nous utilisons vos informations",
+        "content": "Nous utilisons vos informations pour : \n• Fournir et maintenir nos services\n• Personnaliser votre expérience\n• Suivre votre progression et fournir des insights\n• Envoyer des notifications et des rappels\n• Améliorer notre application et développer de nouvelles fonctionnalités\n• Fournir un soutien client\n• Assurer la sécurité et empêcher la fraude"
+      },
+      "dataSharing": {
+        "title": "4. Partage et divulgation des données",
+        "content": "Nous ne vendons, n'échangeons ni ne louons pas vos informations personnelles. Nous partageons vos informations uniquement dans les cas suivants : \n• Lorsque vous nous avez donné votre consentement\n• Pour des raisons de conformité légale ou pour protéger nos droits\n• Avec des fournisseurs de services qui aident à améliorer les fonctionnalités de l'application\n• Sous forme anonyme pour des fins d'analyse et de recherche"
+      },
+      "dataSecurity": {
+        "title": "5. Sécurité des données",
+        "content": "Nous mettons en œuvre des mesures techniques et organisationnelles appropriées pour protéger vos informations personnelles : \n• Chiffrement de bout en bout des données sensibles\n• Protocole de transmission de données sécurisé\n• Audits de sécurité réguliers et mises à jour régulières\n• Accès limité aux données personnelles\n• Stockage sécurisé des données avec des fournisseurs de cloud sécurisés"
+      },
+      "privacyRights": {
+        "title": "6. Vos droits en matière de confidentialité",
+        "content": "Vous avez le droit : \n• D'accéder à vos données personnelles\n• De corriger des informations inexactes\n• De supprimer votre compte et vos données\n• D'exporter vos données\n• De choisir de ne pas participer à la collecte de données\n• De contrôler vos paramètres de confidentialité"
+      },
+      "dataRetention": {
+        "title": "7. Conservation des données",
+        "content": "Nous conservons vos informations personnelles uniquement pendant la durée nécessaire pour fournir nos services et pour respecter nos obligations légales. Les données de suivi d'habitude sont conservées sur votre compte jusqu'à ce que vous les supprimiez. Les données d'analyse anonymes peuvent être conservées plus longtemps à des fins de recherche."
+      },
+      "childrenPrivacy": {
+        "title": "8. Vie privée des enfants",
+        "content": "Notre application n'est pas destinée aux enfants de moins de 13 ans. Nous ne collectons pas intentionnellement des informations sur les enfants de moins de 13 ans. Si vous pensez que nous avons collecté des informations sur des enfants de moins de 13 ans, veuillez nous contacter immédiatement."
+      },
+      "internationalTransfers": {
+        "title": "9. Transferts de données internationaux",
+        "content": "Vos informations peuvent être transférées vers un pays situé en dehors de votre pays et y être traitées. Nous nous assurons que des mesures appropriées sont prises lors des transferts internationaux pour protéger vos données."
+      },
+      "policyChanges": {
+        "title": "10. Changements de cette politique",
+        "content": "Nous pourrions parfois mettre à jour cette politique de confidentialité. Nous vous informerons des changements en publiant une nouvelle politique et en mettant à jour la date de dernière mise à jour. Vous continuez à utiliser l'application signifie que vous acceptez la politique mise à jour."
+      },
+      "contactUs": {
+        "title": "11. Nous contacter",
+        "content": "Si vous avez des questions concernant cette politique de confidentialité ou nos pratiques de confidentialité, veuillez nous contacter : \nCourriel : privacy@habittracker.com\nAdresse : [Adresse de votre entreprise]\nTéléphone : [Numéro de téléphone de votre entreprise]"
+      },
+      "featurePrivacy": {
+        "title": "12. Confidentialité des fonctionnalités spécifiques",
+        "moodTracking": {
+          "title": "Suivi d'humeur",
+          "content": "Les données d'humeur sont stockées par défaut de manière locale cryptée sur votre appareil. Vous pouvez choisir de synchroniser ces données avec notre serveur de sécurité pour des sauvegardes et accès entre appareils."
+        },
+        "socialFeatures": {
+          "title": "Fonctionnalités sociales",
+          "content": "Lorsque vous utilisez des fonctionnalités sociales, vous pouvez contrôler les informations que vous partagez avec les autres utilisateurs via les paramètres de confidentialité. La visibilité des informations personnelles et le partage des données sont des fonctionnalités d'adhésion."
+        },
+        "analytics": {
+          "title": "Analyse",
+          "content": "Nous collectons des analyses anonymes pour améliorer notre application. Vous pouvez choisir de ne pas participer à la collecte d'analyses dans les paramètres de confidentialité, ce qui n'affectera pas les fonctionnalités de l'application."
+        }
+      }
+    }
+  },
+  "termsOfService": {
+    "title": "Conditions d'utilisation",
+    "sections": {
+      "acceptance": {
+        "title": "1. Acceptation des Conditions",
+        "content": "En téléchargeant, installant ou utilisant l'application Productivity Habit Tracker (\"l'Application\"), vous acceptez d'être lié par ces Conditions d'Utilisation (\"Conditions\"). Si vous n'acceptez pas ces Conditions, veuillez ne pas utiliser l'Application."
+      },
+      "description": {
+        "title": "2. Description du Service",
+        "content": "L'Application est une application de productivité et de suivi des habitudes qui aide les utilisateurs à construire et maintenir des habitudes saines, suivre les schémas d'humeur et améliorer le bien-être général grâce à :",
+        "features": [
+          "Création et suivi des habitudes",
+          "Surveillance et analyse de l'humeur",
+          "Visualisation du progrès et statistiques",
+          "Fonctionnalités de ludification et réalisations",
+          "Fonctionnalités de partage social et communauté",
+          "Conseils et recommandations alimentés par l'IA"
+        ]
+      },
+      "accounts": {
+        "title": "3. Comptes Utilisateur et Inscription",
+        "content": "Pour accéder à certaines fonctionnalités de l'Application, vous devrez peut-être créer un compte. Vous êtes responsable de :",
+        "responsibilities": [
+          "Fournir des informations précises et complètes",
+          "Maintenir la sécurité de vos identifiants de compte",
+          "Toutes les activités qui se produisent sous votre compte",
+          "Nous notifier immédiatement de toute utilisation non autorisée"
+        ]
+      },
+      "acceptableUse": {
+        "title": "4. Utilisation Acceptable",
+        "content": "Vous acceptez d'utiliser l'Application uniquement à des fins légales et conformément à ces Conditions. Vous acceptez de ne pas :",
+        "prohibitions": [
+          "Utiliser l'Application à des fins illégales ou non autorisées",
+          "Interférer ou perturber la fonctionnalité de l'Application",
+          "Tenter d'obtenir un accès non autorisé à l'Application ou ses systèmes",
+          "Télécharger ou partager du contenu nuisible, offensant ou inapproprié",
+          "Violer toute loi ou réglementation applicable"
+        ]
+      },
+      "privacy": {
+        "title": "5. Confidentialité et Protection des Données",
+        "content": "Votre confidentialité est importante pour nous. Notre collecte, utilisation et protection de vos informations personnelles est régie par notre Politique de Confidentialité, qui est incorporée à ces Conditions par référence. En utilisant l'Application, vous consentez à la collecte et à l'utilisation de vos informations comme décrit dans notre Politique de Confidentialité."
+      },
+      "intellectualProperty": {
+        "title": "6. Propriété Intellectuelle",
+        "content": "L'Application et son contenu original, fonctionnalités et fonctionnalité nous appartiennent et sont protégés par les lois internationales de droits d'auteur, marques de commerce, brevets, secrets commerciaux et autres lois de propriété intellectuelle. Vous ne pouvez pas modifier, distribuer ou créer des œuvres dérivées basées sur l'Application sans notre permission écrite expresse."
+      },
+      "userContent": {
+        "title": "7. Contenu Généré par l'Utilisateur",
+        "content": "Vous conservez la propriété de tout contenu que vous créez ou téléchargez via l'Application. Cependant, en partageant du contenu via les fonctionnalités sociales de l'Application, vous nous accordez une licence non exclusive et sans redevance pour utiliser, afficher et distribuer ce contenu dans l'Application."
+      },
+      "disclaimers": {
+        "title": "8. Avertissements et Limitations",
+        "content": "L'Application est fournie \"telle quelle\" sans garanties d'aucune sorte. Nous ne garantissons pas que l'Application sera exempte d'erreurs, sécurisée ou continuellement disponible. L'Application n'est pas destinée à fournir des conseils médicaux, psychologiques ou professionnels. Consultez toujours des professionnels qualifiés pour les préoccupations liées à la santé."
+      },
+      "liability": {
+        "title": "9. Limitation de Responsabilité",
+        "content": "Dans la mesure maximale permise par la loi, nous ne serons pas responsables de tout dommage indirect, accessoire, spécial, consécutif ou punitif, y compris mais sans s'y limiter, la perte de profits, de données ou d'autres pertes intangibles résultant de votre utilisation de l'Application."
+      },
+      "termination": {
+        "title": "10. Résiliation",
+        "content": "Nous pouvons résilier ou suspendre votre compte et accès à l'Application à tout moment, avec ou sans cause ou préavis. Vous pouvez également résilier votre compte à tout moment en supprimant l'Application et en cessant toute utilisation."
+      },
+      "changes": {
+        "title": "11. Modifications des Conditions",
+        "content": "Nous nous réservons le droit de modifier ces Conditions à tout moment. Nous notifierons les utilisateurs de tout changement matériel via l'Application ou d'autres moyens appropriés. Votre utilisation continue de l'Application après ces changements constitue l'acceptation des nouvelles Conditions."
+      },
+      "governingLaw": {
+        "title": "12. Loi Applicable",
+        "content": "Ces Conditions seront régies et interprétées conformément aux lois de [Votre Juridiction], sans égard à ses dispositions de conflit de lois. Tout litige découlant de ces Conditions ou de votre utilisation de l'Application sera résolu dans les tribunaux de [Votre Juridiction]."
+      },
+      "contact": {
+        "title": "13. Informations de Contact",
+        "content": "Si vous avez des questions sur ces Conditions d'Utilisation, veuillez nous contacter à :",
+        "email": "Email: sabbirhossainsm@gmail.com",
+        "address": "Adresse: [Adresse de Votre Entreprise]"
+      }
+    },
+    "lastUpdated": "Dernière mise à jour:"
+  },
+  "community": {
+    "title": "👥 Communauté et social",
+    "subtitle": "Connexion, partage, croissance commune",
+    "upgradeRequired": "Upgrade to Pro",
+    "upgradeMessage": "Join the community and connect with others on their habit journey",
+    "feed": "Actualités",
+    "trending": "Populaires",
+    "stories": "Réussites",
+    "support": "Support",
+    "partners": "Partenaires",
+    "searchPlaceholder": "Rechercher des messages, sujets ou utilisateurs...",
+    "share": "Partager",
+    "sharingComingSoon": "Fonctionnalité de partage prochainement disponible !",
+    "success": "Succès",
+    "liked": "J'aime !",
+    "error": "Erreur",
+    "failedToLoadData": "Échec du chargement des données de la communauté",
+    "createPost": "Créer un message",
+    "post": "Message",
+    "whatsOnYourMind": "Qu'avez-vous en tête ?",
+    "photo": "Photo",
+    "gallery": "Galerie",
+    "loadingFeed": "Chargement du fil d'actualités...",
+    "noPostsYet": "Aucun message pour le moment",
+    "beFirstToShare": "Soyez le premier à partager votre parcours !",
+    "patternDiscovery": "Découverte de modèles",
+    "anonymousUser": "Utilisateur anonyme",
+    "accountabilityPartners": "Partenaires de responsabilité",
+    "connectWithUsers": "Connectez-vous avec des utilisateurs qui partagent des objectifs similaires",
+    "noPartnersYet": "Aucun partenaire pour le moment",
+    "weWillMatchYou": "Nous vous jumellerons bientôt avec des utilisateurs compatibles !",
+    "failedToUpdateLike": "Échec de la mise à jour du j'aime",
+    "failedToUpdateBookmark": "Échec de la mise à jour du signet",
+    "searchFailed": "La recherche a échoué",
+    "failedToCreatePost": "Échec de la création du message",
+    "tabs": {
+      "feed": "Actualités",
+      "trending": "Populaires",
+      "stories": "Histoires",
+      "support": "Support",
+      "partners": "Partenaires"
+    },
+    "habit": "Habitude",
+    "moodTarget": "Objectif d'humeur",
+    "match": "Correspondance",
+    "sharedGoals": "Objectifs communs",
+    "helpful": "Utile",
+    "search": "Rechercher",
+    "filters": "Filtres",
+    "postPlaceholder": "Qu'avez-vous en tête ? Partagez vos pensées avec la communauté...",
+    "justNow": "À l'instant",
+    "beFirstToPost": "Soyez le premier à poster !",
+    "findPartners": "Trouver des partenaires",
+    "loadFailed": "Échec du chargement des données de la communauté",
+    "effectiveness": "Efficacité",
+    "duration": "Durée",
+    "postCreated": "Message créé avec succès !",
+    "loading": "Chargement...",
+    "beta": {
+      "badge": "BETA",
+      "description": "Les fonctionnalités communautaires sont en version bêta. Plus de fonctionnalités à venir !"
+    }
+  },
+  "onboarding": {
+    "welcome": {
+      "title": "Bienvenue dans votre parcours bien-être",
+      "subtitle": "Commencez à créer de meilleures habitudes et à suivre votre humeur avec des conseils personnalisés et l'IA.",
+      "feature1": "Suivez vos humeurs",
+      "feature2": "Créez des habitudes saines",
+      "feature3": "Découvrez des schémas"
+    },
+    "language": {
+      "title": "Choisissez votre Langue",
+      "subtitle": "Sélectionnez votre langue préférée pour personnaliser votre expérience",
+      "feature1": "Disponible en 4 langues",
+      "feature2": "Contenu et fonctionnalités localisés",
+      "feature3": "Facile à changer à tout moment"
+    },
+    "freeFeatures": {
+      "title": "Fonctionnalités Gratuites",
+      "subtitle": "Tout ce dont vous avez besoin pour commencer votre parcours bien-être.",
+      "feature1": "Suivez jusqu'à 4 habitudes",
+      "feature2": "Analyses de 7 jours",
+      "feature3": "Suivi basique de l'humeur",
+      "feature4": "Rappels simples"
+    },
+    "proFeatures": {
+      "title": "Fonctionnalités Pro",
+      "subtitle": "Débloquez un potentiel illimité avec des fonctionnalités avancées et du coaching IA.",
+      "feature1": "Habitudes illimitées",
+      "feature2": "Analyses de 365 jours",
+      "feature3": "Coaching alimenté par l'IA",
+      "feature4": "Conseils avancés sur l'humeur",
+      "feature5": "Thèmes premium et personnalisation"
+    },
+    "getStartedStep": {
+      "title": "Prêt à Commencer ?",
+      "subtitle": "Votre parcours bien-être commence maintenant. Créons votre première habitude !",
+      "feature1": "Créez votre première habitude",
+      "feature2": "Configurez le suivi de l'humeur",
+      "feature3": "Commencez votre parcours"
+    },
+    "skip": "Passer",
+    "previous": "Précédent",
+    "next": "Suivant",
+    "getStarted": "Commencer",
+    "proFeature": "Fonctionnalité Pro",
+    "upgrade": "Passer à Pro",
+    "upgradeNow": "Passer à Pro Maintenant",
+    "description": "Commencez à créer de meilleures habitudes et à suivre votre humeur avec des conseils personnalisés et l'IA.",
+    "features": {
+      "trackMoods": "Suivez vos humeurs",
+      "buildHabits": "Créez des habitudes saines",
+      "discoverPatterns": "Découvrez des schémas",
+      "improveWellbeing": "Améliorez votre bien-être"
+    },
+    "coreFeatures": {
+      "title": "Fonctionnalités Principales",
+      "description": "Explorez les fonctionnalités principales de l'application qui vous aideront à construire un mode de vie sain.",
+      "features": [
+        "Suivi intelligent des habitudes avec rappels",
+        "Enregistrement et analyse de l'humeur",
+        "Recommandations personnalisées d'IA",
+        "Rapports de progrès visualisés",
+        "Système de ludification motivant"
+      ]
+    },
+    "aiBenefits": {
+      "title": "Assistant IA Intelligent",
+      "description": "Découvrez comment l'intelligence artificielle optimise vos habitudes de santé.",
+      "benefits": [
+        "Recommandations d'habitudes personnalisées",
+        "Rappels au moment optimal",
+        "Analyse des schémas d'humeur",
+        "Astuces prédictives de santé",
+        "Algorithmes d'apprentissage adaptatif"
+      ]
+    },
+    "privacyTrust": {
+      "title": "Confidentialité et Confiance",
+      "description": "La sécurité de vos données est notre priorité.",
+      "features": [
+        "Chiffrement de données de bout en bout",
+        "Stockage local prioritaire",
+        "Contrôle complet de la confidentialité",
+        "Engagement de ne pas vendre les données",
+        "Traitement transparent des données"
+      ]
+    },
+    "quickSetup": {
+      "title": "Configuration rapide",
+      "description": "Personnalisons votre expérience avec quelques questions simples.",
+      "tryFirstMood": "Essayez votre premier enregistrement d'humeur !",
+      "completionMessage": "Configuration terminée ! Vous êtes prêt à commencer votre parcours."
+    },
+    "buttons": {
+      "next": "Suivant",
+      "previous": "Précédent",
+      "skip": "Passer",
+      "getStarted": "Commencer",
+      "complete": "Terminer"
+    }
+  },
+  "performance": {
+    "dashboard": {
+      "title": "Tableau de Bord de Performance",
+      "subtitle": "Surveillez et optimisez les performances de votre application",
+      "overview": "Aperçu",
+      "memory": "Mémoire",
+      "network": "Réseau",
+      "score": "Score",
+      "overallScore": "Overall Score",
+      "quickStats": "Quick Stats",
+      "renderTime": "Render Time",
+      "memoryUsage": "Memory Usage",
+      "connection": "Connexion",
+      "activeTasks": "Tâches Actives",
+      "performanceAlerts": "Performance Alerts",
+      "performanceTips": "Performance Tips",
+      "criticalMemoryUsage": "Utilisation critique de la mémoire détectée",
+      "criticalMemoryDescription": "Memory usage is critically high",
+      "highMemoryUsage": "Utilisation élevée de la mémoire détectée",
+      "highMemoryDescription": "Memory usage is high",
+      "tip1": "Fermez les onglets de navigateur inutilisés pour libérer la mémoire",
+      "tip2": "Redémarrez l'application périodiquement pour des performances optimales",
+      "lastUpdated": "Last Updated"
+    },
+    "memory": {
+      "title": "Gestion de la Mémoire",
+      "used": "Mémoire Utilisée",
+      "available": "Mémoire Disponible",
+      "usage": "Utilisation de la Mémoire",
+      "limit": "Limite de Mémoire",
+      "alerts": "Alertes de Mémoire"
+    },
+    "network": {
+      "title": "Performance Réseau",
+      "connection": "Connection",
+      "quality": "Qualité de Connexion",
+      "pending": "Requêtes en Attente",
+      "failed": "Requêtes Échouées",
+      "totalRequests": "Total Requests",
+      "successRate": "Success Rate",
+      "averageResponseTime": "Average Response Time",
+      "cacheHitRate": "Cache Hit Rate",
+      "online": "Online",
+      "offline": "Offline",
+      "excellent": "Excellent",
+      "good": "Bon",
+      "poor": "Mauvais"
+    },
+    "alerts": {
+      "title": "Alertes de Performance",
+      "criticalAlerts": "Alertes Critiques",
+      "slowRendering": "Rendu Lent Détecté",
+      "slowRenderingMessage": "Le temps de rendu est {time}ms, ce qui est au-dessus du seuil de {threshold}ms",
+      "highMemoryUsage": "Utilisation Élevée de la Mémoire",
+      "highMemoryUsageMessage": "L'utilisation de la mémoire est {usage}%, ce qui est au-dessus du seuil de {threshold}%",
+      "networkIssues": "Problèmes de Réseau Détectés",
+      "networkIssuesMessage": "{count} requêtes réseau ont échoué",
+      "lowCacheHitRate": "Taux de Cache Faible",
+      "lowCacheHitRateMessage": "Le taux de cache est {rate}%, ce qui est en dessous du seuil de {threshold}%",
+      "noConnection": "Pas de Connexion Internet",
+      "noConnectionMessage": "L'application est actuellement hors ligne. Certaines fonctionnalités peuvent ne pas fonctionner correctement.",
+      "poorConnection": "Mauvaise Qualité de Connexion",
+      "poorConnectionMessage": "La qualité de la connexion réseau est mauvaise. Les performances peuvent être affectées.",
+      "optimize": "Optimiser",
+      "optimizeMemory": "Optimiser la Mémoire",
+      "clearHistory": "Effacer l'Historique",
+      "settings": {
+        "title": "Paramètres d'Alertes de Performance",
+        "generalSettings": "Paramètres Généraux",
+        "enableAlerts": "Activer les Alertes de Performance",
+        "enableAlertsDesc": "Afficher les alertes de performance en temps réel",
+        "autoDismiss": "Auto-masquer les Alertes",
+        "autoDismissDesc": "Masquer automatiquement les alertes après un délai",
+        "alertTypes": "Types d'Alertes",
+        "criticalAlerts": "Alertes Critiques",
+        "criticalAlertsDesc": "Afficher les problèmes critiques de performance",
+        "warningAlerts": "Alertes d'Avertissement",
+        "warningAlertsDesc": "Afficher les avertissements de performance",
+        "infoAlerts": "Alertes d'Information",
+        "infoAlertsDesc": "Afficher les alertes informatives",
+        "behavior": "Comportement",
+        "soundNotifications": "Notifications Sonores",
+        "soundNotificationsDesc": "Jouer un son pour les nouvelles alertes",
+        "vibration": "Vibration",
+        "vibrationDesc": "Vibrer pour les nouvelles alertes"
+      }
+    },
+    "recommendations": {
+      "title": "Recommandations de Performance",
+      "criticalRenderIssue": "Problème Critique de Performance de Rendu",
+      "criticalRenderIssueMessage": "Le temps de rendu est {time}ms, ce qui est critique. Cela causera des retards notables dans l'interface.",
+      "renderOptimization": "Optimisation de Performance de Rendu",
+      "renderOptimizationMessage": "Le temps de rendu est {time}ms. Considérez l'optimisation du rendu des composants.",
+      "criticalMemoryUsage": "Utilisation Critique de la Mémoire",
+      "criticalMemoryUsageMessage": "L'utilisation de la mémoire est {usage}%. Une optimisation immédiate est requise.",
+      "highMemoryUsage": "Utilisation Élevée de la Mémoire",
+      "highMemoryUsageMessage": "L'utilisation de la mémoire est {usage}%. Considérez l'optimisation de la mémoire.",
+      "potentialMemoryLeak": "Fuite de Mémoire Potentielle",
+      "potentialMemoryLeakMessage": "Utilisation élevée de la mémoire détectée. Vérifiez les fuites de mémoire dans les composants.",
+      "poorCachePerformance": "Performance de Cache Médiocre",
+      "poorCachePerformanceMessage": "Le taux de cache est {rate}%. La stratégie de cache nécessite une amélioration.",
+      "cacheOptimization": "Optimisation de Cache",
+      "cacheOptimizationMessage": "Le taux de cache est {rate}%. Considérez l'amélioration de la stratégie de cache.",
+      "networkIssues": "Problèmes de Réseau",
+      "networkIssuesMessage": "{count} requêtes réseau ont échoué. Vérifiez la connectivité réseau et les points de terminaison API.",
+      "networkOptimization": "Optimisation de Réseau",
+      "networkOptimizationMessage": "{count} requêtes réseau ont échoué. Considérez l'implémentation d'une logique de nouvelle tentative.",
+      "slowResponseTimes": "Temps de Réponse Lents",
+      "slowResponseTimesMessage": "Le temps de réponse moyen est {time}ms. Une optimisation réseau est requise.",
+      "overallPerformanceIssues": "Problèmes de Performance Généraux",
+      "overallPerformanceIssuesMessage": "Plusieurs problèmes de performance détectés. Une optimisation complète est recommandée.",
+      "impact": "Impact",
+      "effort": "Effort",
+      "improvement": "Amélioration",
+      "resetMonitoring": "Réinitialiser la Surveillance",
+      "forceGC": "Forcer GC",
+      "clearCaches": "Effacer les Caches",
+      "resetCache": "Réinitialiser le Cache",
+      "clearHistory": "Effacer l'Historique",
+      "optimizeAll": "Optimiser Tout",
+      "applied": "Appliqué",
+      "greatPerformance": "Great Performance!",
+      "noOptimizationsNeeded": "No optimizations needed at this time.",
+      "recommendationApplied": "Recommandation Appliquée",
+      "recommendationAppliedMessage": "\"{title}\" a été appliquée avec succès.",
+      "renderOptimizationApplied": "Optimisation de Rendu Appliquée",
+      "renderOptimizationAppliedMessage": "La surveillance de performance de rendu a été réinitialisée."
+    },
+    "status": {
+      "excellent": "Excellent",
+      "excellentMessage": "Votre application fonctionne parfaitement avec des performances optimales !",
+      "good": "Good",
+      "goodMessage": "Les performances sont bonnes avec des optimisations mineures possibles.",
+      "poor": "Mauvais",
+      "poorMessage": "Des problèmes de performance détectés. Considérez les actions d'optimisation.",
+      "warning": "Warning",
+      "critical": "Critical"
+    },
+    "tabs": {
+      "overview": "Aperçu",
+      "memory": "Mémoire",
+      "network": "Réseau"
+    },
+    "actions": {
+      "optimizeMemory": "Optimize Memory",
+      "forceGC": "Forcer GC",
+      "clearCaches": "Clear Caches",
+      "testConnection": "Test Connection",
+      "resetMonitoring": "Reset Monitoring"
+    },
+    "dialogs": {
+      "clearCachesConfirm": "Cela effacera toutes les données en cache. Continuer ?",
+      "cachesClearedSuccess": "Tous les caches ont été effacés avec succès.",
+      "resetMonitoringConfirm": "Cela réinitialisera toutes les données de surveillance de performance. Continuer ?",
+      "memoryActions": "Memory Actions",
+      "networkActions": "Network Actions"
+    },
+    "messages": {
+      "renderTimeOptimization": "Le temps de rendu est {time}ms. Considérez l'optimisation du rendu des composants.",
+      "memoryUsageCritical": "L'utilisation de la mémoire est {usage}%. Une optimisation immédiate est requise.",
+      "memoryUsageHigh": "L'utilisation de la mémoire est {usage}%. Considérez l'optimisation de la mémoire.",
+      "potentialMemoryLeak": "Utilisation élevée de la mémoire détectée. Vérifiez les fuites de mémoire dans les composants.",
+      "cacheHitRatePoor": "Le taux de cache est {rate}%. La stratégie de cache nécessite une amélioration.",
+      "cacheHitRateWarning": "Le taux de cache est {rate}%. Considérez l'amélioration de la stratégie de cache.",
+      "networkRequestsFailed": "{count} requêtes réseau ont échoué. Vérifiez la connectivité réseau et les points de terminaison API.",
+      "networkRequestsFailedWarning": "{count} requêtes réseau ont échoué. Considérez l'implémentation d'une logique de nouvelle tentative.",
+      "slowResponseTime": "Le temps de réponse moyen est {time}ms. Une optimisation réseau est requise.",
+      "multiplePerformanceIssues": "Plusieurs problèmes de performance détectés. Une optimisation complète est recommandée."
+    }
+  },
+  "auth": {
+    "error": "Erreur",
+    "fillAllFields": "Veuillez remplir tous les champs",
+    "loginFailed": "Échec de connexion",
+    "errorOccurred": "Une erreur s'est produite",
+    "selectLanguage": "Select Language",
+    "welcomeBack": "Welcome Back",
+    "signInToContinue": "Sign in to continue your journey",
+    "email": "E-mail",
+    "password": "Mot de passe",
+    "signingIn": "Connexion en cours...",
+    "signIn": "Se connecter",
+    "dontHaveAccount": "Vous n'avez pas de compte ? Inscrivez-vous",
+    "createAccount": "Create Account",
+    "joinUs": "Join us on your habit journey",
+    "fullName": "Nom complet",
+    "confirmPassword": "Confirmer le mot de passe",
+    "passwordsDontMatch": "Les mots de passe ne correspondent pas",
+    "passwordTooShort": "Le mot de passe doit contenir au moins 6 caractères",
+    "registrationFailed": "Échec de l'inscription",
+    "creatingAccount": "Création du compte...",
+    "alreadyHaveAccount": "Vous avez déjà un compte ? Connectez-vous"
+  },
+  "feedback": {
+    "title": "Commentaires de Recommandation",
+    "rating": {
+      "title": "Quelle était l'utilité de cette recommandation ?",
+      "select": "Sélectionnez une note",
+      "labels": {
+        "1": "Pas utile du tout",
+        "2": "Assez utile",
+        "3": "Utile",
+        "4": "Très utile",
+        "5": "Extrêmement utile"
+      }
+    },
+    "implementation": {
+      "title": "Avez-vous mis en œuvre cette recommandation ?",
+      "implemented": "Oui, je l'ai mise en œuvre",
+      "notImplemented": "Non, je ne l'ai pas mise en œuvre"
+    },
+    "effectiveness": {
+      "title": "Quelle était son efficacité ?",
+      "label": "Notez l'efficacité (1-10)"
+    },
+    "comments": {
+      "title": "Commentaires Supplémentaires",
+      "placeholder": "Partagez vos réflexions sur cette recommandation..."
+    },
+    "submit": "Soumettre les Commentaires",
+    "submitting": "Soumission...",
+    "validation": {
+      "title": "Erreur de Validation",
+      "ratingRequired": "Veuillez sélectionner une note avant de soumettre."
+    },
+    "success": {
+      "title": "Merci !",
+      "message": "Vos commentaires ont été enregistrés et aideront à améliorer les recommandations futures."
+    },
+    "error": {
+      "title": "Erreur",
+      "message": "Échec de la soumission des commentaires. Veuillez réessayer."
+    },
+    "howHelpful": "Quelle était l'utilité de cette recommandation ?"
+  },
+  "error": {
+    "boundary": {
+      "title": "Oups ! Quelque chose s'est mal passé",
+      "message": "Nous avons rencontré une erreur inattendue. Ne vous inquiétez pas, vos données sont en sécurité.",
+      "retry": "Réessayer",
+      "goHome": "Go Home",
+      "reportError": "Report Error"
+    },
+    "toast": {
+      "network": "Erreur réseau",
+      "validation": "Erreur de validation",
+      "authentication": "Erreur d'authentification",
+      "authorization": "Accès refusé",
+      "notFound": "Non trouvé",
+      "server": "Erreur serveur",
+      "client": "Erreur client",
+      "unknown": "Erreur inconnue"
+    },
+    "messages": {
+      "networkError": "Erreur de connexion réseau. Veuillez vérifier votre connexion internet.",
+      "validationError": "Veuillez vérifier votre saisie et réessayer.",
+      "authenticationError": "Veuillez vous reconnecter pour continuer.",
+      "authorizationError": "Vous n'avez pas la permission d'effectuer cette action.",
+      "notFoundError": "La ressource demandée n'a pas été trouvée.",
+      "serverError": "Erreur serveur. Veuillez réessayer plus tard.",
+      "clientError": "Quelque chose s'est mal passé. Veuillez réessayer.",
+      "unknownError": "Une erreur inattendue s'est produite. Veuillez réessayer.",
+      "retryMessage": "Voulez-vous réessayer ?",
+      "contactSupport": "Si le problème persiste, veuillez contacter le support.",
+      "networkConnectionFailed": "Échec de connexion réseau",
+      "noInternetConnection": "Pas de connexion internet. Veuillez vérifier les paramètres de votre réseau.",
+      "requestTimeout": "La requête a pris trop de temps. Veuillez réessayer.",
+      "serverTemporarilyUnavailable": "Le serveur n'est temporairement pas disponible. Veuillez réessayer plus tard.",
+      "resourceNotFound": "La ressource demandée n'a pas été trouvée.",
+      "pleaseLoginAgain": "Veuillez vous reconnecter pour continuer.",
+      "accessDenied": "Vous n'avez pas la permission d'accéder à cette ressource.",
+      "validationErrorForField": "Veuillez vérifier le champ {field} et réessayer.",
+      "internalServerError": "Erreur interne du serveur",
+      "somethingWentWrongInApp": "Quelque chose s'est mal passé dans l'application"
+    },
+    "examples": {
+      "title": "Exemples de Gestion d'Erreurs",
+      "subtitle": "Testez différents types d'erreurs et voyez comment elles sont gérées",
+      "networkErrors": "Network Errors",
+      "validationErrors": "Erreurs de Validation",
+      "serverErrors": "Server Errors",
+      "authenticationErrors": "Authentication Errors",
+      "clientErrors": "Client Errors",
+      "asyncOperationsWithRetry": "Async Operations with Retry",
+      "errorBoundaryTest": "Error Boundary Test",
+      "simulateNetworkError": "Simulate Network Error",
+      "simulateValidationError": "Simuler une Erreur de Validation",
+      "simulateServerError": "Simulate Server Error",
+      "simulateAuthError": "Simulate Auth Error",
+      "simulateClientError": "Simulate Client Error",
+      "testAsyncRetry": "Test Async Retry",
+      "triggerErrorBoundary": "Trigger Error Boundary",
+      "errorBoundaryNote": "This will trigger the error boundary to demonstrate error handling.",
+      "featuresTitle": "Error Handling Features",
+      "globalErrorBoundary": "Global error boundary for React Native crashes",
+      "userFriendlyToasts": "User-friendly error toasts with automatic dismissal",
+      "automaticCategorization": "Automatic error categorization and logging",
+      "asyncErrorHandling": "Async error handling with retry mechanisms",
+      "errorHistoryTracking": "Error history tracking and reporting",
+      "consistentErrorMessages": "Consistent error messages across the app"
+    }
+  },
+  "pricing": {
+    "title": "Choisissez Votre Plan",
+    "chooseYourPlan": "Choisissez Votre Plan",
+    "subtitle": "Débloquez votre plein potentiel avec nos fonctionnalités premium",
+    "upgradeTitle": "Mettre à Niveau vers Pro",
+    "upgradeMessage": "Êtes-vous sûr de vouloir mettre à niveau vers Pro ? Vous aurez accès à toutes les fonctionnalités premium.",
+    "upgrade": "Mettre à Niveau",
+    "upgrading": "Mise à Niveau...",
+    "successTitle": "Mise à Niveau Réussie !",
+    "successMessage": "Bienvenue sur Pro ! Vous avez maintenant accès à toutes les fonctionnalités premium.",
+    "detailedComparison": "Comparaison Détaillée des Fonctionnalités",
+    "plans": {
+      "proMonthly": "Pro Mensuel",
+      "proYearly": "Pro Annuel"
+    },
+    "currentPlan": "Plan Actuel",
+    "upgradeNow": "Mettre à Niveau Maintenant",
+    "processing": "Traitement...",
+    "verifying": "Vérification...",
+    "verifyAndUpgrade": "Vérifier et Mettre à Niveau",
+    "cancel": "Annuler",
+    "maybeLater": "Peut-être Plus Tard",
+    "startUsingPro": "Commencer à Utiliser Pro",
+    "alreadyPro": "Déjà Pro",
+    "alreadyProMessage": "Vous êtes déjà abonné à Pro !",
+    "upgradeSuccessful": "Mise à Niveau Réussie !",
+    "upgradeSuccessfulMessage": "Bienvenue sur HabitSync Pro ! Vous avez maintenant accès à toutes les fonctionnalités premium.",
+    "upgradeFailed": "Échec de la Mise à Niveau",
+    "upgradeFailedMessage": "Une erreur s'est produite lors du traitement de votre mise à niveau. Veuillez réessayer.",
+    "enterPremiumKey": "Entrer la Clé Premium",
+    "enterPremiumKeyMessage": "Veuillez entrer votre clé premium unique pour débloquer les fonctionnalités Pro",
+    "invalidPremiumKey": "Clé premium invalide. Veuillez réessayer.",
+    "premiumKeyPlaceholder": "Entrer la clé premium",
+    "freeVsProComparison": "Comparaison Gratuit vs Pro",
+    "feature": "Fonctionnalité",
+    "free": "Gratuit",
+    "pro": "Pro",
+    "habits": "Habitudes",
+    "analytics": "Analyses",
+    "aiSuggestions": "Suggestions IA",
+    "themes": "Thèmes",
+    "reminders": "Rappels",
+    "socialFeatures": "Fonctionnalités Sociales",
+    "dataExport": "Exportation de Données",
+    "moodCorrelations": "Corrélations d'Humeur",
+    "unlimited": "Illimité",
+    "days": "jours",
+    "week": "semaine",
+    "all": "Tous",
+    "sevenDays": "7 jours",
+    "twoPerWeek": "2/semaine",
+    "onePerHabit": "1/habitude",
+    "threeSixtyFiveDays": "365 jours",
+    "moneyBackGuarantee": "Garantie de remboursement de 30 jours. Annulez à tout moment.",
+    "mostPopular": "Le Plus Populaire",
+    "limitedTime": "Temps Limité",
+    "youAreCurrentlyOnPro": "Vous êtes actuellement sur Pro ! 🎉",
+    "features": {
+      "unlimitedHabits": "Habitudes illimitées",
+      "advancedAnalytics": "Analyses avancées",
+      "aiPoweredInsights": "Insights alimentés par IA",
+      "premiumThemes": "Thèmes premium",
+      "socialFeatures": "Fonctionnalités sociales",
+      "dataExport": "Exportation de données",
+      "customReminders": "Rappels personnalisés",
+      "moodHabitCorrelations": "Corrélations d'humeur et d'habitudes",
+      "threeSixtyFiveDayAnalytics": "Analyses de 365 jours",
+      "trendAnalysis": "Analyse des tendances",
+      "advancedReporting": "Rapports avancés",
+      "unlimitedAiSuggestions": "Suggestions IA illimitées",
+      "personalizedCoaching": "Coaching personnalisé",
+      "predictiveInsights": "Insights prédictifs",
+      "allPremiumThemes": "Tous les thèmes premium",
+      "customCustomization": "Personnalisation personnalisée",
+      "darkModeVariants": "Variantes de mode sombre",
+      "seasonalThemes": "Thèmes saisonniers",
+      "unlimitedHabitsFeature": "Habitudes illimitées",
+      "threeSixtyFiveDayAnalyticsFeature": "Analyses de 365 jours",
+      "unlimitedAiSuggestionsFeature": "Suggestions IA illimitées",
+      "allPremiumThemesFeature": "Tous les thèmes premium",
+      "socialFeaturesFeature": "Fonctionnalités sociales",
+      "dataExportFeature": "Exportation de données",
+      "customRemindersFeature": "Rappels personnalisés",
+      "moodHabitCorrelationsFeature": "Corrélations d'humeur et d'habitudes",
+      "advancedAnalyticsFeature": "Analyses avancées",
+      "wellnessIntegrationFeature": "Intégration du bien-être",
+      "performanceAlertsFeature": "Alertes de performance",
+      "patternInsightsFeature": "Insights de modèles",
+      "aiSuggestionsFeature": "Suggestions IA",
+      "premiumThemesFeature": "Thèmes premium",
+      "unlimitedRemindersFeature": "Rappels illimités",
+      "savings": "37% d'économies",
+      "limitedTimeOffer": "Offre à durée limitée",
+      "fiftyPercentSavings": "50% d'économies - Durée limitée",
+      "aiSuggestions": "Suggestions IA",
+      "unlimitedReminders": "Rappels illimités",
+      "wellnessIntegration": "Intégration du bien-être",
+      "performanceAlerts": "Alertes de performance",
+      "patternInsights": "Insights de modèles"
+    },
+    "upgradePrompts": {
+      "habitLimit": {
+        "title": "Mettre à Niveau vers Pro",
+        "message": "Vous avez atteint la limite de 4 habitudes. Mettez à niveau vers Pro pour des habitudes illimitées et des fonctionnalités avancées !"
+      },
+      "analyticsLimit": {
+        "title": "Débloquer les Analyses Complètes",
+        "message": "Obtenez des insights sur vos habitudes avec des analyses de 365 jours, des tendances et des rapports avancés."
+      },
+      "aiLimit": {
+        "title": "Obtenir le Coaching IA Quotidien",
+        "message": "Vous avez utilisé vos suggestions IA hebdomadaires. Mettez à niveau pour un coaching IA illimité et des insights personnalisés."
+      },
+      "themeLimit": {
+        "title": "Débloquer les Thèmes Premium",
+        "message": "Accédez à tous les thèmes premium et personnalisez votre expérience d'application."
+      },
+      "default": {
+        "title": "Mettre à Niveau vers Pro",
+        "message": "Débloquez toutes les fonctionnalités premium et amenez votre suivi d'habitudes au niveau supérieur !"
+      }
+    },
+    "premiumKeyDescription": "Veuillez entrer votre clé d'activation premium pour débloquer toutes les fonctionnalités Pro.",
+    "enterKeyPlaceholder": "Entrez votre clé premium",
+    "invalidKey": "Clé premium invalide. Veuillez réessayer.",
+    "activate": "Activer",
+    "errorTitle": "Échec de la Mise à Niveau",
+    "errorMessage": "Échec de la mise à niveau vers Pro. Veuillez réessayer.",
+    "month": "mois",
+    "year": "année",
+    "save": "Économiser",
+    "valueProposition": {
+      "title": "Transformez Vos Habitudes",
+      "subtitle": "Rejoignez des milliers d'utilisateurs qui ont atteint leurs objectifs avec HabitSync Pro"
+    },
+    "benefits": {
+      "title": "Pourquoi Choisir Pro ?",
+      "unlimitedGrowth": {
+        "title": "Croissance Illimitée",
+        "description": "Suivez autant d'habitudes que vous le souhaitez sans limites"
+      },
+      "aiPoweredInsights": {
+        "title": "Insights IA",
+        "description": "Obtenez des suggestions et un coaching personnalisé"
+      },
+      "deepAnalytics": {
+        "title": "Analyses Approfondies",
+        "description": "Comprenez vos modèles avec des données de 365 jours"
+      },
+      "communitySupport": {
+        "title": "Support Communautaire",
+        "description": "Connectez-vous avec d'autres sur des parcours similaires"
+      }
+    }
+  },
+  "notFound": {
+    "title": "Oups !",
+    "message": "Cette page n'existe pas.",
+    "goHome": "Aller à l'écran d'accueil !"
+  },
+  "advancedMoodSelector": {
+    "energyLevel": "Niveau d'Énergie (Activation)",
+    "positivity": "Positivité (Valence)",
+    "control": "Contrôle (Dominance)"
+  },
+  "progressChart": {
+    "noDataYet": "Pas Encore de Données",
+    "startCompletingHabits": "Commencez à compléter des habitudes pour voir votre progression ici !",
+    "sevenDayProgress": "Progression sur 7 Jours",
+    "completed": "Terminé",
+    "today": "Aujourd'hui"
   }
 }

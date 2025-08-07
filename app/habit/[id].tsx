@@ -23,7 +23,7 @@ export default function HabitDetailScreen() {
   const { id } = useLocalSearchParams();
   const router = useRouter();
   const { getHabitById, updateHabit, deleteHabit } = useHabits();
-  const { t } = useLanguage();
+  const { t, currentLanguage } = useLanguage();
   const { currentTheme } = useTheme();
   
   const habit = getHabitById(id as string);
@@ -108,12 +108,17 @@ export default function HabitDetailScreen() {
   const formatTime = (date: Date): string => {
     let hours = date.getHours();
     const minutes = date.getMinutes();
-    const ampm = hours >= 12 ? 'PM' : 'AM';
     
-    hours = hours % 12;
-    hours = hours ? hours : 12;
-    
-    return `${hours}:${minutes.toString().padStart(2, '0')} ${ampm}`;
+    if (currentLanguage.code === 'zh') {
+      // Chinese format: 24-hour format
+      return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
+    } else {
+      // English format: 12-hour format with AM/PM
+      const ampm = hours >= 12 ? 'PM' : 'AM';
+      hours = hours % 12;
+      hours = hours ? hours : 12;
+      return `${hours}:${minutes.toString().padStart(2, '0')} ${ampm}`;
+    }
   };
   
   const handleDelete = () => {
@@ -309,7 +314,7 @@ export default function HabitDetailScreen() {
           <DateTimePicker
             value={reminderTime}
             mode="time"
-            is24Hour={false}
+            is24Hour={currentLanguage.code === 'zh'}
             display="default"
             onChange={handleTimeChange}
           />

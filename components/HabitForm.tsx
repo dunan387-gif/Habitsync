@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, TextInput, TouchableOpacity, Modal, Switch, Platform, Alert, ScrollView } from 'react-native';
-import { X, Clock, Smile, Calendar } from 'lucide-react-native';
+import { X, Clock, Smile, Calendar, Crown } from 'lucide-react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { Habit } from '@/types';
 import EmojiPicker from './EmojiPicker';
 import { useTheme } from '@/context/ThemeContext';
 import { useLanguage } from '@/context/LanguageContext';
+import { useSubscription } from '@/context/SubscriptionContext';
 
 type HabitFormProps = {
   visible: boolean;
@@ -29,7 +30,14 @@ type HabitFormProps = {
 
 export default function HabitForm({ visible, onClose, onSave, initialValues, isEditing = false }: HabitFormProps) {
   const { currentTheme } = useTheme();
-  const { t } = useLanguage();
+  const { t, currentLanguage } = useLanguage();
+  const { canUseReminders, showUpgradePrompt } = useSubscription();
+  
+
+  
+
+  
+
   const [title, setTitle] = useState('');
   const [icon, setIcon] = useState('');
   const [notes, setNotes] = useState('');
@@ -108,13 +116,11 @@ export default function HabitForm({ visible, onClose, onSave, initialValues, isE
   };
 
   const toggleReminderDay = (dayId: number) => {
-    setReminderDays(prev => {
-      if (prev.includes(dayId)) {
-        return prev.filter(id => id !== dayId);
-      } else {
-        return [...prev, dayId].sort();
-      }
-    });
+    if (reminderDays.includes(dayId)) {
+      setReminderDays(reminderDays.filter(id => id !== dayId));
+    } else {
+      setReminderDays([...reminderDays, dayId]);
+    }
   };
 
   const selectAllDays = () => {
@@ -129,6 +135,15 @@ export default function HabitForm({ visible, onClose, onSave, initialValues, isE
     setReminderDays([0, 6]);
   };
 
+  const handleReminderToggle = (value: boolean) => {
+    // Check if user can use reminders
+    if (value && !canUseReminders(reminderDays.length)) {
+      showUpgradePrompt('reminder_limit');
+      return;
+    }
+    setReminderEnabled(value);
+  };
+
   const handleTimeChange = (event: any, selectedTime?: Date) => {
     setShowTimePicker(Platform.OS === 'ios');
     if (selectedTime) {
@@ -139,40 +154,44 @@ export default function HabitForm({ visible, onClose, onSave, initialValues, isE
   const formatTime = (date: Date): string => {
     let hours = date.getHours();
     const minutes = date.getMinutes();
-    const ampm = hours >= 12 ? 'PM' : 'AM';
     
-    hours = hours % 12;
-    hours = hours ? hours : 12;
-    
-    return `${hours}:${minutes.toString().padStart(2, '0')} ${ampm}`;
+    if (currentLanguage.code === 'zh') {
+      // Chinese format: 24-hour format
+      return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
+    } else {
+      // English format: 12-hour format with AM/PM
+      const ampm = hours >= 12 ? 'PM' : 'AM';
+      hours = hours % 12;
+      hours = hours ? hours : 12;
+      return `${hours}:${minutes.toString().padStart(2, '0')} ${ampm}`;
+    }
   };
 
   const styles = createStyles(currentTheme.colors);
 
   return (
     <>
-      <Modal
-        visible={visible}
-        animationType="slide"
-        transparent={true}
-        onRequestClose={onClose}
-        statusBarTranslucent={false}
-        presentationStyle="overFullScreen" // Add this
-      >
-        <View style={[styles.modalContainer, { backgroundColor: 'rgba(0, 0, 0, 0.7)' }]}>
-          <View style={[styles.modalContent, { backgroundColor: '#FFFFFF' }]}>
+                    <Modal
+          visible={visible}
+          animationType="slide"
+          transparent={true}
+          onRequestClose={onClose}
+          statusBarTranslucent={true}
+        >
+         <View style={styles.modalContainer}>
+           <View style={[styles.modalContent, { backgroundColor: '#FFFFFF' }]}>
             <View style={styles.header}>
               <Text style={[styles.headerTitle, { color: currentTheme.colors.text || '#1E293B' }]}>
                 {isEditing ? t('edit_habit') : t('create_new_habit')}
               </Text>
-              <TouchableOpacity style={styles.closeButton} onPress={onClose}>
+                             <TouchableOpacity style={styles.closeButton} onPress={onClose}>
                 <X size={24} color={currentTheme.colors.text || '#1E293B'} />
               </TouchableOpacity>
             </View>
 
             <ScrollView 
               showsVerticalScrollIndicator={false}
-              style={{ flex: 1 }}
+              style={{ flex: 1, maxHeight: '70%' }}
               contentContainerStyle={{ paddingBottom: 20 }}
             >
               <View style={styles.formGroup}>
@@ -224,7 +243,7 @@ export default function HabitForm({ visible, onClose, onSave, initialValues, isE
                   <Text style={styles.label}>{t('custom_reminder')}</Text>
                   <Switch
                     value={reminderEnabled}
-                    onValueChange={setReminderEnabled}
+                    onValueChange={handleReminderToggle}
                     trackColor={{ false: currentTheme.colors.border, true: currentTheme.colors.primaryLight }}
                     thumbColor={reminderEnabled ? currentTheme.colors.primary : currentTheme.colors.textMuted}
                   />
@@ -294,7 +313,7 @@ export default function HabitForm({ visible, onClose, onSave, initialValues, isE
               <DateTimePicker
                 value={reminderTime}
                 mode="time"
-                is24Hour={false}
+                is24Hour={currentLanguage.code === 'zh'}
                 display="default"
                 onChange={handleTimeChange}
               />
@@ -302,7 +321,7 @@ export default function HabitForm({ visible, onClose, onSave, initialValues, isE
 
             {/* Button container outside ScrollView */}
             <View style={styles.buttonContainer}>
-              <TouchableOpacity style={styles.cancelButton} onPress={onClose}>
+                             <TouchableOpacity style={styles.cancelButton} onPress={onClose}>
                 <Text style={[styles.cancelButtonText, { color: currentTheme.colors.textSecondary || '#475569' }]}>
                   {t('cancel')}
                 </Text>
@@ -336,34 +355,36 @@ export default function HabitForm({ visible, onClose, onSave, initialValues, isE
 const createStyles = (colors: any) => StyleSheet.create({
   modalContainer: {
     flex: 1,
-    justifyContent: 'flex-end',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.7)',
+    paddingHorizontal: 10,
+    paddingVertical: 10,
   },
   modalContent: {
-    backgroundColor: colors.surface || colors.background || '#FFFFFF',
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
+    backgroundColor: '#FFFFFF',
+    borderRadius: 20,
     padding: 20,
-    minHeight: '85%', // Increased from 80%
-    maxHeight: '95%',
-    // Ensure visibility with better styling
+    width: '95%',
+    minHeight: 800,
+    maxHeight: '90%',
     borderWidth: 2,
-    borderColor: colors.border || '#E2E8F0',
+    borderColor: '#E2E8F0',
     shadowColor: '#000',
     shadowOffset: {
       width: 0,
-      height: -4,
+      height: 4,
     },
     shadowOpacity: 0.3,
-    shadowRadius: 6,
-    elevation: 8,
+    shadowRadius: 8,
+    elevation: 10,
   },
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 20,
-    paddingBottom: 15,
+    marginBottom: 15,
+    paddingBottom: 10,
     borderBottomWidth: 2,
     borderBottomColor: colors.border || '#E2E8F0',
   },
@@ -380,7 +401,7 @@ const createStyles = (colors: any) => StyleSheet.create({
     borderColor: colors.border || '#E2E8F0',
   },
   formGroup: {
-    marginBottom: 20,
+    marginBottom: 15,
   },
   label: {
     fontSize: 16,
@@ -391,15 +412,15 @@ const createStyles = (colors: any) => StyleSheet.create({
   input: {
     backgroundColor: colors.card || colors.surface || '#F8FAFC',
     borderRadius: 12,
-    padding: 15,
+    padding: 12,
     fontSize: 16,
     color: colors.text || '#1E293B',
     borderWidth: 2,
     borderColor: colors.border || '#E2E8F0',
-    minHeight: 50,
+    minHeight: 45,
   },
   textArea: {
-    height: 120,
+    height: 100,
     textAlignVertical: 'top',
   },
   reminderHeader: {
@@ -413,11 +434,11 @@ const createStyles = (colors: any) => StyleSheet.create({
     alignItems: 'center',
     backgroundColor: colors.card || colors.surface || '#F8FAFC',
     borderRadius: 12,
-    padding: 16,
+    padding: 12,
     borderWidth: 1,
     borderColor: colors.border || '#E2E8F0',
     // Add minimum height for better visibility
-    minHeight: 60,
+    minHeight: 50,
   },
   iconDisplay: {
     width: 40,
@@ -444,11 +465,11 @@ const createStyles = (colors: any) => StyleSheet.create({
     alignItems: 'center',
     backgroundColor: colors.card || colors.surface || '#F8FAFC',
     borderRadius: 12,
-    padding: 16,
+    padding: 12,
     borderWidth: 1,
     borderColor: colors.border || '#E2E8F0',
     // Add minimum height for better visibility
-    minHeight: 60,
+    minHeight: 50,
   },
   timeIcon: {
     marginRight: 8,
@@ -460,9 +481,9 @@ const createStyles = (colors: any) => StyleSheet.create({
   buttonContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginTop: 25,
+    marginTop: 15,
     gap: 15,
-    paddingTop: 20,
+    paddingTop: 15,
     borderTopWidth: 1,
     borderTopColor: colors.border || '#E2E8F0',
   },

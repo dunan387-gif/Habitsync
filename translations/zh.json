@@ -4,57 +4,103 @@
     "library": "习惯库",
     "wellness": "健康",
     "analytics": "分析",
-    "habits": "习惯",
     "rewards": "奖励",
     "more": "更多",
     "mood": "心情",
-    "community": "社区"
+    "community": "社区",
+    "gamification": "游戏化"
   },
-  "avgMood": "平均心情",
-  "dominantMood": "主导心情",
-  "emotionalStability": "情感稳定性",
-  "consistent": "一致",
-  "daysTracked": "已追踪天数",
-  "overallMood": "整体心情",
-  "today_progress": "今日进度",
-  "select_all": "全选",
-  "delete": "删除",
-  "to_complete": "待完成",
-  "habit_details": "习惯详情",
-  "habit_name": "习惯名称",
-  "notes": "备注",
-  "delete_habit": "删除习惯",
-  "add_notes_about_habit": "添加习惯备注",
-  "habits_completed": "习惯已完成",
-  "select_multiple": "多选",
-  "completed": "已完成",
-  "selected": "已选择",
+  "analytics": {
+    "loading": "正在加载分析...",
+    "error": "错误",
+    "loadError": "加载分析数据失败",
+    "streakAnalysis": "连续分析",
+    "days": "天",
+    "timeframe": "时间范围",
+    "last7Days": "最近7天",
+    "last30Days": "最近30天",
+    "last90Days": "最近90天",
+    "lastYear": "去年",
+    "performanceOverview": "性能概览",
+    "totalHabits": "总习惯",
+    "activeHabits": "活跃习惯",
+    "completionRate": "完成率",
+    "currentStreak": "当前连续",
+    "longestStreak": "最长连续",
+    "weeklyProgress": "周进度",
+    "monthlyProgress": "月进度",
+    "yearlyProgress": "年进度",
+    "habitPerformance": "习惯性能",
+    "moodAnalytics": "心情分析",
+    "wellnessAnalytics": "健康分析",
+    "advancedAnalytics": "高级分析",
+    "insights": "洞察",
+    "avgStreak": "平均连续",
+    "avgCompletionRate": "平均完成率",
+    "avgMood": "平均心情",
+    "export": "导出",
+    "exportCSV": "导出为CSV",
+    "exportPDF": "导出为PDF",
+    "exportExcel": "导出为Excel",
+    "exportSuccess": "导出成功",
+    "exportSuccessMessage": "您的分析数据已成功导出。",
+    "upgradeRequired": "升级到专业版",
+    "upgradeMessage": "使用专业版获得详细分析、性能洞察和高级报告。",
+    "moodTrends": "心情趋势",
+    "moodEntries": "条目",
+    "refresh": "刷新",
+    "refreshing": "正在刷新...",
+    "exportTitle": "导出分析数据",
+    "exportMessage": "将您的分析数据导出为CSV文件？",
+    "mockHabits": {
+      "morningExercise": "晨练",
+      "read30Minutes": "阅读30分钟",
+      "drinkWater": "喝水",
+      "meditation": "冥想",
+      "eveningWalk": "晚间散步"
+    }
+  },
+  "premium": {
+    "upgradeToPro": "升级到 Pro"
+  },
+  "this_week": "本周",
+  "this_month": "本月",
+  "this_year": "今年",
+  "last_week": "上周",
+  "last_month": "上个月",
+  "last_year": "去年",
+  "all_time": "全部时间",
+  "navigation": {
+    "settings": "设置"
+  },
   "loading_habits": "正在加载习惯...",
   "no_habits_yet": "还没有习惯",
-  "add_first_habit": "添加您的第一个习惯开始吧！",
+  "add_first_habit": "添加你的第一个习惯开始吧！",
   "add_habit": "添加习惯",
-  "edit_habit": "编辑习惯",
-  "create_new_habit": "创建新习惯",
-  "icon": "图标",
-  "change_icon": "更换图标",
-  "choose_icon": "选择图标",
-  "title": "标题",
-  "enter_habit_title": "输入习惯标题",
-  "notes_optional": "备注（可选）",
-  "add_notes_habit": "为这个习惯添加备注",
-  "custom_reminder": "自定义提醒",
-  "reminder_days": "提醒日期",
-  "all_days": "每天",
-  "weekdays": "工作日",
-  "weekends": "周末",
-  "no_days_selected": "未选择日期",
-  "reminders_on": "提醒时间：",
+  "today_progress": "今日进度",
+  "of": "共",
+  "habits_completed": "个习惯已完成",
+  "to_complete": "待完成",
+  "completed": "已完成",
+  "delete_habits": "删除习惯",
+  "delete_confirmation": "你确定要删除选中的习惯吗？此操作无法撤销。",
   "cancel": "取消",
-  "save_changes": "保存更改",
-  "create_habit": "创建习惯",
-  "error": "错误",
-  "please_enter_habit_title": "请输入习惯标题",
-  "please_select_reminder_days": "请至少选择一天进行提醒",
+  "delete": "删除",
+  "selected": "已选择",
+  "select_all": "全选",
+  "select_multiple": "多选",
+  "habit_not_found": "未找到习惯",
+  "reminder_set": "提醒已设置",
+  "reminder_set_for": "已为以下习惯设置提醒",
+  "failed_to_set_reminder": "设置提醒失败",
+  "at": "在",
+  "habit_details": "习惯详情",
+  "edit_habit": "编辑习惯",
+  "habit_name": "习惯名称",
+  "enter_habit_name": "输入习惯名称",
+  "enter_habit_title_validation": "请输入习惯标题",
+  "select_reminder_days_validation": "请至少选择一天作为提醒",
+  "go_back": "返回",
   "sunday": "星期日",
   "monday": "星期一",
   "tuesday": "星期二",
@@ -63,436 +109,794 @@
   "friday": "星期五",
   "saturday": "星期六",
   "sun": "日",
-"mon": "一", 
-"tue": "二",
-"wed": "三",
-"thu": "四",
-"fri": "五",
-"sat": "六",
-"weekday_sun": "日",
-"weekday_mon": "一",
-"weekday_tue": "二",
-"weekday_wed": "三",
-"weekday_thu": "四",
-"weekday_fri": "五",
-"weekday_sat": "六",
-  
+  "mon": "一",
+  "tue": "二",
+  "wed": "三",
+  "thu": "四",
+  "fri": "五",
+  "sat": "六",
+  "please_enter_habit_title": "请输入习惯标题",
+  "please_select_reminder_days": "请至少选择一天作为提醒",
+  "delete_habit_title": "删除习惯",
+  "delete_habit": "删除习惯",
+  "delete_habit_confirmation": "你确定要删除这个习惯吗？此操作无法撤销。",
+  "notes": "备注",
+  "add_notes_about_habit": "添加关于此习惯的备注",
+  "custom_reminder": "自定义提醒",
+  "reminder_days": "提醒日期",
+  "all_days": "每天",
+  "weekdays": "工作日",
+  "weekends": "周末",
+  "no_days_selected": "未选择日期",
+  "reminders_on": "提醒时间：",
   "habit_library": "习惯库",
-  "discover_manage_habits": "发现和管理习惯",
-  "search_habits": "搜索习惯",
+  "discover_manage_habits": "发现并管理你的习惯",
+  "search_habits": "搜索习惯...",
   "my_habits": "我的习惯",
   "suggestions": "建议",
+  "create_new_habit": "创建新习惯",
   "no_habits_found": "未找到习惯",
-  "create_habit_or_add_suggestion": "创建习惯或添加建议",
+  "create_habit_or_add_suggestion": "创建新习惯或从我们的建议中添加",
   "all": "全部",
-  
-  "ai_suggestions": "AI建议",
-  "add_habit_button": "添加习惯",
-  "success": "成功",
-  "habit_added_message": "习惯已添加成功",
-  "great": "太棒了",
-  "awesome": "太棒了",
-  "habit_added_ai_message": "已添加到您的习惯列表中",
-  "lets_go": "开始吧",
+  "success": "✅ 成功！",
+  "habit_added_success": "已添加到你的习惯中！",
+  "great": "太好了！",
+  "awesome": "🎉 太棒了！",
+  "habit_added_start_building": "已添加到你的习惯中！今天就开始建立这个积极习惯吧。",
+  "lets_go": "开始吧！",
+  "icon": "图标",
+  "change_icon": "更改图标",
+  "choose_icon": "选择图标",
+  "title": "标题",
+  "enter_habit_title": "输入习惯标题",
+  "notes_optional": "备注（可选）",
+  "add_notes_habit": "添加关于此习惯的备注",
+  "save_changes": "保存更改",
+  "create_habit": "创建习惯",
+  "benefits": "好处",
+  "day_streak": "天连续",
+  "added": "已添加",
+  "ai_suggestions": "AI 建议",
   "new_habit": "新习惯",
-  "match": "匹配度",
+  "match": "匹配",
+  "add_habit_button": "添加习惯",
   "smart_reminder": "智能提醒",
   "optimal_time": "最佳时间",
   "confidence": "置信度",
   "set_reminder": "设置提醒",
-  "ai_smart_reminder_reason": "根据您的完成模式，{time}似乎最适合您",
-  
-  "Health & Fitness": "健康与健身",
-  "Learning & Reading": "学习与阅读",
-  "Daily Life": "日常生活",
-  "Productivity": "效率",
-  "Nature & Environment": "自然与环境",
-  "Social & Relationships": "社交与人际关系",
-  "No Icon": "无图标",
-  
-  "ai_consistent_pairs_well": "与您的{habitTitle}习惯（{streak}天连续）搭配很好",
-  "ai_trouble_easier_version": "这是{habitTitle}的简化版本，更容易坚持",
-  "ai_no_category_habits": "您在{category}方面还没有习惯，建议添加",
-  "ai_alternative_three_breaths": "深呼吸三次",
-  "ai_alternative_three_breaths_desc": "微冥想，帮助建立习惯",
-  
-  "ai_complementary_walk": "散步10分钟",
-  "ai_complementary_walk_desc": "轻松的步行来补充您的健康习惯",
+  "productivity": "生产力",
+  "learning": "学习",
+  "mindfulness": "正念",
+  "fitness": "健身",
+  "social": "社交",
+  "creativity": "创造力",
+  "finance": "财务",
+  "drink_water": "喝水",
+  "drink_water_desc": "全天保持水分",
+  "drink_water_benefits": "提高精力、皮肤健康和大脑功能",
+  "stretch_break": "伸展休息",
+  "stretch_break_desc": "做简单伸展缓解紧张",
+  "stretch_break_benefits": "减少肌肉紧张、提高灵活性、增加精力",
+  "deep_breathing": "深呼吸",
+  "deep_breathing_desc": "练习深呼吸2分钟",
+  "deep_breathing_benefits": "减少压力、降低血压、提高专注力",
+  "sunlight": "晒太阳",
+  "sunlight_desc": "在自然阳光下待10分钟",
+  "sunlight_benefits": "补充维生素D、改善心情、调节睡眠周期",
+  "meditation": "冥想",
+  "meditation_desc": "练习正念冥想5分钟",
+  "meditation_benefits": "减少焦虑、提高专注力、增强自我意识",
+  "gratitude": "感恩练习",
+  "gratitude_desc": "写下3件你感恩的事情",
+  "gratitude_benefits": "改善心情、增加生活满意度、加强人际关系",
+  "device_break": "数字排毒休息",
+  "device_break_desc": "远离所有设备30分钟",
+  "device_break_benefits": "减少眼疲劳、提高专注力、增强现实世界连接",
+  "single_task": "单一任务专注",
+  "single_task_desc": "一次专注于一个任务25分钟",
+  "single_task_benefits": "提高生产力、减少压力、提升工作质量",
+  "daily_priorities": "设定每日优先事项",
+  "daily_priorities_desc": "确定你今天的3个首要任务",
+  "daily_priorities_benefits": "增加专注力、改善时间管理、减少压力",
+  "clear_workspace": "整理工作空间",
+  "clear_workspace_desc": "整理和清洁你的工作区域",
+  "clear_workspace_benefits": "提高专注力、减少干扰、提升生产力",
+  "planning_session": "周计划",
+  "planning_session_desc": "花15分钟规划你的一周",
+  "planning_session_benefits": "改善组织能力、减少压力、增加目标达成",
+  "learn_new": "学习新东西",
+  "learn_new_desc": "花10分钟学习新技能或知识",
+  "learn_new_benefits": "刺激大脑生长、增加知识、提升自信",
+  "squats": "做深蹲",
+  "squats_desc": "做10个自重深蹲",
+  "squats_benefits": "强化腿部、改善姿势、提升新陈代谢",
+  "walk": "散步",
+  "walk_desc": "到外面散步10分钟",
+  "walk_benefits": "改善心血管健康、提升心情、增加精力",
+  "jumping_jacks": "开合跳",
+  "jumping_jacks_desc": "做20个开合跳让心跳加速",
+  "jumping_jacks_benefits": "改善心血管健康、燃烧卡路里、激活身体",
+  "take_stairs": "走楼梯",
+  "take_stairs_desc": "尽可能选择楼梯而不是电梯",
+  "take_stairs_benefits": "强化腿部、改善心血管健康、燃烧额外卡路里",
+  "doodle": "创意涂鸦",
+  "doodle_desc": "花5分钟自由绘画或涂鸦",
+  "doodle_benefits": "刺激创造力、减少压力、提高专注力",
+  "micro_story": "写微故事",
+  "micro_story_desc": "用50个或更少的字写一个很短的故事",
+  "micro_story_benefits": "增强创造力、提高写作技巧、激发想象力",
+  "different_route": "走不同的路",
+  "different_route_desc": "使用不同的路径到达熟悉的目的地",
+  "different_route_benefits": "刺激大脑可塑性、增加意识、激发创造力",
+  "observe_details": "观察细节",
+  "observe_details_desc": "花5分钟注意你环境中的细节",
+  "observe_details_benefits": "提高正念、增强创造力、增加意识",
+  "exercise_daily": "每日运动",
+  "exercise_daily_desc": "至少进行30分钟的体育活动",
+  "exercise_daily_benefits": "提升心情、改善健康、增加精力",
+  "meditate": "冥想",
+  "meditate_desc": "练习正念10分钟",
+  "meditate_benefits": "减少压力、提高专注力、增强幸福感",
+  "read_books": "读书",
+  "read_books_desc": "每天至少阅读20分钟",
+  "read_books_benefits": "扩展知识、提高词汇量、减少压力",
+  "plan_day": "规划你的一天",
+  "plan_day_desc": "花10分钟规划你的日常任务",
+  "plan_day_benefits": "提高生产力、减少压力、改善专注力",
+  "ai_consistent_pairs_well": "由于你已经连续坚持'{habitTitle}'{streak}天，这与你的日常很搭配",
+  "ai_trouble_easier_version": "在'{habitTitle}'上遇到困难？试试这个更容易的版本来建立动力",
+  "ai_no_category_habits": "你还没有任何{category}习惯。这可能是一个很好的补充",
+  "category_wellness": "健康",
+  "category_productivity": "生产力",
+  "category_learning": "学习",
+  "category_mindfulness": "正念",
+  "category_fitness": "健身",
+  "category_creativity": "创造力",
+  "category_social": "社交",
+  "category_finance": "财务",
+  "ai_milestone_message": "🎉 太棒了！你已经达到了'{title}'的{streak}天连续！你正在建立真正的动力。",
+  "ai_perfect_day_message": "🌟 完美的一天！你已经完成了所有习惯。你势不可挡！",
+  "ai_low_completion_message": "💪 每个专家都曾是初学者。今天从小事开始 - 即使1%的进步也很重要！",
+  "ai_good_streak_message": "🔥 你的{streak}天连续表明你有能力。保持动力继续前进！",
+  "ai_encouraging_1": "🌱 小步骤带来大改变。你能做到！",
+  "ai_encouraging_2": "⭐ 进步，不是完美。每一天都是新的机会。",
+  "ai_encouraging_3": "🚀 你正在一次一个习惯地建立你想要的未来。",
+  "ai_encouraging_4": "💎 坚持是精通之母。继续前进！",
+  "ai_encouraging_5": "🌈 你未来的自己会感谢你今天所做的工作。",
+  "ai": {
+    "mlOptimization": {
+      "title": "优化{habitTitle}",
+      "description": "根据你的模式，这个习惯的成功率为{probability}%。考虑在{optimalTime}安排它以获得更好的结果。",
+      "reason": "我们的AI分析显示{habitTitle}可以通过这些修改更有效：{modifications}"
+    },
+    "mlComplementaryReason": "既然你在{habitTitle}方面做得很好（{streak}天连续），这里有一些配合良好的互补习惯：{insights}",
+    "mlAlternativeReason": "如果{habitTitle}感觉有挑战性，试试这个更简单的替代方案。分析显示：{analysis}",
+    "mlGapFilling": "你在{category}类别中缺少习惯。根据你的偏好（{preferences}），这是我们推荐的：",
+    "complementaryHabit": "互补{category}习惯",
+    "complementaryDescription": "这个习惯补充你现有的{habit}习惯",
+    "easierAlternative": "{habit}的简单替代",
+    "easierAlternativeDescription": "建立相同积极行为的更简单版本",
+    "categorySuggestion": "添加{category}习惯",
+    "categorySuggestionDescription": "用这个{category}习惯扩展你的习惯"
+  },
+  "ai_complementary_walk": "散步5分钟",
+  "ai_complementary_walk_desc": "轻度运动来补充你的健康习惯",
   "ai_complementary_water": "喝一杯水",
-  "ai_complementary_water_desc": "保持水分，支持您的健康目标",
-  "ai_complementary_gratitude": "写下感恩事项",
-  "ai_complementary_gratitude_desc": "记录三件感恩的事情",
-  "ai_complementary_breathing": "专注呼吸",
-  "ai_complementary_breathing_desc": "5分钟的专注呼吸练习",
-  "ai_complementary_review": "回顾每日笔记",
-  "ai_complementary_review_desc": "花5分钟回顾您学到的内容",
-  "ai_complementary_skill": "练习新技能",
-  "ai_complementary_skill_desc": "专门时间进行技能发展",
-  "ai_alternative_jumping_jacks": "做5个开合跳",
-  "ai_alternative_jumping_jacks_desc": "快速的运动爆发来开始",
-  "ai_alternative_one_page": "阅读一页",
-  "ai_alternative_one_page_desc": "每天从一页开始，循序渐进",
-  
+  "ai_complementary_water_desc": "全天保持水分",
+  "ai_complementary_gratitude": "练习感恩",
+  "ai_complementary_gratitude_desc": "写下3件你感恩的事情",
+  "ai_smart_reminder_reason": "建议在{time}设置提醒，这是你通常完成这个习惯的时间",
+  "ai_complementary_breathing": "深呼吸练习",
+  "ai_complementary_breathing_desc": "做3次深呼吸来补充你的正念习惯",
+  "ai_complementary_review": "复习学习内容",
+  "ai_complementary_review_desc": "花5分钟复习今天学到的内容",
+  "ai_complementary_skill": "练习技能",
+  "ai_complementary_skill_desc": "花10分钟练习你正在学习的技能",
+  "ai_alternative_jumping_jacks": "开合跳",
+  "ai_alternative_jumping_jacks_desc": "做10个开合跳作为简单的运动替代",
+  "ai_alternative_one_page": "读一页书",
+  "ai_alternative_one_page_desc": "只读一页书作为简单的阅读替代",
+  "ai_alternative_three_breaths": "三次深呼吸",
+  "ai_alternative_three_breaths_desc": "做三次深呼吸作为简单的冥想替代",
+  "habit_added_message": "已添加到你的习惯中！",
+  "habit_added_ai_message": "已添加到你的习惯中！开始建立这个积极习惯吧。",
+  "noDescription": "无描述",
+  "no_icon": "无图标",
+  "emoji_category_health_fitness": "健康与健身",
+  "emoji_category_learning_reading": "学习与阅读",
+  "emoji_category_daily_life": "日常生活",
+  "emoji_category_productivity": "生产力",
+  "emoji_category_nature_environment": "自然与环境",
+  "emoji_category_social_relationships": "社交与关系",
+ 
+  "moodCheckIn": {
+    "title": "详细心情追踪",
+    "question": "你现在感觉如何？",
+    "xpReward": "+5 XP",
+    "quickMode": "快速模式",
+    "moodTags": {
+      "happy": "开心",
+      "calm": "平静",
+      "energetic": "精力充沛",
+      "tired": "疲惫",
+      "stressed": "压力",
+      "anxious": "焦虑",
+      "sad": "悲伤",
+      "excited": "兴奋",
+      "frustrated": "沮丧",
+      "content": "满足",
+      "neutral": "中性",
+      "overwhelmed": "不知所措",
+      "peaceful": "平和",
+      "focused": "专注",
+      "relaxed": "放松",
+      "confident": "自信",
+      "nervous": "紧张"
+    },
+    "selectMood": "选择心情",
+    "selectMoodMessage": "请在完成这个习惯前选择你的感受。",
+    "howAreYouFeeling": "你现在感觉如何？",
+    "intensity": "强度",
+    "submit": "提交",
+    "quickMoodSelector": {
+      "title": "快速心情选择",
+      "quickMode": "快速模式",
+      "backToQuickSelect": "返回选择",
+      "intensityLabel": "强度",
+      "intensityLow": "低强度",
+      "intensityHigh": "高强度",
+      "moreOptionsButton": "更多选项",
+      "todaysMoodEntry": "今日心情记录"
+    },
+    "moodLabels": {
+      "happy": "开心",
+      "sad": "悲伤",
+      "anxious": "焦虑",
+      "energetic": "精力充沛",
+      "tired": "疲惫",
+      "stressed": "压力",
+      "calm": "平静"
+    },
+    "contextTags": {
+      "work": "工作",
+      "family": "家庭",
+      "health": "健康",
+      "social": "社交",
+      "finance": "财务",
+      "exercise": "运动",
+      "sleep": "睡眠",
+      "weather": "天气",
+      "relationships": "人际关系",
+      "money": "金钱",
+      "travel": "旅行",
+      "food": "食物",
+      "entertainment": "娱乐"
+    },
+    "tagsTitle": "选择影响心情的因素",
+    "noteTitle": "添加备注",
+    "notePlaceholder": "写下你的想法、感受或任何想记录的事情...",
+    "recordMood": "记录心情",
+    "recording": "记录中...",
+    "alerts": {
+      "alreadyRecorded": "今日心情已记录",
+      "moodRecorded": "心情已记录",
+      "detailedTrackingComplete": "详细追踪完成",
+      "detailedTrackingMessage": "你的{mood}心情已成功记录！",
+      "saveFailed": "保存失败，请重试"
+    }
+  },
+  "wellness_tabs": {
+    "analysis": "分析",
+    "aiCoach": "AI教练",
+    "integration": "集成",
+    "checkin": "心情打卡"
+  },
+  "wellness": {
+    "title": "健康中心",
+    "subtitle": "关注你的身心健康",
+    "overview": {
+      "overallScore": "整体得分"
+    },
+    "pillars": {
+      "title": "健康支柱"
+    },
+    "categories": {
+      "physical": "身体健康",
+      "physicalSubtitle": "锻炼、睡眠和营养",
+      "mental": "心理健康",
+      "mentalSubtitle": "冥想、正念和压力管理",
+      "social": "社交健康",
+      "socialSubtitle": "人际关系、沟通和社区",
+      "spiritual": "精神健康",
+      "spiritualSubtitle": "目标、价值观和个人成长"
+    },
+    "metrics": {
+      "title": "健康指标"
+    },
+    "loading": "加载中...",
+    "todaysMoodJourney": "今日心情历程",
+    "amazingWork": "太棒了！",
+    "completedDetailedCheckin": "你已完成详细的心情打卡",
+    "moodCheckinTitle": "心情打卡",
+    "howFeelingToday": "今天感觉如何？",
+    "letsCheckin": "让我们来打卡吧",
+    "reflectionPrompt": "花一点时间反思你今天的感受，这有助于更好地了解自己",
+    "recordedAt": "记录时间：",
+    "feeling": "感觉",
+    "intensity": "强度",
+    "addDetailsPrompt": "想要添加更多细节来更好地了解你的心情吗？",
+    "addDetails": "添加详情",
+    "trackingBenefits": "追踪心情有助于识别模式并改善整体幸福感",
+    "startStreak": "开始你的心情追踪之旅",
+    "oneDayStreak": "1天连续",
+    "multiDayStreak": "{count}天连续",
+    "tabs": {
+      "checkin": "打卡",
+      "analysis": "分析",
+      "aiCoach": "AI教练",
+      "integration": "集成"
+    },
+    "sleep": "睡眠",
+    "exercise": "运动",
+    "nutrition": "营养",
+    "meditation": "冥想",
+    "social": "社交",
+    "correlationOverview": "关联概览",
+    "positiveImpact": "积极影响",
+    "negativeImpact": "负面影响",
+    "dataPoints": "数据点",
+    "positivePatterns": "积极模式",
+    "negativePatterns": "消极模式",
+    "recommendations": "建议",
+    "entries": "条目",
+    "correlations": "关联",
+    "moodCorrelation": "心情关联",
+    "totalEntries": "总条目",
+    "daysSinceLastEntry": "距离上次记录天数",
+    "recentActivity": "最近活动",
+    "viewAllEntries": "查看所有条目",
+    "quality": "质量",
+    "min": "分钟",
+    "effectiveness": "效果",
+    "satisfaction": "满意度",
+    "logged": "已记录",
+    "today": "今天",
+    "yesterday": "昨天",
+    "this_week": "本周",
+    "addSleep": "添加睡眠",
+    "addExercise": "添加运动",
+    "addNutrition": "添加营养",
+    "addMeditation": "添加冥想",
+    "addSocial": "添加社交",
+    "noSleepData": "无睡眠数据",
+    "noExerciseData": "无运动数据",
+    "noNutritionData": "无营养数据",
+    "noMeditationData": "无冥想数据",
+    "noSocialData": "无社交数据",
+    "startSleepTracking": "开始睡眠追踪",
+    "startExerciseTracking": "开始运动追踪",
+    "startNutritionTracking": "开始营养追踪",
+    "startMeditationTracking": "开始冥想追踪",
+    "startSocialTracking": "开始社交追踪",
+    "addFirstSleep": "添加第一个睡眠记录",
+    "addFirstExercise": "添加第一个运动记录",
+    "addFirstNutrition": "添加第一个营养记录",
+    "addFirstMeditation": "添加第一个冥想",
+    "addFirstSocial": "添加第一个社交记录",
+    "selectCategory": "选择健康类别",
+    "loadError": "加载健康数据失败。请稍后重试。",
+    "insights": "洞察",
+    "insightsData": {
+      "sleep": {
+        "maintainHygiene": "保持一致的睡眠卫生习惯",
+        "createRoutine": "建立放松的睡前例行程序",
+        "aimHours": "每晚争取7-9小时睡眠",
+        "establishTimes": "建立规律的睡眠和起床时间",
+        "improveEnvironment": "考虑改善睡眠环境",
+        "limitScreenTime": "睡前限制屏幕时间",
+        "avoidCaffeine": "避免在一天中晚些时候摄入咖啡因"
+      },
+      "exercise": {
+        "maintainDuration": "保持规律的运动时长",
+        "increaseTime": "如果可能，逐渐增加运动时间",
+        "includeIntensity": "包括中等至高强度锻炼",
+        "mixIntensities": "在一周内混合不同的运动强度",
+        "mostEffective": "{type}运动似乎对你的心情最有效"
+      },
+      "nutrition": {
+        "continueFoods": "继续关注提升心情的食物",
+        "maintainTiming": "保持规律的进餐时间",
+        "keepHydration": "保持充足的水分摄入",
+        "aimWater": "每天争取8杯以上的水",
+        "reduceProcessed": "考虑减少加工食品",
+        "includeOmega3": "增加富含omega-3的食物",
+        "addFruitsVeggies": "在餐食中添加更多水果和蔬菜"
+      },
+      "meditation": {
+        "increaseDuration": "逐渐增加冥想课程时长",
+        "aimMinutes": "每次课程争取至少10-15分钟",
+        "focusTechniques": "专注于感觉最有效的技巧",
+        "trackTypes": "追踪哪种冥想类型对你最有效",
+        "mostEffective": "{technique}对你似乎最有效"
+      },
+      "social": {
+        "prioritizeQuality": "优先考虑高质量的社交互动",
+        "spendTime": "与让你充满活力的人共度时光",
+        "chooseActivities": "选择让你感觉充满活力的社交活动",
+        "balanceTime": "平衡社交时间与个人充电时间",
+        "mostBeneficial": "{type}活动似乎对你的心情最有益"
+      },
+      "patterns": {
+        "sleep": {
+          "betterQualityMood": "更好的睡眠质量与改善的心情相关",
+          "adequateDurationMood": "充足的睡眠时长提升心情",
+          "consistentSchedule": "规律的睡眠时间表支持情绪稳定",
+          "poorQualityMood": "睡眠质量差对心情有负面影响",
+          "insufficientDurationMood": "睡眠时长不足对心情有负面影响",
+          "noDataFound": "未找到匹配的睡眠和心情数据进行关联分析",
+          "addMoodEntries": "为与睡眠数据相同的日期添加心情条目以查看关联"
+        },
+        "exercise": {
+          "regularDurationMood": "规律的运动时长改善心情",
+          "higherIntensityMood": "更高的运动强度提升心情",
+          "consistentRoutine": "规律的运动习惯支持情绪健康",
+          "lackExerciseMood": "缺乏运动与较低的心情相关"
+        },
+        "nutrition": {
+          "balancedMealsMood": "均衡的餐食与更好的心情相关",
+          "regularHydration": "规律的水分摄入支持情绪稳定",
+          "processedFoodsMood": "加工食品可能对心情产生负面影响"
+        },
+        "meditation": {
+          "longerSessionsMood": "更长的冥想课程与改善的心情相关",
+          "effectiveTechniques": "有效的冥想技巧提升情绪健康",
+          "consistentPractice": "规律的冥想练习支持情绪稳定",
+          "shortSessionsMood": "很短的课程可能无法提供足够的益处"
+        },
+        "social": {
+          "qualityInteractionsMood": "高质量的社交互动与更好的心情相关",
+          "energizingActivities": "充满活力的社交活动提升心情",
+          "balancedSocialTime": "平衡的社交时间支持情绪健康",
+          "unsatisfyingInteractionsMood": "令人不满意的社交互动可能恶化心情",
+          "drainingActivitiesMood": "消耗精力的社交活动对心情产生负面影响"
+        }
+      }
+    }
+  },
+  "quickMoodSelector": {
+    "title": "选择你的心情",
+    "subtitle": "选择最符合你当前感受的心情",
+    "intensityLabel": "强度",
+    "triggersLabel": "触发因素",
+    "noteLabel": "备注",
+    "skipButton": "跳过",
+    "quickCheckinComplete": "快速打卡完成！",
+    "detailedCheckinComplete": "详细打卡完成！",
+    "todaysMoodEntry": "今日心情记录",
+    "moodInfluenceTitle": "影响心情的因素",
+    "optionalLabel": "（可选）",
+    "notePlaceholder": "写下你的想法或感受...",
+    "recordMoodButton": "记录心情",
+    "moreOptionsButton": "更多选项",
+    "backButton": "返回",
+    "lowLabel": "低",
+    "highLabel": "高",
+    "intensityLow": "低强度",
+    "intensityHigh": "高强度"
+  },
+  "dailyMoodReminder": {
+    "title": "每日心情提醒",
+    "subtitle": "花一分钟记录你今天的心情，帮助追踪你的情绪模式",
+    "whyTrack": "为什么要追踪心情？",
+    "benefit1": "了解你的情绪模式和触发因素",
+    "benefit2": "识别影响心情的习惯和行为",
+    "benefit3": "改善整体心理健康和幸福感",
+    "checkinNow": "现在打卡",
+    "remindLater": "稍后提醒",
+    "howFeeling": "你现在感觉如何？",
+    "successTitle": "心情记录成功",
+    "successMessage": "感谢你记录今天的心情！"
+  },
+  "common": {
+    "error": "错误",
+    "great": "太好了",
+    "characters": "字符",
+    "continue": "继续",
+    "success": "成功率",
+    "pro": "专业版",
+    "unknown": "未知",
+    "notSet": "未设置",
+    "uncategorized": "未分类",
+    "unnamedHabit": "未命名习惯",
+    "noNote": "无备注",
+    "noContext": "无上下文",
+    "noData": "无数据",
+    "ok": "确定",
+    "cancel": "取消",
+    "anonymous": "匿名",
+    "untitled": "无标题",
+    "timeAgo": "2小时前",
+    "back": "返回",
+    "getStarted": "开始使用",
+    "skip": "跳过",
+    "close": "✕",
+    "enable": "启用",
+    "noNotes": "无备注",
+    "couldNotParse": "无法解析数据",
+    "invalidData": "无效数据",
+    "loading": "加载中..."
+  },
   "moodAnalytics": {
-    "title": "心情分析",
-     "subtitle": "追踪您的情感健康之旅",
-      "moodStates": {
-    "happy": "开心",
-    "calm": "平静",
-    "energetic": "精力充沛",
-    "tired": "疲惫",
-    "stressed": "压力大",
-    "anxious": "焦虑",
-    "sad": "悲伤"
-  },
-  
-     "dashboard": {
-       "thisWeeksMood": "本周心情",
-    "averageMood": "平均心情",
-    "habitsThisWeek": "本周习惯",
-    "keepItUp": "继续保持！",
-    "moodBoost": "+{boost} 心情提升"
-  },
-  "topMoodBoosters": {
-    "title": "🚀 顶级心情提升器"
-  },
-  "moodImprovement": {
-    "improving": "📈 改善中",
-    "stable": "📊 稳定"
-  },
+    "personalizedRecommendations": {
+      "title": "个性化推荐"
+    },
+    "moodRecommendations": {
+      "categories": {
+        "moodStability": "情绪稳定性",
+        "habitOptimization": "习惯优化",
+        "moodHabitSynergy": "情绪习惯协同",
+        "wellnessIntegration": "健康整合"
+      },
+      "descriptions": {
+        "moodStability": "您的情绪波动率为{{volatility}}%。考虑这些策略来改善稳定性。",
+        "habitOptimization": "您的习惯完成率为{{rate}}%。以下是改善一致性的方法。",
+        "moodHabitSynergy": "基于您的情绪习惯相关性，以下是协同改进。",
+        "wellnessIntegration": "我们发现了您健康习惯中的空白。以下是填补这些空白的建议。"
+      },
+      "impacts": {
+        "moodStability": "改善情绪一致性和情感平衡",
+        "habitCompletion": "更高的习惯完成率和更好的一致性",
+        "moodHabitSynergy": "情绪与习惯成功之间更好的协调",
+        "wellnessIntegration": "更平衡和全面的健康习惯"
+      },
+      "suggestions": {
+        "meditation": "练习每日冥想",
+        "breathingExercises": "尝试深呼吸练习",
+        "consistentSleep": "保持一致的睡眠时间表",
+        "lowMoodActivities": "参与提升情绪的活动",
+        "gratitudePractice": "练习每日感恩",
+        "simplifyHabits": "简化复杂习惯",
+        "habitStacking": "使用习惯堆叠技巧",
+        "reminders": "设置智能提醒",
+        "progressTracking": "可视化跟踪您的进度",
+        "leverageCorrelation": "利用与{{habit}}的正相关",
+        "moodBasedScheduling": "根据您的情绪模式安排习惯",
+        "addPhysicalHabits": "添加身体健康习惯",
+        "addMentalHabits": "添加心理健康习惯",
+        "addSocialHabits": "添加社交健康习惯",
+        "addCreativeHabits": "添加创意健康习惯",
+        "addSpiritualHabits": "添加精神健康习惯",
+        "balancedRoutine": "创建平衡的健康习惯"
+      },
+      "confidence": "置信度",
+      "provideFeedback": "提供反馈",
+      "expectedImpact": "预期影响"
+    },
+    "feedback": {
+      "howHelpful": "这个建议对您有帮助吗？"
+    },
+    "moodPriorities": {
+      "high": "高优先级",
+      "medium": "中优先级",
+      "low": "低优先级"
+    },
+    "title": "🧠 心情分析",
+    "subtitle": "AI驱动的习惯洞察",
+    "selectView": "选择视图",
     "tabs": {
       "overview": "概览",
       "analytics": "分析",
       "aiInsights": "AI洞察",
       "progress": "进度",
-      "correlations": "关联性",
+      "correlations": "关联",
       "wellness": "健康",
       "reports": "报告",
       "calendar": "日历",
-      "distribution": "分布" 
+      "trends": "趋势",
+      "distribution": "分布",
+      "insights": "洞察",
+      "patterns": "模式",
+      "discoveries": "发现",
+      "tips": "提示",
+      "compare": "对比",
+      "habits": "习惯",
+      "successRates": "成功率",
+      "moodProgress": "心情进度",
+      "successByMood": "按心情成功率",
+      "streaks": "连续记录",
+      "monthlyReport": "月度报告",
+      "resilience": "韧性"
     },
     "subTabs": {
-      "habitAnalysis": "习惯分析",
-      "heatMap": "热力图",
+      "trends": "趋势",
       "successRates": "成功率",
+      "distribution": "分布",
+      "compare": "对比",
       "summary": "总结",
-      "resilience": "韧性",
-      "trends": "趋势"
+      "resilience": "韧性"
     },
-    "aiInsights": {
-      "title": "🤖 AI预测智能",
-      "description": "基于您的心情和习惯数据提供个性化洞察",
-      "currentMoodCheckIn": {
-        "title": "当前心情签到",
-        "subtitle": "告诉我们您的感受，获得个性化洞察"
-      },
-      "successPredictions": {
-        "title": "成功预测",
-        "subtitle": "AI驱动的习惯成功预测"
-      },
-      "riskAlerts": {
-        "title": "风险警报",
-        "subtitle": "可能被跳过的习惯"
-      },
-      "keyFactors": "关键因素：",
-      "moodAlignment": "心情匹配",
-      "timing": "时机",
-      "urgencyLevel": "紧急程度：",
-      "suggestions": "💡 建议：",
-      "bestTimeToday": "🎯 今日最佳时间：",
-      "alternativeTimes": "备选时间：",
-      "expectedMoodBoost": "预期心情提升：",
-      "outOfTen": "/10",
-      "quickMoodBoosters": "🚀 快速心情提升：",
-      "predictedCompletions": "预测完成数",
-      "successRate": "成功率",
-      "riskDays": "⚠️ 风险日："
-    },
-    "optimalTiming": {
-        "title": "⏰ 最佳时机",
-        "subtitle": "基于心情的习惯最佳时间"
-      },
-     "moodBasedRecommendations": {
-        "title": "💡 基于心情的建议",
-        "subtitle": "匹配您当前情绪状态的习惯"
-      },
-      "weeklyForecast": {
-        "title": "📅 每周预测",
-        "subtitle": "AI对即将到来一周的预测"
-      },
-      "weeklyInsights": "🔍 每周洞察：",
-    "weeklyInsights": {
-      "title": "🔍 每周洞察：",
-      "intensity": "强度：",
-      "moodImprovementTracking": "📈 心情改善追踪",
-      "thirtyDayTrend": "30天趋势",
-      "ninetyDayTrend": "90天趋势"
-    },
-    "trends": {
-      "improving": "改善中",
-      "declining": "下降中",
-      "stable": "稳定",
-      "longTermGrowth": "长期增长",
-      "needsAttention": "需要关注",
-      "consistent": "一致"
-    },
-    "charts": {
-      "weeklyMoodProgress": "每周心情进展",
-      "successRatesByMood": "按心情分类的成功率",
-      "habitSuccessByMood": "按情绪状态的习惯成功率",
-      "weeklyProgression": "每周进展",
-      "week": "周",
-      "mood": "心情",
-      "days": "天数"
-    },
-    "moodPerformance": {
-      "bestMood": "最佳心情",
-      "challengingMood": "挑战性心情"
-    },
-    "monthlyInsights": {
-      "title": "月度洞察",
-      "emotionalJourney": "情感之旅",
-      "daysTracked": "天已追踪",
-      "overallMood": "整体心情",
-      "avgMood": "平均心情",
-      "dominantMood": "主导心情",
-      "emotionalStability": "情感稳定性",
-      "consistent": "一致",
-      "tips": {
-        "variable": "您这个月的心情变化较大。考虑追踪触发因素并练习正念。",
-        "positive": "很棒的一个月！您的整体心情一直很积极。保持良好的习惯！",
-        "needMore": "追踪更多天数以获得更好的洞察。争取每日心情签到！"
-      }
-    },
-    "correlations": {
-      "title": "心情-习惯关联发现",
-      "highEnergyCorrelation": "高能量关联",
-      "highEnergyDesc": "感到精力充沛时，您完成习惯的比例高出40%",
-      "highEnergyTip": "在高能量时段安排挑战性习惯",
-      "morningMoodBoost": "晨间心情提升",
-      "morningBoostDesc": "晨间习惯平均提升您的心情1.2分",
-      "morningBoostTip": "优先考虑晨间例行公事以获得更好的日常心情",
-      "socialConnectionImpact": "社交连接影响",
-      "socialImpactDesc": "社交习惯与25%更好的心情稳定性相关",
-      "socialImpactTip": "在您的例行公事中包含更多社交活动",
-      "moodImpact": "心情影响",
-      "successByMood": "按心情分类的成功："
-    },
-    "wellnessSummary": {
-      "title": "情感健康总结",
-      "overallWellnessScore": "整体健康评分",
-      "moodStability": "心情稳定性",
-      "habitConsistency": "习惯一致性",
-      "weeklyImprovement": "每周改善",
-      "target": "目标：",
-      "points": "分"
-    },
-    "recommendations": {
-      "title": "个性化建议",
-      "moodOptimization": "心情优化",
-      "habitEfficiency": "习惯效率",
-      "wellnessIntegration": "健康整合",
-      "expectedImpact": "预期影响",
-      "tips": {
-        "meditation": "在低能量时段（下午3-5点）尝试冥想",
-        "socialWeekend": "周末安排社交活动以提升心情",
-        "sunlight": "考虑晨间阳光照射以更好地调节心情",
-        "groupHabits": "将相似习惯组合在一起以提高完成率",
-        "reminders": "在您的高峰能量时间前30分钟设置习惯提醒",
-        "habitStacking": "与您最一致的习惯使用习惯叠加",
-        "breathing": "在要求高的任务之间添加5分钟呼吸练习",
-        "sleepTracking": "追踪睡眠质量以识别心情模式关联",
-        "reflection": "实施每周反思会议以持续改进"
-      }
-    },
-    "performance": {
-      "title": "比较表现",
-      "lastThirtyDays": "过去30天",
-      "previousThirtyDays": "前30天",
-      "thirtyDayTrendAnalysis": "30天趋势分析",
-      "moodImprovement": "心情改善",
-      "habitProgress": "习惯进展",
-      "stability": "稳定性"
-    },
-    "streaks": {
-      "title": "🔥 心情-习惯连续追踪",
-      "activeStreaks": "活跃连续",
-      "longest": "最长：",
-      "total": "总计：",
-      "days": "天",
-      "longestCurrent": "最长当前",
-      "allTimeBest": "历史最佳"
-    },
-    "monthlyReports": {
-      "title": "📊 月度健康报告",
-      "moodDistribution": "本月心情分布",
+    "dashboard": {
       "averageMood": "平均心情",
-      "habitsCompleted": "已完成习惯",
-      "dailyAverage": "日均",
-      "daysTracked": "已追踪天数"
-    },
-    "resilience": {
-      "title": "🛡️ 情感韧性评分",
-      "score": "情感韧性评分",
-      "levels": {
-        "excellent": "优秀",
-        "good": "良好",
-        "moderate": "中等",
-        "developing": "发展中"
-      },
-      "factors": {
-        "moodStability": "心情稳定性",
-        "recoveryRate": "恢复率",
-        "habitConsistency": "习惯一致性",
-        "overallTrend": "整体趋势"
-      },
-      "buildingTips": {
-        "mindfulness": "在挑战时刻练习正念",
-        "consistency": "即使在困难的日子也要保持习惯",
-        "gradualImprovement": "专注于渐进、一致的改善"
-      }
+      "habitsThisWeek": "本周习惯",
+      "keepItUp": "继续保持！",
+      "thisWeeksMood": "本周心情",
+      "moodBoost": "+{boost} 心情提升"
     },
     "quickInsights": {
       "title": "快速洞察",
       "bestMood": "最佳心情",
-      "watchOut": "注意",
-      "topMoodBoosters": "🚀 顶级心情提升器",
-      "success": "成功",
-      "thisWeeksMood": "本周心情",
-      "keepItUp": "继续保持！",
-      "habitsThisWeek": "本周习惯"
+      "watchOut": "需要注意"
+    },
+    "topMoodBoosters": {
+      "title": "最佳心情提升习惯"
+    },
+    "calendar": {
+      "title": "📅 心情日历",
+      "moodScale": "心情等级：",
+      "excellent": "优秀 (8-10)",
+      "good": "良好 (6-7)",
+      "fair": "一般 (4-5)",
+      "poor": "较差 (2-3)",
+      "veryPoor": "很差 (0-1)"
+    },
+    "moodImprovement": {
+      "improving": "📈 改善中",
+      "stable": "📊 稳定"
     },
     "analytics": {
-      "title": "📈 分析",
-      "trends": "趋势",
-      "successRates": "成功率",
+      "title": "详细分析",
       "distribution": "分布",
-      "compare": "比较"
-    },
-    "successRateAnalysis": {
-      "title": "📊 成功率分析",
-      "weeklySuccessRates": "每周成功率",
-      "habitSuccessRates": "习惯成功率"
+      "needsAttention": "需要关注",
+      "compare": "对比",
+      "timeframe": "时间段",
+      "last7Days": "最近7天",
+      "last30Days": "最近30天",
+      "last90Days": "最近90天",
+      "lastYear": "去年",
+      "performanceOverview": "表现概览",
+      "totalHabits": "总习惯数",
+      "activeHabits": "活跃习惯",
+      "completionRate": "完成率",
+      "currentStreak": "当前连续",
+      "longestStreak": "最长连续",
+      "weeklyProgress": "周度进度",
+      "monthlyProgress": "月度进度",
+      "yearlyProgress": "年度进度",
+      "habitPerformance": "习惯表现",
+      "moodAnalytics": "心情分析",
+      "wellnessAnalytics": "健康分析",
+      "advancedAnalytics": "高级分析",
+      "insights": "洞察",
+      "patterns": "模式",
+      "trends": "趋势",
+      "recommendations": "建议",
+      "keyInsights": "关键洞察",
+      "patternAnalysis": "模式分析",
+      "correlationAnalysis": "关联分析",
+      "predictiveInsights": "预测洞察",
+      "sampleData": {
+        "weeklyMoodCycleDesc": "您的心情遵循每周周期，周末达到高峰",
+        "completedMorningRoutine": "完成您的晨间例行程序",
+        "improvedMoodEffect": "全天心情改善",
+        "stressedCascade": "压力",
+        "anxiousTiredOverwhelmed": "焦虑、疲惫和不堪重负",
+        "twoToFourHours": "2-4小时"
+      },
+      "loading": "正在加载分析...",
+      "error": "错误",
+      "loadError": "加载分析数据失败",
+      "streakAnalysis": "连续分析",
+      "days": "天",
+      "moodTrends": "心情趋势",
+      "avgMood": "平均心情",
+      "moodEntries": "条目",
+      "refresh": "刷新",
+      "refreshing": "正在刷新...",
+      "exportTitle": "导出分析数据",
+      "exportMessage": "将您的分析数据导出为CSV文件？",
+      "exportSuccess": "导出成功",
+      "exportSuccessMessage": "您的分析数据已成功导出。",
+      "upgradeRequired": "升级到专业版",
+      "upgradeMessage": "使用专业版获得详细分析、性能洞察和高级报告。",
+      "mockHabits": {
+        "morningExercise": "晨练",
+        "read30Minutes": "阅读30分钟",
+        "drinkWater": "喝水",
+        "meditation": "冥想",
+        "eveningWalk": "晚间散步"
+      },
+      "bestPerformer": "最佳表现者",
+      "noStreakData": "暂无连续数据",
+      "noMoodData": "暂无心情数据",
+      "noDataTitle": "暂无数据",
+      "noDataMessage": "开始追踪您的习惯以查看详细分析和洞察。"
     },
     "emotionalWellnessTrends": {
-      "title": "📈 情感健康趋势",
+      "title": "情绪健康趋势",
       "thirtyDayMoodTrend": "30天心情趋势",
       "improving": "📈 改善中",
       "declining": "📉 下降中",
       "stable": "📊 稳定",
       "averageMood": "平均心情",
-      "peakMood": "峰值心情",
+      "peakMood": "最高心情",
       "lowestMood": "最低心情"
     },
+    "successRateAnalysis": {
+      "title": "成功率分析",
+      "weeklySuccessRates": "周度成功率",
+      "habitSpecificRates": "习惯特定成功率"
+    },
     "moodDistribution": {
-      "title": "🥧 心情分布",
-  "lastThirtyDays": "过去30天心情分解",
-  "mood": "心情",
-  "distribution": "分布",
-  "totalDays": "总天数",
-  "excellentDays": "优秀天数",
-  "goodPlusDays": "良好+天数",
-  "categories": {
-    "excellent": "优秀",
-    "good": "良好",
-    "neutral": "中性",
-    "poor": "较差",
-    "veryPoor": "很差"
-  },
-         "smartInsights": {
-       "title": "💡 智能洞察",
-       "successByMoodState": {
-         "title": "🎯 按心情状态的成功率",
-         "subtitle": "您的心情如何影响习惯完成"
-       },
-       "personalizedTips": {
-         "title": "🎯 个性化建议",
-         "optimalTiming": "最佳时机",
-         "moodBoosters": "心情提升"
-       },
-       "bestMood": "🎯 最佳心情",
-       "challengingMood": "⚠️ 挑战性心情",
-       "successRate": "成功率",
-       "optimalTiming": {
-         "title": "最佳时机",
-         "subtitle": "基于心情的习惯最佳时间"
-       },
-       "moodBasedRecommendations": {
-         "title": "基于心情的建议",
-         "subtitle": "匹配您当前情绪状态的习惯"
-       },
-       "weeklyForecast": {
-         "title": "每周预测",
-         "subtitle": "AI对即将到来一周的预测"
-       },
-       "weeklyProgression": {
-         "title": "每周进展"
-       },
-       "monthlyInsights": {
-         "title": "月度洞察",
-         "variableMoodTip": "您这个月的心情变化较大。考虑追踪触发因素并练习正念。",
-         "greatMonthTip": "很棒的一个月！您的整体心情一直很积极。保持良好的习惯！",
-         "trackMoreTip": "追踪更多天数以获得更好的洞察。争取每日心情签到！"
-       },
-       "correlationDiscoveries": {
-         "title": "心情-习惯关联发现",
-         "highEnergyCorrelation": {
-           "title": "高能量关联",
-           "description": "感到精力充沛时，您完成习惯的比例高出40%",
-           "actionable": "在高能量时段安排挑战性习惯"
-         },
-         "morningMoodBoost": {
-           "title": "晨间心情提升",
-           "description": "晨间习惯平均提升您的心情1.2分",
-           "actionable": "优先考虑晨间例行公事以获得更好的日常心情"
-         },
-         "socialConnectionImpact": {
-           "title": "社交连接影响",
-           "description": "社交习惯与25%更好的心情稳定性相关",
-           "actionable": "在您的例行公事中包含更多社交活动"
-         }
-       }
-     },
-   "riskLevels": {
-      "low": "低",
-      "medium": "中等",
-      "high": "高",
-      "critical": "严重"
-    },
-    "urgencyLevels": {
-      "low": "低",
-      "medium": "中等",
-      "high": "高"
-    },
-    "priorities": {
-      "low": "低",
-      "medium": "中等",
-      "high": "高"
-    },
-    "recommendations": {
-      "title": "个性化建议",
+      "title": "心情分布",
+      "lastThirtyDays": "最近30天",
+      "mood": "心情",
+      "distribution": "分布",
+      "totalDays": "总天数",
+      "excellentDays": "优秀天数",
+      "goodPlusDays": "优秀+良好天数",
       "categories": {
-        "moodOptimization": "心情优化",
-        "habitEfficiency": "习惯效率",
-        "wellnessIntegration": "健康整合"
-      },
-      "suggestions": {
-        "meditation": "在低能量时段尝试冥想（下午3-5点）",
-        "socialActivities": "在周末安排社交活动以提升心情",
-        "sunlightExposure": "考虑晨光照射以更好地调节心情",
-        "groupHabits": "将相似习惯组合在一起以提高完成率",
-        "reminders": "在您的高峰能量时间前30分钟设置习惯提醒",
-        "habitStacking": "与您最一致的习惯使用习惯叠加",
-        "breathing": "在要求高的任务之间添加5分钟呼吸练习",
-        "sleepTracking": "追踪睡眠质量以识别心情模式关联",
-        "reflection": "实施每周反思会议以持续改进"
-      },
-      "impacts": {
-        "moodStability": "+15% 心情稳定性",
-        "completionRate": "+25% 完成率",
-        "overallWellness": "+20% 整体健康"
+        "excellent": "优秀",
+        "good": "良好",
+        "neutral": "中性",
+        "poor": "较差",
+        "veryPoor": "很差"
       }
-    }
+    },
+    "performance": {
+      "title": "表现对比",
+      "thirtyDayTrendAnalysis": "30天趋势分析",
+      "moodImprovement": "心情改善",
+      "habitProgress": "习惯进度",
+      "stability": "稳定性",
+      "lastThirtyDays": "最近30天",
+      "previousThirtyDays": "前30天"
+    },
+    "trends": {
+      "longTermGrowth": "🚀 长期增长",
+      "needsAttention": "⚠️ 需要关注",
+      "consistent": "🔄 稳定"
+    },
+    "wellnessSummary": {
+      "moodStability": "心情稳定性",
+      "habitConsistency": "习惯一致性",
+      "weeklyImprovement": "周度改善"
+    },
+    "emotionalWellnessSummary": {
+      "title": "情绪健康总结",
+      "overallWellnessScore": "整体健康评分",
+      "target": "目标",
+      "points": "分"
+    },
+    "correlationHeatMap": {
+      "title": "🔥 心情-习惯关联热图",
+      "correlationStrength": "关联强度：",
+      "strongPositive": "强正相关",
+      "weakPositive": "弱正相关",
+      "weakNegative": "弱负相关",
+      "strongNegative": "强负相关"
+    },
+    "resilience": {
+      "title": "🛡️ 情绪韧性",
+      "emotionalResilienceScore": "情绪韧性评分",
+      "resilienceFactors": "韧性因素"
+    },
+    "resilienceLevels": {
+      "excellent": "优秀",
+      "good": "良好",
+      "moderate": "中等",
+      "developing": "发展中"
+    },
+    "resilienceFactors": {
+      "stability": "心情稳定性",
+      "recovery": "恢复率",
+      "consistency": "习惯一致性",
+      "trend": "整体趋势"
+    },
+    "resilienceTips": {
+      "title": "韧性建设建议",
+      "mindfulness": "练习正念以提高情绪稳定性",
+      "consistency": "即使在心情低落时也要保持习惯一致性",
+      "improvement": "专注于渐进式改善而非完美"
     },
     "months": {
       "january": "一月",
@@ -508,196 +912,2766 @@
       "november": "十一月",
       "december": "十二月"
     },
-    
-    "weekLabels": {
-      "w1": "第1周",
-      "w2": "第2周",
-      "w3": "第3周",
-      "w4": "第4周"
+    "weekdays": {
+      "sunday": "星期日",
+      "monday": "星期一",
+      "tuesday": "星期二",
+      "wednesday": "星期三",
+      "thursday": "星期四",
+      "friday": "星期五",
+      "saturday": "星期六"
     },
-    "selectView": "选择视图"
+    "correlations": {
+      "habitAnalysis": "习惯分析",
+      "heatMap": "热图",
+      "successRates": "成功率"
+    },
+    "reports": {
+      "monthlyWellnessReport": "月度健康报告",
+      "averageMood": "平均心情",
+      "habitsCompleted": "完成习惯",
+      "dailyAverage": "日均",
+      "daysTracked": "追踪天数",
+      "moodDistributionThisMonth": "本月心情分布"
+    },
+    "progress": {
+      "streakTracking": "连续记录追踪",
+      "improvement": "改善",
+      "performance": "表现",
+      "activeStreaks": "活跃连续记录",
+      "longestCurrent": "当前最长",
+      "allTimeBest": "历史最佳",
+      "activeStreaksCount": "活跃连续记录数"
+    },
+    "smartInsights": {
+      "title": "智能洞察",
+      "bestMood": "最佳心情",
+      "challengingMood": "挑战心情",
+      "successRate": "成功率",
+      "emotionalJourney": {
+        "title": "{month} 情绪之旅"
+      },
+      "weeklyProgression": {
+        "title": "周度进展"
+      },
+      "weeklyInsights": {
+        "intensity": "强度"
+      },
+      "monthlyInsights": {
+        "title": "月度洞察",
+        "variableMoodTip": "你的心情变化较大，建议保持规律的作息时间",
+        "greatMonthTip": "这个月表现很棒！继续保持这种积极势头",
+        "trackMoreTip": "多记录一些心情数据来获得更准确的洞察"
+      },
+      "correlationDiscoveries": {
+        "title": "关联发现",
+        "highEnergyCorrelation": {
+          "title": "高能量关联",
+          "description": "在高能量状态下，你的习惯完成率提高了25%",
+          "actionable": "在高能量时段安排重要习惯"
+        },
+        "morningMoodBoost": {
+          "title": "早晨心情提升",
+          "description": "早晨完成习惯后，全天心情平均提升1.5分",
+          "actionable": "优先在早晨完成关键习惯"
+        },
+        "socialConnectionImpact": {
+          "title": "社交连接影响",
+          "description": "社交活动后，你的心情和习惯完成率都有显著提升",
+          "actionable": "在社交活动后安排习惯完成"
+        }
+      },
+      "successByMoodState": {
+        "title": "按心情状态的成功率",
+        "subtitle": "了解不同心情下你的习惯完成情况"
+      },
+      "personalizedTips": {
+        "title": "个性化建议",
+        "optimalTiming": "最佳时间",
+        "successfulWhenFeeling": "当感觉{feeling}时，你的习惯完成率最高",
+        "moodBoosters": "心情提升",
+        "tryToImproveMood": "尝试{habits}来改善心情"
+      }
+    },
+    "insights": {
+      "smartInsights": "智能洞察",
+      "aiAnalysis": "AI分析",
+      "recommendations": "建议"
+    },
+    "common": {
+      "avgMood": "平均心情",
+      "habits": "习惯",
+      "days": "天",
+      "total": "总计"
+    },
+    "emotionalJourney": {
+      "avgMood": "平均心情",
+      "daysTracked": "追踪天数",
+      "overallMood": "整体心情",
+      "dominantMood": "主要心情",
+      "emotionalStability": "情绪稳定性",
+      "consistent": "一致性"
+    },
+    "moodStates": {
+      "excellent": "极好",
+      "good": "良好",
+      "neutral": "一般",
+      "poor": "较差",
+      "terrible": "很差"
+    },
+    "stabilityLevels": {
+      "veryStable": "非常稳定",
+      "stable": "稳定",
+      "moderate": "中等",
+      "variable": "变化较大"
+    },
+    "charts": {
+      "weeklyMoodProgress": "周度心情进展",
+      "successRatesByMood": "按心情的成功率",
+      "weekLabels": {
+        "week1": "第1周",
+        "week2": "第2周",
+        "week3": "第3周",
+        "week4": "第4周",
+        "week5": "第5周"
+      }
+    },
+    "weeklyInsights": {
+      "intensity": "强度",
+      "moodImprovementTracking": "心情改善追踪",
+      "thirtyDayTrend": "30天趋势",
+      "ninetyDayTrend": "90天趋势",
+      "tuesdayWednesdayOptimal": "周二和周三是最佳习惯完成时间",
+      "fridayChallenging": "周五可能更具挑战性，建议调整期望",
+      "weekendPotential": "周末有潜力提高完成率"
+    },
+    "aiInsights": {
+      "title": "🤖 AI预测智能",
+      "description": "基于AI的个性化洞察和建议",
+      "currentMoodCheckIn": {
+        "title": "当前心情打卡",
+        "subtitle": "告诉我们你的感受，获得个性化洞察",
+        "intensity": "强度：{intensity}/10"
+      },
+      "successPredictions": {
+        "title": "📊 成功预测",
+        "subtitle": "AI驱动的习惯成功预测",
+        "moodAlignment": "心情匹配",
+        "timing": "时间安排",
+        "buildingModels": "正在构建预测模型...完成更多习惯以获得准确预测！"
+      },
+      "riskAlerts": {
+        "title": "⚠️ 风险提醒",
+        "subtitle": "有被跳过风险的习惯",
+        "urgency": "紧急程度：{urgency}"
+      },
+      "optimalTiming": {
+        "title": "⏰ 最佳时间",
+        "subtitle": "基于心情的习惯最佳时间",
+        "bestTimeToday": "今天最佳时间：{time}",
+        "alternativeTimes": "备选时间："
+      },
+      "moodBasedRecommendations": {
+        "title": "💡 基于心情的建议",
+        "subtitle": "匹配你当前情绪状态的习惯",
+        "expectedMoodBoost": "预期心情提升：",
+        "quickMoodBoosters": "快速心情提升："
+      },
+      "weeklyForecast": {
+        "title": "📅 周度预测",
+        "subtitle": "下周习惯成功预测",
+        "confidence": "置信度：{confidence}%"
+      },
+      "keyFactors": "关键因素",
+      "moodAlignment": "心情匹配",
+      "timing": "时间安排",
+      "urgencyLevel": "紧急程度",
+      "suggestions": "建议",
+      "bestTimeToday": "今天最佳时间",
+      "predictedCompletions": "预测完成数",
+      "successRate": "成功率",
+      "riskDays": "风险天数",
+      "weeklyInsights": "周度洞察",
+      "successPredictionMessages": {
+        "insufficientData": "数据不足，无法提供准确预测"
+      },
+      "optimalTimingMessages": {
+        "moodBasedRecommendation": "基于你当前的心情状态，这是完成这个习惯的最佳时间"
+      },
+      "quickMoodBoosters": "快速心情提升",
+      "alternativeTimes": "备选时间："
+    },
+    "patterns": {
+      "analyzing": "正在分析模式...需要更多数据进行模式识别！"
+    },
+    "riskLevels": {
+      "low": "低风险",
+      "medium": "中等风险",
+      "high": "高风险",
+      "critical": "严重风险"
+    },
+    "urgencyLevels": {
+      "low": "低",
+      "medium": "中等",
+      "high": "高",
+      "critical": "紧急"
+    },
+    "analyticsRecommendations": {
+      "title": "个性化建议",
+      "expectedImpact": "预期影响",
+      "categories": {
+        "moodOptimization": "心情优化",
+        "habitEfficiency": "习惯效率",
+        "wellnessIntegration": "健康整合"
+      },
+      "suggestions": {
+        "meditation": "尝试冥想或深呼吸练习",
+        "socialActivities": "增加社交活动",
+        "sunlightExposure": "增加阳光照射时间",
+        "groupHabits": "将相似习惯分组完成",
+        "reminders": "设置更频繁的提醒",
+        "habitStacking": "使用习惯叠加技巧",
+        "breathing": "练习深呼吸技巧",
+        "sleepTracking": "追踪睡眠质量",
+        "reflection": "定期反思和记录"
+      },
+      "impacts": {
+        "moodStability": "改善心情稳定性",
+        "completionRate": "提高完成率",
+        "overallWellness": "提升整体健康"
+      }
+    },
+    "analyticsPriorities": {
+      "high": "高",
+      "medium": "中等",
+      "low": "低"
+    }
   },
-  "dailyMoodReminder": {
-    "successTitle": "心情已记录！",
-    "successMessage": "感谢您花时间反思今天的感受。"
+  "dynamicContent": {
+    "reasoning": {
+      "highEnergy": "高能量",
+      "goodMood": "好心情",
+      "consistentTime": "固定时间",
+      "optimalConditions": "最佳条件",
+      "momentum": "动力",
+      "recovery": "恢复"
+    },
+    "moodBasedRecommendation": {
+      "morning": "早晨",
+      "afternoon": "下午",
+      "evening": "晚上",
+      "highEnergy": "高能量",
+      "lowEnergy": "低能量",
+      "stressful": "压力大"
+    },
+    "activities": {
+      "meditation": "冥想",
+      "exercise": "运动",
+      "reading": "阅读",
+      "walking": "散步",
+      "deepBreathing": "深呼吸",
+      "gratitude": "感恩",
+      "socialCall": "社交通话",
+      "music": "音乐",
+      "nature": "自然",
+      "creative": "创意",
+      "planYourDay": "规划你的一天",
+      "take5DeepBreaths": "做5次深呼吸",
+      "goForShortWalk": "去散个短步",
+      "listenToCalmingMusic": "听 calming 音乐",
+      "practiceMindfulness": "练习正念",
+      "writeInJournal": "写日记",
+      "doGentleStretching": "做 gentle 拉伸",
+      "callFriend": "给朋友打电话",
+      "watchSomethingUplifting": "看一些 uplifting 的内容",
+      "practiceGratitude": "练习感恩",
+      "takePowerNap": "小睡一会儿",
+      "drinkWater": "喝水",
+      "getFreshAir": "呼吸新鲜空气",
+      "tackleChallengingTasks": "处理具有挑战性的任务",
+      "beCreative": "发挥创意",
+      "shareMood": "分享你的心情",
+      "trySomethingNew": "尝试新事物",
+      "helpOthers": "帮助他人"
+    },
+    "avoidance": {
+      "avoidOverwhelmingTasks": "避免 overwhelming 任务",
+      "skipIntenseWorkouts": "跳过 intense 锻炼",
+      "avoidCaffeine": "避免咖啡因",
+      "skipSocialMedia": "跳过社交媒体",
+      "avoidIsolation": "避免 isolation",
+      "skipNegativeContent": "跳过 negative 内容",
+      "avoidHeavyMeals": "避免 heavy 餐食",
+      "skipLateNightActivities": "跳过 late night 活动",
+      "avoidSittingTooLong": "避免坐太久",
+      "skipBoringTasks": "跳过 boring 任务",
+      "avoidOvercommitting": "避免 overcommitting",
+      "skipRiskyDecisions": "跳过 risky 决定",
+      "avoidRushing": "避免 rushing",
+      "skipStressfulConversations": "跳过 stressful 对话"
+    },
+    "suggestions": {
+      "breakItDown": "分解任务",
+      "setReminder": "设置提醒",
+      "findAccountability": "寻找监督",
+      "adjustTiming": "调整时间",
+      "reduceComplexity": "降低复杂度",
+      "celebrateProgress": "庆祝进步"
+    }
   },
-  
-  "quickMoodSelector": {
-    "todaysMoodEntry": "今日心情记录",
-    "intensityLabel": "强度",
-    "title": "您今天感觉如何？",
-    "subtitle": "选择最能描述您当前感受的心情",
-    "triggersLabel": "触发因素",
-    "noteLabel": "备注",
-    "skipButton": "跳过",
-    "lowLabel": "低",
-    "highLabel": "高",
-    "moodInfluenceTitle": "什么影响了您的心情？",
-    "optionalLabel": "（可选）",
-    "notePlaceholder": "添加关于您心情的备注...",
-    "recordMoodButton": "记录心情",
-    "backButton": "返回",
-    "moreOptionsButton": "更多选项"
+  "professional": {
+    "dashboard": {
+      "title": "专业仪表板",
+      "clientOverview": "客户概览"
+    },
+    "generateReport": "生成报告",
+    "generatingReport": "正在生成综合报告...",
+    "createDetailedSummary": "创建详细的临床摘要",
+    "shareData": "分享数据",
+    "sharingData": "正在分享仪表板数据...",
+    "share": "分享",
+    "scheduleSession": "安排会话",
+    "openingCalendar": "正在打开日历...",
+    "schedule": "安排",
+    "quickActions": "快速操作",
+    "insufficientData": "临床洞察数据不足",
+    "noDataAvailable": "无可用数据",
+    "startTrackingMessage": "开始追踪心情和习惯，在此处查看专业洞察和分析。",
+    "getStarted": "开始使用",
+    "loadingDashboard": "正在加载仪表板",
+    "analyzingData": "正在分析您的数据...",
+    "unableToLoadDashboard": "无法加载仪表板",
+    "tryAgain": "重试",
+    "clientOverview": "客户概览",
+    "alertAction": "警报操作",
+    "takingAction": "正在为以下项目采取行动",
+    "timePeriod": "Time Period",
+    "overviewMetrics": "Overview Metrics",
+    "moodScore": "Mood Score",
+    "averageThis": "Average this {timeframe}",
+    "habitCompletion": "Habit Completion",
+    "successRate": "Success rate",
+    "riskAssessment": "Risk Assessment",
+    "currentRiskLevel": "Current Risk Level",
+    "riskDescription": "Based on recent mood patterns and activity levels",
+    "alerts": "Alerts",
+    "allClear": "All Clear",
+    "noAlertsMessage": "No alerts or concerns at this time",
+    "takeAction": "Take Action",
+    "clinicalInsights": "Clinical Insights",
+    "behavioralPatterns": "Behavioral Patterns",
+    "habitImpactAnalysis": "Habit Impact Analysis",
+    "adherenceRate": "Adherence Rate",
+    "moodImpact": "Mood Impact",
+    "clinicalNote": "Clinical Note"
   },
-  
-  "mindfulness": "正念",
-  "productivity": "效率",
-  "fitness": "健身",
-  "creativity": "创意",
-  
-  "drink_water": "喝水",
-  "drink_water_desc": "每天喝足够的水保持身体水分",
-  "drink_water_benefits": "改善皮肤、增强能量、促进新陈代谢",
-  
-  "stretch_break": "伸展休息",
-  "stretch_break_desc": "每小时进行简单的伸展运动",
-  "stretch_break_benefits": "减少肌肉紧张、改善姿势、增加灵活性",
-  
-  "deep_breathing": "深呼吸",
-  "deep_breathing_desc": "练习深呼吸技巧来放松身心",
-  "deep_breathing_benefits": "减少压力、改善专注力、促进放松",
-  
-  "sunlight": "晒太阳",
-  "sunlight_desc": "每天获得自然阳光照射",
-  "sunlight_benefits": "增加维生素D、改善情绪、调节睡眠",
-  
-  "meditation": "冥想",
-  "meditation_desc": "每天进行短时间的冥想练习",
-  "meditation_benefits": "减少焦虑、提高专注力、增强自我意识",
-  
-  "gratitude": "感恩",
-  "gratitude_desc": "每天记录感恩的事情",
-  "gratitude_benefits": "提升幸福感、改善人际关系、增强积极心态",
-  
-  "device_break": "设备休息",
-  "device_break_desc": "定期远离电子设备",
-  "device_break_benefits": "减少眼疲劳、改善睡眠、增强现实连接",
-  
-  "single_task": "专注单任务",
-  "single_task_desc": "一次只专注于一项任务",
-  "single_task_benefits": "提高效率、减少错误、增强专注力",
-  
-  "daily_priorities": "每日优先事项",
-  "daily_priorities_desc": "每天确定最重要的任务",
-  "daily_priorities_benefits": "提高效率、减少压力、实现目标",
-  
-  "clear_workspace": "整理工作空间",
-  "clear_workspace_desc": "保持工作区域整洁有序",
-  "clear_workspace_benefits": "提高专注力、减少干扰、增强创造力",
-  
-  "planning_session": "规划时间",
-  "planning_session_desc": "每天花时间规划和回顾",
-  "planning_session_benefits": "提高组织能力、减少焦虑、实现目标",
-  
-  "learn_new": "学习新知识",
-  "learn_new_desc": "每天学习新的技能或知识",
-  "learn_new_benefits": "增强大脑功能、提升技能、保持好奇",
-  
-  "squats": "深蹲",
-  "squats_desc": "进行简单的深蹲运动",
-  "squats_benefits": "增强腿部力量、改善姿势、燃烧卡路里",
-  
-  "walk": "散步",
-  "walk_desc": "每天进行短距离步行",
-  "walk_benefits": "改善心血管健康、增强情绪、燃烧卡路里",
-  
-  "jumping_jacks": "开合跳",
-  "jumping_jacks_desc": "进行开合跳运动",
-  "jumping_jacks_benefits": "提高心率、增强协调性、燃烧卡路里",
-  
-  "take_stairs": "爬楼梯",
-  "take_stairs_desc": "选择爬楼梯而不是电梯",
-  "take_stairs_benefits": "增强腿部力量、改善心血管健康、燃烧卡路里",
-  
-  "doodle": "涂鸦",
-  "doodle_desc": "进行简单的绘画或涂鸦",
-  "doodle_benefits": "激发创造力、减少压力、提高专注力",
-  
-  "micro_story": "微故事",
-  "micro_story_desc": "写一个简短的故事或想法",
-  "micro_story_benefits": "增强创造力、改善写作技巧、表达想法",
-  
-  "different_route": "不同路线",
-  "different_route_desc": "选择不同的路线到达目的地",
-  "different_route_benefits": "激发创造力、增强观察力、打破常规",
-  
-  "observe_details": "观察细节",
-  "observe_details_desc": "仔细观察周围环境的细节",
-  "observe_details_benefits": "提高观察力、增强正念、激发创造力",
-  
-  "benefits": "好处",
-  "day_streak": "天连续",
-  "wellness": {
-  "title": "健康与心情",
-  "subtitle": "追踪您的心情和健康之旅",
-  "startStreak": "开始您的连续记录！",
-  "oneDayStreak": "1天连续记录！",
-  "multiDayStreak": "{{count}}天连续记录！",
-  "feeling": "感受",
-  "intensity": "强度",
-  "recordedAt": "记录于",
-  "loading": "加载中...",
-  "tabs": {
-    "checkin": "签到",
-    "analysis": "分析",
-    "aiCoach": "AI教练",
-    "integration": "整合"
+  "advancedAnalytics": {
+    "title": "高级分析",
+    "subtitle": "深入了解您的习惯-心情模式",
+    "currentMood": "当前心情",
+    "timeOfDay": "一天中的时间",
+    "evening": "晚上",
+    "recentStreak": "最近连续",
+    "days": "天",
+    "priority": "优先级",
+    "applySuggestion": "应用建议",
+    "generatingInsights": "正在生成个性化洞察...继续追踪以解锁自定义建议！",
+    "patternRecognition": {
+      "title": "高级模式识别"
+    },
+    "personalizedInsights": {
+      "title": "个性化洞察"
+    },
+    "tabs": {
+      "correlations": "相关性",
+      "predictions": "预测",
+      "patterns": "模式",
+      "insights": "洞察"
+    },
+    "timeframes": {
+      "week": "周",
+      "month": "月",
+      "quarter": "季度"
+    },
+    "sections": {
+      "correlationsTitle": "📊 详细心情-习惯相关性",
+      "predictionsTitle": "🔮 习惯成功预测",
+      "patternsTitle": "🧩 高级模式识别",
+      "insightsTitle": "💡 个性化洞察"
+    },
+    "correlations": {
+      "strengthStrong": "强",
+      "strengthModerate": "中等",
+      "strengthWeak": "弱",
+      "bestTimes": "最佳时间",
+      "optimalMood": "最佳心情",
+      "strongPositive": "与心情改善的强正相关",
+      "moderatePositive": "与心情的中等正相关",
+      "negative": "负相关 - 可能需要调整",
+      "noData": "尚无相关性数据。完成更多习惯以查看洞察！"
+    },
+    "predictions": {
+      "averageSuccess": "本周平均成功概率",
+      "buildingModels": "正在构建预测模型...完成更多习惯以获得准确预测！"
+    },
+    "patterns": {
+      "cyclical": "周期性",
+      "trigger": "触发",
+      "chain": "链式",
+      "moodCascade": "心情级联",
+      "optimizeFor": "优化{frequency}模式",
+      "monitorTrigger": "监控此触发因素",
+      "successRate": "成功率：{rate}%",
+      "bestTiming": "最佳时机：{timing}",
+      "leadsTo": "在{timeframe}内导致{moods}",
+      "cascade": "{mood}级联",
+      "earlyIntervention": "建议早期干预",
+      "analyzing": "正在分析模式...需要更多数据进行模式识别！",
+      "sampleData": {
+        "weeklyMoodCycle": "每周心情周期",
+        "weeklyMoodCycleDesc": "心情往往在周中下降，在周末恢复",
+        "completedMorningRoutine": "完成晨间例行程序",
+        "improvedMoodEffect": "改善当天剩余时间的心情",
+        "exerciseBetterMood": "运动 → 更好的心情",
+        "meditationCalmerState": "冥想 → 更平静的状态",
+        "morningMeditationExerciseBreakfast": "晨间冥想 → 运动 → 健康早餐",
+        "within2Hours": "彼此间隔2小时内",
+        "stressedCascade": "压力级联",
+        "anxiousTiredOverwhelmed": "焦虑、疲惫、不知所措",
+        "deepBreathing": "深呼吸",
+        "shortWalk": "短距离散步",
+        "mindfulness": "正念",
+        "weekly": "每周",
+        "twoToFourHours": "2-4小时",
+        "patternDetected": "模式已检测"
+      }
+    },
+    "insights": {
+      "applySuggestion": "应用建议",
+      "priorityHigh": "高",
+      "priorityMedium": "中",
+      "priorityLow": "低",
+      "generating": "正在生成个性化洞察...继续追踪以解锁自定义建议！"
+    },
+    "common": {
+      "unknownHabit": "未知习惯",
+      "notAvailable": "无"
+    }
   },
-  "todaysMoodJourney": "🌟 今日心情之旅",
-  "moodCheckinTitle": "📝 心情签到",
-  "howFeelingToday": "💭 您今天感觉如何？",
-  "amazingWork": "做得很棒！",
-  "completedDetailedCheckin": "您已完成今日详细心情签到。继续保持！",
-  "letsCheckin": "让我们来签到吧",
-  "reflectionPrompt": "花一点时间反思您当前的心情。这有助于建立自我意识并追踪您的健康之旅。",
-  "addDetailsPrompt": "想要深入了解吗？添加详细信息有助于您了解模式并获得个性化洞察。",
-  "addDetails": "✨ 添加详情",
-  "trackingBenefits": "💡 追踪触发因素、备注和背景信息，解锁AI驱动的健康洞察"
-},
-"moodCheckIn": {
-  "moodTags": {
-    "happy": "开心",
-    "sad": "悲伤",
-    "anxious": "焦虑",
-    "energetic": "精力充沛",
-    "tired": "疲惫",
-    "stressed": "压力大",
-    "calm": "平静",
-    "excited": "兴奋",
-    "frustrated": "沮丧",
-    "content": "满足",
-    "neutral": "中性",
-    "relaxed": "放松",
-    "confident": "自信",
-    "nervous": "紧张",
-    "peaceful": "平和",
-    "focused": "专注",
-    "overwhelmed": "不知所措"
+  "csv": {
+    "exportHeader": "习惯统计导出",
+    "exportDate": "导出日期",
+    "totalHabits": "总习惯数",
+    "currentStreak": "当前连续天数",
+    "longestStreak": "最长连续天数",
+    "weeklyCompletionRate": "每周完成率",
+    "monthlyCompletionRate": "每月完成率",
+    "totalCompletedToday": "今日完成总数",
+    "totalCompletedAllTime": "总完成数",
+    "habitDetails": "习惯详情",
+    "habitDetailsHeader": "标题,图标,当前连续天数,最佳连续天数,总完成次数,创建日期"
   },
-  "contextTags": {
-    "work": "工作",
-    "family": "家庭",
-    "health": "健康",
-    "social": "社交",
-    "finance": "财务",
-    "exercise": "运动",
-    "sleep": "睡眠",
-    "weather": "天气",
-    "relationships": "人际关系",
-    "money": "金钱",
-    "travel": "旅行",
-    "food": "饮食",
-    "entertainment": "娱乐"
-  }
-},
- "thisWeeksMood": "本周心情",
-"dayLabels": {
-    "sun": "日",
-    "mon": "一", 
-    "tue": "二",
-    "wed": "三",
-    "thu": "四",
-    "fri": "五",
-    "sat": "六"
+  "aiCoaching": {
+    "title": "增强教练",
+    "subtitle": "AI驱动的个性化指导",
+    "tabs": {
+      "coaching": "🤖 AI教练",
+      "strategies": "🎯 策略",
+      "resilience": "💪 韧性",
+      "plans": "📋 计划"
+    },
+    "loading": "正在加载 AI 辅导...",
+    "preparingSession": "正在准备您的个性化辅导课程。请稍等，我们正在分析您的数据。",
+    "session": {
+      "title": "🤖 AI教练会话",
+      "sessionTypes": {
+        "daily_check_in": "每日打卡",
+        "habit_optimization": "习惯优化",
+        "mood_coaching": "心情教练",
+        "resilience_training": "韧性训练"
+      },
+      "sessionTime": "5分钟会话",
+      "sessionTitle": "会话",
+      "exerciseDuration": "3分钟",
+      "keyInsights": "💡 关键洞察",
+      "recommendations": "🎯 建议",
+      "coachingExercises": "🧘 教练练习",
+      "confidence": "置信度",
+      "difficulty": {
+        "easy": "简单",
+        "medium": "中等",
+        "challenging": "挑战"
+      }
+    },
+    "strategies": {
+      "title": "🎯 个性化策略",
+      "highImpact": "高影响",
+      "expectedImprovement": "预期改善：+{percentage}%",
+      "implementationTime": "实施时间：{timeframe}",
+      "applyStrategy": "应用策略",
+      "emptyState": "正在生成个性化策略...完成更多习惯以解锁自定义策略！"
+    },
+    "resilience": {
+      "title": "💪 情绪韧性训练",
+      "currentScore": "当前韧性评分",
+      "aboveAverage": "高于平均",
+      "beginner": "初学者",
+      "trainingModules": "训练模块",
+      "newModule": "新模块",
+      "exercisesCompleted": "练习已完成",
+      "moduleDuration": {
+        "short": "15分钟",
+        "medium": "20分钟",
+        "long": "10分钟"
+      },
+      "modules": {
+        "cognitiveReframing": {
+          "title": "认知重构",
+          "description": "学习重构关于习惯挫折的消极想法"
+        },
+        "stressResponse": {
+          "title": "压力反应管理",
+          "description": "培养支持你习惯的健康压力反应"
+        },
+        "emotionalAwareness": {
+          "title": "情绪意识",
+          "description": "培养对情绪模式和触发因素的认识"
+        }
+      }
+    },
+    "welcome": {
+      "title": "你好！我是你的AI教练",
+      "subtitle": "准备帮助你建立更好的习惯并改善你的福祉"
+    },
+    "quickStart": {
+      "title": "快速开始课程",
+      "dailyCheckIn": "每日签到",
+      "habitOptimization": "习惯优化", 
+      "moodCoaching": "心情辅导",
+      "resilienceTraining": "韧性训练"
+    },
+    "sessionTypes": {
+      "daily_check_in": "每日签到",
+      "habit_optimization": "习惯优化",
+      "mood_coaching": "心情辅导",
+      "resilience_training": "韧性训练"
+    },
+    "messages": {
+      "dailyCheckIn": {
+        "greeting": "早上好！你今天感觉如何？让我们检查你的进度并为今天设定目标。"
+      },
+      "habitOptimization": {
+        "greeting": "我看到你一直在努力改善习惯。今天你想改善哪个方面？"
+      },
+      "moodCoaching": {
+        "greeting": "我理解心情会影响我们的习惯。今天什么在影响你的心情？"
+      },
+      "resilienceTraining": {
+        "greeting": "韧性是一步一步建立的。今天你想面对什么挑战？"
+      }
+    },
+    "response": {
+      "title": "你感觉如何？",
+      "dailyCheckIn": {
+        "option1": "我感觉精力充沛且充满动力",
+        "option2": "我有点累但还好",
+        "option3": "今天是艰难的一天"
+      },
+      "habitOptimization": {
+        "option1": "我想改善我的坚持性",
+        "option2": "我需要动力方面的帮助",
+        "option3": "我想添加新习惯"
+      },
+      "moodCoaching": {
+        "option1": "我因工作感到压力",
+        "option2": "我担心一些个人问题",
+        "option3": "我感觉很好但想保持"
+      },
+      "resilienceTraining": {
+        "option1": "我想更好地管理压力",
+        "option2": "我想更有耐心",
+        "option3": "我需要自我同情的帮助"
+      }
+    },
+    "progress": {
+      "step": "第{{current}}步，共{{total}}步"
+    },
+    "actions": {
+      "pause": "暂停",
+      "resume": "恢复",
+      "save": "保存",
+      "share": "分享"
+    },
+    "recent": {
+      "title": "最近课程",
+      "dailyCheckIn": "每日签到",
+      "habitOptimization": "习惯优化"
+    },
+    "beta": {
+      "title": "测试版功能",
+      "description": "这个AI辅导功能正在早期开发中。我们正在根据用户反馈进行测试和改进。试试看，告诉我们你的想法！",
+      "feedbackButton": "发送反馈",
+      "feedbackModal": {
+        "subtitle": "通过分享您的体验帮助我们改进AI辅导功能！",
+        "ratingTitle": "您如何评价您的体验？",
+        "ratingLabels": {
+          "select": "选择评分",
+          "poor": "差",
+          "fair": "一般",
+          "good": "好",
+          "veryGood": "很好",
+          "excellent": "优秀"
+        },
+        "feedbackTitle": "额外反馈（可选）",
+        "feedbackPlaceholder": "分享您的想法、建议或报告任何问题...",
+        "cancel": "取消",
+        "submit": "发送反馈",
+        "submitting": "发送中...",
+        "validation": {
+          "ratingRequired": "请在提交反馈前选择评分。"
+        },
+        "success": {
+          "title": "反馈已发送！",
+          "message": "感谢您的反馈。我们将用它来改进AI辅导功能。"
+        },
+        "error": {
+          "title": "错误",
+          "message": "发送反馈失败。请重试。"
+        },
+        "emailError": {
+          "title": "未找到邮件应用",
+          "message": "请确保您的设备上安装了邮件应用程序。"
+        }
+      }
+    },
+    "plans": {
+      "title": "📋 心情优化习惯计划",
+      "adaptive": "自适应",
+      "moodBasedSchedule": "基于心情的时间表",
+      "adaptiveModifications": "自适应修改",
+      "defaultHabitTitle": "运动习惯",
+      "emptyState": "正在创建心情优化计划...追踪你的心情以解锁自适应调度！"
+    },
+    "sampleData": {
+      "insight": "当你获得7小时以上睡眠时，你的晨间习惯完成率提高了23%",
+      "moodInsight": "心情往往在周中下降，在周末恢复",
+      "defaultTimeframe": "1周",
+      "defaultScore": "7.2",
+      "defaultProgress": "3/5",
+      "defaultConfidence": "70%",
+      "recommendation": {
+        "title": "优化睡眠时间表",
+        "description": "将就寝时间提前30分钟以提高晨间习惯成功率",
+        "steps": {
+          "0": "设置手机闹钟提醒就寝时间",
+          "1": "创建晚间放松程序",
+          "2": "追踪睡眠质量1周"
+        }
+      },
+      "exercise": {
+        "title": "正念习惯反思",
+        "description": "3分钟引导反思你的习惯模式"
+      },
+      "moodExercise": {
+        "title": "心情意识检查",
+        "description": "培养对当前心情状态和触发因素的认识"
+      },
+      "resilienceExercise": {
+        "title": "挑战重构",
+        "description": "将挑战转化为成长机会"
+      },
+      "strategy": {
+        "title": "晨间动力建设者",
+        "category": "时间优化",
+        "description": "从最简单的习惯开始，为一天建立动力"
+      },
+      "moodSchedule": {
+        "energetic": "😊 精力充沛",
+        "calm": "😌 平静",
+        "lowEnergy": "😔 低能量",
+        "times": {
+          "energetic": "上午7:00 - 高强度锻炼",
+          "calm": "下午6:00 - 瑜伽或拉伸",
+          "lowEnergy": "随时 - 10分钟散步"
+        }
+      },
+      "adaptiveElements": {
+        "lowMood": "• 心情低落：强度降低50%",
+        "highMood": "• 心情高涨：增加10分钟奖励",
+        "neutralMood": "• 中性：遵循标准程序"
+      },
+      "moodStates": {
+        "lowMood": "心情低落",
+        "highMood": "心情高涨",
+        "neutralMood": "中性"
+      },
+      "exerciseInstructions": {
+        "moodAwareness": {
+          "takeBreaths": "深呼吸三次",
+          "noticeMood": "不带评判地观察当前心情状态",
+          "identifyInfluence": "识别可能影响这种心情的因素",
+          "rateIntensity": "从1-10评分你的心情强度",
+          "setIntention": "为下一小时设定一个意图"
+        },
+        "challengeReframing": {
+          "identifyChallenge": "识别当前挑战",
+          "writeThoughts": "写下你对此的初步想法",
+          "askQuestion": "问自己：\"这能教会我什么？\"",
+          "listOutcomes": "列出三个潜在的积极结果",
+          "createPlan": "为一个结果制定行动计划"
+        }
+      },
+      "expectedOutcomes": {
+        "moodAwareness": "增强心情意识和情绪调节",
+        "challengeReframing": "提高韧性和积极心态"
+      },
+      "timeSlots": {
+        "morning": "早晨",
+        "afternoon": "下午",
+        "evening": "晚上",
+        "earlyAfternoon": "下午早些时候",
+        "lateEvening": "深夜"
+      },
+      "dayNames": {
+        "sunday": "星期日",
+        "monday": "星期一",
+        "tuesday": "星期二",
+        "wednesday": "星期三",
+        "thursday": "星期四",
+        "friday": "星期五",
+        "saturday": "星期六"
+      },
+      "stressTriggers": {
+        "morningStress": "早晨压力",
+        "afternoonOverwhelm": "下午过度劳累",
+        "eveningFatigue": "晚上疲劳"
+      }
+    }
+  },
+  "wellnessIntegration": "健康整合",
+  "viewAllEntries": "查看所有条目",
+  "correlations": "相关性",
+  "positiveImpact": "积极影响",
+  "negativePatterns": "消极模式",
+  "addSleep": "添加睡眠",
+  "addExercise": "添加运动",
+  "addNutrition": "添加营养",
+  "addMeditation": "添加冥想",
+  "addSocial": "添加社交",
+  "wellnessForms": {
+    "sleep": {
+      "title": "睡眠追踪器",
+      "subtitle": "记录你的睡眠模式",
+      "date": "日期",
+      "sleepSchedule": "睡眠时间表",
+      "bedtime": "就寝时间",
+      "wakeTime": "起床时间",
+      "hoursOfSleep": "小时睡眠",
+      "sleepQuality": "你的睡眠质量如何？",
+      "sleepInterruptions": "睡眠中断",
+      "times": "次",
+      "notes": "备注（可选）",
+      "notesPlaceholder": "你睡得怎么样？有什么影响睡眠的因素吗？",
+      "cancel": "取消",
+      "save": "保存睡眠数据",
+      "saving": "保存中...",
+      "missingInfo": "信息缺失",
+      "missingInfoMessage": "请设置就寝时间和起床时间以继续。",
+      "success": "成功！🌙",
+      "successMessage": "你的睡眠数据已成功保存。",
+      "error": "错误",
+      "errorMessage": "保存睡眠数据失败。请重试。",
+      "quality": {
+        "poor": "差",
+        "fair": "一般",
+        "good": "好",
+        "great": "很好",
+        "excellent": "优秀"
+      }
+    },
+    "exercise": {
+      "title": "运动追踪器",
+      "subtitle": "记录你的锻炼课程",
+      "date": "日期",
+      "workoutDate": "锻炼日期",
+      "exerciseType": "运动类型",
+      "duration": "时长（分钟）",
+      "minutes": "分钟",
+      "intensityLevel": "强度等级",
+      "caloriesBurned": "消耗卡路里",
+      "heartRate": "心率",
+      "average": "平均",
+      "maximum": "最大",
+      "notes": "备注（可选）",
+      "workoutNotes": "锻炼备注（可选）",
+      "notesPlaceholder": "你的锻炼感觉如何？有什么备注吗？",
+      "cancel": "取消",
+      "save": "保存运动数据",
+      "saving": "保存中...",
+      "missingInfo": "信息缺失",
+      "missingInfoMessage": "请填写所有必填字段。",
+      "success": "成功！💪",
+      "successMessage": "你的运动数据已成功保存。",
+      "error": "错误",
+      "errorMessage": "保存运动数据失败。请重试。",
+      "types": {
+        "cardio": "有氧运动",
+        "strength": "力量训练",
+        "yoga": "瑜伽",
+        "walking": "步行",
+        "sports": "运动",
+        "other": "其他"
+      },
+      "intensity": {
+        "low": "低强度",
+        "lowDesc": "轻松节奏",
+        "moderate": "中等强度",
+        "moderateDesc": "舒适努力",
+        "high": "高强度",
+        "highDesc": "挑战节奏"
+      },
+      "additionalDetails": "额外详情"
+    },
+    "nutrition": {
+      "title": "营养追踪器",
+      "subtitle": "记录你的餐食和水分摄入",
+      "date": "日期",
+      "meals": "餐食",
+      "mealType": "餐食类型",
+      "time": "时间",
+      "calories": "卡路里",
+      "foods": "食物",
+      "foodPlaceholder": "输入食物（例如：烤鸡沙拉）",
+      "addAnotherFood": "添加另一个食物",
+      "moodImpact": "这个餐食让你感觉如何？",
+      "waterIntake": "水分摄入",
+      "waterSubtitle": "全天保持水分",
+      "ml": "毫升",
+      "quickAdd": "快速添加",
+      "customAmount": "自定义数量",
+      "remove": "移除",
+      "reset": "重置",
+      "dailyGoalProgress": "每日目标进度",
+      "dailyGoalAchieved": "🎉 每日目标达成！",
+      "hydrationTips": "💡 补水小贴士",
+      "hydrationTipsText": "• 起床时喝一杯水\n• 每餐都喝水\n• 工作时保持水杯在身边",
+      "addMeal": "添加餐食",
+      "noMealsAdded": "还没有添加餐食",
+      "tapAddMeal": "点击 添加餐食开始",
+      "supplements": "补充剂",
+      "add": "添加",
+      "supplementPlaceholder": "输入补充剂名称",
+      "notes": "备注（可选）",
+      "notesPlaceholder": "吃完后感觉如何？有什么观察吗？",
+      "cancel": "取消",
+      "save": "保存营养数据",
+      "saving": "保存中...",
+      "missingInfo": "信息缺失",
+      "missingInfoMessage": "请至少添加一顿餐食以继续。",
+      "success": "成功！🎉",
+      "successMessage": "你的营养数据已成功保存！",
+      "error": "错误",
+      "errorMessage": "保存营养数据失败。请重试。",
+      "mealTypes": {
+        "breakfast": "早餐",
+        "lunch": "午餐",
+        "dinner": "晚餐",
+        "snack": "零食"
+      },
+      "moodImpacts": {
+        "positive": "很好",
+        "neutral": "一般",
+        "negative": "不好"
+      },
+      "waterPresets": {
+        "glass": "玻璃杯",
+        "bottle": "瓶子",
+        "large": "大杯",
+        "liter": "升"
+      }
+    },
+    "meditation": {
+      "title": "冥想追踪器",
+      "subtitle": "记录你的冥想课程",
+      "date": "日期",
+      "sessionDate": "课程日期",
+      "meditationType": "冥想类型",
+      "duration": "时长（分钟）",
+      "minutes": "分钟",
+      "preMeditationMood": "冥想前心情",
+      "howWereYouFeeling": "你感觉如何？",
+      "postMeditationMood": "冥想后心情",
+      "howDoYouFeelNow": "现在感觉如何？",
+      "describeMood": "或描述你的心情...",
+      "intensity": "强度",
+      "sessionEffectiveness": "课程效果",
+      "howEffectiveWasSession": "这个课程效果如何？",
+      "techniquesUsed": "使用的技巧",
+      "whatTechniquesDidYouPractice": "你练习了什么技巧？",
+      "addCustomTechnique": "添加自定义技巧...",
+      "sessionNotes": "课程备注",
+      "anyInsightsOrObservations": "任何洞察或观察？",
+      "notesPlaceholder": "描述你的经历、洞察或任何挑战...",
+      "notes": "备注（可选）",
+      "cancel": "取消",
+      "save": "保存冥想数据",
+      "saving": "保存中...",
+      "missingInfo": "信息缺失",
+      "missingInfoMessage": "请填写所有必填字段。",
+      "success": "成功",
+      "successMessage": "冥想课程已成功保存！",
+      "error": "错误",
+      "errorMessage": "保存冥想数据失败。请重试。",
+      "types": {
+        "mindfulness": "正念",
+        "mindfulnessDesc": "当下意识",
+        "breathing": "呼吸",
+        "breathingDesc": "专注于呼吸",
+        "guided": "引导",
+        "guidedDesc": "音频引导冥想",
+        "movement": "运动",
+        "movementDesc": "步行或瑜伽",
+        "other": "其他",
+        "otherDesc": "自定义练习"
+      },
+      "techniques": {
+        "deepBreathing": "深呼吸",
+        "bodyScan": "身体扫描",
+        "lovingKindness": "慈爱冥想",
+        "visualization": "可视化",
+        "mantra": "咒语"
+      },
+      "effectiveness": {
+        "poor": "差",
+        "fair": "一般",
+        "good": "好",
+        "veryGood": "很好",
+        "excellent": "优秀"
+      }
+    },
+    "social": {
+      "title": "社交活动追踪器",
+      "subtitle": "记录你的社交互动",
+      "date": "日期",
+      "when": "何时",
+      "activityType": "活动类型",
+      "durationAndPeople": "时长和人数",
+      "duration": "时长（分钟）",
+      "numberOfParticipants": "参与人数",
+      "setting": "地点",
+      "preActivityMood": "活动前心情",
+      "howWereYouFeelingBefore": "活动前感觉如何？",
+      "quickSelect": "快速选择",
+      "intensity": "强度",
+      "postActivityMood": "活动后心情",
+      "howDoYouFeelNow": "现在感觉如何？",
+      "satisfactionLevel": "满意度等级",
+      "energyLevelAfter": "活动后能量水平",
+      "notes": "备注（可选）",
+      "notesPlaceholder": "关于这个社交活动的任何额外备注...",
+      "cancel": "取消",
+      "save": "保存活动",
+      "saving": "保存中...",
+      "missingInfo": "信息缺失",
+      "missingInfoMessage": "请填写所有必填字段。",
+      "success": "成功",
+      "successMessage": "社交活动已成功记录！",
+      "error": "错误",
+      "errorMessage": "保存社交活动数据失败。",
+      "activityTypes": {
+        "familyTime": "家庭时光",
+        "friends": "朋友聚会",
+        "dateNight": "约会之夜",
+        "party": "派对",
+        "networking": "社交网络",
+        "teamBuilding": "团队建设",
+        "community": "社区活动",
+        "volunteer": "志愿工作",
+        "groupHobby": "团体爱好"
+      },
+      "settings": {
+        "home": "家里",
+        "restaurant": "餐厅",
+        "park": "公园",
+        "cafe": "咖啡厅",
+        "gym": "健身房",
+        "office": "办公室",
+        "outdoors": "户外",
+        "online": "在线"
+      },
+      "energyLevels": {
+        "drained": "精疲力尽",
+        "tired": "疲惫",
+        "neutral": "中性",
+        "energized": "精力充沛",
+        "pumped": "兴奋"
+      },
+      "satisfaction": {
+        "poor": "差",
+        "fair": "一般",
+        "good": "好",
+        "veryGood": "很好",
+        "excellent": "优秀"
+      }
+    }
+  },
+  "stats": {
+    "title": "分析",
+    "subtitle": "跟踪您的进度和洞察",
+    "analyticsTabs": {
+      "wholeAnalytics": "完整分析",
+      "mood": "情绪",
+      "wellness": "健康",
+      "aiCoachingSession": "AI 辅导课程"
+    },
+    "aiCoaching": {
+      "loading": "正在加载AI辅导...",
+      "preparingSession": "正在准备您的个性化辅导课程。请稍等，我们正在分析您的数据。",
+      "title": "AI辅导课程",
+      "subtitle": "获得个性化洞察和建议"
+    },
+    "wellness": {
+      "trackYourWellness": "跟踪您的健康",
+      "addWellnessActivity": "添加健康活动",
+      "addWellnessSubtitle": "添加您的日常健康活动以改善您的洞察",
+      "selectCategory": "选择健康类别",
+      "backToWellness": "返回健康",
+      "categories": {
+        "sleep": {
+          "title": "睡眠",
+          "desc": "跟踪您的睡眠时间和质量"
+        },
+        "exercise": {
+          "title": "运动",
+          "desc": "记录您的锻炼和步数"
+        },
+        "nutrition": {
+          "title": "营养",
+          "desc": "监控您的饮食和水分摄入"
+        },
+        "meditation": {
+          "title": "冥想",
+          "desc": "记录正念活动"
+        },
+        "social": {
+          "title": "社交",
+          "desc": "跟踪社交互动"
+        }
+      },
+      "recommendations": {
+        "title": "建议",
+        "increaseMovement": "增加日常运动",
+        "increaseMovementDesc": "尝试添加10分钟步行以达到您的5k步目标",
+        "optimizeSleep": "优化睡眠时间表",
+        "optimizeSleepDesc": "提前30分钟上床睡觉以改善睡眠质量",
+        "deepBreathing": "深呼吸练习",
+        "deepBreathingDesc": "练习5分钟呼吸练习以减轻压力"
+      },
+      "metrics": {
+        "avgSleep": "平均睡眠",
+        "dailySteps": "每日步数",
+        "meditation": "冥想",
+        "waterGlasses": "水杯"
+      }
+    },
+    "motivational": {
+      "keepGoing": "继续加油！您正在建立动力！",
+      "greatProgress": "进展很好！坚持是关键！",
+      "stayConsistent": "保持一致性！小步骤带来大改变！",
+      "almostThere": "快到了！您做得太棒了！",
+      "excellentWork": "出色的工作！您正在碾压它！"
+    },
+    "export": {
+      "title": "导出数据",
+      "message": "选择您首选的导出格式：",
+      "json": "导出为JSON",
+      "csv": "导出为CSV",
+      "error": "导出数据失败。请重试。"
+    },
+    "share": {
+      "title": "分享进度"
+    },
+    "activity": {
+      "title": "活动日志",
+      "filter": "筛选",
+      "filterTitle": "筛选活动",
+      "filterMessage": "选择要显示的活动：",
+      "all": "所有活动",
+      "completed": "仅已完成",
+      "missed": "仅已错过"
+    },
+    "invite": {
+      "title": "邀请朋友",
+      "message": "加入我一起建立更好的习惯！下载应用程序，让我们一起跟踪我们的进度。",
+      "error": "邀请朋友失败。请重试。"
+    },
+    "filters": {
+      "today": "今天",
+      "week": "本周",
+      "month": "本月"
+    },
+    "thisWeek": "本周",
+    "analytics": {
+      "title": "分析仪表板"
+    },
+    "tabs": {
+      "overview": "概览",
+      "overviewDesc": "快速统计和洞察",
+      "mood": "心情",
+      "moodDesc": "情绪洞察",
+      "wellness": "健康",
+      "wellnessDesc": "健康追踪",
+      "charts": "图表",
+      "chartsDesc": "可视化进度跟踪",
+      "activity": "活动",
+      "activityDesc": "详细活动日志",
+      "advanced": "高级",
+      "advancedDesc": "AI驱动的分析"
+    },
+    "quickStats": {
+      "today": "今天",
+      "allTime": "总计",
+      "thirtyDayRate": "30天率"
+    },
+    "topHabit": {
+      "title": "表现最佳的习惯",
+      "noHabits": "还没有习惯",
+      "dayStreak": "{{count}}天连续",
+      "keepItUp": "继续保持！"
+    },
+    "summary": {
+      "title": "摘要",
+      "totalHabits": "总习惯数",
+      "currentStreak": "当前连续",
+      "longestStreak": "最长连续",
+      "completionRate": "完成率"
+    },
+    "charts": {
+      "title": "表现图表",
+      "subtitle": "您进度的可视化洞察"
+    },
+    "metrics": {
+      "currentStreak": "当前连续",
+      "successRate": "成功率",
+      "today": "今天"
+    },
+    "leaderboard": {
+      "title": "习惯排行榜",
+      "completion": "完成",
+      "noHabitsDisplay": "没有习惯可显示"
+    },
+    "heatmap": {
+      "weeklyTitle": "每周活动",
+      "less": "较少",
+      "more": "较多"
+    },
+    "habitHeatmap": {
+      "title": "习惯热力图",
+      "subtitle": "可视化您全年的连续性",
+      "thisYear": "今年",
+      "longestStreak": "最长连续",
+      "currentStreak": "当前连续"
+    },
+    "habits": {
+      "title": "个人习惯",
+      "export": "导出"
+    },
+    "recommendations": {
+      "title": "个性化建议"
+    },
+    "social": {
+      "title": "社交功能",
+      "share": "分享进度",
+      "invite": "邀请朋友"
+    },
+    "mood": {
+      "title": "情绪跟踪",
+      "subtitle": "跟踪您的情绪模式和洞察",
+      "upgradeMessage": "升级到 Pro 以解锁高级情绪分析和洞察"
+    },
+    "advanced": {
+      "title": "高级分析",
+      "subtitle": "AI驱动的洞察和预测"
+    },
+    "loading": "正在加载分析数据..."
+  },
+  "activity": {
+    "title": "活动日志",
+    "noActivity": "还没有活动",
+    "completeHabits": "完成一些习惯以在此处查看您的活动"
+  },
+  "habitStats": {
+    "addHabitsStatistics": "添加一些习惯以查看统计信息",
+    "dayStreak": "天连续",
+    "completionRate": "完成率"
+  },
+  "miniProgressCharts": {
+    "title": "迷你进度图表",
+    "weeklyOverview": "7天概览",
+    "last7DaysCompletionRate": "过去7天完成率",
+    "dayStreak": "天连续"
+  },
+  "habitHeatmap": {
+    "months": {
+      "january": "一月",
+      "february": "二月",
+      "march": "三月",
+      "april": "四月",
+      "may": "五月",
+      "june": "六月",
+      "july": "七月",
+      "august": "八月",
+      "september": "九月",
+      "october": "十月",
+      "november": "十一月",
+      "december": "十二月"
+    },
+    "weekdays": {
+      "sun": "日",
+      "mon": "一",
+      "tue": "二",
+      "wed": "三",
+      "thu": "四",
+      "fri": "五",
+      "sat": "六"
+    }
+  },
+  "weeklyActivity": {
+    "days": {
+      "mon": "一",
+      "tue": "二",
+      "wed": "三",
+      "thu": "四",
+      "fri": "五",
+      "sat": "六",
+      "sun": "日"
+    }
+  },
+  "patternInsights": {
+    "weeklyPatterns": "🔄 每周模式",
+    "dailyRhythms": "⏰ 日常节奏",
+    "triggerPatterns": "🎯 触发模式",
+    "habitSuccessPatterns": "📈 习惯成功模式",
+    "moodCycles": "🌊 心情周期",
+    "environmentalCorrelations": "🌍 环境相关性",
+    "avgMood": "平均心情",
+    "improving": "改善",
+    "declining": "下降",
+    "stable": "稳定",
+    "weekdays": {
+      "sunday": "星期日",
+      "monday": "星期一",
+      "tuesday": "星期二",
+      "wednesday": "星期三",
+      "thursday": "星期四",
+      "friday": "星期五",
+      "saturday": "星期六"
+    }
+  },
+  "shareProgress": {
+    "title": "分享您的进度",
+    "subtitle": "选择模板并分享您的习惯之旅！",
+    "templates": {
+      "default": {
+        "name": "默认",
+        "description": "简洁清晰的进度总结"
+      },
+      "minimalist": {
+        "name": "极简",
+        "description": "简洁、专注的信息"
+      },
+      "achievement": {
+        "name": "成就",
+        "description": "突出您的成就"
+      },
+      "motivational": {
+        "name": "激励",
+        "description": "鼓舞人心的语调"
+      },
+      "statsHeavy": {
+        "name": "详细统计",
+        "description": "详细的进度指标"
+      },
+      "milestone": {
+        "name": "里程碑",
+        "description": "庆祝重大成就"
+      },
+      "weeklySummary": {
+        "name": "周总结",
+        "description": "以周为重点的进度报告"
+      }
+    },
+    "stats": {
+      "totalHabits": "总习惯数",
+      "bestStreak": "最佳连续",
+      "level": "等级",
+      "successRate": "成功率"
+    },
+    "buttons": {
+      "preview": "预览",
+      "share": "分享",
+      "close": "关闭",
+      "shareNow": "立即分享",
+      "sharing": "分享中..."
+    },
+    "modal": {
+      "previewTitle": "预览消息"
+    },
+    "alerts": {
+      "success": "成功！",
+      "successMessage": "您的进度已分享！🎉",
+      "error": "错误",
+      "errorMessage": "分享进度失败。请重试。",
+      "shareTitle": "我的习惯追踪进度"
+    },
+    "loading": {
+      "loading_habits": "正在加载习惯..."
+    },
+    "messages": {
+      "default": {
+        "title": "🎯 我的习惯追踪进度",
+        "level": "等级",
+        "achievements": "已解锁成就",
+        "activeHabits": "活跃习惯",
+        "totalCompletions": "总完成次数",
+        "bestStreak": "最佳连续天数",
+        "successRate": "成功率",
+        "callToAction": "加入我一起建立更好的习惯！"
+      },
+      "minimalist": {
+        "title": "一天一天建立更好的习惯",
+        "level": "等级",
+        "achievements": "已解锁成就",
+        "dayStreak": "天连续",
+        "successRate": "成功率"
+      },
+      "achievement": {
+        "title": "成就已解锁！",
+        "justEarned": "刚刚获得",
+        "newMilestone": "新里程碑",
+        "myProgress": "我的进度",
+        "level": "等级",
+        "achievements": "已收集成就",
+        "activeHabits": "活跃习惯",
+        "question": "您的最长连续记录是多少？"
+      },
+      "motivational": {
+        "title": "坚持是关键！",
+        "day": "天",
+        "buildingHabits": "建立更好习惯",
+        "andMore": "还有{{count}}个",
+        "smallSteps": "小步骤，大改变！",
+        "whoJoining": "谁要加入我？"
+      },
+      "stats": {
+        "title": "习惯追踪统计",
+        "level": "等级",
+        "achievements": "成就",
+        "bestStreak": "最佳连续",
+        "days": "天",
+        "totalCompletions": "总完成次数",
+        "successRate": "成功率",
+        "activeHabits": "活跃习惯",
+        "dataDriven": "数据驱动的自我提升！"
+      },
+      "milestone": {
+        "title": "里程碑达成！",
+        "dayStreak": "天连续达成！",
+        "journeyTaught": "这段旅程教会了我",
+        "consistency": "坚持胜过完美",
+        "smallWins": "小胜利会累积",
+        "progressLinear": "进步并不总是线性的",
+        "thankYou": "感谢支持！",
+        "nextHabit": "下一个要挑战的习惯是什么？"
+      },
+      "weekly": {
+        "title": "本周回顾",
+        "thisWeek": "本周我",
+        "days": "天",
+        "weekScore": "周得分",
+        "nextWeekFocus": "下周重点：保持一致性！"
+      }
+    }
+  },
+  "gamification": {
+    "title": "游戏化",
+    "subtitle": "升级你的习惯之旅",
+    "tabs": {
+      "overview": "概览",
+      "achievements": "成就",
+      "mood": "心情",
+      "milestones": "里程碑"
+    },
+    "perks": {
+      "dailyHabitTracking": "每日习惯追踪",
+      "advancedStatistics": "高级统计",
+      "customThemes": "自定义主题",
+      "aiHabitSuggestions": "AI习惯建议",
+      "premiumFeatures": "高级功能"
+    },
+    "levelProgress": {
+      "level": "等级",
+      "xp": "经验值",
+      "xpToday": "今日经验值",
+      "levelPerks": "等级特权："
+    },
+    "achievements": {
+      "title": "成就",
+      "xp": "经验值",
+      "rarity": {
+        "common": "普通",
+        "rare": "稀有",
+        "epic": "史诗",
+        "legendary": "传说"
+      },
+      "firstSteps": {
+        "title": "🌱 第一步",
+        "description": "完成你的第一个习惯"
+      },
+      "weekWarrior": {
+        "title": "⚡ 周战士",
+        "description": "保持7天连续记录"
+      },
+      "monthMaster": {
+        "title": "🏆 月大师",
+        "description": "保持30天连续记录"
+      },
+      "centuryClub": {
+        "title": "💎 世纪俱乐部",
+        "description": "保持100天连续记录"
+      },
+      "moodTracker": {
+        "title": "😊 心情追踪者",
+        "description": "连续7天检查心情"
+      },
+      "habitCollector": {
+        "title": "📚 习惯收集者",
+        "description": "创建10个不同的习惯"
+      },
+      "perfectWeek": {
+        "title": "⭐ 完美周",
+        "description": "连续7天完成所有习惯"
+      },
+      "moodWarrior": {
+        "title": "🛡️ 心情战士",
+        "description": "连续30天追踪心情"
+      },
+      "patternFinder": {
+        "title": "🔍 模式发现者",
+        "description": "发现5个心情习惯关联"
+      },
+      "resilienceBuilder": {
+        "title": "💪 韧性建设者",
+        "description": "在低心情状态下完成20个习惯"
+      },
+      "moodBooster": {
+        "title": "🌈 心情提升者",
+        "description": "通过习惯改善心情15次"
+      },
+      "emotionalIntelligence": {
+        "title": "🧠 情商",
+        "description": "在所有7种心情状态下保持习惯"
+      },
+      "adaptiveChampion": {
+        "title": "🎯 适应性冠军",
+        "description": "完成10个适合心情的挑战"
+      },
+      "resilienceMaster": {
+        "title": "🏔️ 韧性大师",
+        "description": "完成5个情感韧性挑战"
+      },
+      "moodStreakLegend": {
+        "title": "🔥 心情连续传奇",
+        "description": "实现14天心情改善连续记录"
+      },
+      "difficultMoodMaster": {
+        "title": "⚔️ 困难心情大师",
+        "description": "在挑战性心情下完成30个习惯"
+      },
+      "balanceKeeper": {
+        "title": "⚖️ 平衡守护者",
+        "description": "保持心情习惯平衡21天"
+      }
+    },
+    "moodCheckIn": {
+      "title": "每日心情检查",
+      "todaysMood": "今日心情",
+      "xpReward": "+5 经验值",
+      "question": "你今天感觉如何？",
+      "tagsTitle": "你会如何描述？",
+      "noteTitle": "添加备注（可选）",
+      "notePlaceholder": "你在想什么？",
+      "recordMood": "记录心情",
+      "recording": "录制中...",
+      "quickMoodSelector": {
+        "title": "快速心情检查",
+        "subtitle": "你现在感觉如何？",
+        "fullSelectorTitle": "你感觉如何？",
+        "fullSelectorSubtitle": "选择你当前的心情",
+        "moreOptionsButton": "更多选项和详情",
+        "intensityLabel": "强度",
+        "intensityLow": "低",
+        "intensityHigh": "高",
+        "influencingMoodTitle": "什么在影响你的心情？",
+        "backToQuickSelect": "← 返回快速选择",
+        "notePlaceholder": "你感觉如何？你在想什么？",
+        "attachmentsTitle": "添加附件",
+        "photoButton": "照片",
+        "voiceButton": "语音",
+        "recordingButton": "录制中...",
+        "imageButton": "图片",
+        "fileButton": "文件"
+      },
+      "moodLabels": {
+        "veryBad": "很糟糕",
+        "bad": "糟糕",
+        "okay": "一般",
+        "good": "好",
+        "excellent": "优秀"
+      },
+      "moodTags": {
+        "stressed": "压力大",
+        "tired": "疲惫",
+        "overwhelmed": "不堪重负",
+        "anxious": "焦虑",
+        "frustrated": "沮丧",
+        "low": "低落",
+        "neutral": "中性",
+        "calm": "平静",
+        "stable": "稳定",
+        "happy": "快乐",
+        "motivated": "有动力",
+        "positive": "积极",
+        "energetic": "精力充沛",
+        "excited": "兴奋",
+        "amazing": "棒极了"
+      },
+      "alerts": {
+        "selectMood": "请选择心情",
+        "chooseFeelings": "选择你今天的感觉",
+        "moodRecorded": "心情已记录！🎉",
+        "thanksMessage": "感谢你的检查。你获得了5经验值！",
+        "alreadyRecorded": "已记录",
+        "alreadyRecordedMessage": "你今天已经记录了心情。明天再来！",
+        "error": "错误",
+        "failedRecord": "记录心情失败。请重试。"
+      }
+    },
+    "streakMilestones": {
+      "title": "连续里程碑",
+      "recentTitle": "最近的连续里程碑",
+      "dayStreak": "{days}天连续！",
+      "unknownHabit": "未知习惯",
+      "noMilestones": "还没有里程碑",
+      "keepBuilding": "继续建立连续记录来解锁里程碑！"
+    },
+    "inviteFriends": {
+      "title": "邀请朋友",
+      "subtitle": "分享你的旅程并获得奖励！使用你的代码加入的朋友也会获得奖励经验值。",
+      "xpPerInvite": "+10 经验值/邀请",
+      "yourLevel": "你的等级",
+      "totalXP": "总经验值",
+      "friendsInvited": "邀请的朋友",
+      "referralCode": "你的推荐代码",
+      "codeHint": "分享此代码获得奖励",
+      "chooseHowToInvite": "选择邀请方式",
+      "shareAnywhere": "分享到任何地方",
+      "shareViaAnyApp": "通过任何应用分享",
+      "whatsapp": "WhatsApp",
+      "shareWithContacts": "与联系人分享",
+      "email": "邮件",
+      "sendViaEmail": "通过邮件发送",
+      "referralRewards": "推荐奖励",
+      "referralRewardsText": "你和你的朋友在他们完成第一个习惯时都会获得50经验值！",
+      "inviteSent": "邀请已发送！🎉",
+      "earnedXP": "你因邀请朋友获得了10经验值！",
+      "error": "错误",
+      "failedToSend": "发送邀请失败。请重试。",
+      "copied": "已复制！",
+      "codeCopied": "推荐代码已复制到剪贴板",
+      "failedToCopy": "复制推荐代码失败",
+      "joinMe": "加入我的习惯建设之旅！",
+      "inviteMessage": "我一直在使用这个很棒的习惯追踪应用，我已经达到{level}级了！🚀\n\n✨ 追踪每日习惯\n🏆 获得成就\n📊 查看你的进度\n🎮 游戏化体验\n\n使用我的推荐代码：{code}\n你加入时我们都会获得奖励经验值！💪\n\n在此下载：{url}",
+      "joinMeTitle": "加入我一起建立更好的习惯！"
+    },
+    "levelTitles": {
+      "habitBeginner": "习惯初学者",
+      "routineBuilder": "例行程序建设者",
+      "consistencySeeker": "一致性追求者",
+      "habitEnthusiast": "习惯爱好者",
+      "routineMaster": "例行程序大师",
+      "habitChampion": "习惯冠军",
+      "lifestyleArchitect": "生活方式建筑师",
+      "habitLegend": "习惯传奇"
+    },
+    "messages": {
+      "levelUp": "🎉 升级！你现在是{level}级了！",
+      "achievementUnlocked": "🏆 成就解锁：{title}！"
+    }
+  },
+  "settings": {
+    "title": "设置",
+    "subtitle": "自定义您的体验",
+    "user": {
+      "guest": "访客用户",
+      "status": "活跃"
+    },
+    "userProfile": {
+      "guestUser": "访客用户",
+      "welcomeBack": "欢迎回来！"
+    },
+    "sections": {
+      "quickActions": "快速操作",
+      "appExperience": "应用体验",
+      "professionalTools": "专业工具",
+      "accountSecurity": "账户与安全",
+      "dataSupport": "数据与支持",
+      "account": "账户",
+      "preferences": "应用偏好",
+      "professional": "专业功能",
+      "privacy": "隐私与数据",
+      "support": "支持",
+      "danger": "危险区域"
+    },
+    "quickActions": {
+      "themes": "主题",
+      "language": "语言",
+      "profile": "个人资料",
+      "notifications": "通知"
+    },
+    "premium": {
+      "upgradeToPro": "升级到专业版",
+      "unlockFeatures": "解锁所有功能和高级分析",
+      "unlockDescription": "解锁无限制习惯、高级分析等更多功能",
+      "proPlanActive": "专业版已激活",
+      "proPlanDescription": "您可以使用所有高级功能",
+      "pro": "专业版"
+    },
+    "preferences": {
+      "theme": "主题",
+      "language": "语言",
+      "animations": "动画效果",
+      "wellnessTracking": "健康追踪",
+      "timezone": "时区"
+    },
+    "timezone": {
+      "title": "时区设置",
+      "currentTimezone": "当前时区",
+      "selectTimezone": "选择时区",
+      "currentTime": "当前时间",
+      "autoDetected": "自动检测",
+      "loading": "加载时区中...",
+      "error": "加载时区时出错",
+      "success": "时区更新成功",
+      "regions": {
+        "americas": "美洲",
+        "europe": "欧洲",
+        "asia": "亚洲",
+        "africa": "非洲",
+        "oceania": "大洋洲"
+      }
+    },
+    "experience": {
+      "animations": "动画效果",
+      "wellnessTracking": "健康追踪",
+      "professionalSharing": "专业分享"
+    },
+    "professional": {
+      "professionalDashboard": "专业仪表板",
+      "sharing": "专业分享",
+      "dashboard": "专业仪表板",
+      "performance": "性能仪表板",
+      "recommendations": "性能建议"
+    },
+    "account": {
+      "changePassword": "修改密码",
+      "linkedAccounts": "关联账户",
+      "privacySettings": "隐私设置",
+      "profile": "个人资料",
+      "notifications": "通知"
+    },
+    "privacy": {
+      "privacySettings": "隐私设置",
+      "dataExport": "数据导出"
+    },
+    "data": {
+      "exportData": "导出数据",
+      "appVersion": "应用版本",
+      "deleteAccount": "删除账户"
+    },
+    "actions": {
+      "signOut": "退出登录"
+    },
+    "modals": {
+      "close": "关闭"
+    },
+    "export": {
+      "exporting": "导出中...",
+      "exportingMessage": "请稍等，我们正在准备您的数据。",
+      "exportComplete": "导出完成！📊",
+      "exportCompleteMessage": "您的数据已成功导出！\n\n📈 {totalDays} 天的数据\n🎯 {totalHabits} 个追踪的习惯\n😊 {totalMoodEntries} 个心情记录\n\n文件已整理，包含清晰的章节和摘要，便于阅读。",
+      "exportFailed": "导出失败",
+      "exportFailedMessage": "导出数据时出现错误。请重试。",
+      "professionalSharingDisabled": "专业分享已禁用",
+      "professionalSharingDisabledMessage": "专业数据分享已禁用。您的数据将保持私密。",
+      "professionalSharingDisabledAccess": "请先启用专业分享以访问仪表板。",
+      "enableNow": "立即启用",
+      "error": "错误",
+      "failedToUpdateSetting": "更新专业分享设置失败。",
+      "appName": "Productivity Habit Tracker",
+      "dialogTitle": "导出数据",
+      "notes": {
+        "dataPrivacy": "此导出包含您的个人习惯和心情数据。请保持安全。",
+        "dataFormat": "所有日期均为ISO格式（YYYY-MM-DD）。时间为24小时制。",
+        "moodScale": "心情强度按1-10分制评分，其中1为极低，10为极高。",
+        "completionRate": "完成率从习惯创建日期到今天计算。",
+        "support": "如果您对这些数据有任何疑问，请联系我们的支持团队。"
+      }
+    },
+    "support": {
+      "termsOfService": "服务条款",
+      "privacyPolicy": "隐私政策",
+      "errorHandling": "错误处理示例"
+    },
+    "danger": {
+      "deleteAccount": "删除账户",
+      "signOut": "退出登录"
+    },
+    "alerts": {
+      "deleteAccount": {
+        "title": "删除账户",
+        "message": "您确定要删除您的账户吗？此操作无法撤销。",
+        "cancel": "取消",
+        "confirm": "删除"
+      },
+      "logout": {
+        "title": "退出登录",
+        "message": "您确定要退出登录吗？",
+        "cancel": "取消",
+        "confirm": "退出登录"
+      }
+    }
+  },
+  "profile": {
+    "title": "个人资料",
+    "success": "成功",
+    "profileUpdated": "个人资料更新成功！",
+    "error": "错误",
+    "failedToUpdate": "更新个人资料失败。请重试。",
+    "permissionRequired": "需要权限",
+    "photoLibraryAccess": "请允许访问您的照片库以上传头像。",
+    "coverImageAccess": "请允许访问您的照片库以上传封面图片。",
+    "uploadFailed": "上传失败",
+    "avatarUploadFailed": "上传头像失败。请重试。",
+    "coverUploadFailed": "上传封面图片失败。请重试。",
+    "pleaseLogin": "请登录以查看您的个人资料。",
+    "addCoverPhoto": "添加封面照片",
+    "personalInfo": "个人信息",
+    "basicProfileInfo": "🧑‍💼 基本个人信息",
+    "name": "姓名",
+    "enterName": "输入您的姓名",
+    "email": "邮箱",
+    "emailAddress": "邮箱地址",
+    "location": "位置",
+    "enterLocation": "输入您的位置",
+    "bio": "个人简介",
+    "bioDescription": "个人简介 / 自我介绍",
+    "tellAboutYourself": "告诉我们关于您自己...",
+    "noBioAdded": "尚未添加个人简介",
+    "readOnly": "只读",
+    "cancel": "取消",
+    "save": "保存",
+    "saveChanges": "保存更改",
+    "charactersRemaining": "字符剩余"
+  },
+  "themeSelector": {
+    "title": "选择主题",
+    "viewPricing": "查看定价",
+    "done": "完成",
+    "availableThemes": "可用主题",
+    "darkTheme": "深色主题",
+    "lightTheme": "浅色主题",
+    "premium": "高级版",
+    "premiumTheme": "高级主题",
+    "premiumMessage": "是高级主题。升级以解锁所有主题和独家功能！",
+    "maybeLater": "稍后再说",
+    "upgradeNow": "立即升级",
+    "comingSoon": "即将推出",
+    "premiumFeatures": "高级功能即将推出！",
+    "unlockPremium": "解锁高级主题和更多功能！",
+    "upgrade": "升级",
+    "error": "错误",
+    "failedToChange": "更改主题失败。请重试。"
+  },
+  "languageSelector": {
+    "title": "选择语言",
+    "selectLanguage": "选择语言",
+    "done": "完成",
+    "availableLanguages": "可用语言",
+    "currentLanguage": "当前语言",
+    "languageChanged": "语言已更改",
+    "languageChangeFailed": "更改语言失败"
+  },
+  "notificationPreferences": {
+    "title": "通知偏好设置",
+    "pushNotifications": "推送通知",
+    "emailNotifications": "邮件通知",
+    "inAppNotifications": "应用内通知",
+    "habitReminders": "习惯提醒",
+    "habitRemindersDesc": "在需要完成习惯时收到提醒",
+    "streakAchievements": "连续成就",
+    "streakAchievementsDesc": "达到新的连续里程碑时庆祝",
+    "weeklyProgress": "周度进度",
+    "weeklyProgressDesc": "习惯进度的周度总结",
+    "dailySummary": "每日总结",
+    "dailySummaryDesc": "已完成和错过习惯的每日回顾",
+    "monthlyReports": "月度报告",
+    "monthlyReportsDesc": "详细的月度进度报告",
+    "tipsMotivation": "提示与激励",
+    "tipsMotivationDesc": "有用的提示和激励内容",
+    "notificationSettings": "通知设置",
+    "notificationInfo": "您可以自定义接收通知的时间和方式。推送通知需要设备设置中的权限。",
+    "error": "错误",
+    "failedToUpdate": "更新通知偏好设置失败"
+  },
+  "changePassword": {
+    "title": "修改密码",
+    "currentPassword": "当前密码",
+    "newPassword": "新密码",
+    "confirmPassword": "确认新密码",
+    "currentPasswordPlaceholder": "输入当前密码",
+    "newPasswordPlaceholder": "输入新密码",
+    "confirmPasswordPlaceholder": "确认新密码",
+    "passwordHint": "密码必须至少8个字符",
+    "changePasswordButton": "修改密码",
+    "changingPassword": "正在修改密码...",
+    "alerts": {
+      "fillAllFields": "请填写所有字段",
+      "passwordsDoNotMatch": "新密码不匹配",
+      "passwordTooShort": "密码必须至少8个字符",
+      "success": "成功",
+      "successMessage": "您的密码已成功修改",
+      "error": "错误",
+      "failedToChange": "修改密码失败。请重试。"
+    }
+  },
+  "privacySettings": {
+    "title": "隐私设置",
+    "categories": {
+      "visibility": "个人资料可见性",
+      "data": "数据收集",
+      "sharing": "分享与社交"
+    },
+    "settings": {
+      "publicProfile": {
+        "title": "公开个人资料",
+        "description": "允许他人查看您的个人资料和成就"
+      },
+      "showStreakCount": {
+        "title": "显示连续记录",
+        "description": "在您的个人资料上显示当前连续记录"
+      },
+      "showHabitList": {
+        "title": "显示习惯列表",
+        "description": "允许他人查看您正在跟踪的习惯"
+      },
+      "analyticsCollection": {
+        "title": "分析数据收集",
+        "description": "通过分享匿名使用数据帮助改进应用"
+      },
+      "crashReports": {
+        "title": "崩溃报告",
+        "description": "自动发送崩溃报告以帮助修复错误"
+      },
+      "performanceData": {
+        "title": "性能数据",
+        "description": "分享应用性能数据以改善用户体验"
+      },
+      "socialSharing": {
+        "title": "社交分享",
+        "description": "允许在社交媒体上分享成就"
+      },
+      "friendRecommendations": {
+        "title": "朋友推荐",
+        "description": "基于您的联系人建议朋友"
+      }
+    },
+    "privacyInfo": {
+      "title": "隐私信息",
+      "description": "了解我们如何保护您的隐私和数据安全。",
+      "viewPrivacyPolicy": "查看隐私政策",
+      "viewTermsOfService": "查看服务条款"
+    },
+    "alerts": {
+      "error": "错误",
+      "failedToUpdate": "更新隐私设置失败"
+    }
+  },
+  "deleteAccount": {
+    "title": "删除账户",
+    "warning": {
+      "title": "删除账户",
+      "subtitle": "此操作将永久删除您的账户和所有相关数据。",
+      "whatWillBeDeleted": "将被删除的内容：",
+      "consequences": {
+        "habits": "• 您的所有习惯和跟踪数据",
+        "profile": "• 您的个人资料信息和设置",
+        "streaks": "• 所有连续记录和成就",
+        "premium": "• 任何高级订阅福利",
+        "appData": "• 所有应用数据和偏好设置"
+      },
+      "alternatives": {
+        "title": "考虑这些替代方案：",
+        "exportData": {
+          "title": "导出您的数据",
+          "description": "在删除前下载您的数据副本"
+        },
+        "temporaryDisable": {
+          "title": "暂时停用",
+          "description": "休息一下而不丢失您的数据"
+        }
+      },
+      "continueButton": "继续删除"
+    },
+    "confirmation": {
+      "title": "最后一步",
+      "subtitle": "要确认账户删除，请在下面的字段中输入 \"DELETE\"：",
+      "inputLabel": "输入 \"DELETE\" 确认：",
+      "placeholder": "DELETE",
+      "backButton": "返回",
+      "deleteButton": "删除账户",
+      "deleting": "正在删除..."
+    },
+    "alerts": {
+      "confirmationError": {
+        "title": "错误",
+        "message": "请输入 \"DELETE\" 确认账户删除"
+      },
+      "finalConfirmation": {
+        "title": "最终确认",
+        "message": "您确定要删除您的账户吗？此操作无法撤销。",
+        "cancel": "取消",
+        "confirm": "删除账户"
+      },
+      "success": {
+        "title": "账户已删除",
+        "message": "您的账户已成功删除。",
+        "ok": "确定"
+      },
+      "error": {
+        "title": "错误",
+        "message": "删除账户失败。请重试。"
+      }
+    }
+  },
+  "linkedAccounts": {
+    "title": "Linked Accounts",
+    "description": "管理您的外部账户连接，以便更轻松地登录和同步数据。",
+    "comingSoon": "Coming Soon",
+    "comingSoonMessage": "账户关联功能正在开发中，即将推出！",
+    "connectedOn": "连接于",
+    "aboutTitle": "About Linked Accounts",
+    "aboutText": "关联账户允许您使用外部服务（如Google、Apple、Facebook）登录，并可以选择同步某些数据。您可以随时断开这些连接。",
+    "alerts": {
+      "success": "成功",
+      "successConnected": "已成功连接到",
+      "successDisconnected": "已成功断开与",
+      "error": "错误",
+      "failedToUpdate": "更新关联账户失败"
+    }
+  },
+  "privacyPolicy": {
+    "title": "隐私政策",
+    "lastUpdated": "最后更新：",
+    "sections": {
+      "introduction": {
+        "title": "1. 介绍",
+        "content": "欢迎使用生产力习惯跟踪器（\"我们\"、\"我们的\"或\"我们\"）。我们致力于保护您的隐私并确保您个人信息的安全。本隐私政策解释了当您使用我们的移动应用程序时，我们如何收集、使用、披露和保护您的信息。"
+      },
+      "informationCollection": {
+        "title": "2. 我们收集的信息",
+        "personalInfo": {
+          "title": "2.1 个人信息",
+          "content": "• 账户信息（电子邮件地址、用户名、个人资料图片）\n• 习惯跟踪数据和进度\n• 心情和健康数据\n• 用户偏好和设置\n• 设备信息和使用分析"
+        },
+        "automaticInfo": {
+          "title": "2.2 自动收集的信息",
+          "content": "• 设备类型、操作系统和版本\n• 应用使用模式和性能数据\n• 崩溃报告和错误日志\n• IP地址和一般位置数据"
+        }
+      },
+      "informationUse": {
+        "title": "3. 我们如何使用您的信息",
+        "content": "我们使用您的信息来：\n• 提供和维护我们的服务\n• 个性化您的体验\n• 跟踪您的进度并提供见解\n• 发送通知和提醒\n• 改进我们的应用并开发新功能\n• 提供客户支持\n• 确保安全并防止欺诈"
+      },
+      "dataSharing": {
+        "title": "4. 数据共享和披露",
+        "content": "我们不会向第三方出售、交易或出租您的个人信息。我们可能仅在以下情况下共享您的信息：\n• 在您明确同意的情况下\n• 为了法律合规或保护权利\n• 与协助应用功能的服务提供商\n• 以匿名形式用于研究和分析"
+      },
+      "dataSecurity": {
+        "title": "5. 数据安全",
+        "content": "我们实施适当的技术和组织措施来保护您的个人信息：\n• 敏感数据的端到端加密\n• 安全的数据传输协议\n• 定期安全审计和更新\n• 对个人数据的有限访问\n• 与知名提供商的安全云存储"
+      },
+      "privacyRights": {
+        "title": "6. 您的隐私权利",
+        "content": "您有权：\n• 访问您的个人数据\n• 纠正不准确的信息\n• 删除您的账户和数据\n• 导出您的数据\n• 选择退出数据收集\n• 控制隐私设置"
+      },
+      "dataRetention": {
+        "title": "7. 数据保留",
+        "content": "我们仅在提供服务和遵守法律义务所需的时间内保留您的个人信息。习惯跟踪数据在您的账户期间保留，除非您选择删除它。匿名分析数据可能会保留更长时间用于研究目的。"
+      },
+      "childrenPrivacy": {
+        "title": "8. 儿童隐私",
+        "content": "我们的应用不适用于13岁以下的儿童。我们不会故意收集13岁以下儿童的个人信息。如果您认为我们收集了13岁以下儿童的信息，请立即联系我们。"
+      },
+      "internationalTransfers": {
+        "title": "9. 国际数据传输",
+        "content": "您的信息可能会被传输到您所在国家以外的国家并在那里处理。我们确保在国际传输期间有适当的保障措施来保护您的数据。"
+      },
+      "policyChanges": {
+        "title": "10. 本政策的变更",
+        "content": "我们可能会不时更新本隐私政策。我们将通过在应用中发布新政策并更新最后更新日期来通知您任何重大变更。您继续使用该应用即表示接受更新后的政策。"
+      },
+      "contactUs": {
+        "title": "11. 联系我们",
+        "content": "如果您对本隐私政策或我们的隐私做法有任何问题，请联系我们：\n电子邮件：privacy@habittracker.com\n地址：[您的公司地址]\n电话：[您的联系电话]"
+      },
+      "featurePrivacy": {
+        "title": "12. 特定功能隐私",
+        "moodTracking": {
+          "title": "心情跟踪",
+          "content": "心情数据默认在您的设备上本地加密存储。您可以选择将此数据同步到我们的安全服务器以进行备份和跨设备访问。"
+        },
+        "socialFeatures": {
+          "title": "社交功能",
+          "content": "当您使用社交功能时，您可以通过隐私设置控制与其他用户共享的信息。个人资料可见性和数据共享是选择加入功能。"
+        },
+        "analytics": {
+          "title": "分析",
+          "content": "我们收集匿名使用分析以改进我们的应用。您可以在隐私设置中选择退出分析收集，而不会影响应用功能。"
+        }
+      }
+    }
+  },
+  "community": {
+    "title": "👥 社区与社交",
+    "subtitle": "连接、分享、共同成长",
+    "upgradeRequired": "Upgrade to Pro",
+    "upgradeMessage": "Join the community and connect with others on their habit journey",
+    "feed": "动态",
+    "trending": "热门",
+    "stories": "成功故事",
+    "support": "支持",
+    "partners": "伙伴",
+    "searchPlaceholder": "搜索帖子、主题或用户...",
+    "share": "分享",
+    "sharingComingSoon": "分享功能即将推出！",
+    "success": "成功",
+    "liked": "已点赞！",
+    "error": "错误",
+    "failedToLoadData": "加载社区数据失败",
+    "createPost": "创建帖子",
+    "post": "帖子",
+    "whatsOnYourMind": "您在想什么？",
+    "photo": "照片",
+    "gallery": "相册",
+    "loadingFeed": "加载社区动态中...",
+    "noPostsYet": "暂无帖子",
+    "beFirstToShare": "成为第一个分享您旅程的人！",
+    "patternDiscovery": "模式发现",
+    "anonymousUser": "匿名用户",
+    "accountabilityPartners": "责任伙伴",
+    "connectWithUsers": "与有相似目标的用户联系",
+    "noPartnersYet": "暂无伙伴",
+    "weWillMatchYou": "我们很快会为您匹配兼容的用户！",
+    "failedToUpdateLike": "更新点赞失败",
+    "failedToUpdateBookmark": "更新书签失败",
+    "searchFailed": "搜索失败",
+    "failedToCreatePost": "创建帖子失败",
+    "tabs": {
+      "feed": "动态",
+      "trending": "热门",
+      "stories": "故事",
+      "support": "支持",
+      "partners": "伙伴"
+    },
+    "habit": "习惯",
+    "moodTarget": "心情目标",
+    "match": "匹配",
+    "sharedGoals": "共同目标",
+    "helpful": "有用",
+    "search": "搜索",
+    "filters": "筛选",
+    "postPlaceholder": "您在想什么？与社区分享您的想法...",
+    "justNow": "刚刚",
+    "beFirstToPost": "成为第一个发帖的人！",
+    "findPartners": "寻找伙伴",
+    "loadFailed": "加载社区数据失败",
+    "effectiveness": "效果",
+    "duration": "持续时间",
+    "postCreated": "帖子创建成功！",
+    "loading": "加载中...",
+    "beta": {
+      "badge": "BETA",
+      "description": "社区功能正在测试中。更多功能即将推出！"
+    }
+  },
+  "onboarding": {
+    "welcome": {
+      "title": "欢迎开启您的健康之旅",
+      "subtitle": "通过人工智能和个性化指导，开始养成更好的习惯并记录您的心情。",
+      "feature1": "记录您的心情",
+      "feature2": "养成健康习惯",
+      "feature3": "发现规律"
+    },
+    "language": {
+      "title": "选择您的语言",
+      "subtitle": "选择您偏好的语言来个性化您的体验",
+      "feature1": "支持4种语言",
+      "feature2": "本地化内容和功能",
+      "feature3": "随时轻松切换"
+    },
+    "freeFeatures": {
+      "title": "免费功能",
+      "subtitle": "开始您的健康之旅所需的一切。",
+      "feature1": "追踪最多4个习惯",
+      "feature2": "7天分析",
+      "feature3": "基础心情追踪",
+      "feature4": "简单提醒"
+    },
+    "proFeatures": {
+      "title": "专业功能",
+      "subtitle": "通过高级功能和AI指导解锁无限潜力。",
+      "feature1": "无限习惯",
+      "feature2": "365天分析",
+      "feature3": "AI驱动指导",
+      "feature4": "高级心情洞察",
+      "feature5": "高级主题和个性化"
+    },
+    "getStartedStep": {
+      "title": "准备开始了吗？",
+      "subtitle": "您的健康之旅现在开始。让我们创建您的第一个习惯！",
+      "feature1": "创建您的第一个习惯",
+      "feature2": "设置心情追踪",
+      "feature3": "开始您的旅程"
+    },
+    "skip": "跳过",
+    "previous": "上一步",
+    "next": "下一步",
+    "getStarted": "开始",
+    "proFeature": "专业功能",
+    "upgrade": "升级到专业版",
+    "upgradeNow": "立即升级",
+    "description": "通过人工智能和个性化指导，开始养成更好的习惯并记录您的心情。",
+    "features": {
+      "trackMoods": "记录您的心情",
+      "buildHabits": "养成健康习惯",
+      "discoverPatterns": "发现规律",
+      "improveWellbeing": "提升幸福感"
+    },
+    "coreFeatures": {
+      "title": "核心功能",
+      "description": "探索应用的主要功能，帮助您建立健康的生活方式。",
+      "features": [
+        "智能习惯追踪与提醒",
+        "心情记录与分析",
+        "个性化AI建议",
+        "进度可视化报告",
+        "游戏化激励机制"
+      ]
+    },
+    "aiBenefits": {
+      "title": "AI智能助手",
+      "description": "体验人工智能如何优化您的健康习惯。",
+      "benefits": [
+        "个性化习惯建议",
+        "最佳时机提醒",
+        "心情模式分析",
+        "预测性健康洞察",
+        "适应性学习算法"
+      ]
+    },
+    "privacyTrust": {
+      "title": "隐私与信任",
+      "description": "您的数据安全是我们的首要任务。",
+      "features": [
+        "端到端数据加密",
+        "本地优先存储",
+        "完全隐私控制",
+        "无数据销售承诺",
+        "透明数据处理"
+      ]
+    },
+    "quickSetup": {
+      "title": "快速设置",
+      "description": "让我们通过几个简单问题，个性化您的体验。",
+      "tryFirstMood": "试试您的第一次心情记录！",
+      "completionMessage": "设置完成！您已准备好开始旅程。"
+    },
+    "buttons": {
+      "next": "下一步",
+      "previous": "上一步",
+      "skip": "跳过",
+      "getStarted": "开始",
+      "complete": "完成"
+    }
+  },
+  "performance": {
+    "dashboard": {
+      "title": "性能仪表板",
+      "subtitle": "监控和优化您的应用程序性能",
+      "overview": "概览",
+      "memory": "内存",
+      "network": "网络",
+      "score": "分数",
+      "overallScore": "Overall Score",
+      "quickStats": "Quick Stats",
+      "renderTime": "Render Time",
+      "memoryUsage": "Memory Usage",
+      "connection": "连接",
+      "activeTasks": "活动任务",
+      "performanceAlerts": "Performance Alerts",
+      "performanceTips": "Performance Tips",
+      "criticalMemoryUsage": "检测到严重内存使用",
+      "criticalMemoryDescription": "Memory usage is critically high",
+      "highMemoryUsage": "检测到高内存使用",
+      "highMemoryDescription": "Memory usage is high",
+      "tip1": "关闭未使用的浏览器标签页以释放内存",
+      "tip2": "定期重启应用程序以获得最佳性能",
+      "lastUpdated": "Last Updated"
+    },
+    "memory": {
+      "title": "内存管理",
+      "used": "已用内存",
+      "available": "可用内存",
+      "usage": "内存使用",
+      "limit": "内存限制",
+      "alerts": "内存警报"
+    },
+    "network": {
+      "title": "网络性能",
+      "connection": "Connection",
+      "quality": "连接质量",
+      "pending": "待处理请求",
+      "failed": "失败请求",
+      "totalRequests": "Total Requests",
+      "successRate": "Success Rate",
+      "averageResponseTime": "Average Response Time",
+      "cacheHitRate": "Cache Hit Rate",
+      "online": "Online",
+      "offline": "Offline",
+      "excellent": "优秀",
+      "good": "良好",
+      "poor": "差"
+    },
+    "alerts": {
+      "title": "性能警报",
+      "criticalAlerts": "严重警报",
+      "slowRendering": "检测到慢渲染",
+      "slowRenderingMessage": "渲染时间为{time}ms，超过{threshold}ms阈值",
+      "highMemoryUsage": "高内存使用",
+      "highMemoryUsageMessage": "内存使用率为{usage}%，超过{threshold}%阈值",
+      "networkIssues": "检测到网络问题",
+      "networkIssuesMessage": "{count}个网络请求失败",
+      "lowCacheHitRate": "低缓存命中率",
+      "lowCacheHitRateMessage": "缓存命中率为{rate}%，低于{threshold}%阈值",
+      "noConnection": "无网络连接",
+      "noConnectionMessage": "应用程序当前离线。某些功能可能无法正常工作。",
+      "poorConnection": "连接质量差",
+      "poorConnectionMessage": "网络连接质量差。性能可能受到影响。",
+      "optimize": "优化",
+      "optimizeMemory": "优化内存",
+      "clearHistory": "清除历史",
+      "settings": {
+        "title": "性能警报设置",
+        "generalSettings": "常规设置",
+        "enableAlerts": "启用性能警报",
+        "enableAlertsDesc": "显示实时性能警报",
+        "autoDismiss": "自动关闭警报",
+        "autoDismissDesc": "延迟后自动隐藏警报",
+        "alertTypes": "警报类型",
+        "criticalAlerts": "严重警报",
+        "criticalAlertsDesc": "显示严重性能问题",
+        "warningAlerts": "警告警报",
+        "warningAlertsDesc": "显示性能警告",
+        "infoAlerts": "信息警报",
+        "infoAlertsDesc": "显示信息警报",
+        "behavior": "行为",
+        "soundNotifications": "声音通知",
+        "soundNotificationsDesc": "为新警报播放声音",
+        "vibration": "振动",
+        "vibrationDesc": "为新警报振动"
+      }
+    },
+    "recommendations": {
+      "title": "性能建议",
+      "criticalRenderIssue": "严重渲染性能问题",
+      "criticalRenderIssueMessage": "渲染时间为{time}ms，严重过高。这将导致明显的UI延迟。",
+      "renderOptimization": "渲染性能优化",
+      "renderOptimizationMessage": "渲染时间为{time}ms。考虑优化组件渲染。",
+      "criticalMemoryUsage": "严重内存使用",
+      "criticalMemoryUsageMessage": "内存使用率为{usage}%。需要立即优化。",
+      "highMemoryUsage": "高内存使用",
+      "highMemoryUsageMessage": "内存使用率为{usage}%。考虑内存优化。",
+      "potentialMemoryLeak": "潜在内存泄漏",
+      "potentialMemoryLeakMessage": "检测到高内存使用。检查组件中的内存泄漏。",
+      "poorCachePerformance": "缓存性能差",
+      "poorCachePerformanceMessage": "缓存命中率为{rate}%。缓存策略需要改进。",
+      "cacheOptimization": "缓存优化",
+      "cacheOptimizationMessage": "缓存命中率为{rate}%。考虑改进缓存策略。",
+      "networkIssues": "网络问题",
+      "networkIssuesMessage": "{count}个网络请求失败。检查网络连接和API端点。",
+      "networkOptimization": "网络优化",
+      "networkOptimizationMessage": "{count}个网络请求失败。考虑实施重试逻辑。",
+      "slowResponseTimes": "响应时间慢",
+      "slowResponseTimesMessage": "平均响应时间为{time}ms。需要网络优化。",
+      "overallPerformanceIssues": "整体性能问题",
+      "overallPerformanceIssuesMessage": "检测到多个性能问题。建议全面优化。",
+      "impact": "影响",
+      "effort": "努力",
+      "improvement": "改进",
+      "resetMonitoring": "重置监控",
+      "forceGC": "强制GC",
+      "clearCaches": "清除缓存",
+      "resetCache": "重置缓存",
+      "clearHistory": "清除历史",
+      "optimizeAll": "全部优化",
+      "applied": "已应用",
+      "greatPerformance": "Great Performance!",
+      "noOptimizationsNeeded": "No optimizations needed at this time.",
+      "recommendationApplied": "建议已应用",
+      "recommendationAppliedMessage": "\"{title}\"已成功应用。",
+      "renderOptimizationApplied": "渲染优化已应用",
+      "renderOptimizationAppliedMessage": "渲染性能监控已重置。"
+    },
+    "status": {
+      "excellent": "Excellent",
+      "excellentMessage": "您的应用程序运行顺畅，性能最佳！",
+      "good": "Good",
+      "goodMessage": "性能良好，可以进行小幅优化。",
+      "poor": "差",
+      "poorMessage": "检测到性能问题。考虑优化操作。",
+      "warning": "Warning",
+      "critical": "Critical"
+    },
+    "tabs": {
+      "overview": "概览",
+      "memory": "内存",
+      "network": "网络"
+    },
+    "actions": {
+      "optimizeMemory": "Optimize Memory",
+      "forceGC": "强制GC",
+      "clearCaches": "Clear Caches",
+      "testConnection": "Test Connection",
+      "resetMonitoring": "Reset Monitoring"
+    },
+    "dialogs": {
+      "clearCachesConfirm": "这将清除所有缓存数据。继续吗？",
+      "cachesClearedSuccess": "所有缓存已成功清除。",
+      "resetMonitoringConfirm": "这将重置所有性能监控数据。继续吗？",
+      "memoryActions": "Memory Actions",
+      "networkActions": "Network Actions"
+    },
+    "messages": {
+      "renderTimeOptimization": "渲染时间为{time}ms。考虑优化组件渲染。",
+      "memoryUsageCritical": "内存使用率为{usage}%。需要立即优化。",
+      "memoryUsageHigh": "内存使用率为{usage}%。考虑内存优化。",
+      "potentialMemoryLeak": "检测到高内存使用。检查组件中的内存泄漏。",
+      "cacheHitRatePoor": "缓存命中率为{rate}%。缓存策略需要改进。",
+      "cacheHitRateWarning": "缓存命中率为{rate}%。考虑改进缓存策略。",
+      "networkRequestsFailed": "{count}个网络请求失败。检查网络连接和API端点。",
+      "networkRequestsFailedWarning": "{count}个网络请求失败。考虑实施重试逻辑。",
+      "slowResponseTime": "平均响应时间为{time}ms。需要网络优化。",
+      "multiplePerformanceIssues": "检测到多个性能问题。建议全面优化。"
+    }
+  },
+  "auth": {
+    "error": "错误",
+    "fillAllFields": "请填写所有字段",
+    "loginFailed": "登录失败",
+    "errorOccurred": "发生错误",
+    "selectLanguage": "Select Language",
+    "welcomeBack": "Welcome Back",
+    "signInToContinue": "Sign in to continue your journey",
+    "email": "邮箱",
+    "password": "密码",
+    "signingIn": "登录中...",
+    "signIn": "登录",
+    "dontHaveAccount": "没有账户？注册",
+    "createAccount": "Create Account",
+    "joinUs": "Join us on your habit journey",
+    "fullName": "姓名",
+    "confirmPassword": "确认密码",
+    "passwordsDontMatch": "密码不匹配",
+    "passwordTooShort": "密码至少需要6个字符",
+    "registrationFailed": "注册失败",
+    "creatingAccount": "创建账户中...",
+    "alreadyHaveAccount": "已有账户？登录"
+  },
+  "feedback": {
+    "title": "推荐反馈",
+    "rating": {
+      "title": "这个推荐有多有用？",
+      "select": "选择评分",
+      "labels": {
+        "1": "完全没用",
+        "2": "有点用",
+        "3": "有用",
+        "4": "很有用",
+        "5": "极其有用"
+      }
+    },
+    "implementation": {
+      "title": "您是否实施了这个推荐？",
+      "implemented": "是的，我实施了",
+      "notImplemented": "不，我没有实施"
+    },
+    "effectiveness": {
+      "title": "效果如何？",
+      "label": "评价效果（1-10分）"
+    },
+    "comments": {
+      "title": "其他评论",
+      "placeholder": "分享您对这个推荐的想法..."
+    },
+    "submit": "提交反馈",
+    "submitting": "提交中...",
+    "validation": {
+      "title": "验证错误",
+      "ratingRequired": "提交前请选择评分。"
+    },
+    "success": {
+      "title": "谢谢！",
+      "message": "您的反馈已记录，将帮助改进未来的推荐。"
+    },
+    "error": {
+      "title": "错误",
+      "message": "提交反馈失败。请重试。"
+    }
+  },
+  "error": {
+    "boundary": {
+      "title": "哎呀！出现了一些问题",
+      "message": "我们遇到了一个意外错误。别担心，您的数据是安全的。",
+      "retry": "重试",
+      "goHome": "Go Home",
+      "reportError": "Report Error"
+    },
+    "toast": {
+      "network": "网络错误",
+      "validation": "验证错误",
+      "authentication": "身份验证错误",
+      "authorization": "访问被拒绝",
+      "notFound": "未找到",
+      "server": "服务器错误",
+      "client": "客户端错误",
+      "unknown": "未知错误"
+    },
+    "messages": {
+      "networkError": "网络连接错误。请检查您的互联网连接。",
+      "validationError": "请检查您的输入并重试。",
+      "authenticationError": "请重新登录以继续。",
+      "authorizationError": "您没有执行此操作的权限。",
+      "notFoundError": "未找到请求的资源。",
+      "serverError": "服务器错误。请稍后重试。",
+      "clientError": "出现了一些问题。请重试。",
+      "unknownError": "发生意外错误。请重试。",
+      "retryMessage": "您想重试吗？",
+      "contactSupport": "如果问题持续存在，请联系支持。",
+      "networkConnectionFailed": "网络连接失败",
+      "noInternetConnection": "无互联网连接。请检查您的网络设置。",
+      "requestTimeout": "请求超时。请重试。",
+      "serverTemporarilyUnavailable": "服务器暂时不可用。请稍后重试。",
+      "resourceNotFound": "未找到请求的资源。",
+      "pleaseLoginAgain": "请重新登录以继续。",
+      "accessDenied": "您没有访问此资源的权限。",
+      "validationErrorForField": "请检查{field}字段并重试。",
+      "internalServerError": "内部服务器错误",
+      "somethingWentWrongInApp": "应用程序中出现了一些问题"
+    },
+    "examples": {
+      "title": "错误处理示例",
+      "subtitle": "测试不同类型的错误并查看如何处理它们",
+      "networkErrors": "Network Errors",
+      "validationErrors": "验证错误",
+      "serverErrors": "Server Errors",
+      "authenticationErrors": "Authentication Errors",
+      "clientErrors": "Client Errors",
+      "asyncOperationsWithRetry": "Async Operations with Retry",
+      "errorBoundaryTest": "Error Boundary Test",
+      "simulateNetworkError": "Simulate Network Error",
+      "simulateValidationError": "模拟验证错误",
+      "simulateServerError": "Simulate Server Error",
+      "simulateAuthError": "Simulate Auth Error",
+      "simulateClientError": "Simulate Client Error",
+      "testAsyncRetry": "Test Async Retry",
+      "triggerErrorBoundary": "Trigger Error Boundary",
+      "errorBoundaryNote": "This will trigger the error boundary to demonstrate error handling.",
+      "featuresTitle": "Error Handling Features",
+      "globalErrorBoundary": "Global error boundary for React Native crashes",
+      "userFriendlyToasts": "User-friendly error toasts with automatic dismissal",
+      "automaticCategorization": "Automatic error categorization and logging",
+      "asyncErrorHandling": "Async error handling with retry mechanisms",
+      "errorHistoryTracking": "Error history tracking and reporting",
+      "consistentErrorMessages": "Consistent error messages across the app"
+    }
+  },
+  "termsOfService": {
+    "sections": {
+      "acceptance": {
+        "title": "1. 条款接受",
+        "content": "通过下载、安装或使用生产力习惯追踪应用（\"应用\"），您同意受这些服务条款（\"条款\"）的约束。如果您不同意这些条款，请不要使用该应用。"
+      },
+      "description": {
+        "title": "2. 服务描述",
+        "content": "该应用是一个生产力和习惯追踪应用程序，通过以下方式帮助用户建立和维持健康习惯、追踪情绪模式并改善整体健康：",
+        "features": [
+          "习惯创建和追踪",
+          "情绪监控和分析",
+          "进度可视化和统计",
+          "游戏化功能和成就",
+          "社交分享和社区功能",
+          "AI驱动的洞察和建议"
+        ]
+      },
+      "accounts": {
+        "title": "3. 用户账户和注册",
+        "content": "要访问应用的某些功能，您可能需要创建一个账户。您负责：",
+        "responsibilities": [
+          "提供准确和完整的信息",
+          "维护您账户凭据的安全性",
+          "您账户下发生的所有活动",
+          "立即通知我们任何未经授权的使用"
+        ]
+      },
+      "acceptableUse": {
+        "title": "4. 可接受使用",
+        "content": "您同意仅将应用用于合法目的并符合这些条款。您同意不：",
+        "prohibitions": [
+          "将应用用于任何非法或未经授权的目的",
+          "干扰或破坏应用的功能",
+          "尝试未经授权访问应用或其系统",
+          "上传或分享有害、冒犯或不适当的内容",
+          "违反任何适用的法律或法规"
+        ]
+      },
+      "privacy": {
+        "title": "5. 隐私和数据保护",
+        "content": "您的隐私对我们很重要。我们对您个人信息的收集、使用和保护受我们的隐私政策管辖，该政策通过引用纳入这些条款。通过使用应用，您同意按照我们隐私政策中描述的方式收集和使用您的信息。"
+      },
+      "intellectualProperty": {
+        "title": "6. 知识产权",
+        "content": "应用及其原始内容、功能和功能由我们拥有，并受国际版权、商标、专利、商业秘密和其他知识产权法律保护。未经我们明确书面许可，您不得修改、分发或基于应用创建衍生作品。"
+      },
+      "userContent": {
+        "title": "7. 用户生成内容",
+        "content": "您保留对通过应用创建或上传的任何内容的所有权。但是，通过应用的社会功能分享内容，您授予我们非独占、免版税的许可，以在应用内使用、显示和分发此类内容。"
+      },
+      "disclaimers": {
+        "title": "8. 免责声明和限制",
+        "content": "应用按\"现状\"提供，不提供任何形式的保证。我们不保证应用将无错误、安全或持续可用。应用不旨在提供医疗、心理或专业建议。对于健康相关问题，请始终咨询合格的专业人士。"
+      },
+      "liability": {
+        "title": "9. 责任限制",
+        "content": "在法律允许的最大范围内，我们不对任何间接、偶然、特殊、后果性或惩罚性损害承担责任，包括但不限于因您使用应用而导致的利润、数据或其他无形损失。"
+      },
+      "termination": {
+        "title": "10. 终止",
+        "content": "我们可能随时终止或暂停您的账户和对应用的访问，无论是否有原因或通知。您也可以通过删除应用并停止所有使用来随时终止您的账户。"
+      },
+      "changes": {
+        "title": "11. 条款变更",
+        "content": "我们保留随时修改这些条款的权利。我们将通过应用或其他适当方式通知用户任何重大变更。您在这些变更后继续使用应用即构成对新条款的接受。"
+      },
+      "governingLaw": {
+        "title": "12. 管辖法律",
+        "content": "这些条款应受[您的司法管辖区]法律管辖并按其解释，不考虑其冲突法规定。因这些条款或您使用应用而产生的任何争议应在[您的司法管辖区]法院解决。"
+      },
+      "contact": {
+        "title": "13. 联系信息",
+        "content": "如果您对这些服务条款有任何疑问，请联系我们：",
+        "email": "邮箱: sabbirhossainsm@gmail.com",
+        "address": "地址: [您的公司地址]"
+      }
+    },
+    "lastUpdated": "最后更新:"
+  },
+  "pricing": {
+    "title": "选择您的计划",
+    "subtitle": "选择最适合您的计划",
+    "upgrade": "升级",
+    "detailedComparison": "详细对比",
+    "chooseYourPlan": "选择您的计划",
+    "chooseYourPlanSubtitle": "选择最适合您的计划",
+    "upgradeToPro": "升级到专业版",
+    "unlockAllFeatures": "解锁所有功能",
+    "unlockAllFeaturesSubtitle": "解锁所有功能和高级分析",
+    "unlockAllFeaturesDescription": "解锁无限制习惯、高级分析等更多功能",
+    "proPlanActive": "专业版已激活",
+    "upgradeTitle": "升级到专业版",
+    "upgradeMessage": "您确定要升级到专业版吗？您将获得所有高级功能的访问权限。",
+    "upgrading": "升级中...",
+    "successTitle": "升级成功！",
+    "successMessage": "欢迎使用专业版！您现在可以访问所有高级功能。",
+    "plans": {
+      "proMonthly": "专业版月付",
+      "proYearly": "专业版年付"
+    },
+    "currentPlan": "当前计划",
+    "upgradeNow": "立即升级",
+    "processing": "处理中...",
+    "verifying": "验证中...",
+    "verifyAndUpgrade": "验证并升级",
+    "cancel": "取消",
+    "maybeLater": "稍后再说",
+    "startUsingPro": "开始使用专业版",
+    "alreadyPro": "已经是专业版",
+    "alreadyProMessage": "您已经订阅了专业版！",
+    "upgradeSuccessful": "升级成功！",
+    "upgradeSuccessfulMessage": "欢迎使用 HabitSync 专业版！您现在可以访问所有高级功能。",
+    "upgradeFailed": "升级失败",
+    "upgradeFailedMessage": "处理您的升级时出现错误。请重试。",
+    "enterPremiumKey": "输入高级密钥",
+    "enterPremiumKeyMessage": "请输入您独特的高级密钥以解锁专业版功能",
+    "invalidPremiumKey": "高级密钥无效。请重试。",
+    "premiumKeyPlaceholder": "输入高级密钥",
+    "freeVsProComparison": "免费版与专业版对比",
+    "feature": "功能",
+    "free": "免费",
+    "pro": "专业版",
+    "habits": "习惯",
+    "analytics": "分析",
+    "aiSuggestions": "AI 建议",
+    "themes": "主题",
+    "reminders": "提醒",
+    "socialFeatures": "社交功能",
+    "dataExport": "数据导出",
+    "moodCorrelations": "心情关联",
+    "unlimited": "无限制",
+    "days": "天",
+    "week": "周",
+    "all": "全部",
+    "sevenDays": "7天",
+    "twoPerWeek": "2/周",
+    "onePerHabit": "1/习惯",
+    "threeSixtyFiveDays": "365天",
+    "moneyBackGuarantee": "30天退款保证。随时取消。",
+    "mostPopular": "最受欢迎",
+    "limitedTime": "限时",
+    "youAreCurrentlyOnPro": "您目前正在使用专业版！🎉",
+    "features": {
+      "unlimitedHabits": "无限制习惯",
+      "advancedAnalytics": "高级分析",
+      "aiPoweredInsights": "AI 驱动的洞察",
+      "premiumThemes": "高级主题",
+      "socialFeatures": "社交功能",
+      "dataExport": "数据导出",
+      "customReminders": "自定义提醒",
+      "moodHabitCorrelations": "心情习惯关联",
+      "threeSixtyFiveDayAnalytics": "365天分析",
+      "trendAnalysis": "趋势分析",
+      "advancedReporting": "高级报告",
+      "unlimitedAiSuggestions": "无限制 AI 建议",
+      "personalizedCoaching": "个性化指导",
+      "predictiveInsights": "预测性洞察",
+      "allPremiumThemes": "所有高级主题",
+      "customCustomization": "自定义定制",
+      "darkModeVariants": "深色模式变体",
+      "seasonalThemes": "季节性主题",
+      "unlimitedHabitsFeature": "无限制习惯",
+      "threeSixtyFiveDayAnalyticsFeature": "365天分析",
+      "unlimitedAiSuggestionsFeature": "无限制 AI 建议",
+      "allPremiumThemesFeature": "所有高级主题",
+      "socialFeaturesFeature": "社交功能",
+      "dataExportFeature": "数据导出",
+      "customRemindersFeature": "自定义提醒",
+      "moodHabitCorrelationsFeature": "心情习惯关联",
+      "advancedAnalyticsFeature": "高级分析",
+      "wellnessIntegrationFeature": "健康集成",
+      "performanceAlertsFeature": "性能提醒",
+      "patternInsightsFeature": "模式洞察",
+      "aiSuggestionsFeature": "AI 建议",
+      "premiumThemesFeature": "高级主题",
+      "unlimitedRemindersFeature": "无限制提醒",
+      "savings": "37% 节省",
+      "limitedTimeOffer": "限时优惠",
+      "fiftyPercentSavings": "50% 节省 - 限时",
+      "aiSuggestions": "AI 建议",
+      "unlimitedReminders": "无限制提醒",
+      "wellnessIntegration": "健康集成",
+      "performanceAlerts": "性能提醒",
+      "patternInsights": "模式洞察"
+    },
+    "upgradePrompts": {
+      "habitLimit": {
+        "title": "升级到专业版",
+        "message": "您已达到4个习惯的限制。升级到专业版以获得无限制习惯和高级功能！"
+      },
+      "analyticsLimit": {
+        "title": "解锁完整分析",
+        "message": "通过365天分析、趋势和高级报告获得关于您习惯的洞察。"
+      },
+      "aiLimit": {
+        "title": "获得每日 AI 指导",
+        "message": "您已使用完每周的 AI 建议。升级以获得无限制 AI 指导和个性化洞察。"
+      },
+      "themeLimit": {
+        "title": "解锁高级主题",
+        "message": "访问所有高级主题并自定义您的应用体验。"
+      },
+      "default": {
+        "title": "升级到专业版",
+        "message": "解锁所有高级功能，将您的习惯追踪提升到新水平！"
+      }
+    },
+    "premiumKeyDescription": "请输入您的高级激活密钥以解锁所有专业版功能。",
+    "enterKeyPlaceholder": "输入您的高级密钥",
+    "invalidKey": "无效的高级密钥，请重试。",
+    "activate": "激活",
+    "errorTitle": "升级失败",
+    "errorMessage": "升级到专业版失败，请重试。",
+    "month": "月",
+    "year": "年",
+    "save": "节省",
+    "valueProposition": {
+      "title": "改变你的习惯",
+      "subtitle": "加入数千名通过 HabitSync Pro 实现目标的用户"
+    },
+    "benefits": {
+      "title": "为什么选择专业版？",
+      "unlimitedGrowth": {
+        "title": "无限增长",
+        "description": "无限制地跟踪任意数量的习惯"
+      },
+      "aiPoweredInsights": {
+        "title": "AI 驱动洞察",
+        "description": "获得个性化建议和指导"
+      },
+      "deepAnalytics": {
+        "title": "深度分析",
+        "description": "通过365天数据了解你的模式"
+      },
+      "communitySupport": {
+        "title": "社区支持",
+        "description": "与志同道合的人建立联系"
+      }
+    }
+  },
+  "notFound": {
+    "title": "哎呀！",
+    "message": "此页面不存在。",
+    "goHome": "返回首页！"
+  },
+  "advancedMoodSelector": {
+    "energyLevel": "能量水平（激活度）",
+    "positivity": "积极性（效价）",
+    "control": "控制感（支配性）"
+  },
+  "progressChart": {
+    "noDataYet": "暂无数据",
+    "startCompletingHabits": "开始完成习惯以在此处查看您的进度！",
+    "sevenDayProgress": "7天进度",
+    "completed": "已完成",
+    "today": "今天"
   }
 }

@@ -16,6 +16,7 @@ import { useRouter } from 'expo-router';
 import { useTheme } from '@/context/ThemeContext';
 import { useLanguage } from '@/context/LanguageContext';
 import { useAuth } from '@/context/AuthContext';
+import { AuthService } from '@/services/AuthService';
 
 export default function ChangePasswordScreen() {
   const { currentTheme } = useTheme();
@@ -50,16 +51,16 @@ export default function ChangePasswordScreen() {
 
     setIsLoading(true);
     try {
-      // TODO: Implement password change API call
-      await new Promise(resolve => setTimeout(resolve, 1000)); // Simulate API call
+      // Implement password change using AuthService
+      await AuthService.changePassword(currentPassword, newPassword);
       
       Alert.alert(
         t('changePassword.alerts.success'),
         t('changePassword.alerts.successMessage'),
-        [{ text: 'OK', onPress: () => router.back() }]
+        [{ text: t('common.ok'), onPress: () => router.back() }]
       );
-    } catch (error) {
-      Alert.alert(t('changePassword.alerts.error'), t('changePassword.alerts.failedToChange'));
+    } catch (error: any) {
+      Alert.alert(t('changePassword.alerts.error'), error.message || t('changePassword.alerts.failedToChange'));
     } finally {
       setIsLoading(false);
     }
@@ -183,6 +184,7 @@ const createStyles = (colors: any) => StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: 20,
     paddingVertical: 16,
+    paddingTop: 50,
     borderBottomWidth: 1,
     borderBottomColor: colors.border,
   },

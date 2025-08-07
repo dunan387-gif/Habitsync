@@ -8,6 +8,7 @@ import {
   ScrollView,
   Switch,
   Alert,
+  Modal,
 } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import {
@@ -32,57 +33,85 @@ import {
   Activity,
   Users,
   Share2,
-  MessageCircle,
-  UserPlus,
   Trophy,
   Star,
-  Zap
+  Zap,
+  AlertCircle,
+  BarChart3,
+  Target,
+  FileText,
+  Eye
 } from 'lucide-react-native';
-import { useRouter } from 'expo-router';
+import { useRouter, useLocalSearchParams } from 'expo-router';
 import { useTheme } from '@/context/ThemeContext';
 import { useLanguage } from '@/context/LanguageContext';
-import ThemeSelector from '@/components/ThemeSelector';
-import LanguageSelector from '@/components/LanguageSelector';
-import SocialCommunityFeed from '@/components/SocialCommunityFeed';
-import InviteFriends from '@/components/InviteFriends';
-import ShareProgress from '@/components/ShareProgress';
-import ProfessionalDashboard from '@/components/ProfessionalDashboard';
+import { useSubscription } from '@/context/SubscriptionContext';
 import { useCelebration } from '@/context/CelebrationContext';
 import { useAuth } from '@/context/AuthContext';
+import { usePerformanceAlerts } from '@/context/PerformanceAlertsContext';
 import { DataExportService } from '@/services/DataExportService';
 import { PrivacyService } from '@/services/PrivacyService';
 import { ProfessionalIntegrationService } from '@/services/ProfessionalIntegrationService';
 import * as Sharing from 'expo-sharing';
 import * as FileSystem from 'expo-file-system';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import PricingScreen from '@/components/PricingScreen';
+import PerformanceDashboard from '@/components/PerformanceDashboard';
+import PerformanceRecommendations from '@/components/PerformanceRecommendations';
+import ErrorHandlingExample from '@/components/ErrorHandlingExample';
+import ThemeSelector from '@/components/ThemeSelector';
+import LanguageSelector from '@/components/LanguageSelector';
+import ProfessionalDashboard from '@/components/ProfessionalDashboard';
+import TimezoneSettings from '@/components/TimezoneSettings';
 
 export default function MoreScreen() {
   const { currentTheme } = useTheme();
   const { t } = useLanguage();
-  const { user, logout } = useAuth(); // Remove isPremiumUser from here
-  const { isPremiumUser } = useTheme(); // Add this line to get isPremiumUser from ThemeContext
+  const { user, logout } = useAuth();
+  const { currentTier, subscriptionStatus } = useSubscription();
   const router = useRouter();
+  const { showPricing } = useLocalSearchParams();
+  
+  // Debug: Log the showPricing parameter value
+  useEffect(() => {
+    console.log('🔍 Settings screen loaded, showPricing parameter:', showPricing, 'type:', typeof showPricing);
+  }, [showPricing]);
+  
   const [showThemeSelector, setShowThemeSelector] = useState(false);
   const [showLanguageSelector, setShowLanguageSelector] = useState(false);
-  const [showCommunityFeed, setShowCommunityFeed] = useState(false);
-  const [showInviteFriends, setShowInviteFriends] = useState(false);
-  const [showShareProgress, setShowShareProgress] = useState(false);
+  const [showTimezoneSettings, setShowTimezoneSettings] = useState(false);
   const [showProfessionalDashboard, setShowProfessionalDashboard] = useState(false);
+  const [showPricingScreen, setShowPricingScreen] = useState(false);
+  const [showPerformanceDashboard, setShowPerformanceDashboard] = useState(false);
+  const [showPerformanceRecommendations, setShowPerformanceRecommendations] = useState(false);
+  const [showErrorHandlingExample, setShowErrorHandlingExample] = useState(false);
   const { animationsEnabled, setAnimationsEnabled } = useCelebration();
+  const { settings: alertSettings, toggleAlerts, updateSettings } = usePerformanceAlerts();
   
   // Settings states
   const [professionalSharingEnabled, setProfessionalSharingEnabled] = useState(false);
   const [wellnessTrackingEnabled, setWellnessTrackingEnabled] = useState(true);
-  const [communityFeaturesEnabled, setCommunityFeaturesEnabled] = useState(true);
   const [anonymousDataSharing, setAnonymousDataSharing] = useState(false);
 
   const styles = createStyles(currentTheme.colors);
+
+  // Handle showPricing URL parameter - only for upgrade flow from alerts
+  useEffect(() => {
+    if (showPricing === 'true') {
+      console.log('🎯 Upgrade flow detected: showPricing=true, opening pricing screen');
+      setShowPricingScreen(true);
+      // Clear the URL parameter to prevent it from persisting
+      router.setParams({ showPricing: undefined });
+    }
+  }, [showPricing, router]);
 
   // Load professional sharing setting on component mount
   useEffect(() => {
     const loadProfessionalSetting = async () => {
       try {
-        const saved = await AsyncStorage.getItem('professionalSharingEnabled');
+        const userId = user?.id || 'anonymous';
+        const key = `professionalSharingEnabled_${userId}`;
+        const saved = await AsyncStorage.getItem(key);
         if (saved !== null) {
           setProfessionalSharingEnabled(JSON.parse(saved));
         }
@@ -91,11 +120,14 @@ export default function MoreScreen() {
       }
     };
     loadProfessionalSetting();
-  }, []);
+  }, [user?.id]);
 
   // Handle professional sharing toggle
   const handleProfessionalSharingToggle = async (value: boolean) => {
     try {
+      const userId = user?.id || 'anonymous';
+      const key = `professionalSharingEnabled_${userId}`;
+      
       if (value) {
         // Show confirmation dialog when enabling
         Alert.alert(
@@ -107,7 +139,7 @@ export default function MoreScreen() {
               text: t('common.enable'),
               onPress: async () => {
                 setProfessionalSharingEnabled(true);
-                await AsyncStorage.setItem('professionalSharingEnabled', 'true');
+                await AsyncStorage.setItem(key, 'true');
                 
                 // Show professional dashboard after enabling
                 setTimeout(() => {
@@ -120,17 +152,17 @@ export default function MoreScreen() {
       } else {
         // Disable without confirmation
         setProfessionalSharingEnabled(false);
-        await AsyncStorage.setItem('professionalSharingEnabled', 'false');
+        await AsyncStorage.setItem(key, 'false');
         
         Alert.alert(
-          'Professional Sharing Disabled',
-          'Professional data sharing has been disabled. Your data will remain private.',
-          [{ text: 'OK' }]
+          t('settings.export.professionalSharingDisabled'),
+          t('settings.export.professionalSharingDisabledMessage'),
+          [{ text: t('common.ok') }]
         );
       }
     } catch (error) {
       console.error('Error updating professional sharing setting:', error);
-      Alert.alert('Error', 'Failed to update professional sharing setting.');
+      Alert.alert(t('settings.export.error'), t('settings.export.failedToUpdateSetting'));
     }
   };
 
@@ -140,12 +172,12 @@ export default function MoreScreen() {
       setShowProfessionalDashboard(true);
     } else {
       Alert.alert(
-        'Professional Sharing Disabled',
-        'Please enable Professional Sharing first to access the dashboard.',
+        t('settings.export.professionalSharingDisabled'),
+        t('settings.export.professionalSharingDisabledAccess'),
         [
-          { text: 'Cancel', style: 'cancel' },
+          { text: t('common.cancel'), style: 'cancel' },
           {
-            text: 'Enable Now',
+            text: t('settings.export.enableNow'),
             onPress: () => handleProfessionalSharingToggle(true)
           }
         ]
@@ -209,7 +241,7 @@ export default function MoreScreen() {
   const handleDataExport = async () => {
     try {
       // Show loading state
-      Alert.alert('Exporting...', 'Please wait while we prepare your data.');
+      Alert.alert(t('settings.export.exporting'), t('settings.export.exportingMessage'));
       
       // Get all data
       const userData = await PrivacyService.exportUserData();
@@ -223,7 +255,7 @@ export default function MoreScreen() {
         // Export metadata
         exportInfo: {
           exportDate: new Date().toISOString(),
-          exportedBy: 'Habit Tracker App',
+          exportedBy: t('settings.export.appName'),
           appVersion: '1.0.0',
           dataVersion: '1.0',
           totalRecords: {
@@ -235,7 +267,7 @@ export default function MoreScreen() {
         
         // User summary
         userSummary: {
-          accountCreated: userData.user_created_at || 'Unknown',
+          accountCreated: userData.user_created_at || t('common.unknown'),
           totalDaysActive: analytics.totalDaysActive || 0,
           overallStats: {
             totalHabitsCreated: analytics.totalHabitsCreated || 0,
@@ -259,9 +291,9 @@ export default function MoreScreen() {
               try {
                 const habit = JSON.parse(value as string);
                 return {
-                  title: habit.title || 'Unnamed Habit',
-                  category: habit.category || 'Uncategorized',
-                  createdDate: habit.createdAt || 'Unknown',
+                  title: habit.title || t('common.unnamedHabit'),
+                  category: habit.category || t('common.uncategorized'),
+                  createdDate: habit.createdAt || t('common.unknown'),
                   currentStreak: habit.streak || 0,
                   bestStreak: habit.bestStreak || 0,
                   totalCompletions: habit.completedDates?.length || 0,
@@ -269,14 +301,14 @@ export default function MoreScreen() {
                     ((habit.completedDates.length / Math.max(1, Math.ceil((new Date().getTime() - new Date(habit.createdAt || Date.now()).getTime()) / (1000 * 60 * 60 * 24)))) * 100).toFixed(1) + '%' : '0%',
                   reminderSettings: {
                     enabled: habit.reminderEnabled || false,
-                    time: habit.reminderTime || 'Not set',
+                    time: habit.reminderTime || t('common.notSet'),
                     days: habit.reminderDays || []
                   },
                   recentActivity: habit.completedDates?.slice(-7) || []
                 };
-              } catch {
-                return { title: 'Invalid habit data', error: 'Could not parse habit data' };
-              }
+                              } catch {
+                  return { title: t('common.invalidData'), error: t('common.couldNotParse') };
+                }
             })
         },
         
@@ -285,8 +317,8 @@ export default function MoreScreen() {
           summary: {
             totalEntries: moodData.length,
             dateRange: {
-              earliest: moodData.length > 0 ? moodData[0]?.date : 'No data',
-              latest: moodData.length > 0 ? moodData[moodData.length - 1]?.date : 'No data'
+              earliest: moodData.length > 0 ? moodData[0]?.date : t('common.noData'),
+              latest: moodData.length > 0 ? moodData[moodData.length - 1]?.date : t('common.noData')
             },
             averageMoodIntensity: analytics.averageMoodIntensity || 0,
             mostCommonMood: analytics.mostCommonMood || 'N/A',
@@ -298,10 +330,10 @@ export default function MoreScreen() {
             mood: {
               state: entry.moodState,
               intensity: entry.intensity,
-              description: entry.note || 'No note'
+              description: entry.note || t('common.noNote')
             },
             triggers: entry.triggers || [],
-            context: entry.context || 'No context provided'
+            context: entry.context || t('common.noContext')
           }))
         },
         
@@ -326,7 +358,7 @@ export default function MoreScreen() {
               timeAfterCompletion: entry.postMood.timeAfter + ' minutes'
             } : null,
             triggers: entry.triggers || [],
-            notes: entry.note || 'No notes'
+            notes: entry.note || t('common.noNotes')
           })),
           insights: {
             weeklyTrends: insights.patterns?.weeklyTrends || {},
@@ -343,11 +375,11 @@ export default function MoreScreen() {
         
         // Data export notes
         exportNotes: {
-          dataPrivacy: 'This export contains your personal habit and mood data. Please keep it secure.',
-          dataFormat: 'All dates are in ISO format (YYYY-MM-DD). Times are in 24-hour format.',
-          moodScale: 'Mood intensity is rated on a scale of 1-10, where 1 is very low and 10 is very high.',
-          completionRate: 'Completion rates are calculated from the habit creation date to today.',
-          support: 'If you have questions about this data, please contact our support team.'
+          dataPrivacy: t('settings.export.notes.dataPrivacy'),
+          dataFormat: t('settings.export.notes.dataFormat'),
+          moodScale: t('settings.export.notes.moodScale'),
+          completionRate: t('settings.export.notes.completionRate'),
+          support: t('settings.export.notes.support')
         }
       };
       
@@ -365,329 +397,369 @@ export default function MoreScreen() {
       if (await Sharing.isAvailableAsync()) {
         await Sharing.shareAsync(fileUri, {
           mimeType: 'application/json',
-          dialogTitle: 'Export Your Habit Tracker Data'
+          dialogTitle: t('settings.export.dialogTitle')
         });
       }
       
       Alert.alert(
-        'Export Complete! 📊',
-        `Your data has been exported successfully!\n\n📈 ${exportData.userSummary.totalDaysActive} days of data\n🎯 ${exportData.habitsData.summary.totalHabits} habits tracked\n😊 ${exportData.moodData.summary.totalEntries} mood entries\n\nThe file is organized with clear sections and summaries for easy reading.`
+        t('settings.export.exportComplete'),
+        t('settings.export.exportCompleteMessage', {
+          totalDays: exportData.userSummary.totalDaysActive,
+          totalHabits: exportData.habitsData.summary.totalHabits,
+          totalMoodEntries: exportData.moodData.summary.totalEntries
+        })
       );
     } catch (error) {
       console.error('Export error:', error);
       Alert.alert(
-        'Export Failed',
-        'There was an error exporting your data. Please try again.'
+        t('settings.export.exportFailed'),
+        t('settings.export.exportFailedMessage')
       );
     }
   };
 
+
+  
   return (
-    <SafeAreaView style={styles.container}>
+    <>
       <StatusBar style={currentTheme.isDark ? 'light' : 'dark'} />
       
-      {/* Modern Header with User Info */}
-      <View style={styles.header}>
-        <View style={styles.userSection}>
-          <View style={styles.avatarContainer}>
-            <User size={24} color={currentTheme.colors.primary} />
+      {/* Render either Settings OR PricingScreen, never both */}
+      {showPricingScreen ? (
+        // PricingScreen - Full screen when visible
+        <View style={{
+          flex: 1,
+          backgroundColor: currentTheme.colors.background,
+          width: '100%',
+          height: '100%',
+        }}>
+          <PricingScreen
+            visible={true}
+            onClose={() => setShowPricingScreen(false)}
+            showIntroductory={false}
+            inModal={true}
+          />
+        </View>
+      ) : (
+        // Settings Content - Only when PricingScreen is NOT visible
+        <SafeAreaView style={styles.container}>
+          {/* Clean Header */}
+          <View style={styles.header}>
+            <View style={styles.userSection}>
+              <View style={styles.avatarContainer}>
+                <User size={28} color={currentTheme.colors.primary} />
+              </View>
+              <View style={styles.userInfo}>
+                <Text style={styles.userName}>{user?.email || t('settings.user.guest')}</Text>
+                <Text style={styles.userStatus}>{t('settings.user.status')}</Text>
+              </View>
+              {currentTier === 'pro' && (
+                <View style={styles.proBadge}>
+                  <Crown size={16} color={currentTheme.colors.warning} />
+                  <Text style={styles.proText}>{t('settings.premium.pro')}</Text>
+                </View>
+              )}
+            </View>
           </View>
-          <View style={styles.userInfo}>
-            <Text style={styles.userName}>Welcome back!</Text>
-            <Text style={styles.userEmail}>{user?.email || 'Guest User'}</Text>
-          </View>
-          {isPremiumUser && (
-            <View style={styles.premiumBadge}>
-              <Crown size={16} color={currentTheme.colors.warning} />
-              <Text style={styles.premiumText}>Pro</Text>
+
+          <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
+            {/* Subscription Banner */}
+            {currentTier === 'free' && (
+              <TouchableOpacity 
+                style={styles.premiumBanner}
+                onPress={() => setShowPricingScreen(true)}
+              >
+                <View style={styles.premiumContent}>
+                  <View style={styles.premiumIconContainer}>
+                    <Crown size={24} color={currentTheme.colors.warning} />
+                  </View>
+                  <View style={styles.premiumInfo}>
+                    <Text style={styles.premiumTitle}>{t('settings.premium.upgradeToPro')}</Text>
+                    <Text style={styles.premiumSubtitle}>{t('settings.premium.unlockDescription')}</Text>
+                  </View>
+                  <ChevronRight size={20} color={currentTheme.colors.warning} />
+                </View>
+              </TouchableOpacity>
+            )}
+
+            {/* Account Settings */}
+            <View style={styles.section}>
+              <Text style={styles.sectionTitle}>{t('settings.sections.account')}</Text>
+              <View style={styles.card}>
+                <TouchableOpacity style={styles.menuItem} onPress={handleProfilePress}>
+                  <User size={20} color={currentTheme.colors.textSecondary} />
+                  <Text style={styles.menuText}>{t('settings.account.profile')}</Text>
+                  <ChevronRight size={20} color={currentTheme.colors.textSecondary} />
+                </TouchableOpacity>
+                
+                <TouchableOpacity style={styles.menuItem} onPress={handleChangePassword}>
+                  <Lock size={20} color={currentTheme.colors.textSecondary} />
+                  <Text style={styles.menuText}>{t('settings.account.changePassword')}</Text>
+                  <ChevronRight size={20} color={currentTheme.colors.textSecondary} />
+                </TouchableOpacity>
+                
+                <TouchableOpacity style={styles.menuItem} onPress={handleLinkedAccounts}>
+                  <Link size={20} color={currentTheme.colors.textSecondary} />
+                  <Text style={styles.menuText}>{t('settings.account.linkedAccounts')}</Text>
+                  <ChevronRight size={20} color={currentTheme.colors.textSecondary} />
+                </TouchableOpacity>
+                
+                <TouchableOpacity style={styles.menuItem} onPress={handleNotificationSettings}>
+                  <Bell size={20} color={currentTheme.colors.textSecondary} />
+                  <Text style={styles.menuText}>{t('settings.account.notifications')}</Text>
+                  <ChevronRight size={20} color={currentTheme.colors.textSecondary} />
+                </TouchableOpacity>
+              </View>
+            </View>
+
+            {/* App Preferences */}
+            <View style={styles.section}>
+              <Text style={styles.sectionTitle}>{t('settings.sections.preferences')}</Text>
+              <View style={styles.card}>
+                <TouchableOpacity style={styles.menuItem} onPress={() => setShowThemeSelector(true)}>
+                  <Palette size={20} color={currentTheme.colors.textSecondary} />
+                  <Text style={styles.menuText}>{t('settings.preferences.theme')}</Text>
+                  <ChevronRight size={20} color={currentTheme.colors.textSecondary} />
+                </TouchableOpacity>
+                
+                <TouchableOpacity style={styles.menuItem} onPress={() => setShowLanguageSelector(true)}>
+                  <Globe size={20} color={currentTheme.colors.textSecondary} />
+                  <Text style={styles.menuText}>{t('settings.preferences.language')}</Text>
+                  <ChevronRight size={20} color={currentTheme.colors.textSecondary} />
+                </TouchableOpacity>
+                
+                <TouchableOpacity style={styles.menuItem} onPress={() => setShowTimezoneSettings(true)}>
+                  <Globe size={20} color={currentTheme.colors.textSecondary} />
+                  <Text style={styles.menuText}>{t('settings.preferences.timezone')}</Text>
+                  <ChevronRight size={20} color={currentTheme.colors.textSecondary} />
+                </TouchableOpacity>
+                
+                <View style={styles.menuItem}>
+                  <Sparkles size={20} color={currentTheme.colors.textSecondary} />
+                  <Text style={styles.menuText}>{t('settings.preferences.animations')}</Text>
+                  <Switch
+                    value={animationsEnabled}
+                    onValueChange={setAnimationsEnabled}
+                    trackColor={{ false: currentTheme.colors.surface, true: `${currentTheme.colors.primary}50` }}
+                    thumbColor={animationsEnabled ? currentTheme.colors.primary : currentTheme.colors.textSecondary}
+                  />
+                </View>
+                
+                <View style={styles.menuItem}>
+                  <Activity size={20} color={currentTheme.colors.textSecondary} />
+                  <Text style={styles.menuText}>{t('settings.preferences.wellnessTracking')}</Text>
+                  <Switch
+                    value={wellnessTrackingEnabled}
+                    onValueChange={setWellnessTrackingEnabled}
+                    trackColor={{ false: currentTheme.colors.surface, true: `${currentTheme.colors.success}50` }}
+                    thumbColor={wellnessTrackingEnabled ? currentTheme.colors.success : currentTheme.colors.textSecondary}
+                  />
+                </View>
+              </View>
+            </View>
+
+            {/* Professional Features */}
+            <View style={styles.section}>
+              <Text style={styles.sectionTitle}>{t('settings.sections.professional')}</Text>
+              <View style={styles.card}>
+                <View style={styles.menuItem}>
+                  <Stethoscope size={20} color={currentTheme.colors.textSecondary} />
+                  <Text style={styles.menuText}>{t('settings.professional.sharing')}</Text>
+                  <Switch
+                    value={professionalSharingEnabled}
+                    onValueChange={handleProfessionalSharingToggle}
+                    trackColor={{ false: currentTheme.colors.surface, true: `${currentTheme.colors.primary}50` }}
+                    thumbColor={professionalSharingEnabled ? currentTheme.colors.primary : currentTheme.colors.textSecondary}
+                  />
+                </View>
+                
+                {professionalSharingEnabled && (
+                  <>
+                    <TouchableOpacity style={styles.menuItem} onPress={handleProfessionalDashboard}>
+                      <Users size={20} color={currentTheme.colors.textSecondary} />
+                      <Text style={styles.menuText}>{t('settings.professional.dashboard')}</Text>
+                      <ChevronRight size={20} color={currentTheme.colors.textSecondary} />
+                    </TouchableOpacity>
+                    
+                    <TouchableOpacity style={styles.menuItem} onPress={() => setShowPerformanceDashboard(true)}>
+                      <BarChart3 size={20} color={currentTheme.colors.textSecondary} />
+                      <Text style={styles.menuText}>{t('settings.professional.performance')}</Text>
+                      <ChevronRight size={20} color={currentTheme.colors.textSecondary} />
+                    </TouchableOpacity>
+                    
+                    <TouchableOpacity style={styles.menuItem} onPress={() => setShowPerformanceRecommendations(true)}>
+                      <Target size={20} color={currentTheme.colors.textSecondary} />
+                      <Text style={styles.menuText}>{t('settings.professional.recommendations')}</Text>
+                      <ChevronRight size={20} color={currentTheme.colors.textSecondary} />
+                    </TouchableOpacity>
+                  </>
+                )}
+              </View>
+            </View>
+
+            {/* Privacy & Data */}
+            <View style={styles.section}>
+              <Text style={styles.sectionTitle}>{t('settings.sections.privacy')}</Text>
+              <View style={styles.card}>
+                <TouchableOpacity style={styles.menuItem} onPress={handlePrivacySettings}>
+                  <Eye size={20} color={currentTheme.colors.textSecondary} />
+                  <Text style={styles.menuText}>{t('settings.privacy.privacySettings')}</Text>
+                  <ChevronRight size={20} color={currentTheme.colors.textSecondary} />
+                </TouchableOpacity>
+                
+                <TouchableOpacity style={styles.menuItem} onPress={handleDataExport}>
+                  <Download size={20} color={currentTheme.colors.textSecondary} />
+                  <Text style={styles.menuText}>{t('settings.privacy.dataExport')}</Text>
+                  <ChevronRight size={20} color={currentTheme.colors.textSecondary} />
+                </TouchableOpacity>
+              </View>
+            </View>
+
+            {/* Support */}
+            <View style={styles.section}>
+              <Text style={styles.sectionTitle}>{t('settings.sections.support')}</Text>
+              <View style={styles.card}>
+                <TouchableOpacity style={styles.menuItem} onPress={() => router.push('/settings/terms-of-service')}>
+                  <FileText size={20} color={currentTheme.colors.textSecondary} />
+                  <Text style={styles.menuText}>{t('settings.support.termsOfService')}</Text>
+                  <ChevronRight size={20} color={currentTheme.colors.textSecondary} />
+                </TouchableOpacity>
+                
+                <TouchableOpacity style={styles.menuItem} onPress={() => router.push('/settings/privacy-policy')}>
+                  <Shield size={20} color={currentTheme.colors.textSecondary} />
+                  <Text style={styles.menuText}>{t('settings.support.privacyPolicy')}</Text>
+                  <ChevronRight size={20} color={currentTheme.colors.textSecondary} />
+                </TouchableOpacity>
+                
+                <TouchableOpacity style={styles.menuItem} onPress={() => setShowErrorHandlingExample(true)}>
+                  <AlertCircle size={20} color={currentTheme.colors.textSecondary} />
+                  <Text style={styles.menuText}>{t('settings.support.errorHandling')}</Text>
+                  <ChevronRight size={20} color={currentTheme.colors.textSecondary} />
+                </TouchableOpacity>
+              </View>
+            </View>
+
+            {/* Danger Zone */}
+            <View style={styles.section}>
+              <Text style={styles.sectionTitle}>{t('settings.sections.danger')}</Text>
+              <View style={styles.card}>
+                <TouchableOpacity style={styles.menuItem} onPress={handleAccountDeletion}>
+                  <Trash2 size={20} color={currentTheme.colors.error} />
+                  <Text style={[styles.menuText, { color: currentTheme.colors.error }]}>{t('settings.danger.deleteAccount')}</Text>
+                  <ChevronRight size={20} color={currentTheme.colors.error} />
+                </TouchableOpacity>
+                
+                <TouchableOpacity style={styles.menuItem} onPress={handleLogout}>
+                  <LogOut size={20} color={currentTheme.colors.error} />
+                  <Text style={[styles.menuText, { color: currentTheme.colors.error }]}>{t('settings.danger.signOut')}</Text>
+                  <ChevronRight size={20} color={currentTheme.colors.error} />
+                </TouchableOpacity>
+              </View>
+            </View>
+
+            <View style={styles.bottomSpacing} />
+          </ScrollView>
+
+          {/* Modals */}
+          <ThemeSelector 
+            visible={showThemeSelector}
+            onClose={() => setShowThemeSelector(false)}
+          />
+
+          <LanguageSelector 
+            visible={showLanguageSelector}
+            onClose={() => setShowLanguageSelector(false)}
+          />
+
+          <TimezoneSettings 
+            visible={showTimezoneSettings}
+            onClose={() => setShowTimezoneSettings(false)}
+          />
+
+          {showProfessionalDashboard && (
+            <View style={styles.fullScreenModalContainer}>
+              <View style={styles.fullScreenModalContent}>
+                <View style={styles.fullScreenModalHeader}>
+                  <Text style={styles.fullScreenModalTitle}>{t('professional.dashboard.title')}</Text>
+                  <TouchableOpacity 
+                    style={styles.closeButton}
+                    onPress={() => setShowProfessionalDashboard(false)}
+                  >
+                    <Text style={styles.modalClose}>{t('common.close')}</Text>
+                  </TouchableOpacity>
+                </View>
+                <View style={styles.dashboardContainer}>
+                  <ProfessionalDashboard 
+                    userRole="healthcare_provider"
+                    clientId="demo-client"
+                  />
+                </View>
+              </View>
             </View>
           )}
-        </View>
-      </View>
 
-      <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
-        {/* Quick Actions Grid */}
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Quick Actions</Text>
-          <View style={styles.quickGrid}>
-            <TouchableOpacity style={styles.quickItem} onPress={() => setShowThemeSelector(true)}>
-              <View style={[styles.quickIcon, { backgroundColor: `${currentTheme.colors.primary}15` }]}>
-                <Palette size={20} color={currentTheme.colors.primary} />
-              </View>
-              <Text style={styles.quickText}>Themes</Text>
-            </TouchableOpacity>
-            
-            <TouchableOpacity style={styles.quickItem} onPress={() => setShowLanguageSelector(true)}>
-              <View style={[styles.quickIcon, { backgroundColor: `${currentTheme.colors.success}15` }]}>
-                <Globe size={20} color={currentTheme.colors.success} />
-              </View>
-              <Text style={styles.quickText}>Language</Text>
-            </TouchableOpacity>
-            
-            <TouchableOpacity style={styles.quickItem} onPress={handleProfilePress}>
-              <View style={[styles.quickIcon, { backgroundColor: `${currentTheme.colors.accent}15` }]}>
-                <User size={20} color={currentTheme.colors.accent} />
-              </View>
-              <Text style={styles.quickText}>Profile</Text>
-            </TouchableOpacity>
-            
-            <TouchableOpacity style={styles.quickItem} onPress={handleNotificationSettings}>
-              <View style={[styles.quickIcon, { backgroundColor: `${currentTheme.colors.warning}15` }]}>
-                <Bell size={20} color={currentTheme.colors.warning} />
-              </View>
-              <Text style={styles.quickText}>Notifications</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-
-        {/* Premium Upgrade Banner */}
-        {!isPremiumUser && (
-          <TouchableOpacity style={styles.premiumBanner}>
-            <View style={styles.premiumContent}>
-              <View style={styles.premiumIconContainer}>
-                <Crown size={24} color={currentTheme.colors.warning} />
-              </View>
-              <View style={styles.premiumInfo}>
-                <Text style={styles.premiumTitle}>Upgrade to Pro</Text>
-                <Text style={styles.premiumSubtitle}>Unlock all features & advanced analytics</Text>
-              </View>
-              <View style={styles.premiumArrow}>
-                <ChevronRight size={20} color={currentTheme.colors.warning} />
+          {/* Performance Dashboard Modal */}
+          {showPerformanceDashboard && (
+            <View style={styles.fullScreenModalContainer}>
+              <View style={styles.fullScreenModalContent}>
+                <View style={styles.fullScreenModalHeader}>
+                  <Text style={styles.fullScreenModalTitle}>{t('performance.dashboard.title')}</Text>
+                  <TouchableOpacity 
+                    style={styles.closeButton}
+                    onPress={() => setShowPerformanceDashboard(false)}
+                  >
+                    <Text style={styles.modalClose}>{t('common.close')}</Text>
+                  </TouchableOpacity>
+                </View>
+                <View style={styles.dashboardContainer}>
+                  <PerformanceDashboard />
+                </View>
               </View>
             </View>
-          </TouchableOpacity>
-        )}
+          )}
 
-        {/* Community & Social */}
-        <View style={styles.section}>
-          <View style={styles.sectionHeader}>
-            <Users size={20} color={currentTheme.colors.accent} />
-            <Text style={styles.sectionTitle}>Community & Social</Text>
-          </View>
-          
-          <View style={styles.card}>
-            <TouchableOpacity style={styles.menuItem} onPress={() => setShowCommunityFeed(true)}>
-              <MessageCircle size={20} color={currentTheme.colors.textSecondary} />
-              <Text style={styles.menuText}>Community Feed</Text>
-              <ChevronRight size={16} color={currentTheme.colors.textSecondary} />
-            </TouchableOpacity>
-            
-            <TouchableOpacity style={styles.menuItem} onPress={() => setShowInviteFriends(true)}>
-              <UserPlus size={20} color={currentTheme.colors.textSecondary} />
-              <Text style={styles.menuText}>Invite Friends</Text>
-              <ChevronRight size={16} color={currentTheme.colors.textSecondary} />
-            </TouchableOpacity>
-            
-            <TouchableOpacity style={styles.menuItem} onPress={() => setShowShareProgress(true)}>
-              <Share2 size={20} color={currentTheme.colors.textSecondary} />
-              <Text style={styles.menuText}>Share Progress</Text>
-              <ChevronRight size={16} color={currentTheme.colors.textSecondary} />
-            </TouchableOpacity>
-            
-            <View style={[styles.menuItem, { borderBottomWidth: 0 }]}>
-              <Users size={20} color={currentTheme.colors.textSecondary} />
-              <Text style={styles.menuText}>Community Features</Text>
-              <Switch
-                value={communityFeaturesEnabled}
-                onValueChange={setCommunityFeaturesEnabled}
-                trackColor={{ false: currentTheme.colors.surface, true: `${currentTheme.colors.accent}50` }}
-                thumbColor={communityFeaturesEnabled ? currentTheme.colors.accent : currentTheme.colors.textSecondary}
-              />
+          {/* Performance Recommendations Modal */}
+          {showPerformanceRecommendations && (
+            <View style={styles.fullScreenModalContainer}>
+              <View style={styles.fullScreenModalContent}>
+                <View style={styles.fullScreenModalHeader}>
+                  <Text style={styles.fullScreenModalTitle}>{t('performance.recommendations.title')}</Text>
+                  <TouchableOpacity 
+                    style={styles.closeButton}
+                    onPress={() => setShowPerformanceRecommendations(false)}
+                  >
+                    <Text style={styles.modalClose}>{t('common.close')}</Text>
+                  </TouchableOpacity>
+                </View>
+                <View style={styles.dashboardContainer}>
+                  <PerformanceRecommendations />
+                </View>
+              </View>
             </View>
-          </View>
-        </View>
+          )}
 
-        {/* App Experience */}
-        <View style={styles.section}>
-          <View style={styles.sectionHeader}>
-            <SettingsIcon size={20} color={currentTheme.colors.primary} />
-            <Text style={styles.sectionTitle}>App Experience</Text>
-          </View>
-          
-          <View style={styles.card}>
-            <View style={styles.menuItem}>
-              <Sparkles size={20} color={currentTheme.colors.textSecondary} />
-              <Text style={styles.menuText}>Animations</Text>
-              <Switch
-                value={animationsEnabled}
-                onValueChange={setAnimationsEnabled}
-                trackColor={{ false: currentTheme.colors.surface, true: `${currentTheme.colors.primary}50` }}
-                thumbColor={animationsEnabled ? currentTheme.colors.primary : currentTheme.colors.textSecondary}
-              />
+          {/* Error Handling Examples Modal */}
+          {showErrorHandlingExample && (
+            <View style={styles.fullScreenModalContainer}>
+              <View style={styles.fullScreenModalContent}>
+                <View style={styles.fullScreenModalHeader}>
+                  <Text style={styles.fullScreenModalTitle}>{t('error.examples.title')}</Text>
+                  <TouchableOpacity 
+                    style={styles.closeButton}
+                    onPress={() => setShowErrorHandlingExample(false)}
+                  >
+                    <Text style={styles.modalClose}>{t('common.close')}</Text>
+                  </TouchableOpacity>
+                </View>
+                <View style={styles.dashboardContainer}>
+                  <ErrorHandlingExample />
+                </View>
+              </View>
             </View>
-            
-            <View style={styles.menuItem}>
-              <Activity size={20} color={currentTheme.colors.textSecondary} />
-              <Text style={styles.menuText}>Wellness Tracking</Text>
-              <Switch
-                value={wellnessTrackingEnabled}
-                onValueChange={setWellnessTrackingEnabled}
-                trackColor={{ false: currentTheme.colors.surface, true: `${currentTheme.colors.success}50` }}
-                thumbColor={wellnessTrackingEnabled ? currentTheme.colors.success : currentTheme.colors.textSecondary}
-              />
-            </View>
-            
-            <View style={[styles.menuItem, { borderBottomWidth: 0 }]}>
-              <Stethoscope size={20} color={currentTheme.colors.textSecondary} />
-              <Text style={styles.menuText}>Professional Sharing</Text>
-              <Switch
-                value={professionalSharingEnabled}
-                onValueChange={handleProfessionalSharingToggle}
-                trackColor={{ false: currentTheme.colors.surface, true: `${currentTheme.colors.primary}50` }}
-                thumbColor={professionalSharingEnabled ? currentTheme.colors.primary : currentTheme.colors.textSecondary}
-              />
-            </View>
-          </View>
-        </View>
-
-        {/* Professional Dashboard Access - Show when enabled */}
-        {professionalSharingEnabled && (
-          <View style={styles.section}>
-            <View style={styles.sectionHeader}>
-              <Stethoscope size={20} color={currentTheme.colors.primary} />
-              <Text style={styles.sectionTitle}>Professional Tools</Text>
-            </View>
-            
-            <View style={styles.card}>
-              <TouchableOpacity style={styles.menuItem} onPress={handleProfessionalDashboard}>
-                <Users size={20} color={currentTheme.colors.textSecondary} />
-                <Text style={styles.menuText}>Professional Dashboard</Text>
-                <ChevronRight size={20} color={currentTheme.colors.textSecondary} />
-              </TouchableOpacity>
-            </View>
-          </View>
-        )}
-
-        {/* Account & Security */}
-        <View style={styles.section}>
-          <View style={styles.sectionHeader}>
-            <Shield size={20} color={currentTheme.colors.primary} />
-            <Text style={styles.sectionTitle}>Account & Security</Text>
-          </View>
-          
-          <View style={styles.card}>
-            <TouchableOpacity style={styles.menuItem} onPress={handleChangePassword}>
-              <Lock size={20} color={currentTheme.colors.textSecondary} />
-              <Text style={styles.menuText}>Change Password</Text>
-              <ChevronRight size={16} color={currentTheme.colors.textSecondary} />
-            </TouchableOpacity>
-            
-            <TouchableOpacity style={styles.menuItem} onPress={handleLinkedAccounts}>
-              <Link size={20} color={currentTheme.colors.textSecondary} />
-              <Text style={styles.menuText}>Linked Accounts</Text>
-              <ChevronRight size={16} color={currentTheme.colors.textSecondary} />
-            </TouchableOpacity>
-            
-            <TouchableOpacity style={[styles.menuItem, { borderBottomWidth: 0 }]} onPress={handlePrivacySettings}>
-              <Shield size={20} color={currentTheme.colors.textSecondary} />
-              <Text style={styles.menuText}>Privacy Settings</Text>
-              <ChevronRight size={16} color={currentTheme.colors.textSecondary} />
-            </TouchableOpacity>
-          </View>
-        </View>
-
-        {/* Data & Support */}
-        <View style={styles.section}>
-          <View style={styles.sectionHeader}>
-            <Info size={20} color={currentTheme.colors.primary} />
-            <Text style={styles.sectionTitle}>Data & Support</Text>
-          </View>
-          
-          <View style={styles.card}>
-            <TouchableOpacity style={styles.menuItem} onPress={handleDataExport}>
-              <Download size={20} color={currentTheme.colors.textSecondary} />
-              <Text style={styles.menuText}>Export Data</Text>
-              <ChevronRight size={16} color={currentTheme.colors.textSecondary} />
-            </TouchableOpacity>
-            
-            <View style={styles.menuItem}>
-              <Text style={styles.menuText}>App Version</Text>
-              <Text style={styles.versionText}>1.0.0</Text>
-            </View>
-            
-            <TouchableOpacity 
-              style={[styles.menuItem, styles.dangerItem, { borderBottomWidth: 0 }]} 
-              onPress={handleAccountDeletion}
-            >
-              <Trash2 size={20} color={currentTheme.colors.error} />
-              <Text style={[styles.menuText, styles.dangerText]}>Delete Account</Text>
-              <ChevronRight size={16} color={currentTheme.colors.error} />
-            </TouchableOpacity>
-          </View>
-        </View>
-
-        {/* Sign Out */}
-        <TouchableOpacity style={styles.signOutButton} onPress={handleLogout}>
-          <LogOut size={20} color={currentTheme.colors.error} />
-          <Text style={styles.signOutText}>Sign Out</Text>
-        </TouchableOpacity>
-
-        <View style={styles.bottomSpacing} />
-      </ScrollView>
-
-      {/* Modals */}
-      {showThemeSelector && (
-        <ThemeSelector
-          visible={showThemeSelector}
-          onClose={() => setShowThemeSelector(false)}
-        />
+          )}
+        </SafeAreaView>
       )}
-      
-      {showLanguageSelector && (
-        <LanguageSelector
-          visible={showLanguageSelector}
-          onClose={() => setShowLanguageSelector(false)}
-        />
-      )}
-      
-      {showCommunityFeed && (
-        <View style={styles.modalContainer}>
-          <View style={styles.modalContent}>
-            <View style={styles.modalHeader}>
-              <Text style={styles.modalTitle}>Community Feed</Text>
-              <TouchableOpacity onPress={() => setShowCommunityFeed(false)}>
-                <Text style={styles.modalClose}>Close</Text>
-              </TouchableOpacity>
-            </View>
-            <SocialCommunityFeed isModal={true} />
-          </View>
-        </View>
-      )}
-      
-      {showInviteFriends && (
-        <InviteFriends onClose={() => setShowInviteFriends(false)} />
-      )}
-      
-      {showShareProgress && (
-        <ShareProgress
-          visible={showShareProgress}
-          onClose={() => setShowShareProgress(false)}
-        />
-      )}
-      
-      {/* Professional Dashboard Modal - Updated for better UX */}
-      {showProfessionalDashboard && (
-        <View style={styles.fullScreenModalContainer}>
-          <View style={styles.fullScreenModalContent}>
-            <View style={styles.fullScreenModalHeader}>
-              <Text style={styles.fullScreenModalTitle}>Professional Dashboard</Text>
-              <TouchableOpacity 
-                style={styles.closeButton}
-                onPress={() => setShowProfessionalDashboard(false)}
-              >
-                <Text style={styles.modalClose}>✕</Text>
-              </TouchableOpacity>
-            </View>
-            <View style={styles.dashboardContainer}>
-              <ProfessionalDashboard 
-                clientId={user?.id || 'demo-user'} 
-                userRole="healthcare_provider" 
-              />
-            </View>
-          </View>
-        </View>
-      )}
-    </SafeAreaView>
+    </>
   );
 }
 
@@ -710,9 +782,9 @@ const createStyles = (colors: any) => StyleSheet.create({
     alignItems: 'center',
   },
   avatarContainer: {
-    width: 48,
-    height: 48,
-    borderRadius: 24,
+    width: 56,
+    height: 56,
+    borderRadius: 28,
     backgroundColor: `${colors.primary}15`,
     justifyContent: 'center',
     alignItems: 'center',
@@ -723,119 +795,51 @@ const createStyles = (colors: any) => StyleSheet.create({
   },
   userName: {
     fontSize: 18,
-    fontWeight: '700',
+    fontWeight: '600',
     color: colors.text,
-    marginBottom: 2,
+    marginBottom: 4,
   },
-  userEmail: {
+  userStatus: {
     fontSize: 14,
     color: colors.textSecondary,
   },
-  premiumBadge: {
+  proBadge: {
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: `${colors.warning}15`,
     paddingHorizontal: 12,
     paddingVertical: 6,
     borderRadius: 16,
-    borderWidth: 1,
-    borderColor: `${colors.warning}30`,
+    gap: 4,
   },
-  premiumText: {
+  proText: {
     fontSize: 12,
     fontWeight: '600',
     color: colors.warning,
-    marginLeft: 4,
   },
-  content: {
+  scrollView: {
     flex: 1,
     paddingHorizontal: 20,
   },
   section: {
     marginTop: 24,
   },
-  sectionHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 12,
-  },
   sectionTitle: {
-    fontSize: 18,
-    fontWeight: '700',
-    color: colors.text,
-    marginLeft: 8,
-  },
-  quickGrid: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginTop: 8,
-  },
-  quickItem: {
-    alignItems: 'center',
-    flex: 1,
-    marginHorizontal: 6,
-  },
-  quickIcon: {
-    width: 48,
-    height: 48,
-    borderRadius: 24,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginBottom: 8,
-  },
-  quickText: {
-    fontSize: 12,
+    fontSize: 16,
     fontWeight: '600',
     color: colors.text,
-    textAlign: 'center',
-  },
-  premiumBanner: {
-    marginTop: 24,
-    backgroundColor: `${colors.warning}08`,
-    borderRadius: 16,
-    borderWidth: 1,
-    borderColor: `${colors.warning}20`,
-    overflow: 'hidden',
-  },
-  premiumContent: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    padding: 20,
-  },
-  premiumIconContainer: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: `${colors.warning}15`,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginRight: 16,
-  },
-  premiumInfo: {
-    flex: 1,
-  },
-  premiumTitle: {
-    fontSize: 16,
-    fontWeight: '700',
-    color: colors.text,
-    marginBottom: 4,
-  },
-  premiumSubtitle: {
-    fontSize: 14,
-    color: colors.textSecondary,
-  },
-  premiumArrow: {
-    marginLeft: 12,
+    marginBottom: 12,
+    paddingHorizontal: 4,
   },
   card: {
     backgroundColor: colors.card,
     borderRadius: 16,
-    shadowColor: colors.shadow,
+    overflow: 'hidden',
+    shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 8,
-    elevation: 3,
-    overflow: 'hidden',
+    elevation: 4,
   },
   menuItem: {
     flexDirection: 'row',
@@ -846,40 +850,49 @@ const createStyles = (colors: any) => StyleSheet.create({
     borderBottomColor: colors.border,
   },
   menuText: {
-    fontSize: 16,
-    fontWeight: '500',
-    color: colors.text,
-    marginLeft: 12,
     flex: 1,
+    fontSize: 16,
+    color: colors.text,
+    marginLeft: 16,
   },
-  versionText: {
-    fontSize: 14,
-    color: colors.textSecondary,
-    fontWeight: '500',
+  premiumBanner: {
+    backgroundColor: `${colors.warning}10`,
+    borderRadius: 16,
+    padding: 20,
+    marginTop: 20,
+    borderWidth: 1,
+    borderColor: `${colors.warning}30`,
   },
-  dangerItem: {
-    borderBottomColor: `${colors.error}20`,
-  },
-  dangerText: {
-    color: colors.error,
-  },
-  signOutButton: {
+  premiumContent: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: `${colors.error}10`,
-    marginTop: 32,
-    paddingVertical: 16,
-    borderRadius: 16,
-    borderWidth: 1,
-    borderColor: `${colors.error}20`,
   },
-  signOutText: {
+  premiumIconContainer: {
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    backgroundColor: `${colors.warning}20`,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 16,
+  },
+  premiumInfo: {
+    flex: 1,
+  },
+  premiumTitle: {
     fontSize: 16,
     fontWeight: '600',
-    color: colors.error,
-    marginLeft: 8,
+    color: colors.text,
+    marginBottom: 4,
   },
+  premiumSubtitle: {
+    fontSize: 14,
+    color: colors.textSecondary,
+  },
+  bottomSpacing: {
+    height: 40,
+  },
+  // Modal styles
   modalContainer: {
     position: 'absolute',
     top: 0,
@@ -917,9 +930,6 @@ const createStyles = (colors: any) => StyleSheet.create({
     fontSize: 16,
     fontWeight: '600',
     color: colors.primary,
-  },
-  bottomSpacing: {
-    height: 40,
   },
   fullScreenModalContainer: {
     position: 'absolute',

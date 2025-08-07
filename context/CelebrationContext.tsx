@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useAuth } from '@/context/AuthContext';
 
 type CelebrationType = 'streak' | 'allComplete' | 'milestone' | 'level_up' | 'achievement';
 
@@ -18,20 +19,31 @@ type CelebrationContextType = {
 
 const CelebrationContext = createContext<CelebrationContextType | undefined>(undefined);
 
-const ANIMATIONS_STORAGE_KEY = '@productivity_app_animations';
+
 
 export function CelebrationProvider({ children }: { children: ReactNode }) {
+  const { user } = useAuth();
   const [currentCelebration, setCurrentCelebration] = useState<CelebrationData | null>(null);
   const [animationsEnabled, setAnimationsEnabledState] = useState(true);
 
-  // Load animation preference on mount
+  // Get user-specific storage key
+  const getStorageKey = () => {
+    const userId = user?.id || 'anonymous';
+    return `@productivity_app_animations_${userId}`;
+  };
+
+  // Load animation preference on mount or when user changes
   useEffect(() => {
-    loadAnimationPreference();
-  }, []);
+    // Only load data if auth is not loading
+    if (!user || user.id) {
+      loadAnimationPreference();
+    }
+  }, [user?.id]);
 
   const loadAnimationPreference = async () => {
     try {
-      const stored = await AsyncStorage.getItem(ANIMATIONS_STORAGE_KEY);
+      const storageKey = getStorageKey();
+      const stored = await AsyncStorage.getItem(storageKey);
       if (stored !== null) {
         setAnimationsEnabledState(JSON.parse(stored));
       }
@@ -43,16 +55,23 @@ export function CelebrationProvider({ children }: { children: ReactNode }) {
   const setAnimationsEnabled = async (enabled: boolean) => {
     setAnimationsEnabledState(enabled);
     try {
-      await AsyncStorage.setItem(ANIMATIONS_STORAGE_KEY, JSON.stringify(enabled));
+      const storageKey = getStorageKey();
+      await AsyncStorage.setItem(storageKey, JSON.stringify(enabled));
     } catch (error) {
       console.error('Failed to save animation preference:', error);
     }
   };
 
   const showCelebration = (type: CelebrationType, message: string) => {
-    if (!animationsEnabled) return;
+    console.log('🎉 showCelebration called:', { type, message });
+    
+    if (!animationsEnabled) {
+      console.log('🎉 Animations disabled, skipping celebration');
+      return;
+    }
     
     setCurrentCelebration({ type, message });
+    console.log('🎉 Celebration set successfully');
   };
 
   const hideCelebration = () => {

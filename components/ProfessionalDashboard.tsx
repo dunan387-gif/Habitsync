@@ -92,9 +92,9 @@ export default function ProfessionalDashboard({ clientId, userRole }: Profession
           <Heart size={24} color={currentTheme.colors.primary} />
         </View>
         <View style={styles.headerText}>
-          <Text style={styles.welcomeTitle}>Professional Dashboard</Text>
+          <Text style={styles.welcomeTitle}>{t('professional.dashboard.title')}</Text>
           <Text style={styles.welcomeSubtitle}>
-            {dashboardData?.clientName || 'Client Overview'}
+            {dashboardData?.clientName || t('professional.dashboard.clientOverview')}
           </Text>
         </View>
         <TouchableOpacity 
@@ -407,7 +407,7 @@ export default function ProfessionalDashboard({ clientId, userRole }: Profession
           <View style={styles.emptyState}>
             <Info size={48} color={currentTheme.colors.textSecondary} />
             <Text style={styles.emptyStateText}>
-              Insufficient data for clinical insights
+              {t('professional.insufficientData')}
             </Text>
           </View>
         )}
@@ -419,39 +419,39 @@ export default function ProfessionalDashboard({ clientId, userRole }: Profession
     <View style={styles.section}>
       <View style={styles.sectionHeader}>
         <Share2 size={24} color={currentTheme.colors.primary} />
-        <Text style={styles.sectionTitle}>Quick Actions</Text>
+        <Text style={styles.sectionTitle}>{t('professional.quickActions')}</Text>
       </View>
       
       <View style={styles.actionsContainer}>
         <TouchableOpacity 
           style={styles.primaryActionCard}
-          onPress={() => Alert.alert('Generate Report', 'Generating comprehensive report...')}
+          onPress={() => Alert.alert(t('professional.generateReport'), t('professional.generatingReport'))}
         >
           <View style={styles.actionIconContainer}>
             <FileText size={24} color="white" />
           </View>
           <View style={styles.actionContent}>
-            <Text style={styles.primaryActionText}>Generate Report</Text>
-            <Text style={styles.actionSubtext}>Create detailed clinical summary</Text>
+            <Text style={styles.primaryActionText}>{t('professional.generateReport')}</Text>
+            <Text style={styles.actionSubtext}>{t('professional.createDetailedSummary')}</Text>
           </View>
         </TouchableOpacity>
 
         <View style={{ flexDirection: 'row', gap: 12 }}>
-          <TouchableOpacity 
-            style={[styles.secondaryActionCard, { flex: 1 }]}
-            onPress={() => Alert.alert('Share Data', 'Sharing dashboard data...')}
-          >
-            <Share2 size={16} color={currentTheme.colors.primary} />
-            <Text style={styles.secondaryActionText}>Share</Text>
-          </TouchableOpacity>
-          
-          <TouchableOpacity 
-            style={[styles.secondaryActionCard, { flex: 1 }]}
-            onPress={() => Alert.alert('Schedule Session', 'Opening calendar...')}
-          >
-            <Calendar size={16} color={currentTheme.colors.primary} />
-            <Text style={styles.secondaryActionText}>Schedule</Text>
-          </TouchableOpacity>
+                  <TouchableOpacity 
+          style={[styles.secondaryActionCard, { flex: 1 }]}
+          onPress={() => Alert.alert(t('professional.shareData'), t('professional.sharingData'))}
+        >
+          <Share2 size={16} color={currentTheme.colors.primary} />
+          <Text style={styles.secondaryActionText}>{t('professional.share')}</Text>
+        </TouchableOpacity>
+        
+        <TouchableOpacity 
+          style={[styles.secondaryActionCard, { flex: 1 }]}
+          onPress={() => Alert.alert(t('professional.scheduleSession'), t('professional.openingCalendar'))}
+        >
+          <Calendar size={16} color={currentTheme.colors.primary} />
+          <Text style={styles.secondaryActionText}>{t('professional.schedule')}</Text>
+        </TouchableOpacity>
         </View>
       </View>
     </View>
@@ -462,15 +462,15 @@ export default function ProfessionalDashboard({ clientId, userRole }: Profession
       <View style={styles.emptyStateIcon}>
         <BarChart3 size={48} color={currentTheme.colors.textSecondary} />
       </View>
-      <Text style={styles.emptyStateTitle}>No Data Available</Text>
+      <Text style={styles.emptyStateTitle}>{t('professional.noDataAvailable')}</Text>
       <Text style={styles.emptyStateMessage}>
-        Start tracking mood and habits to see professional insights and analytics here.
+        {t('professional.startTrackingMessage')}
       </Text>
       <TouchableOpacity 
         style={styles.emptyStateButton} 
         onPress={() => router.push('/(tabs)/wellness')}
       >
-        <Text style={styles.emptyStateButtonText}>Get Started</Text>
+        <Text style={styles.emptyStateButtonText}>{t('professional.getStarted')}</Text>
       </TouchableOpacity>
     </View>
   );
@@ -479,8 +479,8 @@ export default function ProfessionalDashboard({ clientId, userRole }: Profession
     return (
       <View style={styles.loadingContainer}>
         <ActivityIndicator size="large" color={currentTheme.colors.primary} />
-        <Text style={styles.loadingText}>Loading Dashboard</Text>
-        <Text style={styles.loadingSubtext}>Analyzing your data...</Text>
+        <Text style={styles.loadingText}>{t('professional.loadingDashboard')}</Text>
+        <Text style={styles.loadingSubtext}>{t('professional.analyzingData')}</Text>
       </View>
     );
   }
@@ -489,10 +489,10 @@ export default function ProfessionalDashboard({ clientId, userRole }: Profession
     return (
       <View style={styles.errorContainer}>
         <XCircle size={48} color={currentTheme.colors.error} />
-        <Text style={styles.errorTitle}>Unable to Load Dashboard</Text>
+        <Text style={styles.errorTitle}>{t('professional.unableToLoadDashboard')}</Text>
         <Text style={styles.errorMessage}>{error}</Text>
         <TouchableOpacity style={styles.retryButton} onPress={loadDashboardData}>
-          <Text style={styles.retryButtonText}>Try Again</Text>
+          <Text style={styles.retryButtonText}>{t('professional.tryAgain')}</Text>
         </TouchableOpacity>
       </View>
     );

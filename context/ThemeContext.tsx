@@ -2,6 +2,8 @@ import React, { createContext, useContext, useEffect, useState, ReactNode } from
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Theme, ThemePreference, ThemeColors } from '@/types';
 import { AVAILABLE_THEMES, LIGHT_THEME } from '@/constants/themes';
+import { useAuth } from '@/context/AuthContext';
+import { useSubscription } from '@/context/SubscriptionContext';
 
 type ThemeContextType = {
   currentTheme: Theme;
@@ -10,28 +12,36 @@ type ThemeContextType = {
   isLoading: boolean;
   availableThemes: Theme[];
   isPremiumUser: boolean;
-  setIsPremiumUser: (isPremium: boolean) => void;
 };
 
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
-const THEME_STORAGE_KEY = '@productivity_app_theme';
-const PREMIUM_STORAGE_KEY = '@productivity_app_premium';
-
 export function ThemeProvider({ children }: { children: ReactNode }) {
+  const { user } = useAuth();
+  const { currentTier } = useSubscription();
   const [currentTheme, setCurrentTheme] = useState<Theme>(LIGHT_THEME);
   const [isLoading, setIsLoading] = useState(true);
-  const [isPremiumUser, setIsPremiumUser] = useState(true); // Changed from false to true
 
-  // Load theme preference on app start
+  // Get user-specific storage keys
+  const getStorageKeys = () => {
+    const userId = user?.id || 'anonymous';
+    return {
+      theme: `@productivity_app_theme_${userId}`,
+    };
+  };
+
+  // Load theme preference on app start or when user changes
   useEffect(() => {
-    loadThemePreference();
-    loadPremiumStatus();
-  }, []);
+    // Only load data if auth is not loading
+    if (!user || user.id) {
+      loadThemePreference();
+    }
+  }, [user?.id]);
 
   const loadThemePreference = async () => {
     try {
-      const storedPreference = await AsyncStorage.getItem(THEME_STORAGE_KEY);
+      const keys = getStorageKeys();
+      const storedPreference = await AsyncStorage.getItem(keys.theme);
       if (storedPreference) {
         const preference: ThemePreference = JSON.parse(storedPreference);
         const theme = AVAILABLE_THEMES.find(t => t.id === preference.themeId);
@@ -46,17 +56,6 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     }
   };
 
-  const loadPremiumStatus = async () => {
-    try {
-      const storedPremium = await AsyncStorage.getItem(PREMIUM_STORAGE_KEY);
-      if (storedPremium) {
-        setIsPremiumUser(JSON.parse(storedPremium));
-      }
-    } catch (error) {
-      console.error('Failed to load premium status:', error);
-    }
-  };
-
   const setTheme = async (themeId: string) => {
     try {
       const theme = AVAILABLE_THEMES.find(t => t.id === themeId);
@@ -64,27 +63,29 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
         throw new Error(`Theme with id ${themeId} not found`);
       }
 
-      // Check if theme requires premium
-      if (theme.isPremium && !isPremiumUser) {
+      console.log('🎨 Theme validation:', {
+        themeId,
+        themeName: theme.name,
+        isPremium: theme.isPremium,
+        currentTier,
+        canUse: !theme.isPremium || currentTier === 'pro'
+      });
+
+      // Check if theme requires premium using subscription context
+      if (theme.isPremium && currentTier !== 'pro') {
         throw new Error('This theme requires premium subscription');
       }
 
       setCurrentTheme(theme);
       
       const preference: ThemePreference = { themeId };
-      await AsyncStorage.setItem(THEME_STORAGE_KEY, JSON.stringify(preference));
+      const keys = getStorageKeys();
+      await AsyncStorage.setItem(keys.theme, JSON.stringify(preference));
+      
+      console.log('✅ Theme set successfully:', theme.name);
     } catch (error) {
       console.error('Failed to set theme:', error);
       throw error;
-    }
-  };
-
-  const updatePremiumStatus = async (isPremium: boolean) => {
-    setIsPremiumUser(isPremium);
-    try {
-      await AsyncStorage.setItem(PREMIUM_STORAGE_KEY, JSON.stringify(isPremium));
-    } catch (error) {
-      console.error('Failed to save premium status:', error);
     }
   };
 
@@ -94,8 +95,7 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     setTheme,
     isLoading,
     availableThemes: AVAILABLE_THEMES,
-    isPremiumUser,
-    setIsPremiumUser: updatePremiumStatus,
+    isPremiumUser: currentTier === 'pro',
   };
 
   return (

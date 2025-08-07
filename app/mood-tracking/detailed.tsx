@@ -323,6 +323,7 @@ const createStyles = (colors: any) => StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colors.background,
+    paddingTop: 50,
   },
   header: {
     flexDirection: 'row',
@@ -377,7 +378,7 @@ const createStyles = (colors: any) => StyleSheet.create({
     marginRight: 12,
   },
   stepNumber: {
-    color: 'white',
+    color: colors.background,
     fontSize: 16,
     fontWeight: '600',
   },
@@ -484,7 +485,7 @@ const createStyles = (colors: any) => StyleSheet.create({
     color: colors.text,
   },
   selectedIntensityText: {
-    color: 'white',
+    color: colors.background,
   },
   enhancedTriggersGrid: {
     flexDirection: 'row',
@@ -570,16 +571,14 @@ const createStyles = (colors: any) => StyleSheet.create({
     alignItems: 'center',
   },
   enhancedSubmitButtonText: {
-    color: 'white',
+    color: colors.background,
     fontSize: 18,
     fontWeight: '600',
     marginBottom: 4,
   },
   submitButtonSubtext: {
-    color: 'white',
+    color: colors.background,
     fontSize: 14,
     opacity: 0.8,
   },
-});
-
-
+}); 

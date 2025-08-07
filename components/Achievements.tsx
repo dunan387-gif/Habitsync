@@ -46,10 +46,10 @@ export default function Achievements() {
           </View>
           <View style={styles.achievementInfo}>
             <Text style={[styles.achievementTitle, !isUnlocked && styles.lockedText]}>
-              {item.title}
+              {item.titleKey ? t(item.titleKey) : item.title}
             </Text>
             <Text style={[styles.achievementDescription, !isUnlocked && styles.lockedText]}>
-              {item.description}
+              {item.descriptionKey ? t(item.descriptionKey) : item.description}
             </Text>
           </View>
         </View>
@@ -57,7 +57,7 @@ export default function Achievements() {
           <View style={[styles.rarityBadge, { backgroundColor: rarityColor + '20' }]}>
             <Star size={12} color={rarityColor} />
             <Text style={[styles.rarityText, { color: rarityColor }]}>
-              {item.rarity.toUpperCase()}
+              {t(`gamification.achievements.rarity.${item.rarity}`)}
             </Text>
           </View>
           <Text style={styles.xpReward}>+{item.xpReward} {t('gamification.achievements.xp')}</Text>

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Alert, Share, Linking, Animated } from 'react-native';
 import { useGamification } from '@/context/GamificationContext';
 import { useTheme } from '@/context/ThemeContext';
+import { useLanguage } from '@/context/LanguageContext';
 import { Users, Gift, Share2, MessageCircle, Mail, Copy, Star, Trophy, Zap, ExternalLink, ArrowLeft } from 'lucide-react-native';
 import * as Clipboard from 'expo-clipboard';
 import { useRouter } from 'expo-router';
@@ -9,6 +10,7 @@ import { useRouter } from 'expo-router';
 export default function InviteFriends({ onClose }: { onClose?: () => void }) {
   const { gamificationData, addXP } = useGamification();
   const { currentTheme } = useTheme();
+  const { t } = useLanguage();
   const router = useRouter();
   const [isSharing, setIsSharing] = useState(false);
   const [copiedCode, setCopiedCode] = useState(false);
@@ -26,15 +28,11 @@ export default function InviteFriends({ onClose }: { onClose?: () => void }) {
   const playStoreUrl = 'https://play.google.com/store/apps/details?id=com.habittracker';
 
   const generateInviteMessage = () => {
-    return `🎯 Join me on my habit-building journey!\n\n` +
-           `I've been using this amazing Habit Tracker app and I'm already at Level ${gamificationData?.userLevel.level || 1}! 🚀\n\n` +
-           `✨ Track daily habits\n` +
-           `🏆 Earn achievements\n` +
-           `📊 See your progress\n` +
-           `🎮 Gamified experience\n\n` +
-           `Use my referral code: ${referralCode}\n` +
-           `We both get bonus XP when you join! 💪\n\n` +
-           `Download here: ${appStoreUrl}`;
+    return t('gamification.inviteFriends.inviteMessage', {
+      level: gamificationData?.userLevel.level || 1,
+      code: referralCode,
+      url: appStoreUrl
+    });
   };
 
   const startPulseAnimation = () => {
@@ -59,15 +57,15 @@ export default function InviteFriends({ onClose }: { onClose?: () => void }) {
       const message = generateInviteMessage();
       const result = await Share.share({
         message,
-        title: 'Join me in building better habits!'
+        title: t('gamification.inviteFriends.joinMeTitle')
       });
       
       if (result.action === Share.sharedAction) {
         await addXP(10, 'friend_invite');
-        Alert.alert('Invite Sent! 🎉', 'You earned 10 XP for inviting a friend!');
+        Alert.alert(t('gamification.inviteFriends.inviteSent'), t('gamification.inviteFriends.earnedXP'));
       }
     } catch (error) {
-      Alert.alert('Error', 'Failed to send invite. Please try again.');
+      Alert.alert(t('gamification.inviteFriends.error'), t('gamification.inviteFriends.failedToSend'));
     } finally {
       setIsSharing(false);
     }
@@ -78,9 +76,9 @@ export default function InviteFriends({ onClose }: { onClose?: () => void }) {
       await Clipboard.setStringAsync(referralCode);
       setCopiedCode(true);
       setTimeout(() => setCopiedCode(false), 2000);
-      Alert.alert('Copied!', 'Referral code copied to clipboard');
+      Alert.alert(t('gamification.inviteFriends.copied'), t('gamification.inviteFriends.codeCopied'));
     } catch (error) {
-      Alert.alert('Error', 'Failed to copy referral code');
+      Alert.alert(t('gamification.inviteFriends.error'), t('gamification.inviteFriends.failedToCopy'));
     }
   };
 
@@ -90,7 +88,7 @@ export default function InviteFriends({ onClose }: { onClose?: () => void }) {
   };
 
   const shareViaEmail = () => {
-    const subject = encodeURIComponent('Join me in building better habits!');
+    const subject = encodeURIComponent(t('gamification.inviteFriends.joinMeTitle'));
     const body = encodeURIComponent(generateInviteMessage());
     Linking.openURL(`mailto:?subject=${subject}&body=${body}`);
   };
@@ -106,23 +104,23 @@ export default function InviteFriends({ onClose }: { onClose?: () => void }) {
   const inviteOptions = [
     {
       icon: Share2,
-      label: 'Share Anywhere',
-      description: 'Share via any app',
+      label: t('gamification.inviteFriends.shareAnywhere'),
+      description: t('gamification.inviteFriends.shareViaAnyApp'),
       action: handleShare,
       color: currentTheme.colors.primary,
       gradient: true
     },
     {
       icon: MessageCircle,
-      label: 'WhatsApp',
-      description: 'Share with contacts',
+      label: t('gamification.inviteFriends.whatsapp'),
+      description: t('gamification.inviteFriends.shareWithContacts'),
       action: shareViaWhatsApp,
       color: '#25D366'
     },
     {
       icon: Mail,
-      label: 'Email',
-      description: 'Send via email',
+      label: t('gamification.inviteFriends.email'),
+      description: t('gamification.inviteFriends.sendViaEmail'),
       action: shareViaEmail,
       color: '#EA4335'
     }
@@ -142,42 +140,42 @@ export default function InviteFriends({ onClose }: { onClose?: () => void }) {
           <Users size={24} color={currentTheme.colors.primary} />
         </View>
         <View style={styles.headerContent}>
-          <Text style={styles.title}>Invite Friends</Text>
+          <Text style={styles.title}>{t('gamification.inviteFriends.title')}</Text>
           <View style={styles.xpBadge}>
             <Zap size={14} color={currentTheme.colors.accent} />
-            <Text style={styles.xpText}>+10 XP per invite</Text>
+            <Text style={styles.xpText}>{t('gamification.inviteFriends.xpPerInvite')}</Text>
           </View>
         </View>
       </View>
 
       <Text style={styles.subtitle}>
-        Share your journey and earn rewards! Friends who join with your code get bonus XP too.
+        {t('gamification.inviteFriends.subtitle')}
       </Text>
 
       {/* Stats Section */}
       <View style={styles.statsContainer}>
         <View style={styles.statItem}>
           <Trophy size={20} color={currentTheme.colors.accent} />
-          <Text style={styles.statNumber}>Level {gamificationData?.userLevel.level || 1}</Text>
-          <Text style={styles.statLabel}>Your Level</Text>
+          <Text style={styles.statNumber}>{t('gamification.levelProgress.level')} {gamificationData?.userLevel.level || 1}</Text>
+          <Text style={styles.statLabel}>{t('gamification.inviteFriends.yourLevel')}</Text>
         </View>
         <View style={styles.statDivider} />
         <View style={styles.statItem}>
           <Star size={20} color={currentTheme.colors.primary} />
           <Text style={styles.statNumber}>{gamificationData?.userLevel?.totalXP || 0}</Text>
-          <Text style={styles.statLabel}>Total XP</Text>
+          <Text style={styles.statLabel}>{t('gamification.inviteFriends.totalXP')}</Text>
         </View>
         <View style={styles.statDivider} />
         <View style={styles.statItem}>
           <Users size={20} color={currentTheme.colors.success} />
           <Text style={styles.statNumber}>0</Text>
-          <Text style={styles.statLabel}>Friends Invited</Text>
+          <Text style={styles.statLabel}>{t('gamification.inviteFriends.friendsInvited')}</Text>
         </View>
       </View>
 
       {/* Referral Code Section */}
       <View style={styles.referralSection}>
-        <Text style={styles.referralLabel}>Your Referral Code</Text>
+        <Text style={styles.referralLabel}>{t('gamification.inviteFriends.referralCode')}</Text>
         <View style={styles.referralCodeContainer}>
           <Text style={styles.referralCode}>{referralCode}</Text>
           <TouchableOpacity 
@@ -187,12 +185,12 @@ export default function InviteFriends({ onClose }: { onClose?: () => void }) {
             <Copy size={18} color={copiedCode ? currentTheme.colors.success : currentTheme.colors.primary} />
           </TouchableOpacity>
         </View>
-        <Text style={styles.codeHint}>Share this code for bonus rewards</Text>
+        <Text style={styles.codeHint}>{t('gamification.inviteFriends.codeHint')}</Text>
       </View>
 
       {/* Invite Options */}
       <View style={styles.inviteOptions}>
-        <Text style={styles.optionsTitle}>Choose how to invite</Text>
+        <Text style={styles.optionsTitle}>{t('gamification.inviteFriends.chooseHowToInvite')}</Text>
         {inviteOptions.map((option, index) => (
           <Animated.View 
             key={index} 
@@ -237,9 +235,9 @@ export default function InviteFriends({ onClose }: { onClose?: () => void }) {
       <View style={styles.rewardsInfo}>
         <Gift size={20} color={currentTheme.colors.accent} />
         <View style={styles.rewardsContent}>
-          <Text style={styles.rewardsTitle}>Referral Rewards</Text>
+          <Text style={styles.rewardsTitle}>{t('gamification.inviteFriends.referralRewards')}</Text>
           <Text style={styles.rewardsText}>
-            You and your friend both get 50 XP when they complete their first habit!
+            {t('gamification.inviteFriends.referralRewardsText')}
           </Text>
         </View>
       </View>

@@ -214,6 +214,7 @@ const createStyles = (colors: any) => StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: 20,
     paddingVertical: 16,
+    paddingTop: 50,
     borderBottomWidth: 1,
     borderBottomColor: colors.border,
   },

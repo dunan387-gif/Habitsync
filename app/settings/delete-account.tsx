@@ -12,10 +12,11 @@ import {
 import { StatusBar } from 'expo-status-bar';
 import { ArrowLeft, AlertTriangle, Trash2 } from 'lucide-react-native';
 import { useRouter } from 'expo-router';
-import AsyncStorage from '@react-native-async-storage/async-storage'; // Add this import
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useTheme } from '@/context/ThemeContext';
 import { useAuth } from '@/context/AuthContext';
 import { useLanguage } from '@/context/LanguageContext';
+import { AuthService } from '@/services/AuthService';
 
 export default function DeleteAccountScreen() {
   const { currentTheme } = useTheme();
@@ -45,17 +46,8 @@ export default function DeleteAccountScreen() {
           onPress: async () => {
             setIsLoading(true);
             try {
-              // TODO: Implement account deletion API call
-              await new Promise(resolve => setTimeout(resolve, 2000));
-              
-              // Clear all local storage data
-              await AsyncStorage.clear();
-              
-              // Or if you want to be more specific, clear individual items:
-              // await AsyncStorage.removeItem('mood_habit_onboarding_completed');
-              // await AsyncStorage.removeItem('@productivity_app_language');
-              // await AsyncStorage.removeItem('user_preferences');
-              // Add any other AsyncStorage keys you want to clear
+              // Implement account deletion using AuthService
+              await AuthService.deleteAccount();
               
               Alert.alert(
                 t('deleteAccount.alerts.success.title'),
@@ -70,9 +62,9 @@ export default function DeleteAccountScreen() {
                   },
                 ]
               );
-            } catch (error) {
-              console.error('Error deleting account or clearing storage:', error);
-              Alert.alert(t('deleteAccount.alerts.error.title'), t('deleteAccount.alerts.error.message'));
+            } catch (error: any) {
+              console.error('Error deleting account:', error);
+              Alert.alert(t('deleteAccount.alerts.error.title'), error.message || t('deleteAccount.alerts.error.message'));
             } finally {
               setIsLoading(false);
             }
@@ -205,6 +197,7 @@ const createStyles = (colors: any) => StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: 20,
     paddingVertical: 16,
+    paddingTop: 50,
     borderBottomWidth: 1,
     borderBottomColor: colors.border,
   },

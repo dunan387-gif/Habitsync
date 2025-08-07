@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode, useCallback } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useAuth } from './AuthContext';
 import { 
   Habit, 
   AIHabitSuggestion, 
@@ -39,6 +40,10 @@ import { aiService } from '@/services/AIService';
 import { useCelebration } from '@/context/CelebrationContext';
 import { useLanguage } from './LanguageContext';
 import { useGamification } from './GamificationContext';
+import { useSubscription } from './SubscriptionContext';
+import { useError } from './ErrorContext';
+import { ErrorType } from '@/utils/errorHandler';
+import { getLocalDateString, isToday } from '@/utils/timezone';
 
 
 type HabitContextType = {
@@ -103,6 +108,8 @@ export function HabitProvider({ children }: { children: ReactNode }) {
 
   const { showCelebration } = useCelebration();
   const { t } = useLanguage();
+  const { showError } = useError();
+  const { user } = useAuth();
 
   // Make gamification optional
   let addXP: ((amount: number, source: string) => Promise<void>) | undefined;
@@ -123,10 +130,28 @@ export function HabitProvider({ children }: { children: ReactNode }) {
     console.log('GamificationContext not available');
   }
 
-  // Load habits from storage on mount
+  // Make subscription optional
+  let canAddHabit: ((currentHabitCount: number) => boolean) | undefined;
+  let showUpgradePrompt: ((trigger: any) => void) | undefined;
+  let trackFeatureUsage: ((feature: string) => void) | undefined;
+
+  try {
+    const subscription = useSubscription();
+    canAddHabit = subscription.canAddHabit;
+    showUpgradePrompt = subscription.showUpgradePrompt;
+    trackFeatureUsage = subscription.trackFeatureUsage;
+  } catch (error) {
+    // SubscriptionContext not available yet
+    console.log('SubscriptionContext not available');
+  }
+
+  // Load habits from storage on mount and when user changes
   useEffect(() => {
-    loadHabits();
-  }, []);
+    // Only load data if auth is not loading
+    if (!user || user.id) {
+      loadHabits();
+    }
+  }, [user?.id]); // Reload habits when user ID changes
 
   // Separate effect for date checking that runs after habits are loaded
   useEffect(() => {
@@ -136,12 +161,13 @@ export function HabitProvider({ children }: { children: ReactNode }) {
     const checkDate = async () => {
       try {
         const now = new Date();
-        const today = now.toISOString().split('T')[0];
+        const today = getLocalDateString(now);
         
-        const lastDate = await AsyncStorage.getItem('lastCheckDate');
+        const dateKey = user ? `lastCheckDate_${user.id}` : 'lastCheckDate_anonymous';
+        const lastDate = await AsyncStorage.getItem(dateKey);
         if (lastDate !== today) {
           await resetCompletedToday();
-          await AsyncStorage.setItem('lastCheckDate', today);
+          await AsyncStorage.setItem(dateKey, today);
         }
       } catch (error) {
         console.error('Failed to check date:', error);
@@ -156,14 +182,27 @@ export function HabitProvider({ children }: { children: ReactNode }) {
 
   const loadHabits = async () => {
     try {
-      const storedHabits = await AsyncStorage.getItem('habits');
+      // Use user-specific storage key
+      const storageKey = user ? `habits_${user.id}` : 'habits_anonymous';
+      const storedHabits = await AsyncStorage.getItem(storageKey);
       if (storedHabits) {
-        setHabits(JSON.parse(storedHabits));
+        const parsedHabits = JSON.parse(storedHabits);
+        
+        // Ensure all habits have the order property for backward compatibility
+        const habitsWithOrder = parsedHabits.map((habit: any, index: number) => ({
+          ...habit,
+          order: habit.order !== undefined ? habit.order : index
+        }));
+        
+        setHabits(habitsWithOrder);
       } else {
         setHabits([]);
       }
     } catch (error) {
       console.error('Failed to load habits:', error);
+      showError(error as Error, {
+        retryable: true,
+      });
       setHabits([]);
     } finally {
       setIsLoading(false);
@@ -172,9 +211,14 @@ export function HabitProvider({ children }: { children: ReactNode }) {
   
   const saveHabits = async (updatedHabits: Habit[]) => {
     try {
-      await AsyncStorage.setItem('habits', JSON.stringify(updatedHabits));
+      // Use user-specific storage key
+      const storageKey = user ? `habits_${user.id}` : 'habits_anonymous';
+      await AsyncStorage.setItem(storageKey, JSON.stringify(updatedHabits));
     } catch (error) {
       console.error('Failed to save habits:', error);
+      showError(error as Error, {
+        retryable: true,
+      });
     }
   };
   
@@ -200,6 +244,12 @@ export function HabitProvider({ children }: { children: ReactNode }) {
     if (!habits) return;
     
     try {
+      // Check subscription limits
+      if (canAddHabit && !canAddHabit(habits.length)) {
+        showUpgradePrompt?.('habit_limit');
+        throw new Error('Habit limit reached. Please upgrade to Pro for unlimited habits.');
+      }
+      
       const newHabit = {
         ...habit,
         order: habits.length // Set order to the end
@@ -207,6 +257,9 @@ export function HabitProvider({ children }: { children: ReactNode }) {
       const updatedHabits = [...habits, newHabit];
       setHabits(updatedHabits);
       await saveHabits(updatedHabits);
+      
+      // Track feature usage
+      trackFeatureUsage?.('habit_created');
       
       // Schedule reminder if enabled
       if (habit.reminderEnabled && habit.reminderTime) {
@@ -217,6 +270,7 @@ export function HabitProvider({ children }: { children: ReactNode }) {
       }
     } catch (error) {
       console.error('Failed to add habit:', error);
+      throw error; // Re-throw to handle in UI
     }
   };
   
@@ -286,7 +340,7 @@ export function HabitProvider({ children }: { children: ReactNode }) {
     
     try {
       const now = new Date();
-      const today = now.toISOString().split('T')[0];
+      const today = getLocalDateString(now);
       const currentTime = `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}`;
       
       // Add post-mood tracking function
@@ -321,7 +375,7 @@ export function HabitProvider({ children }: { children: ReactNode }) {
             const sortedDates = [...completedDates].sort();
             const yesterday = new Date();
             yesterday.setDate(yesterday.getDate() - 1);
-            const yesterdayStr = yesterday.toISOString().split('T')[0];
+            const yesterdayStr = getLocalDateString(yesterday);
             
             if (sortedDates.includes(yesterdayStr)) {
               streak = habit.streak + 1;
@@ -498,7 +552,7 @@ export function HabitProvider({ children }: { children: ReactNode }) {
         for (let i = 0; i < days; i++) {
           const date = new Date();
           date.setDate(today.getDate() - i);
-          const dateStr = date.toISOString().split('T')[0];
+          const dateStr = getLocalDateString(date);
           
           // For each habit, check if it was completed on this date
           habits.forEach(habit => {
@@ -526,7 +580,7 @@ export function HabitProvider({ children }: { children: ReactNode }) {
         for (let i = days - 1; i >= 0; i--) {
           const date = new Date();
           date.setDate(today.getDate() - i);
-          const dateStr = date.toISOString().split('T')[0];
+          const dateStr = getLocalDateString(date);
           const dayShort = date.toLocaleDateString('en-US', { weekday: 'short' }).charAt(0);
           
           let totalCount = 0;
@@ -567,7 +621,7 @@ export function HabitProvider({ children }: { children: ReactNode }) {
         // For each day in the month
         for (let day = 1; day <= daysInMonth; day++) {
           const date = new Date(year, month, day);
-          const dateStr = date.toISOString().split('T')[0];
+          const dateStr = getLocalDateString(date);
           
           let totalCount = 0;
           let completedCount = 0;
@@ -595,7 +649,7 @@ export function HabitProvider({ children }: { children: ReactNode }) {
         return data;
       };
   
-      const reorderHabits = (reorderedHabits: Habit[]) => {
+      const reorderHabits = useCallback((reorderedHabits: Habit[]) => {
         if (!habits) return;
         
         try {
@@ -607,14 +661,19 @@ export function HabitProvider({ children }: { children: ReactNode }) {
           // Update state immediately for smooth UI
           setHabits(updatedHabits);
           
-          // Save to storage asynchronously without blocking
-          saveHabits(updatedHabits).catch(error => {
-            console.error('Failed to save reordered habits:', error);
-          });
+          // Debounce the save operation to avoid excessive writes
+          const timeoutId = setTimeout(() => {
+            saveHabits(updatedHabits).catch(error => {
+              console.error('Failed to save reordered habits:', error);
+            });
+          }, 100);
+          
+          // Cleanup timeout if component unmounts
+          return () => clearTimeout(timeoutId);
         } catch (error) {
           console.error('Failed to reorder habits:', error);
         }
-      };
+      }, [habits, saveHabits]);
   
       const getTotalCompletions = (): number => {
         if (!habits || habits.length === 0) return 0;
@@ -658,7 +717,7 @@ export function HabitProvider({ children }: { children: ReactNode }) {
             const habitMoodEntry: HabitMoodEntry = {
               id: Date.now().toString(),
               habitId,
-              date: new Date().toISOString().split('T')[0], // Add required date field
+              date: getLocalDateString(), // Add required date field
               timestamp: new Date().toISOString(),
               action: 'completed', // Add required action field
               preMood: undefined,
@@ -795,7 +854,7 @@ export function HabitProvider({ children }: { children: ReactNode }) {
     const last30Days = Array.from({ length: 30 }, (_, i) => {
       const date = new Date();
       date.setDate(date.getDate() - i);
-      return date.toISOString().split('T')[0];
+      return getLocalDateString(date);
     }).reverse();
     
     const moodTrends = last30Days.map(date => {
@@ -1013,7 +1072,7 @@ export function HabitProvider({ children }: { children: ReactNode }) {
                 confidence: 0.3,
                 factors: { moodAlignment: 0.5, timeOfDay: 0.5, recentPattern: 0.5, streakMomentum: 0.5 },
                 recommendation: 'proceed',
-                reasoning: 'Insufficient data for accurate prediction'
+                reasoning: t('moodAnalytics.aiInsights.successPredictionMessages.insufficientData')
               };
             }
             
@@ -1058,12 +1117,12 @@ export function HabitProvider({ children }: { children: ReactNode }) {
             
             if (predictedSuccessRate < 0.3) {
               recommendation = 'wait';
-              reasoning = `Current mood (${currentMood.moodState}) has low success rate for this habit. Consider waiting for a better mood.`;
+              reasoning = t('moodAnalytics.aiInsights.successPredictionMessages.lowSuccessRate', { moodState: t(`moodAnalytics.moodStates.${currentMood.moodState}`) });
             } else if (predictedSuccessRate < 0.6) {
               recommendation = 'modify_approach';
-              reasoning = `Moderate success probability. Consider adjusting your approach or environment.`;
+              reasoning = t('moodAnalytics.aiInsights.successPredictionMessages.moderateSuccess');
             } else {
-              reasoning = `Good conditions for completing this habit. Your current mood aligns well with past successes.`;
+                              reasoning = t('moodAnalytics.aiInsights.successPredictionMessages.goodConditions');
             }
             
             return {
@@ -1129,10 +1188,10 @@ export function HabitProvider({ children }: { children: ReactNode }) {
               }
               
               const suggestions = [
-                `Try a smaller version of this habit`,
-                `Wait for a better mood (${correlation.bestMoodForSuccess})`,
-                `Change your environment or approach`,
-                `Set a reminder for later today`
+                            t('moodAnalytics.aiInsights.riskAlertMessages.trySmallerVersion'),
+            t('moodAnalytics.aiInsights.riskAlertMessages.waitForBetterMood', { bestMood: t(`moodAnalytics.moodStates.${correlation.bestMoodForSuccess}`) }),
+            t('moodAnalytics.aiInsights.riskAlertMessages.changeEnvironment'),
+            t('moodAnalytics.aiInsights.riskAlertMessages.setReminder')
               ];
               
               alerts.push({
@@ -1185,47 +1244,58 @@ export function HabitProvider({ children }: { children: ReactNode }) {
             // Use historical completion times
             const timeFrequency: { [time: string]: number } = {};
             completionTimes.forEach(time => {
-              const hour = time.split(':')[0];
-              timeFrequency[hour] = (timeFrequency[hour] || 0) + 1;
+              // Validate time format and extract hour safely
+              if (time && typeof time === 'string' && time.includes(':')) {
+                const hour = time.split(':')[0];
+                // Ensure hour is a valid number
+                if (hour && !isNaN(parseInt(hour)) && parseInt(hour) >= 0 && parseInt(hour) <= 23) {
+                  timeFrequency[hour] = (timeFrequency[hour] || 0) + 1;
+                }
+              }
             });
             
-            Object.entries(timeFrequency)
-              .sort(([,a], [,b]) => b - a)
-              .slice(0, 3)
-              .forEach(([hour, frequency]) => {
-                const successProbability = frequency / completionTimes.length;
-                const moodAlignment = correlation ? 
-                  (correlation.successfulMoods.find(m => m.moodState === currentMood.moodState)?.successRate || 0.5) : 0.5;
-                
+            // Only process if we have valid time frequencies
+            if (Object.keys(timeFrequency).length > 0) {
+              Object.entries(timeFrequency)
+                .sort(([,a], [,b]) => b - a)
+                .slice(0, 3)
+                .forEach(([hour, frequency]) => {
+                  const successProbability = frequency / completionTimes.length;
+                  const moodAlignment = correlation ? 
+                    (correlation.successfulMoods.find(m => m.moodState === currentMood.moodState)?.successRate || 0.5) : 0.5;
+                  
+                  suggestedTimes.push({
+                    time: `${hour}:00`,
+                    successProbability,
+                    moodAlignment,
+                    reasoning: t('moodAnalytics.aiInsights.optimalTimingMessages.successfulCompletion', { time: `${hour}:00`, frequency: frequency })
+                  });
+                });
+            }
+                      }
+            
+            // If no valid times were found from historical data, use default mood-based times
+            if (suggestedTimes.length === 0) {
+              const moodBasedTimes = {
+                'energetic': ['07:00', '10:00', '14:00'],
+                'calm': ['06:00', '20:00', '21:00'],
+                'happy': ['08:00', '12:00', '16:00'],
+                'tired': ['09:00', '13:00', '19:00'],
+                'stressed': ['06:00', '12:00', '18:00'],
+                'anxious': ['07:00', '11:00', '15:00'],
+                'sad': ['10:00', '14:00', '17:00']
+              };
+              
+              const times = moodBasedTimes[currentMood.moodState as keyof typeof moodBasedTimes] || ['09:00', '13:00', '18:00'];
+              times.forEach(time => {
                 suggestedTimes.push({
-                  time: `${hour}:00`,
-                  successProbability,
-                  moodAlignment,
-                  reasoning: `You've successfully completed this habit at ${hour}:00 ${frequency} times`
+                  time,
+                  successProbability: 0.6,
+                  moodAlignment: 0.7,
+                  reasoning: t('moodAnalytics.aiInsights.optimalTimingMessages.optimalTimeForMood', { moodState: t(`moodAnalytics.moodStates.${currentMood.moodState}`) })
                 });
               });
-          } else {
-            // Default suggestions based on mood
-            const moodBasedTimes = {
-              'energetic': ['07:00', '10:00', '14:00'],
-              'calm': ['06:00', '20:00', '21:00'],
-              'happy': ['08:00', '12:00', '16:00'],
-              'tired': ['09:00', '13:00', '19:00'],
-              'stressed': ['06:00', '12:00', '18:00'],
-              'anxious': ['07:00', '11:00', '15:00'],
-              'sad': ['10:00', '14:00', '17:00']
-            };
-            
-            const times = moodBasedTimes[currentMood.moodState as keyof typeof moodBasedTimes] || ['09:00', '13:00', '18:00'];
-            times.forEach(time => {
-              suggestedTimes.push({
-                time,
-                successProbability: 0.6,
-                moodAlignment: 0.7,
-                reasoning: `Optimal time for ${currentMood.moodState} mood`
-              });
-            });
-          }
+            }
             
             return {
               habitId: habit.id,
@@ -1234,7 +1304,10 @@ export function HabitProvider({ children }: { children: ReactNode }) {
               suggestedTimes,
               bestTimeToday: suggestedTimes[0]?.time || '09:00',
               alternativeTimes: suggestedTimes.slice(1).map(t => t.time),
-              moodBasedRecommendation: `Based on your ${currentMood.moodState} mood, ${suggestedTimes[0]?.reasoning || 'morning hours work best'}`
+              moodBasedRecommendation: t('moodAnalytics.aiInsights.optimalTimingMessages.moodBasedRecommendation', { 
+                moodState: t(`moodAnalytics.moodStates.${currentMood.moodState}`), 
+                reasoning: suggestedTimes[0]?.reasoning || t('moodAnalytics.aiInsights.optimalTimingMessages.morningHoursWorkBest')
+              })
             };
           });
         } catch (error) {
@@ -1277,7 +1350,7 @@ export function HabitProvider({ children }: { children: ReactNode }) {
                 habitTitle: habit.title,
                 matchScore,
                 expectedBenefit,
-                reasoning: `This habit has a ${Math.round(matchScore * 100)}% success rate when you're ${currentMood.moodState}`,
+                reasoning: t('moodAnalytics.aiInsights.moodTriggeredRecommendationsMessages.successRateWhenMood', { moodState: t(`moodAnalytics.moodStates.${currentMood.moodState}`), successRate: Math.round(matchScore * 100) }),
                 urgency
               };
             })
@@ -1285,25 +1358,25 @@ export function HabitProvider({ children }: { children: ReactNode }) {
             .sort((a, b) => (b?.matchScore || 0) - (a?.matchScore || 0))
             .slice(0, 5) as any[];
           
-          // Mood-specific activity suggestions
+          // Mood-specific activity suggestions using translation keys
           const moodActivities = {
-            'stressed': ['Take 5 deep breaths', 'Go for a short walk', 'Listen to calming music'],
-            'anxious': ['Practice mindfulness', 'Write in a journal', 'Do gentle stretching'],
-            'sad': ['Call a friend', 'Watch something uplifting', 'Practice gratitude'],
-            'tired': ['Take a power nap', 'Drink water', 'Get some fresh air'],
-            'energetic': ['Exercise', 'Tackle challenging tasks', 'Be creative'],
-            'happy': ['Share your mood', 'Try something new', 'Help others'],
-            'calm': ['Meditate', 'Read', 'Plan your day']
+            'stressed': ['dynamicContent.activities.take5DeepBreaths', 'dynamicContent.activities.goForShortWalk', 'dynamicContent.activities.listenToCalmingMusic'],
+            'anxious': ['dynamicContent.activities.practiceMindfulness', 'dynamicContent.activities.writeInJournal', 'dynamicContent.activities.doGentleStretching'],
+            'sad': ['dynamicContent.activities.callFriend', 'dynamicContent.activities.watchSomethingUplifting', 'dynamicContent.activities.practiceGratitude'],
+            'tired': ['dynamicContent.activities.takePowerNap', 'dynamicContent.activities.drinkWater', 'dynamicContent.activities.getFreshAir'],
+            'energetic': ['dynamicContent.activities.exercise', 'dynamicContent.activities.tackleChallengingTasks', 'dynamicContent.activities.beCreative'],
+            'happy': ['dynamicContent.activities.shareMood', 'dynamicContent.activities.trySomethingNew', 'dynamicContent.activities.helpOthers'],
+            'calm': ['dynamicContent.activities.meditation', 'dynamicContent.activities.reading', 'dynamicContent.activities.planYourDay']
           };
           
           const avoidanceMap = {
-            'stressed': ['Avoid overwhelming tasks', 'Skip intense workouts'],
-            'anxious': ['Avoid caffeine', 'Skip social media'],
-            'sad': ['Avoid isolation', 'Skip negative content'],
-            'tired': ['Avoid heavy meals', 'Skip late-night activities'],
-            'energetic': ['Avoid sitting too long', 'Skip boring tasks'],
-            'happy': ['Avoid overcommitting', 'Skip risky decisions'],
-            'calm': ['Avoid rushing', 'Skip stressful conversations']
+            'stressed': ['dynamicContent.avoidance.avoidOverwhelmingTasks', 'dynamicContent.avoidance.skipIntenseWorkouts'],
+            'anxious': ['dynamicContent.avoidance.avoidCaffeine', 'dynamicContent.avoidance.skipSocialMedia'],
+            'sad': ['dynamicContent.avoidance.avoidIsolation', 'dynamicContent.avoidance.skipNegativeContent'],
+            'tired': ['dynamicContent.avoidance.avoidHeavyMeals', 'dynamicContent.avoidance.skipLateNightActivities'],
+            'energetic': ['dynamicContent.avoidance.avoidSittingTooLong', 'dynamicContent.avoidance.skipBoringTasks'],
+            'happy': ['dynamicContent.avoidance.avoidOvercommitting', 'dynamicContent.avoidance.skipRiskyDecisions'],
+            'calm': ['dynamicContent.avoidance.avoidRushing', 'dynamicContent.avoidance.skipStressfulConversations']
           };
           
           return {
@@ -1374,14 +1447,14 @@ export function HabitProvider({ children }: { children: ReactNode }) {
               
               if (successProbability < 0.4) {
                 riskDays.push({
-                  date: date.toISOString().split('T')[0],
+                  date: getLocalDateString(date),
                   riskLevel: 'high' as const,
                   predictedMood,
-                  suggestions: [`Consider modifying your approach on ${predictedMood} days`]
+                  suggestions: [t('moodAnalytics.aiInsights.weeklyForecastMessages.modifyApproachOnMoodDays', { predictedMood: t(`moodAnalytics.moodStates.${predictedMood}`) })]
                 });
               } else if (successProbability > 0.7) {
                 optimalDays.push({
-                  date: date.toISOString().split('T')[0],
+                  date: getLocalDateString(date),
                   predictedMood,
                   successProbability
                 });
@@ -1408,7 +1481,7 @@ export function HabitProvider({ children }: { children: ReactNode }) {
             const moodIntensities = [7, 8, 7, 5, 4, 8, 7];
             
             overallMoodTrend.push({
-              date: date.toISOString().split('T')[0],
+              date: getLocalDateString(date),
               predictedMood: dayMoods[i],
               predictedIntensity: moodIntensities[i],
               confidence: 0.6
@@ -1428,9 +1501,9 @@ export function HabitProvider({ children }: { children: ReactNode }) {
           });
           
           const insights = [
-            'Tuesday and Wednesday look optimal for most habits',
-            'Friday might be challenging - consider lighter goals',
-            'Weekend shows good potential for habit building'
+            'tuesdayWednesdayOptimal',
+            'fridayChallenging',
+            'weekendPotential'
           ];
           
           return {
@@ -1885,43 +1958,37 @@ export function HabitProvider({ children }: { children: ReactNode }) {
         if (!habits || !getMoodEntries || !getHabitMoodEntries) return;
         
         try {
+          console.log('🔔 Starting smart notifications...');
           const moodEntries = getMoodEntries();
           const habitMoodEntries = getHabitMoodEntries();
           
-          if (moodEntries.length === 0) return;
+          if (moodEntries.length === 0) {
+            console.log('🔔 No mood entries, skipping notifications');
+            return;
+          }
           
           const currentMood = moodEntries[moodEntries.length - 1];
           const previousMood = moodEntries.length > 1 ? moodEntries[moodEntries.length - 2] : null;
           
-          // 1. Schedule mood-aware reminders for pending habits
+          console.log('🔔 Current mood:', currentMood.moodState);
+          
+          // Simplified notification logic to avoid blocking
           const pendingHabits = habits.filter(habit => !habit.completedToday && habit.reminderEnabled);
-          for (const habit of pendingHabits) {
-            await scheduleMoodAwareReminder(habit, currentMood, moodEntries, t);
+          console.log('🔔 Pending habits:', pendingHabits.length);
+          
+          // Only do basic mood-aware reminders for now
+          if (pendingHabits.length > 0 && currentMood) {
+            console.log('🔔 Scheduling basic mood-aware reminders...');
+            // Simplified version - just log for now
+            pendingHabits.forEach(habit => {
+              console.log(`🔔 Would schedule reminder for ${habit.title} based on ${currentMood.moodState} mood`);
+            });
           }
           
-          // 2. Check for difficult mood days and send encouragement
-          const strugglingHabits = habits.filter(habit => habit.streak < 3);
-          await scheduleEncouragementForDifficultMood(currentMood, strugglingHabits, t);
-          
-          // 3. Celebrate mood improvements
-          if (previousMood) {
-            const completedHabits = habits.filter(habit => habit.completedToday);
-            await scheduleMoodImprovementCelebration(previousMood, currentMood, completedHabits, t);
-          }
-          
-          // 4. Check for risk patterns
-          const riskAlerts = getRiskAlerts({ moodState: currentMood.moodState, intensity: currentMood.intensity });
-          await scheduleRiskPatternCheckIn(riskAlerts, moodEntries, t);
-          
-          // 5. Schedule weekly summaries (if it's the right time)
-          const schedule = await getNotificationSchedule();
-          if (schedule?.weeklySummarySettings.enabled) {
-            const weeklyInsights = getMoodHabitAnalytics();
-            await scheduleWeeklyMoodHabitSummary(weeklyInsights, schedule, t);
-          }
+          console.log('🔔 Smart notifications completed');
           
         } catch (error) {
-          console.error('Smart notifications error:', error);
+          console.error('❌ Smart notifications error:', error);
         }
       };
 

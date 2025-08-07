@@ -28,18 +28,18 @@ const MoodSelectionModal = ({ visible, onClose, onSelect }: {
   const { t } = useLanguage();
   
   const moods = [
-    { state: 'happy', emoji: '😊', label: 'Happy' },
+    { state: 'happy', emoji: '😊', label: t('moodCheckIn.moodTags.happy') },
     { state: 'calm', emoji: '😌', label: t('moodCheckIn.moodTags.calm') },
-    { state: 'energetic', emoji: '⚡', label: 'Energetic' },
-    { state: 'tired', emoji: '😴', label: 'Tired' },
+    { state: 'energetic', emoji: '⚡', label: t('moodCheckIn.moodTags.energetic') },
+    { state: 'tired', emoji: '😴', label: t('moodCheckIn.moodTags.tired') },
     { state: 'stressed', emoji: '😰', label: t('moodCheckIn.moodTags.stressed') },
-    { state: 'anxious', emoji: '😟', label: 'Anxious' },
-    { state: 'sad', emoji: '😢', label: 'Sad' },
+    { state: 'anxious', emoji: '😟', label: t('moodCheckIn.moodTags.anxious') },
+    { state: 'sad', emoji: '😢', label: t('moodCheckIn.moodTags.sad') },
   ];
   
   const handleSubmit = () => {
     if (!selectedMood) {
-      Alert.alert('Select Mood', 'Please choose how you\'re feeling before completing this habit.');
+      Alert.alert(t('moodCheckIn.selectMood'), t('moodCheckIn.selectMoodMessage'));
       return;
     }
     
@@ -54,7 +54,7 @@ const MoodSelectionModal = ({ visible, onClose, onSelect }: {
       <View style={modalStyles.modalOverlay}>
         <View style={[modalStyles.modalContent, { backgroundColor: currentTheme.colors.surface }]}>
           <Text style={[modalStyles.modalTitle, { color: currentTheme.colors.text }]}>
-            How are you feeling right now?
+            {t('moodCheckIn.howAreYouFeeling')}
           </Text>
           
           <View style={modalStyles.moodGrid}>
@@ -80,7 +80,7 @@ const MoodSelectionModal = ({ visible, onClose, onSelect }: {
           
           <View style={modalStyles.intensitySection}>
             <Text style={[modalStyles.intensityLabel, { color: currentTheme.colors.text }]}>
-              Intensity: {intensity}/10
+              {t('moodCheckIn.intensity')}: {intensity}/10
             </Text>
             <View style={modalStyles.intensitySlider}>
               {Array.from({ length: 10 }, (_, i) => i + 1).map((value) => (
@@ -103,14 +103,14 @@ const MoodSelectionModal = ({ visible, onClose, onSelect }: {
               style={[modalStyles.modalButton, { backgroundColor: currentTheme.colors.border }]}
               onPress={onClose}
             >
-              <Text style={[modalStyles.modalButtonText, { color: currentTheme.colors.text }]}>Cancel</Text>
+              <Text style={[modalStyles.modalButtonText, { color: currentTheme.colors.text }]}>{t('cancel')}</Text>
             </TouchableOpacity>
             
             <TouchableOpacity
               style={[modalStyles.modalButton, { backgroundColor: currentTheme.colors.primary }]}
               onPress={handleSubmit}
             >
-              <Text style={[modalStyles.modalButtonText, { color: currentTheme.colors.background }]}>Continue</Text>
+              <Text style={[modalStyles.modalButtonText, { color: currentTheme.colors.background }]}>{t('moodCheckIn.submit')}</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -198,7 +198,7 @@ export default function HabitItem({
         ]}
         onPress={handlePress}
         onLongPress={onLongPress}
-        delayLongPress={100}
+        delayLongPress={500}
       >
         {/* Selection checkbox for multi-select mode */}
         {isMultiSelectMode && (

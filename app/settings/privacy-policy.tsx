@@ -28,146 +28,114 @@ export default function PrivacyPolicyScreen() {
         <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
           <ArrowLeft size={24} color={currentTheme.colors.text} />
         </TouchableOpacity>
-        <Text style={styles.title}>Privacy Policy</Text>
+        <Text style={styles.title}>{t('privacyPolicy.title')}</Text>
       </View>
 
       <ScrollView style={styles.content}>
         <View style={styles.section}>
-          <Text style={styles.lastUpdated}>Last updated: {new Date().toLocaleDateString()}</Text>
+          <Text style={styles.lastUpdated}>{t('privacyPolicy.lastUpdated')} {new Date().toLocaleDateString()}</Text>
         </View>
 
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>1. Introduction</Text>
+          <Text style={styles.sectionTitle}>{t('privacyPolicy.sections.introduction.title')}</Text>
           <Text style={styles.sectionText}>
-            Welcome to Productivity Habit Tracker ("we," "our," or "us"). We are committed to protecting your privacy and ensuring the security of your personal information. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you use our mobile application.
+            {t('privacyPolicy.sections.introduction.content')}
           </Text>
         </View>
 
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>2. Information We Collect</Text>
+          <Text style={styles.sectionTitle}>{t('privacyPolicy.sections.informationCollection.title')}</Text>
           
-          <Text style={styles.subsectionTitle}>2.1 Personal Information</Text>
+          <Text style={styles.subsectionTitle}>{t('privacyPolicy.sections.informationCollection.personalInfo.title')}</Text>
           <Text style={styles.sectionText}>
-            • Account information (email address, username, profile picture){"\n"}
-            • Habit tracking data and progress{"\n"}
-            • Mood and wellness data{"\n"}
-            • User preferences and settings{"\n"}
-            • Device information and usage analytics
+            {t('privacyPolicy.sections.informationCollection.personalInfo.content')}
           </Text>
 
-          <Text style={styles.subsectionTitle}>2.2 Automatically Collected Information</Text>
+          <Text style={styles.subsectionTitle}>{t('privacyPolicy.sections.informationCollection.automaticInfo.title')}</Text>
           <Text style={styles.sectionText}>
-            • Device type, operating system, and version{"\n"}
-            • App usage patterns and performance data{"\n"}
-            • Crash reports and error logs{"\n"}
-            • IP address and general location data
+            {t('privacyPolicy.sections.informationCollection.automaticInfo.content')}
           </Text>
         </View>
 
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>3. How We Use Your Information</Text>
+          <Text style={styles.sectionTitle}>{t('privacyPolicy.sections.informationUse.title')}</Text>
           <Text style={styles.sectionText}>
-            We use your information to:{"\n"}
-            • Provide and maintain our services{"\n"}
-            • Personalize your experience{"\n"}
-            • Track your progress and provide insights{"\n"}
-            • Send notifications and reminders{"\n"}
-            • Improve our app and develop new features{"\n"}
-            • Provide customer support{"\n"}
-            • Ensure security and prevent fraud
+            {t('privacyPolicy.sections.informationUse.content')}
           </Text>
         </View>
 
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>4. Data Sharing and Disclosure</Text>
+          <Text style={styles.sectionTitle}>{t('privacyPolicy.sections.dataSharing.title')}</Text>
           <Text style={styles.sectionText}>
-            We do not sell, trade, or rent your personal information to third parties. We may share your information only in the following circumstances:{"\n"}
-            • With your explicit consent{"\n"}
-            • For legal compliance or protection of rights{"\n"}
-            • With service providers who assist in app functionality{"\n"}
-            • In anonymized form for research and analytics
+            {t('privacyPolicy.sections.dataSharing.content')}
           </Text>
         </View>
 
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>5. Data Security</Text>
+          <Text style={styles.sectionTitle}>{t('privacyPolicy.sections.dataSecurity.title')}</Text>
           <Text style={styles.sectionText}>
-            We implement appropriate technical and organizational measures to protect your personal information:{"\n"}
-            • End-to-end encryption for sensitive data{"\n"}
-            • Secure data transmission protocols{"\n"}
-            • Regular security audits and updates{"\n"}
-            • Limited access to personal data{"\n"}
-            • Secure cloud storage with reputable providers
+            {t('privacyPolicy.sections.dataSecurity.content')}
           </Text>
         </View>
 
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>6. Your Privacy Rights</Text>
+          <Text style={styles.sectionTitle}>{t('privacyPolicy.sections.privacyRights.title')}</Text>
           <Text style={styles.sectionText}>
-            You have the right to:{"\n"}
-            • Access your personal data{"\n"}
-            • Correct inaccurate information{"\n"}
-            • Delete your account and data{"\n"}
-            • Export your data{"\n"}
-            • Opt-out of data collection{"\n"}
-            • Control privacy settings
+            {t('privacyPolicy.sections.privacyRights.content')}
           </Text>
         </View>
 
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>7. Data Retention</Text>
+          <Text style={styles.sectionTitle}>{t('privacyPolicy.sections.dataRetention.title')}</Text>
           <Text style={styles.sectionText}>
-            We retain your personal information only as long as necessary to provide our services and comply with legal obligations. Habit tracking data is kept for the duration of your account unless you choose to delete it. Anonymous analytics data may be retained longer for research purposes.
+            {t('privacyPolicy.sections.dataRetention.content')}
           </Text>
         </View>
 
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>8. Children's Privacy</Text>
+          <Text style={styles.sectionTitle}>{t('privacyPolicy.sections.childrenPrivacy.title')}</Text>
           <Text style={styles.sectionText}>
-            Our app is not intended for children under 13 years of age. We do not knowingly collect personal information from children under 13. If you believe we have collected information from a child under 13, please contact us immediately.
+            {t('privacyPolicy.sections.childrenPrivacy.content')}
           </Text>
         </View>
 
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>9. International Data Transfers</Text>
+          <Text style={styles.sectionTitle}>{t('privacyPolicy.sections.internationalTransfers.title')}</Text>
           <Text style={styles.sectionText}>
-            Your information may be transferred to and processed in countries other than your own. We ensure appropriate safeguards are in place to protect your data during international transfers.
+            {t('privacyPolicy.sections.internationalTransfers.content')}
           </Text>
         </View>
 
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>10. Changes to This Policy</Text>
+          <Text style={styles.sectionTitle}>{t('privacyPolicy.sections.policyChanges.title')}</Text>
           <Text style={styles.sectionText}>
-            We may update this Privacy Policy from time to time. We will notify you of any material changes by posting the new policy in the app and updating the "Last updated" date. Your continued use of the app constitutes acceptance of the updated policy.
+            {t('privacyPolicy.sections.policyChanges.content')}
           </Text>
         </View>
 
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>11. Contact Us</Text>
+          <Text style={styles.sectionTitle}>{t('privacyPolicy.sections.contactUs.title')}</Text>
           <Text style={styles.sectionText}>
-            If you have any questions about this Privacy Policy or our privacy practices, please contact us at:{"\n"}
-            Email: privacy@habittracker.com{"\n"}
-            Address: [Your Company Address]{"\n"}
-            Phone: [Your Contact Number]
+            {t('privacyPolicy.sections.contactUs.content')}
           </Text>
         </View>
 
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>12. Specific Feature Privacy</Text>
+          <Text style={styles.sectionTitle}>{t('privacyPolicy.sections.featurePrivacy.title')}</Text>
           
-          <Text style={styles.subsectionTitle}>Mood Tracking</Text>
+          <Text style={styles.subsectionTitle}>{t('privacyPolicy.sections.featurePrivacy.moodTracking.title')}</Text>
           <Text style={styles.sectionText}>
-            Mood data is encrypted and stored locally on your device by default. You can choose to sync this data to our secure servers for backup and cross-device access.
+            {t('privacyPolicy.sections.featurePrivacy.moodTracking.content')}
           </Text>
 
-          <Text style={styles.subsectionTitle}>Social Features</Text>
+          <Text style={styles.subsectionTitle}>{t('privacyPolicy.sections.featurePrivacy.socialFeatures.title')}</Text>
           <Text style={styles.sectionText}>
-            When you use social features, you can control what information is shared with other users through your privacy settings. Profile visibility and data sharing are opt-in features.
+            {t('privacyPolicy.sections.featurePrivacy.socialFeatures.content')}
           </Text>
 
-          <Text style={styles.subsectionTitle}>Analytics</Text>
+          <Text style={styles.subsectionTitle}>{t('privacyPolicy.sections.featurePrivacy.analytics.title')}</Text>
           <Text style={styles.sectionText}>
-            We collect anonymous usage analytics to improve our app. You can opt-out of analytics collection in your privacy settings without affecting app functionality.
+            {t('privacyPolicy.sections.featurePrivacy.analytics.content')}
           </Text>
         </View>
       </ScrollView>
@@ -185,6 +153,7 @@ const createStyles = (colors: any) => StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: 20,
     paddingVertical: 16,
+    paddingTop: 60,
     borderBottomWidth: 1,
     borderBottomColor: colors.border,
   },

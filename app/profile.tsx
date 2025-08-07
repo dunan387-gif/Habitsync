@@ -164,7 +164,7 @@ export default function ProfileScreen() {
       <SafeAreaView style={[styles.container, { backgroundColor: currentTheme.colors.background }]}>
         <StatusBar style={currentTheme.isDark ? 'light' : 'dark'} />
         <View style={styles.errorContainer}>
-          <Text style={styles.errorText}>{t('Please log in to view your profile.')}</Text>
+          <Text style={styles.errorText}>{t('profile.pleaseLogin')}</Text>
         </View>
       </SafeAreaView>
     );
@@ -217,7 +217,7 @@ export default function ProfileScreen() {
           ) : (
             <View style={styles.coverPlaceholder}>
               <Upload size={32} color={currentTheme.colors.textMuted} />
-              <Text style={styles.coverPlaceholderText}>{t('Add Cover Image')}</Text>
+              <Text style={styles.coverPlaceholderText}>{t('profile.addCoverPhoto')}</Text>
             </View>
           )}
           {isEditing && (
@@ -258,69 +258,69 @@ export default function ProfileScreen() {
 
         {/* Basic Profile Info */}
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>{t('🧑‍💼 Basic Profile Info')}</Text>
+          <Text style={styles.sectionTitle}>{t('profile.basicProfileInfo')}</Text>
           
           {/* Name & Username */}
           <View style={styles.field}>
-            <Text style={styles.fieldLabel}>{t('Name')}</Text>
+            <Text style={styles.fieldLabel}>{t('profile.name')}</Text>
             {isEditing ? (
               <TextInput
                 style={styles.input}
                 value={formData.name}
                 onChangeText={(text) => setFormData({ ...formData, name: text })}
-                placeholder={t('Enter your name')}
+                placeholder={t('profile.enterName')}
                 placeholderTextColor={currentTheme.colors.textMuted}
               />
             ) : (
-              <Text style={styles.fieldValue}>{user.name || t('Not set')}</Text>
+              <Text style={styles.fieldValue}>{user.name || t('common.notSet')}</Text>
             )}
           </View>
 
           {/* Email Address */}
           <View style={styles.field}>
-            <Text style={styles.fieldLabel}>{t('Email Address')}</Text>
+            <Text style={styles.fieldLabel}>{t('profile.emailAddress')}</Text>
             <View style={styles.emailContainer}>
               <Text style={styles.fieldValue}>{user.email}</Text>
-              <Text style={styles.readOnlyLabel}>{t('(Read-only)')}</Text>
+              <Text style={styles.readOnlyLabel}>{t('profile.readOnly')}</Text>
             </View>
           </View>
 
           {/* Location */}
           <View style={styles.field}>
-            <Text style={styles.fieldLabel}>{t('Location')}</Text>
+            <Text style={styles.fieldLabel}>{t('profile.location')}</Text>
             {isEditing ? (
               <TextInput
                 style={styles.input}
                 value={formData.location}
                 onChangeText={(text) => setFormData({ ...formData, location: text })}
-                placeholder={t('Enter your location')}
+                placeholder={t('profile.enterLocation')}
                 placeholderTextColor={currentTheme.colors.textMuted}
               />
             ) : (
-              <Text style={styles.fieldValue}>{user.location || t('Not set')}</Text>
+              <Text style={styles.fieldValue}>{user.location || t('common.notSet')}</Text>
             )}
           </View>
 
           {/* Bio */}
           <View style={styles.field}>
-            <Text style={styles.fieldLabel}>{t('Bio / Self-Description')}</Text>
+            <Text style={styles.fieldLabel}>{t('profile.bioDescription')}</Text>
             {isEditing ? (
               <TextInput
                 style={[styles.input, styles.textArea]}
                 value={formData.bio}
                 onChangeText={(text) => setFormData({ ...formData, bio: text })}
-                placeholder={t('Tell us about yourself...')}
+                placeholder={t('profile.tellAboutYourself')}
                 placeholderTextColor={currentTheme.colors.textMuted}
                 multiline
                 numberOfLines={4}
                 maxLength={500}
               />
             ) : (
-              <Text style={styles.fieldValue}>{user.bio || t('No bio added yet')}</Text>
+              <Text style={styles.fieldValue}>{user.bio || t('profile.noBioAdded')}</Text>
             )}
             {isEditing && (
               <Text style={styles.characterCount}>
-                {formData.bio?.length || 0}/500 {t('characters')}
+                {formData.bio?.length || 0}/500 {t('profile.charactersRemaining')}
               </Text>
             )}
           </View>
@@ -336,7 +336,7 @@ export default function ProfileScreen() {
               hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
               pressRetentionOffset={{ top: 8, bottom: 8, left: 8, right: 8 }}
             >
-              <Text style={styles.cancelButtonText}>{t('Cancel')}</Text>
+              <Text style={styles.cancelButtonText}>{t('common.cancel')}</Text>
             </TouchableOpacity>
             <TouchableOpacity 
               style={[styles.saveButton, isSubmitting && styles.disabledButton]} 
@@ -349,7 +349,7 @@ export default function ProfileScreen() {
               {isSubmitting ? (
                 <ActivityIndicator size="small" color={currentTheme.colors.background} />
               ) : (
-                <Text style={styles.saveButtonText}>{t('Save Changes')}</Text>
+                <Text style={styles.saveButtonText}>{t('profile.saveChanges')}</Text>
               )}
             </TouchableOpacity>
           </View>

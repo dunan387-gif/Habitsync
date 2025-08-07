@@ -350,9 +350,9 @@ export class WellnessIntegrationService {
         type: 'sleep',
         correlationStrength: 0,
         insights: {
-          positive_patterns: [],
-          negative_patterns: ['No matching sleep and mood data found for correlation analysis'],
-          recommendations: ['Add mood entries for the same dates as your sleep data to see correlations']
+                  positive_patterns: [],
+        negative_patterns: ['wellness.insightsData.patterns.sleep.noDataFound'],
+        recommendations: ['wellness.insightsData.patterns.sleep.addMoodEntries']
         },
         dataPoints: 0,
         lastUpdated: new Date().toISOString()
@@ -383,13 +383,13 @@ export class WellnessIntegrationService {
       correlationStrength,
       insights: {
         positive_patterns: [
-          sleepQualityCorr > 0.3 ? 'Better sleep quality correlates with improved mood' : '',
-          sleepDurationCorr > 0.3 ? 'Adequate sleep duration boosts mood' : '',
-          'Consistent sleep schedule supports emotional stability'
+          sleepQualityCorr > 0.3 ? 'wellness.insightsData.patterns.sleep.betterQualityMood' : '',
+          sleepDurationCorr > 0.3 ? 'wellness.insightsData.patterns.sleep.adequateDurationMood' : '',
+          'wellness.insightsData.patterns.sleep.consistentSchedule'
         ].filter(Boolean),
         negative_patterns: [
-          sleepQualityCorr < -0.3 ? 'Poor sleep quality negatively affects mood' : '',
-          sleepDurationCorr < -0.3 ? 'Insufficient sleep duration impacts mood negatively' : ''
+          sleepQualityCorr < -0.3 ? 'wellness.insightsData.patterns.sleep.poorQualityMood' : '',
+          sleepDurationCorr < -0.3 ? 'wellness.insightsData.patterns.sleep.insufficientDurationMood' : ''
         ].filter(Boolean),
         recommendations: this.generateSleepRecommendations(sleepQualityCorr, sleepDurationCorr)
       },
@@ -431,12 +431,12 @@ export class WellnessIntegrationService {
       correlationStrength: Math.max(durationCorr, intensityCorr),
       insights: {
         positive_patterns: [
-          durationCorr > 0.3 ? 'Regular exercise duration improves mood' : '',
-          intensityCorr > 0.3 ? 'Higher exercise intensity boosts mood' : '',
-          'Consistent exercise routine supports emotional well-being'
+          durationCorr > 0.3 ? 'wellness.insightsData.patterns.exercise.regularDurationMood' : '',
+          intensityCorr > 0.3 ? 'wellness.insightsData.patterns.exercise.higherIntensityMood' : '',
+          'wellness.insightsData.patterns.exercise.consistentRoutine'
         ].filter(Boolean),
         negative_patterns: [
-          durationCorr < -0.3 ? 'Lack of exercise correlates with lower mood' : ''
+          durationCorr < -0.3 ? 'wellness.insightsData.patterns.exercise.lackExerciseMood' : ''
         ].filter(Boolean),
         recommendations: this.generateExerciseRecommendations(durationCorr, intensityCorr, correlations)
       },
@@ -480,13 +480,12 @@ export class WellnessIntegrationService {
       correlationStrength: Math.max(nutritionCorr, waterCorr),
       insights: {
         positive_patterns: [
-          nutritionCorr > 0.3 ? 'Healthy nutrition choices improve mood' : '',
-          waterCorr > 0.3 ? 'Adequate hydration supports better mood' : '',
-          'Regular meal timing stabilizes mood'
+          nutritionCorr > 0.3 ? 'wellness.insightsData.patterns.nutrition.balancedMealsMood' : '',
+          waterCorr > 0.3 ? 'wellness.insightsData.patterns.nutrition.regularHydration' : ''
         ].filter(Boolean),
         negative_patterns: [
-          nutritionCorr < -0.3 ? 'Poor nutrition choices negatively impact mood' : '',
-          waterCorr < -0.3 ? 'Dehydration correlates with lower mood' : ''
+          nutritionCorr < -0.3 ? 'wellness.insightsData.patterns.nutrition.processedFoodsMood' : '',
+          waterCorr < -0.3 ? 'wellness.insightsData.patterns.nutrition.processedFoodsMood' : ''
         ].filter(Boolean),
         recommendations: this.generateNutritionRecommendations(nutritionCorr, waterCorr)
       },
@@ -523,12 +522,11 @@ export class WellnessIntegrationService {
       correlationStrength: Math.max(durationCorr, effectivenessCorr),
       insights: {
         positive_patterns: [
-          durationCorr > 0.3 ? 'Longer meditation sessions provide greater mood benefits' : '',
-          effectivenessCorr > 0.3 ? 'Higher perceived effectiveness correlates with mood improvement' : '',
-          'Consistent meditation practice builds emotional resilience'
+          durationCorr > 0.3 ? 'wellness.insightsData.patterns.meditation.longerSessionsMood' : '',
+          effectivenessCorr > 0.3 ? 'wellness.insightsData.patterns.meditation.effectiveTechniques' : ''
         ].filter(Boolean),
         negative_patterns: [
-          durationCorr < -0.3 ? 'Very short sessions may not provide sufficient benefit' : ''
+          durationCorr < -0.3 ? 'wellness.insightsData.patterns.meditation.shortSessionsMood' : ''
         ].filter(Boolean),
         recommendations: this.generateMeditationRecommendations(durationCorr, effectivenessCorr, effectiveness)
       },
@@ -568,13 +566,12 @@ export class WellnessIntegrationService {
       correlationStrength: Math.max(satisfactionCorr, energyCorr),
       insights: {
         positive_patterns: [
-          satisfactionCorr > 0.3 ? 'Satisfying social interactions improve mood' : '',
-          energyCorr > 0.3 ? 'Energizing social activities boost mood' : '',
-          'Quality social connections support emotional well-being'
+          satisfactionCorr > 0.3 ? 'wellness.insightsData.patterns.social.qualityInteractionsMood' : '',
+          energyCorr > 0.3 ? 'wellness.insightsData.patterns.social.energizingActivities' : ''
         ].filter(Boolean),
         negative_patterns: [
-          satisfactionCorr < -0.3 ? 'Unsatisfying social interactions may worsen mood' : '',
-          energyCorr < -0.3 ? 'Draining social activities negatively impact mood' : ''
+          satisfactionCorr < -0.3 ? 'wellness.insightsData.patterns.social.unsatisfyingInteractionsMood' : '',
+          energyCorr < -0.3 ? 'wellness.insightsData.patterns.social.drainingActivitiesMood' : ''
         ].filter(Boolean),
         recommendations: this.generateSocialRecommendations(satisfactionCorr, energyCorr, correlations)
       },
@@ -604,19 +601,19 @@ export class WellnessIntegrationService {
     const recommendations = [];
     
     if (qualityCorr > 0.3) {
-      recommendations.push('Maintain consistent sleep hygiene practices');
-      recommendations.push('Create a relaxing bedtime routine');
+      recommendations.push('wellness.insightsData.sleep.maintainHygiene');
+      recommendations.push('wellness.insightsData.sleep.createRoutine');
     }
     
     if (durationCorr > 0.3) {
-      recommendations.push('Aim for 7-9 hours of sleep nightly');
-      recommendations.push('Establish regular sleep and wake times');
+      recommendations.push('wellness.insightsData.sleep.aimHours');
+      recommendations.push('wellness.insightsData.sleep.establishTimes');
     }
     
     if (qualityCorr < -0.3 || durationCorr < -0.3) {
-      recommendations.push('Consider sleep environment improvements');
-      recommendations.push('Limit screen time before bed');
-      recommendations.push('Avoid caffeine late in the day');
+      recommendations.push('wellness.insightsData.sleep.improveEnvironment');
+      recommendations.push('wellness.insightsData.sleep.limitScreenTime');
+      recommendations.push('wellness.insightsData.sleep.avoidCaffeine');
     }
     
     return recommendations;
@@ -626,13 +623,13 @@ export class WellnessIntegrationService {
     const recommendations = [];
     
     if (durationCorr > 0.3) {
-      recommendations.push('Maintain regular exercise duration');
-      recommendations.push('Gradually increase exercise time if possible');
+      recommendations.push('wellness.insightsData.exercise.maintainDuration');
+      recommendations.push('wellness.insightsData.exercise.increaseTime');
     }
     
     if (intensityCorr > 0.3) {
-      recommendations.push('Include moderate to high-intensity workouts');
-      recommendations.push('Mix different exercise intensities throughout the week');
+      recommendations.push('wellness.insightsData.exercise.includeIntensity');
+      recommendations.push('wellness.insightsData.exercise.mixIntensities');
     }
     
     // Analyze most effective exercise types
@@ -650,7 +647,7 @@ export class WellnessIntegrationService {
       .sort((a, b) => b.avgMood - a.avgMood)[0];
     
     if (bestType) {
-      recommendations.push(`${bestType.type} exercises seem most effective for your mood`);
+      recommendations.push(`wellness.insightsData.exercise.mostEffective:${bestType.type}`);
     }
     
     return recommendations;
@@ -660,19 +657,19 @@ export class WellnessIntegrationService {
     const recommendations = [];
     
     if (nutritionCorr > 0.3) {
-      recommendations.push('Continue focusing on mood-boosting foods');
-      recommendations.push('Maintain regular meal timing');
+      recommendations.push('wellness.insightsData.nutrition.continueFoods');
+      recommendations.push('wellness.insightsData.nutrition.maintainTiming');
     }
     
     if (waterCorr > 0.3) {
-      recommendations.push('Keep up with adequate hydration');
-      recommendations.push('Aim for 8+ glasses of water daily');
+      recommendations.push('wellness.insightsData.nutrition.keepHydration');
+      recommendations.push('wellness.insightsData.nutrition.aimWater');
     }
     
     if (nutritionCorr < -0.3) {
-      recommendations.push('Consider reducing processed foods');
-      recommendations.push('Include more omega-3 rich foods');
-      recommendations.push('Add more fruits and vegetables to meals');
+      recommendations.push('wellness.insightsData.nutrition.reduceProcessed');
+      recommendations.push('wellness.insightsData.nutrition.includeOmega3');
+      recommendations.push('wellness.insightsData.nutrition.addFruitsVeggies');
     }
     
     return recommendations;
@@ -682,13 +679,13 @@ export class WellnessIntegrationService {
     const recommendations = [];
     
     if (durationCorr > 0.3) {
-      recommendations.push('Gradually increase meditation session length');
-      recommendations.push('Aim for at least 10-15 minutes per session');
+      recommendations.push('wellness.insightsData.meditation.increaseDuration');
+      recommendations.push('wellness.insightsData.meditation.aimMinutes');
     }
     
     if (effectivenessCorr > 0.3) {
-      recommendations.push('Focus on techniques that feel most effective');
-      recommendations.push('Track which meditation types work best for you');
+      recommendations.push('wellness.insightsData.meditation.focusTechniques');
+      recommendations.push('wellness.insightsData.meditation.trackTypes');
     }
     
     // Find most effective techniques
@@ -708,7 +705,7 @@ export class WellnessIntegrationService {
       .sort((a, b) => b.avgImprovement - a.avgImprovement)[0];
     
     if (bestTechnique) {
-      recommendations.push(`${bestTechnique.technique} appears most effective for you`);
+      recommendations.push(`wellness.insightsData.meditation.mostEffective:${bestTechnique.technique}`);
     }
     
     return recommendations;
@@ -718,13 +715,13 @@ export class WellnessIntegrationService {
     const recommendations = [];
     
     if (satisfactionCorr > 0.3) {
-      recommendations.push('Prioritize high-quality social interactions');
-      recommendations.push('Spend time with people who energize you');
+      recommendations.push('wellness.insightsData.social.prioritizeQuality');
+      recommendations.push('wellness.insightsData.social.spendTime');
     }
     
     if (energyCorr > 0.3) {
-      recommendations.push('Choose social activities that leave you feeling energized');
-      recommendations.push('Balance social time with personal recharge time');
+      recommendations.push('wellness.insightsData.social.chooseActivities');
+      recommendations.push('wellness.insightsData.social.balanceTime');
     }
     
     // Find most effective social activity types
@@ -742,7 +739,7 @@ export class WellnessIntegrationService {
       .sort((a, b) => b.avgImprovement - a.avgImprovement)[0];
     
     if (bestType) {
-      recommendations.push(`${bestType.type} activities seem most beneficial for your mood`);
+      recommendations.push(`wellness.insightsData.social.mostBeneficial:${bestType.type}`);
     }
     
     return recommendations;

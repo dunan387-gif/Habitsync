@@ -29,15 +29,21 @@ export default function MeditationTrackingForm({ onSave, onCancel }: MeditationT
   const styles = createStyles(currentTheme.colors);
 
   const meditationTypes = [
-    { value: 'mindfulness', label: 'Mindfulness', icon: '🧘', description: 'Present moment awareness' },
-    { value: 'breathing', label: 'Breathing', icon: '💨', description: 'Focus on breath' },
-    { value: 'guided', label: 'Guided', icon: '🎧', description: 'Audio-led meditation' },
-    { value: 'movement', label: 'Movement', icon: '🤸', description: 'Walking or yoga' },
-    { value: 'other', label: 'Other', icon: '✨', description: 'Custom practice' }
+    { value: 'mindfulness', label: t('wellnessForms.meditation.types.mindfulness'), icon: '🧘', description: t('wellnessForms.meditation.types.mindfulnessDesc') },
+    { value: 'breathing', label: t('wellnessForms.meditation.types.breathing'), icon: '💨', description: t('wellnessForms.meditation.types.breathingDesc') },
+    { value: 'guided', label: t('wellnessForms.meditation.types.guided'), icon: '🎧', description: t('wellnessForms.meditation.types.guidedDesc') },
+    { value: 'movement', label: t('wellnessForms.meditation.types.movement'), icon: '🤸', description: t('wellnessForms.meditation.types.movementDesc') },
+    { value: 'other', label: t('wellnessForms.meditation.types.other'), icon: '✨', description: t('wellnessForms.meditation.types.otherDesc') }
   ];
 
   const durationPresets = [5, 10, 15, 20, 30, 45, 60];
-  const commonTechniques = ['Deep Breathing', 'Body Scan', 'Loving Kindness', 'Visualization', 'Mantra'];
+  const commonTechniques = [
+    t('wellnessForms.meditation.techniques.deepBreathing'),
+    t('wellnessForms.meditation.techniques.bodyScan'),
+    t('wellnessForms.meditation.techniques.lovingKindness'),
+    t('wellnessForms.meditation.techniques.visualization'),
+    t('wellnessForms.meditation.techniques.mantra')
+  ];
 const moodStates = [
   t('moodCheckIn.moodTags.stressed'), t('moodCheckIn.moodTags.anxious'), t('moodCheckIn.moodTags.calm'), 
   t('moodCheckIn.moodTags.peaceful'), t('moodCheckIn.moodTags.energetic'), t('moodCheckIn.moodTags.focused'), 
@@ -46,7 +52,7 @@ const moodStates = [
 
   const handleSave = async () => {
     if (!formData.type || !formData.duration || !formData.preMood?.state || !formData.postMood?.state) {
-      Alert.alert('Error', 'Please fill in all required fields');
+      Alert.alert(t('wellnessForms.meditation.error'), t('wellnessForms.meditation.errorMessage'));
       return;
     }
 
@@ -66,13 +72,13 @@ const moodStates = [
 
       await WellnessIntegrationService.saveMeditationData(meditationData);
       console.log('Meditation data saved successfully');
-      Alert.alert('Success', 'Meditation session saved successfully!');
+      Alert.alert(t('wellnessForms.meditation.success'), t('wellnessForms.meditation.successMessage'));
       if (onSave) {
         console.log('Calling onSave callback from MeditationTrackingForm');
         onSave();
       }
     } catch (error) {
-      Alert.alert('Error', 'Failed to save meditation data');
+      Alert.alert(t('wellnessForms.meditation.error'), t('wellnessForms.meditation.errorMessage'));
     } finally {
       setSaving(false);
     }
@@ -157,14 +163,14 @@ const moodStates = [
           <Brain size={28} color={currentTheme.colors.primary} />
         </View>
         <View style={styles.headerContent}>
-          <Text style={styles.title}>Meditation Session</Text>
-          <Text style={styles.subtitle}>Track your mindfulness practice</Text>
+          <Text style={styles.title}>{t('wellnessForms.meditation.title')}</Text>
+          <Text style={styles.subtitle}>{t('wellnessForms.meditation.subtitle')}</Text>
         </View>
       </View>
 
       {/* Date Card */}
       <View style={styles.card}>
-        <Text style={styles.cardTitle}>Session Date</Text>
+        <Text style={styles.cardTitle}>{t('wellnessForms.meditation.sessionDate')}</Text>
         <TextInput
           style={styles.dateInput}
           value={formData.date}
@@ -176,7 +182,7 @@ const moodStates = [
 
       {/* Meditation Type Card */}
       <View style={styles.card}>
-        <Text style={styles.cardTitle}>Meditation Type *</Text>
+        <Text style={styles.cardTitle}>{t('wellnessForms.meditation.meditationType')} *</Text>
         <View style={styles.typeGrid}>
           {meditationTypes.map((type) => (
             <TouchableOpacity
@@ -202,12 +208,12 @@ const moodStates = [
 
       {/* Duration Card */}
       <View style={styles.card}>
-        <Text style={styles.cardTitle}>Duration *</Text>
+        <Text style={styles.cardTitle}>{t('wellnessForms.meditation.duration')} *</Text>
         <View style={styles.durationSection}>
           <View style={styles.durationDisplay}>
             <Timer size={24} color={currentTheme.colors.primary} />
             <Text style={styles.durationValue}>{formData.duration}</Text>
-            <Text style={styles.durationUnit}>minutes</Text>
+            <Text style={styles.durationUnit}>{t('wellnessForms.meditation.minutes')}</Text>
           </View>
           <View style={styles.durationControls}>
             <TouchableOpacity
@@ -259,10 +265,10 @@ const moodStates = [
 
       {/* Pre-Meditation Mood Card */}
       <View style={styles.card}>
-        <Text style={styles.cardTitle}>Pre-Meditation Mood *</Text>
+        <Text style={styles.cardTitle}>{t('wellnessForms.meditation.preMeditationMood')} *</Text>
         <View style={styles.moodSection}>
           <View style={styles.moodStateContainer}>
-            <Text style={styles.fieldLabel}>How were you feeling?</Text>
+            <Text style={styles.fieldLabel}>{t('wellnessForms.meditation.howWereYouFeeling')}</Text>
             <View style={styles.moodStatesGrid}>
               {moodStates.map((mood) => (
                 <TouchableOpacity
@@ -286,12 +292,12 @@ const moodStates = [
               style={styles.customMoodInput}
               value={formData.preMood?.state && !moodStates.includes(formData.preMood.state) ? formData.preMood.state : ''}
               onChangeText={(text) => setMoodState('pre', text)}
-              placeholder="Or describe your mood..."
+              placeholder={t('wellnessForms.meditation.describeMood')}
               placeholderTextColor={currentTheme.colors.textSecondary}
             />
           </View>
           <View style={styles.intensitySection}>
-            <Text style={styles.fieldLabel}>Intensity</Text>
+            <Text style={styles.fieldLabel}>{t('wellnessForms.meditation.intensity')}</Text>
             {renderIntensitySelector(formData.preMood?.intensity || 5, (intensity) => 
               setFormData(prev => ({
                 ...prev,
@@ -304,10 +310,10 @@ const moodStates = [
 
       {/* Post-Meditation Mood Card */}
       <View style={styles.card}>
-        <Text style={styles.cardTitle}>Post-Meditation Mood *</Text>
+        <Text style={styles.cardTitle}>{t('wellnessForms.meditation.postMeditationMood')} *</Text>
         <View style={styles.moodSection}>
           <View style={styles.moodStateContainer}>
-            <Text style={styles.fieldLabel}>How do you feel now?</Text>
+            <Text style={styles.fieldLabel}>{t('wellnessForms.meditation.howDoYouFeelNow')}</Text>
             <View style={styles.moodStatesGrid}>
               {moodStates.map((mood) => (
                 <TouchableOpacity
@@ -331,12 +337,12 @@ const moodStates = [
               style={styles.customMoodInput}
               value={formData.postMood?.state && !moodStates.includes(formData.postMood.state) ? formData.postMood.state : ''}
               onChangeText={(text) => setMoodState('post', text)}
-              placeholder="Or describe your mood..."
+              placeholder={t('wellnessForms.meditation.describeMood')}
               placeholderTextColor={currentTheme.colors.textSecondary}
             />
           </View>
           <View style={styles.intensitySection}>
-            <Text style={styles.fieldLabel}>Intensity</Text>
+            <Text style={styles.fieldLabel}>{t('wellnessForms.meditation.intensity')}</Text>
             {renderIntensitySelector(formData.postMood?.intensity || 5, (intensity) => 
               setFormData(prev => ({
                 ...prev,
@@ -349,25 +355,25 @@ const moodStates = [
 
       {/* Effectiveness Card */}
       <View style={styles.card}>
-        <Text style={styles.cardTitle}>Session Effectiveness</Text>
-        <Text style={styles.fieldDescription}>How effective was this session?</Text>
+        <Text style={styles.cardTitle}>{t('wellnessForms.meditation.sessionEffectiveness')}</Text>
+        <Text style={styles.fieldDescription}>{t('wellnessForms.meditation.howEffectiveWasSession')}</Text>
         <View style={styles.effectivenessContainer}>
           {renderStarRating(formData.effectiveness || 3, (rating) => 
             setFormData(prev => ({ ...prev, effectiveness: rating as any }))
           )}
           <Text style={styles.effectivenessText}>
-            {formData.effectiveness === 1 ? 'Poor' :
-             formData.effectiveness === 2 ? 'Fair' :
-             formData.effectiveness === 3 ? 'Good' :
-             formData.effectiveness === 4 ? 'Very Good' : 'Excellent'}
+            {formData.effectiveness === 1 ? t('wellnessForms.meditation.effectiveness.poor') :
+             formData.effectiveness === 2 ? t('wellnessForms.meditation.effectiveness.fair') :
+             formData.effectiveness === 3 ? t('wellnessForms.meditation.effectiveness.good') :
+             formData.effectiveness === 4 ? t('wellnessForms.meditation.effectiveness.veryGood') : t('wellnessForms.meditation.effectiveness.excellent')}
           </Text>
         </View>
       </View>
 
       {/* Techniques Card */}
       <View style={styles.card}>
-        <Text style={styles.cardTitle}>Techniques Used</Text>
-        <Text style={styles.fieldDescription}>What techniques did you practice?</Text>
+        <Text style={styles.cardTitle}>{t('wellnessForms.meditation.techniquesUsed')}</Text>
+        <Text style={styles.fieldDescription}>{t('wellnessForms.meditation.whatTechniquesDidYouPractice')}</Text>
         
         {/* Quick Add Techniques */}
         <View style={styles.quickTechniquesContainer}>
@@ -396,7 +402,7 @@ const moodStates = [
             style={[styles.input, { flex: 1 }]}
             value={newTechnique}
             onChangeText={setNewTechnique}
-            placeholder="Add custom technique..."
+            placeholder={t('wellnessForms.meditation.addCustomTechnique')}
             placeholderTextColor={currentTheme.colors.textSecondary}
           />
           <TouchableOpacity style={styles.addButton} onPress={() => addTechnique()}>
@@ -421,13 +427,13 @@ const moodStates = [
 
       {/* Notes Card */}
       <View style={styles.card}>
-        <Text style={styles.cardTitle}>Session Notes</Text>
-        <Text style={styles.fieldDescription}>Any insights or observations?</Text>
+        <Text style={styles.cardTitle}>{t('wellnessForms.meditation.sessionNotes')}</Text>
+        <Text style={styles.fieldDescription}>{t('wellnessForms.meditation.anyInsightsOrObservations')}</Text>
         <TextInput
           style={[styles.input, styles.notesInput]}
           value={formData.notes}
           onChangeText={(text) => setFormData(prev => ({ ...prev, notes: text }))}
-          placeholder="Describe your experience, insights, or any challenges..."
+          placeholder={t('wellnessForms.meditation.notesPlaceholder')}
           placeholderTextColor={currentTheme.colors.textSecondary}
           multiline
           numberOfLines={4}
@@ -437,7 +443,7 @@ const moodStates = [
       {/* Action Buttons */}
       <View style={styles.buttonContainer}>
         <TouchableOpacity style={styles.cancelButton} onPress={onCancel}>
-          <Text style={styles.cancelButtonText}>Cancel</Text>
+          <Text style={styles.cancelButtonText}>{t('wellnessForms.meditation.cancel')}</Text>
         </TouchableOpacity>
         <TouchableOpacity 
           style={[styles.saveButton, saving && styles.disabledButton]} 
@@ -445,7 +451,7 @@ const moodStates = [
           disabled={saving}
         >
           <Text style={styles.saveButtonText}>
-            {saving ? 'Saving...' : 'Save Session'}
+            {saving ? t('wellnessForms.meditation.saving') : t('wellnessForms.meditation.save')}
           </Text>
         </TouchableOpacity>
       </View>

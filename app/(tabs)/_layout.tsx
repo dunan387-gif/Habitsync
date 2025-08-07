@@ -1,5 +1,5 @@
 import { Tabs } from 'expo-router';
-import { Home, BookOpen, Heart, BarChart3, Trophy, MoreHorizontal } from 'lucide-react-native';
+import { Home, BookOpen, BarChart3, Trophy, MoreHorizontal, Users } from 'lucide-react-native';
 import { useTheme } from '@/context/ThemeContext';
 import { useLanguage } from '@/context/LanguageContext';
 
@@ -17,6 +17,10 @@ export default function TabLayout() {
           borderTopColor: currentTheme.colors.border,
         },
         headerShown: false,
+        headerStyle: {
+          backgroundColor: currentTheme.colors.background,
+        },
+        headerTintColor: currentTheme.colors.text,
       }}
     >
       <Tabs.Screen 
@@ -38,11 +42,11 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen 
-        name="wellness"
+        name="community"
         options={{
-          title: t('tabs.wellness'),
+          title: t('tabs.community'),
           tabBarIcon: ({ color, focused }) => (
-            <Heart size={24} color={color} />
+            <Users size={24} color={color} />
           ),
         }}
       />
@@ -58,7 +62,7 @@ export default function TabLayout() {
       <Tabs.Screen 
         name="gamification"
         options={{
-          title: t('tabs.rewards'),
+          title: t('tabs.gamification'),
           tabBarIcon: ({ color, focused }) => (
             <Trophy size={24} color={color} />
           ),
@@ -71,19 +75,6 @@ export default function TabLayout() {
           tabBarIcon: ({ color, focused }) => (
             <MoreHorizontal size={24} color={color} />
           ),
-        }}
-      />
-      {/* Hide these tabs from navigation */}
-      <Tabs.Screen
-        name="mood"
-        options={{
-          href: null,
-        }}
-      />
-      <Tabs.Screen
-        name="community"
-        options={{
-          href: null,
         }}
       />
     </Tabs>

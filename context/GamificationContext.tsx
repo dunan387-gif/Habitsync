@@ -1,19 +1,9 @@
-import React, { createContext, useContext, useState, useEffect, ReactNode, useRef } from 'react';
+import React, { createContext, useContext, useState, useEffect, ReactNode, useRef, useMemo } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Achievement, UserLevel, MoodEntry, StreakMilestone, GamificationData, Habit, HabitMoodEntry } from '@/types';
 import { useCelebration } from '@/context/CelebrationContext';
 import { useLanguage } from '@/context/LanguageContext';
-// ✅ Remove these commented lines:
-// Remove this unused import:
-// import { useHabits } from './HabitContext'; // ✅ Add missing import
-
-// Add this helper function at the top
-function getLocalDateString() {
-  const now = new Date();
-  const offset = now.getTimezoneOffset();
-  const localDate = new Date(now.getTime() - (offset * 60 * 1000));
-  return localDate.toISOString().split('T')[0];
-}
+import { getLocalDateString } from '@/utils/timezone';
 
 // Add AdaptiveChallenge interface
 interface AdaptiveChallenge {
@@ -44,6 +34,8 @@ interface GamificationContextType {
   createAdaptiveChallenge: (type: string, difficulty: 'easy' | 'medium' | 'hard') => Promise<void>;
   completeAdaptiveChallenge: (challengeId: string) => Promise<void>;
   getActiveAdaptiveChallenges: () => AdaptiveChallenge[];
+  // Level perks method
+  getLevelPerks: (level: number) => string[];
 }
 
 const GamificationContext = createContext<GamificationContextType | undefined>(undefined);
@@ -54,8 +46,8 @@ const INITIAL_GAMIFICATION_DATA: GamificationData = {
     currentXP: 0,
     xpToNextLevel: 100,
     totalXP: 0,
-    title: 'Habit Beginner',
-    perks: ['Daily habit tracking']
+    title: '', // Will be set dynamically using translation keys
+    perks: [] // Will be set dynamically using translation keys
   },
   achievements: [],
   unlockedAchievements: [],
@@ -79,16 +71,22 @@ const XP_REWARDS = {
   adaptive_challenge: 40
 };
 
-const LEVEL_TITLES = [
-  'Habit Beginner', 'Routine Builder', 'Consistency Seeker', 'Habit Enthusiast',
-  'Routine Master', 'Habit Champion', 'Lifestyle Architect', 'Habit Legend'
+const LEVEL_TITLE_KEYS = [
+  'gamification.levelTitles.habitBeginner',
+  'gamification.levelTitles.routineBuilder', 
+  'gamification.levelTitles.consistencySeeker',
+  'gamification.levelTitles.habitEnthusiast',
+  'gamification.levelTitles.routineMaster',
+  'gamification.levelTitles.habitChampion',
+  'gamification.levelTitles.lifestyleArchitect',
+  'gamification.levelTitles.habitLegend'
 ];
 
 const ACHIEVEMENTS: Achievement[] = [
   {
     id: 'first_habit',
-    title: '🌱 First Steps',
-    description: 'Complete your first habit',
+    titleKey: 'gamification.achievements.firstSteps.title',
+    descriptionKey: 'gamification.achievements.firstSteps.description',
     icon: '🌱',
     condition: 'Complete 1 habit total',
     category: 'milestone',
@@ -97,8 +95,8 @@ const ACHIEVEMENTS: Achievement[] = [
   },
   {
     id: 'week_warrior',
-    title: '⚡ Week Warrior',
-    description: 'Maintain a 7-day streak',
+    titleKey: 'gamification.achievements.weekWarrior.title',
+    descriptionKey: 'gamification.achievements.weekWarrior.description',
     icon: '⚡',
     condition: 'Maintain a 7-day streak',
     category: 'streak',
@@ -107,8 +105,8 @@ const ACHIEVEMENTS: Achievement[] = [
   },
   {
     id: 'month_master',
-    title: '🏆 Month Master',
-    description: 'Maintain a 30-day streak',
+    titleKey: 'gamification.achievements.monthMaster.title',
+    descriptionKey: 'gamification.achievements.monthMaster.description',
     icon: '🏆',
     condition: 'Maintain a 30-day streak',
     category: 'streak',
@@ -117,8 +115,8 @@ const ACHIEVEMENTS: Achievement[] = [
   },
   {
     id: 'century_club',
-    title: '💎 Century Club',
-    description: 'Maintain a 100-day streak',
+    titleKey: 'gamification.achievements.centuryClub.title',
+    descriptionKey: 'gamification.achievements.centuryClub.description',
     icon: '💎',
     condition: 'Maintain a 100-day streak',
     category: 'streak',
@@ -127,8 +125,8 @@ const ACHIEVEMENTS: Achievement[] = [
   },
   {
     id: 'mood_tracker',
-    title: '😊 Mood Tracker',
-    description: 'Check in your mood for 7 consecutive days',
+    titleKey: 'gamification.achievements.moodTracker.title',
+    descriptionKey: 'gamification.achievements.moodTracker.description',
     icon: '😊',
     condition: 'Check mood for 7 consecutive days',
     category: 'mood',
@@ -137,8 +135,8 @@ const ACHIEVEMENTS: Achievement[] = [
   },
   {
     id: 'habit_collector',
-    title: '📚 Habit Collector',
-    description: 'Create 10 different habits',
+    titleKey: 'gamification.achievements.habitCollector.title',
+    descriptionKey: 'gamification.achievements.habitCollector.description',
     icon: '📚',
     condition: 'Create 10 different habits',
     category: 'milestone',
@@ -147,8 +145,8 @@ const ACHIEVEMENTS: Achievement[] = [
   },
   {
     id: 'perfect_week',
-    title: '⭐ Perfect Week',
-    description: 'Complete all habits for 7 consecutive days',
+    titleKey: 'gamification.achievements.perfectWeek.title',
+    descriptionKey: 'gamification.achievements.perfectWeek.description',
     icon: '⭐',
     condition: 'Complete all habits for 7 consecutive days',
     category: 'habit',
@@ -158,8 +156,8 @@ const ACHIEVEMENTS: Achievement[] = [
   // New Mood-Based Achievements
   {
     id: 'mood_warrior',
-    title: '🛡️ Mood Warrior',
-    description: 'Track your mood consistently for 30 days',
+    titleKey: 'gamification.achievements.moodWarrior.title',
+    descriptionKey: 'gamification.achievements.moodWarrior.description',
     icon: '🛡️',
     condition: 'Track mood for 30 consecutive days',
     category: 'mood',
@@ -168,8 +166,8 @@ const ACHIEVEMENTS: Achievement[] = [
   },
   {
     id: 'pattern_finder',
-    title: '🔍 Pattern Finder',
-    description: 'Discover 5 mood-habit correlations',
+    titleKey: 'gamification.achievements.patternFinder.title',
+    descriptionKey: 'gamification.achievements.patternFinder.description',
     icon: '🔍',
     condition: 'Identify 5 mood-habit patterns',
     category: 'mood',
@@ -178,8 +176,8 @@ const ACHIEVEMENTS: Achievement[] = [
   },
   {
     id: 'resilience_builder',
-    title: '💪 Resilience Builder',
-    description: 'Complete 20 habits during low mood states',
+    titleKey: 'gamification.achievements.resilienceBuilder.title',
+    descriptionKey: 'gamification.achievements.resilienceBuilder.description',
     icon: '💪',
     condition: 'Complete habits during sad/anxious/stressed moods 20 times',
     category: 'mood',
@@ -188,8 +186,8 @@ const ACHIEVEMENTS: Achievement[] = [
   },
   {
     id: 'mood_booster',
-    title: '🌈 Mood Booster',
-    description: 'Improve mood through habits 15 times',
+    titleKey: 'gamification.achievements.moodBooster.title',
+    descriptionKey: 'gamification.achievements.moodBooster.description',
     icon: '🌈',
     condition: 'Show mood improvement after habit completion 15 times',
     category: 'mood',
@@ -198,8 +196,8 @@ const ACHIEVEMENTS: Achievement[] = [
   },
   {
     id: 'emotional_intelligence',
-    title: '🧠 Emotional Intelligence',
-    description: 'Maintain habits across all 7 mood states',
+    titleKey: 'gamification.achievements.emotionalIntelligence.title',
+    descriptionKey: 'gamification.achievements.emotionalIntelligence.description',
     icon: '🧠',
     condition: 'Complete habits in all mood states (happy, sad, anxious, energetic, tired, stressed, calm)',
     category: 'mood',
@@ -209,8 +207,8 @@ const ACHIEVEMENTS: Achievement[] = [
   // Adaptive Challenge Achievements
   {
     id: 'adaptive_champion',
-    title: '🎯 Adaptive Champion',
-    description: 'Complete 10 mood-appropriate challenges',
+    titleKey: 'gamification.achievements.adaptiveChampion.title',
+    descriptionKey: 'gamification.achievements.adaptiveChampion.description',
     icon: '🎯',
     condition: 'Complete 10 adaptive challenges',
     category: 'mood',
@@ -219,8 +217,8 @@ const ACHIEVEMENTS: Achievement[] = [
   },
   {
     id: 'resilience_master',
-    title: '🏔️ Resilience Master',
-    description: 'Complete 5 emotional resilience challenges',
+    titleKey: 'gamification.achievements.resilienceMaster.title',
+    descriptionKey: 'gamification.achievements.resilienceMaster.description',
     icon: '🏔️',
     condition: 'Complete 5 resilience challenges',
     category: 'mood',
@@ -229,8 +227,8 @@ const ACHIEVEMENTS: Achievement[] = [
   },
   {
     id: 'mood_streak_legend',
-    title: '🔥 Mood Streak Legend',
-    description: 'Achieve 14-day mood improvement streak',
+    titleKey: 'gamification.achievements.moodStreakLegend.title',
+    descriptionKey: 'gamification.achievements.moodStreakLegend.description',
     icon: '🔥',
     condition: 'Maintain mood improvement for 14 consecutive days',
     category: 'mood',
@@ -239,8 +237,8 @@ const ACHIEVEMENTS: Achievement[] = [
   },
   {
     id: 'difficult_mood_master',
-    title: '⚔️ Difficult Mood Master',
-    description: 'Complete 30 habits during challenging moods',
+    titleKey: 'gamification.achievements.difficultMoodMaster.title',
+    descriptionKey: 'gamification.achievements.difficultMoodMaster.description',
     icon: '⚔️',
     condition: 'Complete habits during difficult moods (sad, anxious, stressed, tired) 30 times',
     category: 'mood',
@@ -249,8 +247,8 @@ const ACHIEVEMENTS: Achievement[] = [
   },
   {
     id: 'balance_keeper',
-    title: '⚖️ Balance Keeper',
-    description: 'Maintain mood-habit balance for 21 days',
+    titleKey: 'gamification.achievements.balanceKeeper.title',
+    descriptionKey: 'gamification.achievements.balanceKeeper.description',
     icon: '⚖️',
     condition: 'Achieve balanced mood-habit completion for 21 days',
     category: 'mood',
@@ -260,6 +258,7 @@ const ACHIEVEMENTS: Achievement[] = [
 ];
 
 export function GamificationProvider({ children }: { children: ReactNode }) {
+  const { t } = useLanguage();
   const [gamificationData, setGamificationData] = useState<GamificationData | null>(null);
   const [adaptiveChallenges, setAdaptiveChallenges] = useState<AdaptiveChallenge[]>([]);
   const { showCelebration } = useCelebration();
@@ -280,9 +279,38 @@ export function GamificationProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     if (gamificationData) {
-      saveGamificationData();
+      // Debounce the save operation to avoid multiple rapid saves
+      const timeoutId = setTimeout(() => {
+        saveGamificationData();
+      }, 100);
+      
+      return () => clearTimeout(timeoutId);
     }
   }, [gamificationData]);
+
+  // Define getLevelPerks function before it's used in useMemo
+  const getLevelPerks = (level: number): string[] => {
+    const perks = [t('gamification.perks.dailyHabitTracking')];
+    if (level >= 3) perks.push(t('gamification.perks.advancedStatistics'));
+    if (level >= 5) perks.push(t('gamification.perks.customThemes'));
+    if (level >= 10) perks.push(t('gamification.perks.aiHabitSuggestions'));
+    if (level >= 15) perks.push(t('gamification.perks.premiumFeatures'));
+    return perks;
+  };
+
+  // Compute translated title and perks using useMemo to avoid infinite loops
+  const translatedGamificationData = useMemo(() => {
+    if (!gamificationData || !t) return gamificationData;
+    
+    return {
+      ...gamificationData,
+      userLevel: {
+        ...gamificationData.userLevel,
+        title: t(LEVEL_TITLE_KEYS[Math.min(gamificationData.userLevel.level - 1, LEVEL_TITLE_KEYS.length - 1)]),
+        perks: getLevelPerks(gamificationData.userLevel.level)
+      }
+    };
+  }, [gamificationData, t]);
 
 
   const loadGamificationData = async () => {
@@ -290,22 +318,27 @@ export function GamificationProvider({ children }: { children: ReactNode }) {
       const stored = await AsyncStorage.getItem('gamificationData');
       if (stored) {
         const data = JSON.parse(stored);
-        setGamificationData({ ...INITIAL_GAMIFICATION_DATA, ...data, achievements: ACHIEVEMENTS });
+        const loadedData = { ...INITIAL_GAMIFICATION_DATA, ...data, achievements: ACHIEVEMENTS };
+        setGamificationData(loadedData);
       } else {
-        setGamificationData({ ...INITIAL_GAMIFICATION_DATA, achievements: ACHIEVEMENTS });
+        const initialData = { ...INITIAL_GAMIFICATION_DATA, achievements: ACHIEVEMENTS };
+        setGamificationData(initialData);
       }
     } catch (error) {
       console.error('Failed to load gamification data:', error);
-      setGamificationData({ ...INITIAL_GAMIFICATION_DATA, achievements: ACHIEVEMENTS });
+      const fallbackData = { ...INITIAL_GAMIFICATION_DATA, achievements: ACHIEVEMENTS };
+      setGamificationData(fallbackData);
     }
   };
 
   const saveGamificationData = async () => {
     if (!gamificationData) return;
+    console.log('💾 Saving gamification data...');
     try {
       await AsyncStorage.setItem('gamificationData', JSON.stringify(gamificationData));
+      console.log('✅ Gamification data saved successfully');
     } catch (error) {
-      console.error('Failed to save gamification data:', error);
+      console.error('❌ Failed to save gamification data:', error);
     }
   };
 
@@ -314,12 +347,25 @@ export function GamificationProvider({ children }: { children: ReactNode }) {
   };
 
   const addXP = async (amount: number, source: string) => {
-    if (!gamificationData) return;
+    console.log('🎯 addXP called with:', { amount, source });
+    
+    if (!gamificationData) {
+      console.log('❌ No gamification data available for XP');
+      return;
+    }
 
     const newTotalXP = gamificationData.userLevel.totalXP + amount;
     const newCurrentXP = gamificationData.userLevel.currentXP + amount;
     let newLevel = gamificationData.userLevel.level;
     let xpToNextLevel = gamificationData.userLevel.xpToNextLevel;
+
+    console.log('📊 XP calculation:', {
+      currentLevel: newLevel,
+      currentXP: gamificationData.userLevel.currentXP,
+      newCurrentXP,
+      xpToNextLevel,
+      amount
+    });
 
     // Check for level up
     while (newCurrentXP >= xpToNextLevel) {
@@ -327,8 +373,10 @@ export function GamificationProvider({ children }: { children: ReactNode }) {
       const remainingXP = newCurrentXP - xpToNextLevel;
       xpToNextLevel = calculateXPToNextLevel(newLevel);
       
+      console.log('🎉 Level up! New level:', newLevel);
+      
       // Show level up celebration
-      showCelebration('level_up', `🎉 Level Up! You're now level ${newLevel}!`);
+      showCelebration('level_up', t('gamification.messages.levelUp', { level: newLevel }));
     }
 
     const updatedData = {
@@ -338,24 +386,20 @@ export function GamificationProvider({ children }: { children: ReactNode }) {
         currentXP: newCurrentXP >= xpToNextLevel ? newCurrentXP - xpToNextLevel : newCurrentXP,
         xpToNextLevel,
         totalXP: newTotalXP,
-        title: LEVEL_TITLES[Math.min(newLevel - 1, LEVEL_TITLES.length - 1)],
+        title: t(LEVEL_TITLE_KEYS[Math.min(newLevel - 1, LEVEL_TITLE_KEYS.length - 1)]),
         perks: getLevelPerks(newLevel)
       },
       dailyXPEarned: gamificationData.dailyXPEarned + amount
     };
 
-    setGamificationData(updatedData);
-  };
-  // Inside the GamificationProvider component, add:
-  const { t } = useLanguage();
-  
-  const getLevelPerks = (level: number): string[] => {
-    const perks = [t('gamification.perks.dailyHabitTracking')];
-    if (level >= 3) perks.push(t('gamification.perks.advancedStatistics'));
-    if (level >= 5) perks.push(t('gamification.perks.customThemes'));
-    if (level >= 10) perks.push(t('gamification.perks.aiHabitSuggestions'));
-    if (level >= 15) perks.push(t('gamification.perks.premiumFeatures'));
-    return perks;
+    console.log('💾 Setting gamification data for XP update...');
+    try {
+      setGamificationData(updatedData);
+      console.log('✅ XP update completed');
+    } catch (error) {
+      console.error('❌ Error setting gamification data for XP:', error);
+      throw error;
+    }
   };
 
   const unlockAchievement = async (achievementId: string) => {
@@ -373,7 +417,7 @@ export function GamificationProvider({ children }: { children: ReactNode }) {
       return;
     }
   
-    console.log(`Unlocking achievement: ${achievement.title}`);
+    console.log(`Unlocking achievement: ${t(achievement.titleKey || '')}`);
   
     // ✅ Update ref immediately for synchronous access
     unlockedAchievementsRef.current = [...unlockedAchievementsRef.current, achievementId];
@@ -384,16 +428,16 @@ export function GamificationProvider({ children }: { children: ReactNode }) {
     let newLevel = gamificationData.userLevel.level;
     let xpToNextLevel = gamificationData.userLevel.xpToNextLevel;
   
-    // Check for level up
+        // Check for level up
     while (newCurrentXP >= xpToNextLevel) {
       newLevel++;
       const remainingXP = newCurrentXP - xpToNextLevel;
       xpToNextLevel = calculateXPToNextLevel(newLevel);
       
       // Show level up celebration
-      showCelebration('level_up', `🎉 Level Up! You're now level ${newLevel}!`);
+      showCelebration('level_up', t('gamification.messages.levelUp', { level: newLevel }));
     }
-  
+
     // ✅ Update state with both achievement and XP in single update
     const updatedData = {
       ...gamificationData,
@@ -403,16 +447,22 @@ export function GamificationProvider({ children }: { children: ReactNode }) {
         currentXP: newCurrentXP >= xpToNextLevel ? newCurrentXP - xpToNextLevel : newCurrentXP,
         xpToNextLevel,
         totalXP: newTotalXP,
-        title: LEVEL_TITLES[Math.min(newLevel - 1, LEVEL_TITLES.length - 1)],
+        title: t(LEVEL_TITLE_KEYS[Math.min(newLevel - 1, LEVEL_TITLE_KEYS.length - 1)]),
         perks: getLevelPerks(newLevel)
       },
       dailyXPEarned: gamificationData.dailyXPEarned + achievement.xpReward
     };
-  
-    setGamificationData(updatedData);
+
+    try {
+      setGamificationData(updatedData);
+      console.log('✅ Achievement data updated');
+    } catch (error) {
+      console.error('❌ Error setting gamification data for achievement:', error);
+      throw error;
+    }
     
     // ✅ Show celebration after state update
-    showCelebration('achievement', `🏆 Achievement Unlocked: ${achievement.title}!`);
+    showCelebration('achievement', t('gamification.messages.achievementUnlocked', { title: t(achievement.titleKey || '') }));
   };
 
   const checkAchievements = async (habits: Habit[]) => {
@@ -568,63 +618,81 @@ export function GamificationProvider({ children }: { children: ReactNode }) {
     note?: string, 
     triggers?: ('work' | 'relationships' | 'health' | 'weather' | 'sleep' | 'exercise' | 'social')[]
   ): Promise<void> => {
-    return new Promise(async (resolve, reject) => {
-      try {
-        const today = getLocalDateString();
-        
-        setGamificationData(prevData => {
-          if (!prevData) {
-            reject(new Error('No gamification data available'));
-            return prevData;
-          }
-          
-          const existingEntryIndex = prevData.moodEntries.findIndex(entry => entry.date === today);
-          
-          let updatedEntries;
-          if (existingEntryIndex !== -1) {
-            // Update existing entry
-            const existingEntry = prevData.moodEntries[existingEntryIndex];
-            const updatedEntry: MoodEntry = {
-              ...existingEntry,
-              moodState,
-              intensity,
-              triggers: triggers || existingEntry.triggers,
-              note: note || existingEntry.note,
-              timestamp: new Date().toISOString() // Update timestamp
-            };
-            
-            updatedEntries = [...prevData.moodEntries];
-            updatedEntries[existingEntryIndex] = updatedEntry;
-            console.log('✅ Updated existing mood entry:', updatedEntry);
-          } else {
-            // Create new entry
-            const newEntry: MoodEntry = {
-              id: `mood_${Date.now()}`,
-              date: today,
-              moodState,
-              intensity,
-              triggers,
-              note,
-              timestamp: new Date().toISOString()
-            };
-            
-            updatedEntries = [...prevData.moodEntries, newEntry];
-            console.log('✅ Created new mood entry:', newEntry);
-          }
-          
-          const updatedData = {
-            ...prevData,
-            moodEntries: updatedEntries
-          };
-          
-          // ... rest of the persistence logic
-          return updatedData;
-        });
-      } catch (error) {
-        console.error('❌ Error in addMoodEntry:', error);
-        reject(error);
+    console.log('🎯 addMoodEntry called with:', { moodState, intensity, note, triggers });
+    
+    try {
+      if (!gamificationData) {
+        console.error('❌ No gamification data available');
+        throw new Error('No gamification data available');
       }
-    });
+
+      const today = getLocalDateString();
+      console.log('📅 Today\'s date:', today);
+      
+      const existingEntryIndex = gamificationData.moodEntries.findIndex(entry => entry.date === today);
+      console.log('🔍 Existing entry index:', existingEntryIndex);
+      
+      let updatedEntries;
+      if (existingEntryIndex !== -1) {
+        // Update existing entry
+        const existingEntry = gamificationData.moodEntries[existingEntryIndex];
+        const updatedEntry: MoodEntry = {
+          ...existingEntry,
+          moodState,
+          intensity,
+          triggers: triggers || existingEntry.triggers,
+          note: note || existingEntry.note,
+          timestamp: new Date().toISOString() // Update timestamp
+        };
+        
+        updatedEntries = [...gamificationData.moodEntries];
+        updatedEntries[existingEntryIndex] = updatedEntry;
+        console.log('✅ Updated existing mood entry:', updatedEntry);
+      } else {
+        // Create new entry
+        const newEntry: MoodEntry = {
+          id: `mood_${Date.now()}`,
+          date: today,
+          moodState,
+          intensity,
+          triggers,
+          note,
+          timestamp: new Date().toISOString()
+        };
+        
+        updatedEntries = [...gamificationData.moodEntries, newEntry];
+        console.log('✅ Created new mood entry:', newEntry);
+      }
+      
+      const updatedData = {
+        ...gamificationData,
+        moodEntries: updatedEntries
+      };
+      
+      console.log('💾 Setting gamification data...');
+      try {
+        setGamificationData(updatedData);
+        console.log('✅ Gamification data updated');
+      } catch (error) {
+        console.error('❌ Error setting gamification data:', error);
+        throw error;
+      }
+      
+      // Add XP for mood check-in with a small delay to avoid race conditions
+      console.log('⭐ Adding XP for mood check-in...');
+      setTimeout(async () => {
+        try {
+          await addXP(XP_REWARDS.mood_checkin, 'mood_checkin');
+          console.log('✅ XP added successfully');
+        } catch (error) {
+          console.error('❌ Error adding XP:', error);
+        }
+      }, 50);
+      
+    } catch (error) {
+      console.error('❌ Error in addMoodEntry:', error);
+      throw error;
+    }
   };
   const addHabitMoodEntry = async (entry: HabitMoodEntry) => {
     if (!gamificationData) return;
@@ -634,7 +702,13 @@ export function GamificationProvider({ children }: { children: ReactNode }) {
       habitMoodEntries: [...(gamificationData.habitMoodEntries || []), entry]
     };
     
-    setGamificationData(updatedData);
+    try {
+      setGamificationData(updatedData);
+      console.log('✅ Habit mood entry added successfully');
+    } catch (error) {
+      console.error('❌ Error adding habit mood entry:', error);
+      throw error;
+    }
   };
   
   // NEW: Get habit-mood entries
@@ -688,19 +762,31 @@ export function GamificationProvider({ children }: { children: ReactNode }) {
       target: difficulty === 'easy' ? 3 : difficulty === 'medium' ? 5 : 7
     };
     
-    setAdaptiveChallenges(prev => [...prev, newChallenge]);
-    await addXP(XP_REWARDS.adaptive_challenge, 'adaptive_challenge_created');
+    try {
+      setAdaptiveChallenges(prev => [...prev, newChallenge]);
+      console.log('✅ Adaptive challenge created successfully');
+      await addXP(XP_REWARDS.adaptive_challenge, 'adaptive_challenge_created');
+    } catch (error) {
+      console.error('❌ Error creating adaptive challenge:', error);
+      throw error;
+    }
   };
 
   const completeAdaptiveChallenge = async (challengeId: string): Promise<void> => {
-    setAdaptiveChallenges(prev => 
-      prev.map(challenge => 
-        challenge.id === challengeId 
-          ? { ...challenge, completed: true, progress: challenge.target }
-          : challenge
-      )
-    );
-    await addXP(XP_REWARDS.adaptive_challenge, 'adaptive_challenge_completed');
+    try {
+      setAdaptiveChallenges(prev => 
+        prev.map(challenge => 
+          challenge.id === challengeId 
+            ? { ...challenge, completed: true, progress: challenge.target }
+            : challenge
+        )
+      );
+      console.log('✅ Adaptive challenge completed successfully');
+      await addXP(XP_REWARDS.adaptive_challenge, 'adaptive_challenge_completed');
+    } catch (error) {
+      console.error('❌ Error completing adaptive challenge:', error);
+      throw error;
+    }
   };
 
   const getActiveAdaptiveChallenges = (): AdaptiveChallenge[] => {
@@ -709,7 +795,7 @@ export function GamificationProvider({ children }: { children: ReactNode }) {
 
   return (
     <GamificationContext.Provider value={{
-      gamificationData,
+      gamificationData: translatedGamificationData,
       addXP,
       unlockAchievement,
       addMoodEntry,
@@ -725,7 +811,9 @@ export function GamificationProvider({ children }: { children: ReactNode }) {
       // Adaptive challenge methods
       createAdaptiveChallenge,
       completeAdaptiveChallenge,
-      getActiveAdaptiveChallenges
+      getActiveAdaptiveChallenges,
+      // Level perks method
+      getLevelPerks
     }}>      {children}
     </GamificationContext.Provider>
   );

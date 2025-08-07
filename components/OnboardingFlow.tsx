@@ -1,140 +1,149 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Dimensions } from 'react-native';
-import { ChevronRight, ChevronLeft, Heart, Target, TrendingUp, Shield, CheckCircle } from 'lucide-react-native';
-import { useTheme } from '@/context/ThemeContext';
-import { useLanguage } from '@/context/LanguageContext';
-import { useGamification } from '@/context/GamificationContext';
-import QuickMoodSelector from './QuickMoodSelector';
-import { MoodData } from '@/types';
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  ScrollView,
+  Dimensions,
+  Image,
+} from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { useTheme } from '../context/ThemeContext';
+import { useLanguage } from '../context/LanguageContext';
+import { useSubscription } from '../context/SubscriptionContext';
+import {
+  Crown,
+  Star,
+  Zap,
+  TrendingUp,
+  Users,
+  Brain,
+  Palette,
+  Bell,
+  BarChart3,
+  Activity,
+  Target,
+  Heart,
+  Sparkles,
+  ArrowRight,
+  Check,
+  Globe,
+} from 'lucide-react-native';
 
-const { width } = Dimensions.get('window');
+const { width, height } = Dimensions.get('window');
 
-interface OnboardingFlowProps {
-  onComplete: () => void;
+interface OnboardingStep {
+  id: string;
+  title: string;
+  subtitle: string;
+  icon: React.ReactNode;
+  features: string[];
+  isPremium?: boolean;
 }
 
-const ONBOARDING_STEPS = [
-  {
-    id: 'welcome',
-    titleKey: 'onboarding.welcome.title',
-    subtitleKey: 'onboarding.welcome.description',
-    icon: Heart,
-    color: '#E91E63'
-  },
-  {
-    id: 'features-overview',
-    titleKey: 'onboarding.featuresOverview.title',
-    subtitleKey: 'onboarding.featuresOverview.description',
-    icon: Target,
-    color: '#2196F3'
-  },
-  {
-    id: 'ai-intelligence',
-    titleKey: 'onboarding.aiIntelligence.title',
-    subtitleKey: 'onboarding.aiIntelligence.description',
-    icon: TrendingUp,
-    color: '#4CAF50'
-  },
-  {
-    id: 'mood-wellness',
-    titleKey: 'onboarding.moodWellness.title',
-    subtitleKey: 'onboarding.moodWellness.description',
-    icon: Heart,
-    color: '#FF9800'
-  },
-  {
-    id: 'gamification',
-    titleKey: 'onboarding.gamification.title',
-    subtitleKey: 'onboarding.gamification.description',
-    icon: CheckCircle,
-    color: '#9C27B0'
-  },
-  {
-    id: 'analytics-insights',
-    titleKey: 'onboarding.analytics.title',
-    subtitleKey: 'onboarding.analytics.description',
-    icon: TrendingUp,
-    color: '#FF5722'
-  },
-  {
-    id: 'privacy-security',
-    titleKey: 'onboarding.privacySecurity.title',
-    subtitleKey: 'onboarding.privacySecurity.description',
-    icon: Shield,
-    color: '#607D8B'
-  },
-  {
-    id: 'setup-wizard',
-    titleKey: 'onboarding.setupWizard.title',
-    subtitleKey: 'onboarding.setupWizard.description',
-    icon: CheckCircle,
-    color: '#4CAF50'
-  }
-];
+interface OnboardingFlowProps {
+  onComplete?: () => void;
+}
 
-const SAMPLE_INSIGHTS = [
-  {
-    titleKey: 'onboarding.analytics.insights.morningExercise.title',
-    descriptionKey: 'onboarding.analytics.insights.morningExercise.description',
-    impactKey: 'onboarding.analytics.insights.morningExercise.impact',
-    color: '#4CAF50'
-  },
-  {
-    titleKey: 'onboarding.analytics.insights.socialConnection.title',
-    descriptionKey: 'onboarding.analytics.insights.socialConnection.description',
-    impactKey: 'onboarding.analytics.insights.socialConnection.impact',
-    color: '#E91E63'
-  },
-  {
-    titleKey: 'onboarding.analytics.insights.stressTrigger.title',
-    descriptionKey: 'onboarding.analytics.insights.stressTrigger.description',
-    impactKey: 'onboarding.analytics.insights.stressTrigger.impact',
-    color: '#FF5722'
-  }
-];
-
-const PRIVACY_BENEFITS = [
-  {
-    icon: '🔒',
-    titleKey: 'onboarding.privacy.benefits.encryption.title',
-    descriptionKey: 'onboarding.privacy.benefits.encryption.description'
-  },
-  {
-    icon: '📱',
-    titleKey: 'onboarding.privacy.benefits.offlineFirst.title',
-    descriptionKey: 'onboarding.privacy.benefits.offlineFirst.description'
-  },
-  {
-    icon: '🎯',
-    titleKey: 'onboarding.privacy.benefits.personalizedInsights.title',
-    descriptionKey: 'onboarding.privacy.benefits.personalizedInsights.description'
-  },
-  {
-    icon: '📈',
-    titleKey: 'onboarding.privacy.benefits.progressTracking.title',
-    descriptionKey: 'onboarding.privacy.benefits.progressTracking.description'
-  }
-];
-
-export default function OnboardingFlow({ onComplete }: OnboardingFlowProps) {
+const OnboardingFlow: React.FC<OnboardingFlowProps> = ({ onComplete }) => {
   const { currentTheme } = useTheme();
-  const { t } = useLanguage();
-  const { addMoodEntry, addXP } = useGamification();
+  const { t, currentLanguage, setLanguage } = useLanguage();
+  const { showUpgradePrompt, currentTier } = useSubscription();
   const [currentStep, setCurrentStep] = useState(0);
-  const [completedFirstMood, setCompletedFirstMood] = useState(false);
-  
-  const styles = createStyles(currentTheme.colors);
-  const step = ONBOARDING_STEPS[currentStep];
-  
-  const handleSkipMoodEntry = () => {
-    setCompletedFirstMood(true);
+  const [selectedLanguage, setSelectedLanguage] = useState(currentLanguage.code);
+
+  const languageOptions = [
+    { code: 'en', name: 'English', flag: '🇺🇸' },
+    { code: 'es', name: 'Español', flag: '🇪🇸' },
+    { code: 'fr', name: 'Français', flag: '🇫🇷' },
+    { code: 'zh', name: '中文', flag: '🇨🇳' },
+  ];
+
+  const handleLanguageSelect = (languageCode: string) => {
+    setSelectedLanguage(languageCode);
+    setLanguage(languageCode);
   };
+
+  // Function to reset onboarding for testing
+  const resetOnboarding = () => {
+    console.log('🔄 Resetting onboarding to step 0');
+    setCurrentStep(0);
+  };
+
+  // Expose reset function globally for testing
+  if (typeof global !== 'undefined') {
+    (global as any).resetOnboardingFlow = resetOnboarding;
+  }
+
+  const onboardingSteps: OnboardingStep[] = [
+    {
+      id: 'welcome',
+      title: t('onboarding.welcome.title'),
+      subtitle: t('onboarding.welcome.subtitle'),
+      icon: <Target size={48} color={currentTheme.colors.primary} />,
+      features: [
+        t('onboarding.welcome.feature1'),
+        t('onboarding.welcome.feature2'),
+        t('onboarding.welcome.feature3'),
+      ],
+    },
+    {
+      id: 'language',
+      title: t('onboarding.language.title'),
+      subtitle: t('onboarding.language.subtitle'),
+      icon: <Globe size={48} color={currentTheme.colors.accent} />,
+      features: [
+        t('onboarding.language.feature1'),
+        t('onboarding.language.feature2'),
+        t('onboarding.language.feature3'),
+      ],
+    },
+    {
+      id: 'free-features',
+      title: t('onboarding.freeFeatures.title'),
+      subtitle: t('onboarding.freeFeatures.subtitle'),
+      icon: <Star size={48} color={currentTheme.colors.success} />,
+      features: [
+        t('onboarding.freeFeatures.feature1'),
+        t('onboarding.freeFeatures.feature2'),
+        t('onboarding.freeFeatures.feature3'),
+        t('onboarding.freeFeatures.feature4'),
+      ],
+    },
+    {
+      id: 'pro-features',
+      title: t('onboarding.proFeatures.title'),
+      subtitle: t('onboarding.proFeatures.subtitle'),
+      icon: <Crown size={48} color={currentTheme.colors.primary} />,
+      features: [
+        t('onboarding.proFeatures.feature1'),
+        t('onboarding.proFeatures.feature2'),
+        t('onboarding.proFeatures.feature3'),
+        t('onboarding.proFeatures.feature4'),
+        t('onboarding.proFeatures.feature5'),
+      ],
+      isPremium: true,
+    },
+    {
+      id: 'get-started',
+      title: t('onboarding.getStartedStep.title'),
+      subtitle: t('onboarding.getStartedStep.subtitle'),
+      icon: <Zap size={48} color={currentTheme.colors.accent} />,
+      features: [
+        t('onboarding.getStartedStep.feature1'),
+        t('onboarding.getStartedStep.feature2'),
+        t('onboarding.getStartedStep.feature3'),
+      ],
+    },
+  ];
   
   const handleNext = () => {
-    if (currentStep < ONBOARDING_STEPS.length - 1) {
-      setCurrentStep(currentStep + 1);
-    } else {
-      onComplete();
+    if (currentStep < onboardingSteps.length - 1) {
+      const nextStep = currentStep + 1;
+      console.log('🔄 Moving to step:', nextStep, 'of', onboardingSteps.length - 1);
+      console.log('📋 Next step data:', onboardingSteps[nextStep]);
+      setCurrentStep(nextStep);
     }
   };
   
@@ -144,756 +153,347 @@ export default function OnboardingFlow({ onComplete }: OnboardingFlowProps) {
     }
   };
   
-  const handleFirstMoodComplete = async (moodData: MoodData) => {
-    try {
-      // Save the mood entry to GamificationContext
-      await addMoodEntry(
-        mapToValidMoodState(moodData.moodState), 
-        moodData.intensity, 
-        moodData.note || undefined, 
-        moodData.contextTags?.length > 0 ? filterValidTags(moodData.contextTags) : undefined
-      );
-      
-      // Award XP for first mood entry
-      await addXP(5, 'First mood check-in during onboarding!');
-      
-      setCompletedFirstMood(true);
-    } catch (error) {
-      console.error('Error saving onboarding mood entry:', error);
+  const handleSkip = () => {
+    // Complete onboarding and navigate to main app
+    console.log('✅ Onboarding completed');
+    if (onComplete) {
+      onComplete();
     }
   };
+
+  const handleUpgrade = () => {
+    console.log('🔧 Upgrade button pressed in onboarding');
+    console.log('🔧 Current tier:', currentTier);
+    showUpgradePrompt('onboarding');
+  };
+
+  const currentStepData = onboardingSteps[currentStep];
   
-  const renderWelcomeStep = () => (
-    <View style={styles.stepContent}>
-      <View style={[styles.iconContainer, { backgroundColor: step.color + '20' }]}>
-        <Heart size={48} color={step.color} />
-      </View>
-      <Text style={styles.stepTitle}>{t(step.titleKey)}</Text>
-      <Text style={styles.stepSubtitle}>{t(step.subtitleKey)}</Text>
-      
-      <View style={styles.welcomeFeatures}>
-        <View style={styles.featureItem}>
-          <Text style={styles.featureEmoji}>😊</Text>
-          <Text style={styles.featureText}>{t('onboarding.welcome.features.trackMoods')}</Text>
-        </View>
-        <View style={styles.featureItem}>
-          <Text style={styles.featureEmoji}>🎯</Text>
-          <Text style={styles.featureText}>{t('onboarding.welcome.features.buildHabits')}</Text>
-        </View>
-        <View style={styles.featureItem}>
-          <Text style={styles.featureEmoji}>📊</Text>
-          <Text style={styles.featureText}>{t('onboarding.welcome.features.discoverPatterns')}</Text>
-        </View>
-        <View style={styles.featureItem}>
-          <Text style={styles.featureEmoji}>🚀</Text>
-          <Text style={styles.featureText}>{t('onboarding.welcome.features.improveWellbeing')}</Text>
-        </View>
-      </View>
-    </View>
-  );
-  
-  const renderFeaturesOverviewStep = () => (
-    <View style={styles.stepContent}>
-      <View style={[styles.iconContainer, { backgroundColor: step.color + '20' }]}>
-        <Target size={48} color={step.color} />
-      </View>
-      <Text style={styles.stepTitle}>{t(step.titleKey)}</Text>
-      <Text style={styles.stepSubtitle}>{t(step.subtitleKey)}</Text>
-      
-      <View style={styles.featuresGrid}>
-        <View style={styles.featureCard}>
-          <Text style={styles.featureEmoji}>🎯</Text>
-          <Text style={styles.featureTitle}>{t('onboarding.featuresOverview.smartHabits.title')}</Text>
-          <Text style={styles.featureDescription}>{t('onboarding.featuresOverview.smartHabits.description')}</Text>
-        </View>
-        <View style={styles.featureCard}>
-          <Text style={styles.featureEmoji}>📊</Text>
-          <Text style={styles.featureTitle}>{t('onboarding.featuresOverview.analytics.title')}</Text>
-          <Text style={styles.featureDescription}>{t('onboarding.featuresOverview.analytics.description')}</Text>
-        </View>
-        <View style={styles.featureCard}>
-          <Text style={styles.featureEmoji}>🏆</Text>
-          <Text style={styles.featureTitle}>{t('onboarding.featuresOverview.gamification.title')}</Text>
-          <Text style={styles.featureDescription}>{t('onboarding.featuresOverview.gamification.description')}</Text>
-        </View>
-        <View style={styles.featureCard}>
-          <Text style={styles.featureEmoji}>💚</Text>
-          <Text style={styles.featureTitle}>{t('onboarding.featuresOverview.wellness.title')}</Text>
-          <Text style={styles.featureDescription}>{t('onboarding.featuresOverview.wellness.description')}</Text>
-        </View>
-      </View>
-    </View>
-  );
-  
-  const renderAIIntelligenceStep = () => (
-    <View style={styles.stepContent}>
-      <View style={[styles.iconContainer, { backgroundColor: step.color + '20' }]}>
-        <TrendingUp size={48} color={step.color} />
-      </View>
-      <Text style={styles.stepTitle}>{t(step.titleKey)}</Text>
-      <Text style={styles.stepSubtitle}>{t(step.subtitleKey)}</Text>
-      
-      <View style={styles.aiFeatures}>
-        <View style={styles.aiFeatureItem}>
-          <Text style={styles.aiFeatureIcon}>🤖</Text>
-          <View style={styles.aiFeatureText}>
-            <Text style={styles.aiFeatureTitle}>{t('onboarding.aiIntelligence.smartSuggestions.title')}</Text>
-            <Text style={styles.aiFeatureDescription}>{t('onboarding.aiIntelligence.smartSuggestions.description')}</Text>
-          </View>
-        </View>
-        <View style={styles.aiFeatureItem}>
-          <Text style={styles.aiFeatureIcon}>⏰</Text>
-          <View style={styles.aiFeatureText}>
-            <Text style={styles.aiFeatureTitle}>{t('onboarding.aiIntelligence.optimalTiming.title')}</Text>
-            <Text style={styles.aiFeatureDescription}>{t('onboarding.aiIntelligence.optimalTiming.description')}</Text>
-          </View>
-        </View>
-        <View style={styles.aiFeatureItem}>
-          <Text style={styles.aiFeatureIcon}>🎯</Text>
-          <View style={styles.aiFeatureText}>
-            <Text style={styles.aiFeatureTitle}>{t('onboarding.aiIntelligence.predictiveInsights.title')}</Text>
-            <Text style={styles.aiFeatureDescription}>{t('onboarding.aiIntelligence.predictiveInsights.description')}</Text>
-          </View>
-        </View>
-      </View>
-    </View>
-  );
-  
-  const renderMoodEducationStep = () => (
-    <View style={styles.stepContent}>
-      <View style={[styles.iconContainer, { backgroundColor: step.color + '20' }]}>
-        <TrendingUp size={48} color={step.color} />
-      </View>
-      <Text style={styles.stepTitle}>{t(step.titleKey)}</Text>
-      <Text style={styles.stepSubtitle}>{t(step.subtitleKey)}</Text>
-      
-      <View style={styles.educationContent}>
-        <View style={styles.educationItem}>
-          <Text style={styles.educationNumber}>1</Text>
-          <View style={styles.educationText}>
-            <Text style={styles.educationTitle}>{t('onboarding.moodWellness.emotionalAwareness.title')}</Text>
-            <Text style={styles.educationDescription}>
-              {t('onboarding.moodWellness.emotionalAwareness.description')}
-            </Text>
-          </View>
-        </View>
-        
-        <View style={styles.educationItem}>
-          <Text style={styles.educationNumber}>2</Text>
-          <View style={styles.educationText}>
-            <Text style={styles.educationTitle}>{t('onboarding.moodWellness.patternRecognition.title')}</Text>
-            <Text style={styles.educationDescription}>
-              {t('onboarding.moodWellness.patternRecognition.description')}
-            </Text>
-          </View>
-        </View>
-        
-        <View style={styles.educationItem}>
-          <Text style={styles.educationNumber}>3</Text>
-          <View style={styles.educationText}>
-            <Text style={styles.educationTitle}>{t('onboarding.moodWellness.proactiveWellbeing.title')}</Text>
-            <Text style={styles.educationDescription}>
-              {t('onboarding.moodWellness.proactiveWellbeing.description')}
-            </Text>
-          </View>
-        </View>
-      </View>
-    </View>
-  );
-  
-  const renderGamificationStep = () => (
-    <View style={styles.stepContent}>
-      <View style={[styles.iconContainer, { backgroundColor: step.color + '20' }]}>
-        <CheckCircle size={48} color={step.color} />
-      </View>
-      <Text style={styles.stepTitle}>{t(step.titleKey)}</Text>
-      <Text style={styles.stepSubtitle}>{t(step.subtitleKey)}</Text>
-      
-      <View style={styles.gamificationFeatures}>
-        <View style={styles.gamificationItem}>
-          <Text style={styles.gamificationIcon}>🏆</Text>
-          <View style={styles.gamificationText}>
-            <Text style={styles.gamificationTitle}>{t('onboarding.gamification.achievements.title')}</Text>
-            <Text style={styles.gamificationDescription}>{t('onboarding.gamification.achievements.description')}</Text>
-          </View>
-        </View>
-        <View style={styles.gamificationItem}>
-          <Text style={styles.gamificationIcon}>⚡</Text>
-          <View style={styles.gamificationText}>
-            <Text style={styles.gamificationTitle}>{t('onboarding.gamification.xpLevels.title')}</Text>
-            <Text style={styles.gamificationDescription}>{t('onboarding.gamification.xpLevels.description')}</Text>
-          </View>
-        </View>
-        <View style={styles.gamificationItem}>
-          <Text style={styles.gamificationIcon}>🔥</Text>
-          <View style={styles.gamificationText}>
-            <Text style={styles.gamificationTitle}>{t('onboarding.gamification.streaks.title')}</Text>
-            <Text style={styles.gamificationDescription}>{t('onboarding.gamification.streaks.description')}</Text>
-          </View>
-        </View>
-        <View style={styles.gamificationItem}>
-          <Text style={styles.gamificationIcon}>🎯</Text>
-          <View style={styles.gamificationText}>
-            <Text style={styles.gamificationTitle}>{t('onboarding.gamification.challenges.title')}</Text>
-            <Text style={styles.gamificationDescription}>{t('onboarding.gamification.challenges.description')}</Text>
-          </View>
-        </View>
-      </View>
-    </View>
-  );
-  
-  const renderHabitConnectionStep = () => (
-    <View style={styles.stepContent}>
-      <View style={[styles.iconContainer, { backgroundColor: step.color + '20' }]}>
-        <Target size={48} color={step.color} />
-      </View>
-      <Text style={styles.stepTitle}>{t(step.titleKey)}</Text>
-      <Text style={styles.stepSubtitle}>{t(step.subtitleKey)}</Text>
-      
-      <View style={styles.connectionDemo}>
-        <View style={styles.connectionItem}>
-          <View style={styles.connectionMood}>
-            <Text style={styles.connectionEmoji}>😴</Text>
-            <Text style={styles.connectionLabel}>{t('onboarding.moodWellness.connectionDemo.tired')}</Text>
-          </View>
-          <View style={styles.connectionArrow}>
-            <ChevronRight size={20} color={currentTheme.colors.textSecondary} />
-          </View>
-          <View style={styles.connectionHabit}>
-            <Text style={styles.connectionEmoji}>☕</Text>
-            <Text style={styles.connectionLabel}>{t('onboarding.moodWellness.connectionDemo.morningCoffee')}</Text>
-          </View>
-          <View style={styles.connectionArrow}>
-            <ChevronRight size={20} color={currentTheme.colors.textSecondary} />
-          </View>
-          <View style={styles.connectionResult}>
-            <Text style={styles.connectionEmoji}>⚡</Text>
-            <Text style={styles.connectionLabel}>{t('onboarding.moodWellness.connectionDemo.energetic')}</Text>
-          </View>
-        </View>
-        
-        <View style={styles.connectionItem}>
-          <View style={styles.connectionMood}>
-            <Text style={styles.connectionEmoji}>😰</Text>
-            <Text style={styles.connectionLabel}>{t('onboarding.moodWellness.connectionDemo.stressed')}</Text>
-          </View>
-          <View style={styles.connectionArrow}>
-            <ChevronRight size={20} color={currentTheme.colors.textSecondary} />
-          </View>
-          <View style={styles.connectionHabit}>
-            <Text style={styles.connectionEmoji}>🧘</Text>
-            <Text style={styles.connectionLabel}>{t('onboarding.moodWellness.connectionDemo.meditation')}</Text>
-          </View>
-          <View style={styles.connectionArrow}>
-            <ChevronRight size={20} color={currentTheme.colors.textSecondary} />
-          </View>
-          <View style={styles.connectionResult}>
-            <Text style={styles.connectionEmoji}>😌</Text>
-            <Text style={styles.connectionLabel}>{t('onboarding.moodWellness.connectionDemo.calm')}</Text>
-          </View>
-        </View>
-      </View>
-    </View>
-  );
-  
-  const renderSampleInsightsStep = () => (
-    <View style={styles.stepContent}>
-      <View style={[styles.iconContainer, { backgroundColor: step.color + '20' }]}>
-        <TrendingUp size={48} color={step.color} />
-      </View>
-      <Text style={styles.stepTitle}>{t(step.titleKey)}</Text>
-      <Text style={styles.stepSubtitle}>{t(step.subtitleKey)}</Text>
-      
-      <ScrollView style={styles.insightsContainer}>
-        {SAMPLE_INSIGHTS.map((insight, index) => (
-          <View key={index} style={[styles.insightCard, { borderLeftColor: insight.color }]}>
-            <Text style={styles.insightTitle}>{t(insight.titleKey)}</Text>
-            <Text style={styles.insightDescription}>{t(insight.descriptionKey)}</Text>
-            <View style={[styles.insightImpact, { backgroundColor: insight.color + '20' }]}>
-              <Text style={[styles.insightImpactText, { color: insight.color }]}>
-                {t(insight.impactKey)}
-              </Text>
-            </View>
-          </View>
-        ))}
-      </ScrollView>
-    </View>
-  );
-  
-  const renderPrivacyBenefitsStep = () => (
-    <View style={styles.stepContent}>
-      <View style={[styles.iconContainer, { backgroundColor: step.color + '20' }]}>
-        <Shield size={48} color={step.color} />
-      </View>
-      <Text style={styles.stepTitle}>{t(step.titleKey)}</Text>
-      <Text style={styles.stepSubtitle}>{t(step.subtitleKey)}</Text>
-      
-      <View style={styles.benefitsGrid}>
-        {PRIVACY_BENEFITS.map((benefit, index) => (
-          <View key={index} style={styles.benefitCard}>
-            <Text style={styles.benefitIcon}>{benefit.icon}</Text>
-            <Text style={styles.benefitTitle}>{t(benefit.titleKey)}</Text>
-            <Text style={styles.benefitDescription}>{t(benefit.descriptionKey)}</Text>
-          </View>
-        ))}
-      </View>
-    </View>
-  );
-  
-  const renderSetupWizardStep = () => (
-    <View style={styles.stepContent}>
-      <View style={[styles.iconContainer, { backgroundColor: step.color + '20' }]}>
-        <CheckCircle size={48} color={step.color} />
-      </View>
-      <Text style={styles.stepTitle}>{t(step.titleKey)}</Text>
-      <Text style={styles.stepSubtitle}>{t('onboarding.setupWizard.tryFirstMood')}</Text>
-      
-      <View style={styles.setupContainer}>
-        <QuickMoodSelector 
-          onMoodSelect={handleFirstMoodComplete}
-          showIntensitySlider={false}
-          showContextTags={false}
-          showAttachments={false}
-          showVoiceOption={false}
-          allowSkip={true}
-          onSkip={handleSkipMoodEntry}
-        />
-        
-        {completedFirstMood && (
-          <View style={styles.completionMessage}>
-            <CheckCircle size={24} color={step.color} />
-            <Text style={styles.completionText}>
-              {t('onboarding.setupWizard.completionMessage')}
-            </Text>
-          </View>
-        )}
-      </View>
-    </View>
-  );
-  
-  const renderStepContent = () => {
-    switch (step.id) {
-      case 'welcome':
-        return renderWelcomeStep();
-      case 'features-overview':
-        return renderFeaturesOverviewStep();
-      case 'ai-intelligence':
-        return renderAIIntelligenceStep();
-      case 'mood-wellness':
-        return renderMoodEducationStep();
-      case 'gamification':
-        return renderGamificationStep();
-      case 'analytics-insights':
-        return renderSampleInsightsStep();
-      case 'privacy-security':
-        return renderPrivacyBenefitsStep();
-      case 'setup-wizard':
-        return renderSetupWizardStep();
-      default:
-        return renderWelcomeStep();
-    }
+  // Debug logging
+  console.log('🎯 Current step:', currentStep, 'of', onboardingSteps.length - 1);
+  console.log('📋 Current step data:', currentStepData);
+  console.log('🔤 Is language step:', currentStepData.id === 'language');
+
+  const renderFeatureIcon = (feature: string) => {
+    const iconProps = { size: 20, color: currentTheme.colors.success };
+    
+    if (feature.includes('habits')) return <Target {...iconProps} />;
+    if (feature.includes('analytics')) return <BarChart3 {...iconProps} />;
+    if (feature.includes('AI')) return <Brain {...iconProps} />;
+    if (feature.includes('themes')) return <Palette {...iconProps} />;
+    if (feature.includes('reminders')) return <Bell {...iconProps} />;
+    if (feature.includes('social')) return <Users {...iconProps} />;
+    if (feature.includes('wellness')) return <Activity {...iconProps} />;
+    if (feature.includes('patterns')) return <Sparkles {...iconProps} />;
+    if (feature.includes('mood')) return <Heart {...iconProps} />;
+    
+    return <Check {...iconProps} />;
   };
   
   return (
-    <View style={styles.container}>
-      {/* Progress Indicator */}
-      <View style={styles.progressContainer}>
-        {ONBOARDING_STEPS.map((_, index) => (
-          <View 
-            key={index}
-            style={[
-              styles.progressDot,
-              index <= currentStep && styles.progressDotActive
-            ]} 
-          />
-        ))}
+    <SafeAreaView style={[styles.container, { backgroundColor: currentTheme.colors.background }]}>
+      {/* Progress Bar */}
+        <View style={styles.progressContainer}>
+        <View style={styles.progressBar}>
+          {onboardingSteps.map((_, index) => (
+            <View
+              key={index}
+              style={[
+                styles.progressDot,
+                {
+                  backgroundColor: index <= currentStep 
+                    ? currentTheme.colors.primary 
+                    : currentTheme.colors.border,
+                },
+              ]}
+            />
+          ))}
+          </View>
+        <TouchableOpacity onPress={handleSkip} style={styles.skipButton}>
+          <Text style={[styles.skipText, { color: currentTheme.colors.textSecondary }]}>
+            {t('onboarding.skip')}
+          </Text>
+        </TouchableOpacity>
       </View>
       
-      {/* Step Content */}
-      <ScrollView style={styles.contentContainer}>
-        {renderStepContent()}
+      {/* Content */}
+      <ScrollView 
+        style={styles.content}
+        contentContainerStyle={styles.contentContainer}
+        showsVerticalScrollIndicator={false}
+      >
+        {/* Icon */}
+        <View style={styles.iconContainer}>
+          {currentStepData.icon}
+        </View>
+
+        {/* Title */}
+        <Text style={[styles.title, { color: currentTheme.colors.text }]}>
+          {currentStepData.title}
+        </Text>
+
+        {/* Subtitle */}
+        <Text style={[styles.subtitle, { color: currentTheme.colors.textSecondary }]}>
+          {currentStepData.subtitle}
+        </Text>
+
+        {/* Language Selection */}
+        {currentStepData.id === 'language' && (
+          <View style={styles.languageContainer}>
+            {languageOptions.map((language) => (
+              <TouchableOpacity
+                key={language.code}
+                style={[
+                  styles.languageOption,
+                  {
+                    backgroundColor: selectedLanguage === language.code 
+                      ? currentTheme.colors.primary + '20' 
+                      : currentTheme.colors.card,
+                    borderColor: selectedLanguage === language.code 
+                      ? currentTheme.colors.primary 
+                      : currentTheme.colors.border,
+                  },
+                ]}
+                onPress={() => handleLanguageSelect(language.code)}
+              >
+                <Text style={styles.languageFlag}>{language.flag}</Text>
+                <Text style={[
+                  styles.languageName,
+                  { 
+                    color: selectedLanguage === language.code 
+                      ? currentTheme.colors.primary 
+                      : currentTheme.colors.text 
+                  }
+                ]}>
+                  {language.name}
+                </Text>
+                {selectedLanguage === language.code && (
+                  <Check size={20} color={currentTheme.colors.primary} />
+                )}
+              </TouchableOpacity>
+            ))}
+          </View>
+        )}
+
+        {/* Features */}
+        <View style={styles.featuresContainer}>
+          {currentStepData.features.map((feature, index) => (
+            <View key={index} style={styles.featureRow}>
+              {renderFeatureIcon(feature)}
+              <Text style={[styles.featureText, { color: currentTheme.colors.text }]}>
+                {feature}
+              </Text>
+            </View>
+          ))}
+        </View>
+
+        {/* Premium Badge */}
+        {currentStepData.isPremium && (
+          <View style={[styles.premiumBadge, { backgroundColor: currentTheme.colors.primary + '20' }]}>
+            <Crown size={16} color={currentTheme.colors.primary} />
+            <Text style={[styles.premiumText, { color: currentTheme.colors.primary }]}>
+              {t('onboarding.proFeature')}
+            </Text>
+          </View>
+        )}
       </ScrollView>
       
-      {/* Navigation */}
-      <View style={styles.navigationContainer}>
+      {/* Action Buttons */}
+      <View style={styles.actions}>
         {currentStep > 0 && (
-          <TouchableOpacity style={styles.backButton} onPress={handlePrevious}>
-            <ChevronLeft size={20} color={currentTheme.colors.primary} />
-            <Text style={styles.backButtonText}>{t('common.back')}</Text>
+          <TouchableOpacity
+            style={[styles.secondaryButton, { borderColor: currentTheme.colors.border }]}
+            onPress={handlePrevious}
+          >
+            <Text style={[styles.secondaryButtonText, { color: currentTheme.colors.textSecondary }]}>
+              {t('onboarding.previous')}
+            </Text>
           </TouchableOpacity>
         )}
         
+        {currentStep === onboardingSteps.length - 1 ? (
+          <TouchableOpacity
+            style={[styles.primaryButton, { backgroundColor: currentTheme.colors.primary }]}
+            onPress={handleSkip}
+          >
+            <Text style={[styles.primaryButtonText, { color: "#FFFFFF" }]}>
+              {t('onboarding.getStarted')}
+            </Text>
+            <ArrowRight size={20} color="#FFFFFF" />
+          </TouchableOpacity>
+        ) : (
         <TouchableOpacity 
-          style={[
-            styles.nextButton,
-            { backgroundColor: step.color },
-            (step.id === 'setup-wizard' && !completedFirstMood) && styles.nextButtonDisabled
-          ]}
+            style={[styles.primaryButton, { backgroundColor: currentTheme.colors.primary }]}
           onPress={handleNext}
-          disabled={step.id === 'setup-wizard' && !completedFirstMood}
-        >
-          <Text style={styles.nextButtonText}>
-            {currentStep === ONBOARDING_STEPS.length - 1 ? t('common.getStarted') : t('common.continue')}
-          </Text>
-          <ChevronRight size={20} color="#FFFFFF" />
-        </TouchableOpacity>
-      </View>
-    </View>
-  );
-}
+          >
+            <Text style={[styles.primaryButtonText, { color: "#FFFFFF" }]}>
+              {t('onboarding.next')}
+            </Text>
+            <ArrowRight size={20} color="#FFFFFF" />
+          </TouchableOpacity>
+        )}
 
-const createStyles = (colors: any) => StyleSheet.create({
+        {/* Upgrade Button for Pro Features Step */}
+        {currentStepData.isPremium && (
+          <TouchableOpacity
+            style={[styles.upgradeButton, { backgroundColor: currentTheme.colors.accent }]}
+            onPress={handleUpgrade}
+          >
+            <Crown size={20} color="#FFFFFF" />
+            <Text style={[styles.upgradeButtonText, { color: "#FFFFFF" }]}>
+              {t('onboarding.upgradeNow')}
+          </Text>
+        </TouchableOpacity>
+        )}
+      </View>
+    </SafeAreaView>
+  );
+};
+
+const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.background,
   },
   progressContainer: {
     flexDirection: 'row',
-    justifyContent: 'center',
-    paddingVertical: 20,
+    justifyContent: 'space-between',
+    alignItems: 'center',
     paddingHorizontal: 20,
+    paddingVertical: 16,
+  },
+  progressBar: {
+    flexDirection: 'row',
+    gap: 8,
   },
   progressDot: {
     width: 8,
     height: 8,
     borderRadius: 4,
-    backgroundColor: colors.border,
-    marginHorizontal: 4,
   },
-  progressDotActive: {
-    backgroundColor: colors.primary,
+  skipButton: {
+    padding: 8,
+  },
+  skipText: {
+    fontSize: 14,
+    fontWeight: '500',
+  },
+  content: {
+    flex: 1,
   },
   contentContainer: {
-    flex: 1,
     paddingHorizontal: 20,
-  },
-  stepContent: {
-    alignItems: 'center',
-    paddingVertical: 20,
+    paddingBottom: 40,
   },
   iconContainer: {
-    width: 80,
-    height: 80,
-    borderRadius: 40,
     alignItems: 'center',
-    justifyContent: 'center',
-    marginBottom: 20,
+    marginTop: 40,
+    marginBottom: 32,
   },
-  stepTitle: {
-    fontSize: 24,
+  title: {
+    fontSize: 28,
     fontWeight: 'bold',
-    color: colors.text,
     textAlign: 'center',
-    marginBottom: 10,
+    marginBottom: 16,
+    lineHeight: 36,
   },
-  stepSubtitle: {
+  subtitle: {
     fontSize: 16,
-    color: colors.textSecondary,
     textAlign: 'center',
-    marginBottom: 30,
     lineHeight: 24,
+    marginBottom: 32,
+    paddingHorizontal: 20,
   },
-  welcomeFeatures: {
-    width: '100%',
+  featuresContainer: {
+    marginBottom: 24,
   },
-  featureItem: {
+  featureRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingVertical: 12,
-    paddingHorizontal: 20,
-    backgroundColor: colors.card,
-    borderRadius: 12,
-    marginBottom: 12,
-  },
-  featureEmoji: {
-    fontSize: 24,
-    marginRight: 15,
+    marginBottom: 16,
+    gap: 12,
   },
   featureText: {
     fontSize: 16,
-    color: colors.text,
+    flex: 1,
+    lineHeight: 22,
+  },
+  premiumBadge: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 8,
+    paddingHorizontal: 16,
+    borderRadius: 20,
+    gap: 6,
+    alignSelf: 'center',
+  },
+  premiumText: {
+    fontSize: 14,
+    fontWeight: '600',
+  },
+  actions: {
+    paddingHorizontal: 20,
+    paddingBottom: 20,
+    gap: 12,
+  },
+  secondaryButton: {
+    paddingVertical: 16,
+    paddingHorizontal: 24,
+    borderRadius: 12,
+    borderWidth: 1,
+    alignItems: 'center',
+  },
+  secondaryButtonText: {
+    fontSize: 16,
     fontWeight: '500',
   },
-  // Features Overview Styles
-  featuresGrid: {
-    width: '100%',
-  },
-  featureCard: {
-    backgroundColor: colors.card,
-    borderRadius: 12,
-    padding: 16,
-    marginBottom: 12,
-    alignItems: 'center',
-  },
-  featureTitle: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: colors.text,
-    marginBottom: 8,
-    textAlign: 'center',
-  },
-  featureDescription: {
-    fontSize: 14,
-    color: colors.textSecondary,
-    textAlign: 'center',
-    lineHeight: 20,
-  },
-  // AI Features Styles
-  aiFeatures: {
-    width: '100%',
-  },
-  aiFeatureItem: {
+  primaryButton: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: colors.card,
-    borderRadius: 12,
-    padding: 16,
-    marginBottom: 12,
-  },
-  aiFeatureIcon: {
-    fontSize: 32,
-    marginRight: 15,
-  },
-  aiFeatureText: {
-    flex: 1,
-  },
-  aiFeatureTitle: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: colors.text,
-    marginBottom: 4,
-  },
-  aiFeatureDescription: {
-    fontSize: 14,
-    color: colors.textSecondary,
-    lineHeight: 20,
-  },
-  // Gamification Styles
-  gamificationFeatures: {
-    width: '100%',
-  },
-  gamificationItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: colors.card,
-    borderRadius: 12,
-    padding: 16,
-    marginBottom: 12,
-  },
-  gamificationIcon: {
-    fontSize: 32,
-    marginRight: 15,
-  },
-  gamificationText: {
-    flex: 1,
-  },
-  gamificationTitle: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: colors.text,
-    marginBottom: 4,
-  },
-  gamificationDescription: {
-    fontSize: 14,
-    color: colors.textSecondary,
-    lineHeight: 20,
-  },
-  educationContent: {
-    width: '100%',
-  },
-  educationItem: {
-    flexDirection: 'row',
-    alignItems: 'flex-start',
-    marginBottom: 20,
-  },
-  educationNumber: {
-    width: 30,
-    height: 30,
-    borderRadius: 15,
-    backgroundColor: colors.primary,
-    color: '#FFFFFF',
-    textAlign: 'center',
-    lineHeight: 30,
-    fontSize: 16,
-    fontWeight: 'bold',
-    marginRight: 15,
-  },
-  educationText: {
-    flex: 1,
-  },
-  educationTitle: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: colors.text,
-    marginBottom: 5,
-  },
-  educationDescription: {
-    fontSize: 14,
-    color: colors.textSecondary,
-    lineHeight: 20,
-  },
-  connectionDemo: {
-    width: '100%',
-  },
-  connectionItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    marginBottom: 20,
-    paddingVertical: 15,
-    paddingHorizontal: 10,
-    backgroundColor: colors.card,
-    borderRadius: 12,
-  },
-  connectionMood: {
-    alignItems: 'center',
-    flex: 1,
-  },
-  connectionHabit: {
-    alignItems: 'center',
-    flex: 1,
-  },
-  connectionResult: {
-    alignItems: 'center',
-    flex: 1,
-  },
-  connectionArrow: {
-    marginHorizontal: 5,
-  },
-  connectionEmoji: {
-    fontSize: 24,
-    marginBottom: 5,
-  },
-  connectionLabel: {
-    fontSize: 12,
-    color: colors.text,
-    textAlign: 'center',
-  },
-  insightsContainer: {
-    width: '100%',
-    minHeight: 400,
-  },
-  insightCard: {
-    backgroundColor: colors.card,
-    borderRadius: 12,
-    padding: 16,
-    marginBottom: 12,
-    borderLeftWidth: 4,
-  },
-  insightTitle: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: colors.text,
-    marginBottom: 8,
-  },
-  insightDescription: {
-    fontSize: 14,
-    color: colors.textSecondary,
-    lineHeight: 20,
-    marginBottom: 10,
-  },
-  insightImpact: {
-    alignSelf: 'flex-start',
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 16,
-  },
-  insightImpactText: {
-    fontSize: 12,
-    fontWeight: '600',
-  },
-  benefitsGrid: {
-    width: '100%',
-  },
-  benefitCard: {
-    backgroundColor: colors.card,
-    borderRadius: 12,
-    padding: 16,
-    marginBottom: 12,
-    alignItems: 'center',
-  },
-  benefitIcon: {
-    fontSize: 32,
-    marginBottom: 10,
-  },
-  benefitTitle: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: colors.text,
-    marginBottom: 8,
-    textAlign: 'center',
-  },
-  benefitDescription: {
-    fontSize: 14,
-    color: colors.textSecondary,
-    textAlign: 'center',
-    lineHeight: 20,
-  },
-  setupContainer: {
-    width: '100%',
-  },
-  completionMessage: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: colors.primary + '20',
-    padding: 16,
-    borderRadius: 12,
-    marginTop: 20,
-  },
-  completionText: {
-    fontSize: 16,
-    color: colors.text,
-    marginLeft: 10,
-    flex: 1,
-  },
-  navigationContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingHorizontal: 20,
-    paddingVertical: 20,
-    borderTopWidth: 1,
-    borderTopColor: colors.border,
-  },
-  backButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingVertical: 12,
-    paddingHorizontal: 16,
-  },
-  backButtonText: {
-    fontSize: 16,
-    color: colors.primary,
-    marginLeft: 5,
-  },
-  nextButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingVertical: 12,
-    paddingHorizontal: 20,
-    borderRadius: 25,
-    flex: 1,
-    marginLeft: 20,
     justifyContent: 'center',
+    paddingVertical: 16,
+    paddingHorizontal: 24,
+    borderRadius: 12,
+    gap: 8,
   },
-  nextButtonDisabled: {
-    opacity: 0.5,
-  },
-  nextButtonText: {
+  primaryButtonText: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#FFFFFF',
-    marginRight: 5,
+  },
+  upgradeButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 16,
+    paddingHorizontal: 24,
+    borderRadius: 12,
+    gap: 8,
+  },
+  upgradeButtonText: {
+    fontSize: 16,
+    fontWeight: '600',
+  },
+  languageContainer: {
+    marginBottom: 24,
+    gap: 12,
+  },
+  languageOption: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 16,
+    paddingHorizontal: 20,
+    borderRadius: 12,
+    borderWidth: 2,
+    gap: 12,
+  },
+  languageFlag: {
+    fontSize: 24,
+  },
+  languageName: {
+    fontSize: 16,
+    fontWeight: '500',
+    flex: 1,
   },
 });
 
-// Add these helper functions (copy from QuickMoodSelector)
-const mapToValidMoodState = (state: string) => {
-  const validStates = ['happy', 'sad', 'anxious', 'energetic', 'tired', 'stressed', 'calm'] as const;
-  return validStates.includes(state as any) ? state as any : 'calm';
-};
-
-const filterValidTags = (tags: string[]) => {
-  const validTags = ['work', 'relationships', 'health', 'weather', 'sleep', 'exercise', 'social'] as const;
-  return tags.filter(tag => validTags.includes(tag as any)) as any[];
-};
+export default OnboardingFlow;

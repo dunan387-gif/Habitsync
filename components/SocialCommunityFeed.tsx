@@ -2,32 +2,49 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Alert, TextInput, Modal, RefreshControl, FlatList } from 'react-native';
 import { useTheme } from '@/context/ThemeContext';
 import { useLanguage } from '@/context/LanguageContext';
-import { SocialSharingService, AnonymousPattern, SuccessStory, CommunitySupport, AccountabilityPartner, CelebrationShare } from '@/services/SocialSharingService';
-import { Heart, MessageCircle, Share2, Users, Trophy, Lightbulb, HandHeart, Filter, Plus, Search, TrendingUp, Clock, Star, UserPlus, Bookmark } from 'lucide-react-native';
+import { useHabits } from '@/context/HabitContext';
+import { FirebaseCommunityService, CommunityPost, CommunityFilters } from '@/services/FirebaseCommunityService';
+import { auth } from '@/lib/firebase';
+import { Heart, MessageCircle, Share2, Users, Trophy, Lightbulb, HandHeart, Filter, Plus, Search, TrendingUp, Clock, Star, UserPlus, Bookmark, Send, Camera, Image } from 'lucide-react-native';
+
+
 
 export default function SocialCommunityFeed({ isModal = false }: { isModal?: boolean }) {
   const { currentTheme } = useTheme();
   const { t } = useLanguage();
+  const { habits } = useHabits();
+  
   const [feedData, setFeedData] = useState<{
-    patterns: AnonymousPattern[];
-    stories: SuccessStory[];
-    support: CommunitySupport[];
-    celebrations: CelebrationShare[];
+    patterns: any[];
+    stories: any[];
+    support: any[];
+    celebrations: any[];
   }>({ patterns: [], stories: [], support: [], celebrations: [] });
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
   const [selectedTab, setSelectedTab] = useState<'feed' | 'trending' | 'stories' | 'support' | 'partners'>('feed');
-  const [partners, setPartners] = useState<AccountabilityPartner[]>([]);
+  const [partners, setPartners] = useState<any[]>([]);
   const [showFilters, setShowFilters] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [bookmarkedPosts, setBookmarkedPosts] = useState<string[]>([]);
-  const [filters, setFilters] = useState({
-    timeframe: 'week' as 'today' | 'week' | 'month' | 'all',
-    sortBy: 'recent' as 'recent' | 'popular' | 'helpful',
-    category: [] as string[]
+  const [showCreatePost, setShowCreatePost] = useState(false);
+  const [newPostText, setNewPostText] = useState('');
+  const [selectedPostType, setSelectedPostType] = useState<string>('habit');
+  const [filters, setFilters] = useState<CommunityFilters>({
+    timeframe: 'week',
+    sortBy: 'recent'
   });
 
   const styles = createStyles(currentTheme.colors);
+
+  // Post type options for tag selection
+  const postTypeOptions = [
+    { id: 'habit', label: t('community.habit'), emoji: '🎯' },
+    { id: 'moodTarget', label: t('community.moodTarget'), emoji: '😊' },
+    { id: 'match', label: t('community.match'), emoji: '🤝' },
+    { id: 'sharedGoals', label: t('community.sharedGoals'), emoji: '🎯' },
+    { id: 'encouragementSupport', label: 'Encouragement Support', emoji: '💪' }
+  ];
 
   useEffect(() => {
     loadCommunityData();
@@ -36,24 +53,16 @@ export default function SocialCommunityFeed({ isModal = false }: { isModal?: boo
   const loadCommunityData = async () => {
     try {
       setLoading(true);
-      const data = await SocialSharingService.getCommunityFeed(filters);
+      const data = await FirebaseCommunityService.getFeed(filters);
+      console.log('Loaded community data:', data);
       setFeedData(data);
       
-      const partnerData = await SocialSharingService.findAccountabilityPartner({
-        goals: ['mood_improvement', 'habit_building'],
-        supportStyle: {
-          encouragement: true,
-          accountability: true,
-          advice: true,
-          celebration: true
-        },
-        availability: ['morning', 'evening'],
-        experience: 'intermediate'
-      });
-      setPartners(partnerData);
+      // Load bookmarked posts
+      const bookmarked = await FirebaseCommunityService.getBookmarkedPosts();
+      setBookmarkedPosts(bookmarked.map(post => post.id));
     } catch (error) {
-      console.error('Error loading community data:', error);
-      Alert.alert('Error', 'Failed to load community data');
+      console.error('Failed to load community data:', error);
+      Alert.alert(t('community.error'), t('community.loadFailed'));
     } finally {
       setLoading(false);
     }
@@ -66,63 +75,142 @@ export default function SocialCommunityFeed({ isModal = false }: { isModal?: boo
   };
 
   const handleLike = async (type: string, id: string) => {
-    Alert.alert('Success', 'Liked!');
+    try {
+      const result = await FirebaseCommunityService.toggleLike(id);
+      if (result.liked) {
+        Alert.alert(t('community.success'), t('community.liked'));
+      }
+      // Refresh data to show updated likes
+      loadCommunityData();
+    } catch (error) {
+      console.error('Error toggling like:', error);
+      Alert.alert(t('community.error'), t('community.failedToUpdateLike'));
+    }
   };
 
-  const handleBookmark = (id: string) => {
-    setBookmarkedPosts(prev => 
-      prev.includes(id) 
-        ? prev.filter(postId => postId !== id)
-        : [...prev, id]
-    );
+  const handleBookmark = async (id: string) => {
+    try {
+      const result = await FirebaseCommunityService.toggleBookmark(id);
+      setBookmarkedPosts(prev => 
+        result.bookmarked 
+          ? [...prev, id]
+          : prev.filter(postId => postId !== id)
+      );
+    } catch (error) {
+      console.error('Error toggling bookmark:', error);
+      Alert.alert(t('community.error'), t('community.failedToUpdateBookmark'));
+    }
   };
 
   const handleShare = async (item: any) => {
-    Alert.alert('Share', 'Sharing functionality coming soon!');
+    Alert.alert(t('community.share'), t('community.sharingComingSoon'));
+  };
+
+  const handleCreatePost = async () => {
+    if (newPostText.trim()) {
+      try {
+        const postData = {
+          type: selectedPostType === 'encouragementSupport' ? 'encouragement' : selectedPostType,
+          content: newPostText,
+          targetAudience: {
+            moodStates: ['motivated', 'struggling'],
+            challenges: ['habit_building', 'mood_management'],
+            goals: ['consistency', 'improvement']
+          },
+          supportLevel: 'peer',
+          tags: [selectedPostType, 'community']
+        };
+
+        await FirebaseCommunityService.createPost('support', postData);
+        
+        Alert.alert(t('community.success'), t('community.postCreated'));
+        setNewPostText('');
+        setSelectedPostType('habit');
+        setShowCreatePost(false);
+        loadCommunityData(); // Refresh feed
+      } catch (error) {
+        console.error('Error creating post:', error);
+        Alert.alert(t('community.error'), t('community.failedToCreatePost'));
+      }
+    }
+  };
+
+  const handleSearch = async () => {
+    if (searchQuery.trim()) {
+      try {
+        const searchResults = await FirebaseCommunityService.searchPosts(searchQuery, filters);
+        // Transform search results to match feed data format
+        const transformedResults = {
+          patterns: searchResults.filter(post => post.type === 'pattern'),
+          stories: searchResults.filter(post => post.type === 'story'),
+          support: searchResults.filter(post => post.type === 'support'),
+          celebrations: searchResults.filter(post => post.type === 'celebration')
+        };
+        setFeedData(transformedResults);
+      } catch (error) {
+        console.error('Error searching posts:', error);
+        Alert.alert(t('community.error'), t('community.searchFailed'));
+      }
+    } else {
+      loadCommunityData(); // Reset to full feed
+    }
   };
 
   const renderHeader = () => (
     <View style={styles.header}>
       <View style={styles.headerTop}>
-        <Text style={styles.headerTitle}>Community</Text>
-        <TouchableOpacity style={styles.notificationButton}>
-          <View style={styles.notificationDot} />
-        </TouchableOpacity>
+        <Text style={styles.headerTitle}>{t('community.title')}</Text>
+        <View style={styles.betaBadge}>
+          <Text style={styles.betaText}>{t('community.beta.badge')}</Text>
+        </View>
       </View>
-      <Text style={styles.headerSubtitle}>Connect, share, and grow together</Text>
+      <Text style={styles.headerSubtitle}>{t('community.subtitle')}</Text>
     </View>
   );
 
   const renderTabBar = () => (
-    <View style={styles.tabContainer}>
-      <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.tabBar}>
-        {[
-          { key: 'feed', icon: Heart, label: 'Feed', count: 24 },
-          { key: 'trending', icon: TrendingUp, label: 'Trending', count: 8 },
-          { key: 'stories', icon: Trophy, label: 'Success', count: 12 },
-          { key: 'support', icon: HandHeart, label: 'Support', count: 6 },
-          { key: 'partners', icon: Users, label: 'Partners', count: 3 }
-        ].map(({ key, icon: Icon, label, count }) => (
-          <TouchableOpacity
-            key={key}
-            style={[styles.tab, selectedTab === key && styles.activeTab]}
-            onPress={() => setSelectedTab(key as any)}
-          >
-            <View style={styles.tabContent}>
-              <Icon size={18} color={selectedTab === key ? 'white' : currentTheme.colors.textSecondary} />
-              <Text style={[styles.tabText, selectedTab === key && styles.activeTabText]}>
-                {label}
-              </Text>
-              {count > 0 && (
-                <View style={[styles.tabBadge, selectedTab === key && styles.activeTabBadge]}>
-                  <Text style={[styles.tabBadgeText, selectedTab === key && styles.activeTabBadgeText]}>
-                    {count}
-                  </Text>
-                </View>
-              )}
-            </View>
-          </TouchableOpacity>
-        ))}
+    <View style={styles.tabBar}>
+      <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+        <TouchableOpacity
+          style={[styles.tab, selectedTab === 'feed' && styles.activeTab]}
+          onPress={() => setSelectedTab('feed')}
+        >
+          <Text style={[styles.tabText, selectedTab === 'feed' && styles.activeTabText]}>
+            {t('community.tabs.feed')}
+          </Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={[styles.tab, selectedTab === 'trending' && styles.activeTab]}
+          onPress={() => setSelectedTab('trending')}
+        >
+          <Text style={[styles.tabText, selectedTab === 'trending' && styles.activeTabText]}>
+            {t('community.tabs.trending')}
+          </Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={[styles.tab, selectedTab === 'stories' && styles.activeTab]}
+          onPress={() => setSelectedTab('stories')}
+        >
+          <Text style={[styles.tabText, selectedTab === 'stories' && styles.activeTabText]}>
+            {t('community.tabs.stories')}
+          </Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={[styles.tab, selectedTab === 'support' && styles.activeTab]}
+          onPress={() => setSelectedTab('support')}
+        >
+          <Text style={[styles.tabText, selectedTab === 'support' && styles.activeTabText]}>
+            {t('community.tabs.support')}
+          </Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={[styles.tab, selectedTab === 'partners' && styles.activeTab]}
+          onPress={() => setSelectedTab('partners')}
+        >
+          <Text style={[styles.tabText, selectedTab === 'partners' && styles.activeTabText]}>
+            {t('community.tabs.partners')}
+          </Text>
+        </TouchableOpacity>
       </ScrollView>
     </View>
   );
@@ -130,226 +218,249 @@ export default function SocialCommunityFeed({ isModal = false }: { isModal?: boo
   const renderSearchAndFilters = () => (
     <View style={styles.searchContainer}>
       <View style={styles.searchBar}>
-        <Search size={20} color={currentTheme.colors.textSecondary} />
+        <Search size={20} color={currentTheme.colors.text} />
         <TextInput
           style={styles.searchInput}
-          placeholder="Search posts, topics, or users..."
-          placeholderTextColor={currentTheme.colors.textSecondary}
+          placeholder={t('community.searchPlaceholder')}
           value={searchQuery}
           onChangeText={setSearchQuery}
+          placeholderTextColor={currentTheme.colors.text + '80'}
         />
+        <TouchableOpacity onPress={handleSearch}>
+          <Text style={styles.searchButton}>{t('community.search')}</Text>
+        </TouchableOpacity>
       </View>
-      <TouchableOpacity 
-        style={[styles.filterButton, showFilters && styles.activeFilterButton]}
+      <TouchableOpacity
+        style={styles.filterButton}
         onPress={() => setShowFilters(!showFilters)}
       >
-        <Filter size={20} color={showFilters ? 'white' : currentTheme.colors.textSecondary} />
+        <Filter size={20} color={currentTheme.colors.primary} />
+        <Text style={styles.filterButtonText}>{t('community.filters')}</Text>
       </TouchableOpacity>
     </View>
   );
 
-  const renderPostCard = (item: any, type: string) => (
+  const renderCreatePostButton = () => (
+    <TouchableOpacity
+      style={styles.createPostButton}
+      onPress={() => setShowCreatePost(true)}
+    >
+             <Plus size={24} color="#FFFFFF" />
+      <Text style={styles.createPostButtonText}>{t('community.createPost')}</Text>
+    </TouchableOpacity>
+  );
+
+  const renderCreatePostModal = () => (
+    <Modal
+      visible={showCreatePost}
+      animationType="slide"
+      transparent={true}
+      onRequestClose={() => setShowCreatePost(false)}
+    >
+      <View style={styles.modalOverlay}>
+        <View style={styles.modalContent}>
+          <Text style={styles.modalTitle}>{t('community.createPost')}</Text>
+          
+          {/* Post Type Selection */}
+          <View style={styles.tagSelectionContainer}>
+            <Text style={styles.tagSelectionTitle}>Select Post Type:</Text>
+            <View style={styles.tagSelectionGrid}>
+              {postTypeOptions.map((option) => (
+                <TouchableOpacity
+                  key={option.id}
+                  style={[
+                    styles.tagOption,
+                    selectedPostType === option.id && styles.tagOptionSelected
+                  ]}
+                  onPress={() => setSelectedPostType(option.id)}
+                >
+                  <Text style={styles.tagOptionEmoji}>{option.emoji}</Text>
+                  <Text style={[
+                    styles.tagOptionText,
+                    selectedPostType === option.id && styles.tagOptionTextSelected
+                  ]}>
+                    {option.label}
+                  </Text>
+                </TouchableOpacity>
+              ))}
+            </View>
+          </View>
+
+          <TextInput
+            style={styles.postInput}
+            placeholder={t('community.postPlaceholder')}
+            value={newPostText}
+            onChangeText={setNewPostText}
+            multiline
+            numberOfLines={4}
+            placeholderTextColor={currentTheme.colors.text + '80'}
+          />
+          <View style={styles.modalButtons}>
+            <TouchableOpacity
+              style={styles.cancelButton}
+              onPress={() => {
+                setShowCreatePost(false);
+                setNewPostText('');
+                setSelectedPostType('habit');
+              }}
+            >
+              <Text style={styles.cancelButtonText}>{t('common.cancel')}</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.postButton}
+              onPress={handleCreatePost}
+            >
+              <Text style={styles.postButtonText}>{t('community.post')}</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </View>
+    </Modal>
+  );
+
+  const renderPostCard = (item: CommunityPost, type: string) => (
     <View style={styles.postCard}>
       <View style={styles.postHeader}>
         <View style={styles.postAuthor}>
-          <View style={styles.avatarPlaceholder}>
-            <Text style={styles.avatarText}>{item.author?.[0] || 'A'}</Text>
-          </View>
-          <View style={styles.authorInfo}>
-            <Text style={styles.authorName}>{item.author || 'Anonymous'}</Text>
-            <View style={styles.postMeta}>
-              <Clock size={12} color={currentTheme.colors.textSecondary} />
-              <Text style={styles.timeAgo}>{item.timeAgo || '2h ago'}</Text>
-              <View style={styles.categoryBadge}>
-                <Text style={styles.categoryText}>{type}</Text>
-              </View>
-            </View>
+          <View style={styles.avatar} />
+          <View>
+            <Text style={styles.authorName}>{item.userName || t('community.anonymousUser')}</Text>
+            <Text style={styles.postTime}>
+              {item.created_at ? new Date(item.created_at.toDate()).toLocaleDateString() : t('community.justNow')}
+            </Text>
           </View>
         </View>
-        <TouchableOpacity 
-          style={styles.bookmarkButton}
-          onPress={() => handleBookmark(item.id)}
-        >
-          <Bookmark 
-            size={20} 
-            color={bookmarkedPosts.includes(item.id) ? currentTheme.colors.primary : currentTheme.colors.textSecondary}
-            fill={bookmarkedPosts.includes(item.id) ? currentTheme.colors.primary : 'none'}
-          />
+        <TouchableOpacity onPress={() => handleBookmark(item.id)}>
+          <Bookmark size={20} color={bookmarkedPosts.includes(item.id) ? currentTheme.colors.primary : currentTheme.colors.text} />
         </TouchableOpacity>
       </View>
-
-      <Text style={styles.postTitle}>{item.title || item.pattern || 'Untitled'}</Text>
-      <Text style={styles.postContent}>{item.description || item.content || item.message}</Text>
-
-      {item.tags && (
-        <View style={styles.tags}>
-          {item.tags.slice(0, 3).map((tag: string, index: number) => (
-            <View key={index} style={styles.tag}>
-              <Text style={styles.tagText}>#{tag}</Text>
-            </View>
-          ))}
-        </View>
-      )}
-
+      
+      <View style={styles.postContent}>
+        {type === 'pattern' && (
+          <>
+            <Text style={styles.postTitle}>{item.content?.anonymizedData?.pattern || t('community.patternDiscovery')}</Text>
+            <Text style={styles.postDescription}>
+              {t('community.effectiveness')}: {item.content?.anonymizedData?.effectiveness}/10 • {t('community.duration')}: {item.content?.anonymizedData?.duration}
+            </Text>
+          </>
+        )}
+        
+        {type === 'story' && (
+          <>
+            <Text style={styles.postTitle}>{item.content?.title}</Text>
+            <Text style={styles.postDescription}>{item.content?.story}</Text>
+            <Text style={styles.postCategory}>{item.content?.category}</Text>
+          </>
+        )}
+        
+        {type === 'support' && (
+          <>
+            <Text style={styles.postTitle}>{item.content?.type} {t('community.support')}</Text>
+            <Text style={styles.postDescription}>{item.content?.content}</Text>
+            <Text style={styles.postCategory}>{item.content?.supportLevel}</Text>
+          </>
+        )}
+        
+        {type === 'celebration' && (
+          <>
+            <Text style={styles.postTitle}>{item.content?.achievement?.title}</Text>
+            <Text style={styles.postDescription}>{item.content?.achievement?.description}</Text>
+            <Text style={styles.postCategory}>{item.content?.celebrationStyle}</Text>
+          </>
+        )}
+      </View>
+      
       <View style={styles.postActions}>
-        <TouchableOpacity 
-          style={styles.actionButton}
-          onPress={() => handleLike(type, item.id)}
-        >
-          <Heart size={18} color={currentTheme.colors.textSecondary} />
-          <Text style={styles.actionText}>{item.likes || 12}</Text>
+        <TouchableOpacity style={styles.actionButton} onPress={() => handleLike(type, item.id)}>
+          <Heart size={16} color={item.likes?.includes(auth.currentUser?.uid || '') ? currentTheme.colors.primary : currentTheme.colors.text} />
+          <Text style={styles.actionText}>{item.likes?.length || 0}</Text>
         </TouchableOpacity>
-        
         <TouchableOpacity style={styles.actionButton}>
-          <MessageCircle size={18} color={currentTheme.colors.textSecondary} />
-          <Text style={styles.actionText}>{item.comments || 5}</Text>
+          <MessageCircle size={16} color={currentTheme.colors.text} />
+          <Text style={styles.actionText}>{item.comments_count || 0}</Text>
         </TouchableOpacity>
-        
-        <TouchableOpacity 
-          style={styles.actionButton}
-          onPress={() => handleShare(item)}
-        >
-          <Share2 size={18} color={currentTheme.colors.textSecondary} />
-          <Text style={styles.actionText}>Share</Text>
+        <TouchableOpacity style={styles.actionButton} onPress={() => handleShare(item)}>
+          <Share2 size={16} color={currentTheme.colors.text} />
+          <Text style={styles.actionText}>{t('community.share')}</Text>
         </TouchableOpacity>
-
-        <View style={styles.helpfulBadge}>
-          <Star size={14} color={currentTheme.colors.accent} />
-          <Text style={styles.helpfulText}>Helpful</Text>
-        </View>
       </View>
     </View>
   );
 
   const renderContent = () => {
-    let data: any[] = [];
-    
-    switch (selectedTab) {
-      case 'feed':
-        data = [...feedData.patterns, ...feedData.celebrations].slice(0, 10);
-        break;
-      case 'trending':
-        data = [...feedData.stories, ...feedData.patterns].slice(0, 8);
-        break;
-      case 'stories':
-        data = feedData.stories;
-        break;
-      case 'support':
-        data = feedData.support;
-        break;
-      case 'partners':
-        return renderPartners();
-      default:
-        data = [];
+    if (loading) {
+      return (
+        <View style={styles.loadingContainer}>
+          <Text style={styles.loadingText}>{t('common.loading')}</Text>
+        </View>
+      );
+    }
+
+    let currentData: CommunityPost[] = [];
+
+    if (selectedTab === 'feed') {
+      // Show all posts combined for the feed tab
+      currentData = [
+        ...feedData.patterns,
+        ...feedData.stories,
+        ...feedData.support,
+        ...feedData.celebrations
+      ].sort((a, b) => {
+        // Sort by creation date, newest first
+        const dateA = a.created_at?.toDate?.() || new Date(a.created_at);
+        const dateB = b.created_at?.toDate?.() || new Date(b.created_at);
+        return dateB.getTime() - dateA.getTime();
+      });
+    } else {
+      // Show only posts from the selected tab
+      currentData = feedData[selectedTab as keyof typeof feedData] || [];
+    }
+
+    if (currentData.length === 0) {
+      return (
+        <View style={styles.emptyContainer}>
+          <Text style={styles.emptyText}>{t('community.noPostsYet')}</Text>
+          <Text style={styles.emptySubtext}>{t('community.beFirstToPost')}</Text>
+        </View>
+      );
     }
 
     return (
       <FlatList
-        data={data}
-        keyExtractor={(item, index) => `${selectedTab}-${index}`}
-        renderItem={({ item }) => renderPostCard(item, selectedTab)}
+        data={currentData}
+        keyExtractor={(item) => item.id}
+        renderItem={({ item }) => renderPostCard(item, item.type)}
         refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={onRefresh}
+            colors={[currentTheme.colors.primary]}
+          />
         }
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={styles.listContent}
       />
     );
   };
 
   const renderPartners = () => (
-    <ScrollView 
-      style={styles.partnersContainer}
-      refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
-    >
-      {partners.map((partner, index) => (
-        <View key={index} style={styles.partnerCard}>
-          <View style={styles.partnerHeader}>
-            <View style={styles.partnerAvatar}>
-              <Users size={24} color={currentTheme.colors.primary} />
-            </View>
-            <View style={styles.partnerInfo}>
-              // Fix the partner type display (line 272)
-              <Text style={styles.partnerType}>{partner.connectionType.replace('_', ' ')}</Text>
-              
-              // Fix the sharedGoals mapping (lines 285-287)
-              {partner.sharedGoals?.habitIds?.map((habitId: string, idx: number) => (
-                <Text key={idx} style={styles.goalText}>• Habit: {habitId}</Text>
-              ))}
-              {partner.sharedGoals?.moodTargets?.map((target: string, idx: number) => (
-                <Text key={`mood-${idx}`} style={styles.goalText}>• Mood Target: {target}</Text>
-              ))}
-              
-              <View style={styles.matchContainer}>
-                <Star size={16} color={currentTheme.colors.accent} />
-                <Text style={styles.matchScore}>{partner.matchScore}% match</Text>
-              </View>
-            </View>
-            <TouchableOpacity style={styles.connectButton}>
-              <UserPlus size={20} color='white' />
-            </TouchableOpacity>
-          </View>
-          
-          <View style={styles.sharedGoals}>
-            <Text style={styles.goalsTitle}>Shared Goals</Text>
-            // Replace line 295 and the following lines with:
-            {(() => {
-              const allGoals = [
-                ...(partner.sharedGoals?.habitIds?.map((id: string) => `Habit: ${id}`) || []),
-                ...(partner.sharedGoals?.moodTargets?.map((target: string) => `Mood Target: ${target}`) || [])
-              ];
-              return allGoals.map((goal: string, idx: number) => (
-                <Text key={idx} style={styles.goalText}>• {goal}</Text>
-              ));
-            })()}
-          </View>
-          
-          <View style={styles.supportStyles}>
-            {Object.entries(partner.supportStyle || {}).map(([key, value]) => 
-              value && (
-                <View key={key} style={styles.supportStyleTag}>
-                  <Text style={styles.supportStyleText}>{key}</Text>
-                </View>
-              )
-            )}
-          </View>
-        </View>
-      ))}
-    </ScrollView>
-  );
-
-  // Render coming soon message
-  const renderComingSoon = () => (
-    <View style={styles.comingSoonContainer}>
-      <View style={styles.comingSoonIcon}>
-        <Users size={48} color={currentTheme.colors.primary} />
-      </View>
-      <Text style={styles.comingSoonTitle}>Community Feed</Text>
-      <Text style={styles.comingSoonSubtitle}>Coming Soon!</Text>
-      <Text style={styles.comingSoonDescription}>
-        We're working hard to bring you an amazing community experience. 
-        Stay tuned for the next update!
-      </Text>
-      <View style={styles.comingSoonFeatures}>
-        <View style={styles.featureItem}>
-          <Heart size={16} color={currentTheme.colors.accent} />
-          <Text style={styles.featureText}>Share your progress</Text>
-        </View>
-        <View style={styles.featureItem}>
-          <MessageCircle size={16} color={currentTheme.colors.accent} />
-          <Text style={styles.featureText}>Connect with others</Text>
-        </View>
-        <View style={styles.featureItem}>
-          <Trophy size={16} color={currentTheme.colors.accent} />
-          <Text style={styles.featureText}>Celebrate achievements</Text>
-        </View>
-      </View>
+    <View style={styles.partnersContainer}>
+      <Text style={styles.sectionTitle}>{t('community.accountabilityPartners')}</Text>
+      <Text style={styles.sectionSubtitle}>{t('community.findPartners')}</Text>
+      <TouchableOpacity style={styles.findPartnersButton}>
+                 <UserPlus size={20} color="#FFFFFF" />
+        <Text style={styles.findPartnersButtonText}>{t('community.findPartners')}</Text>
+      </TouchableOpacity>
     </View>
   );
 
   return (
-    <View style={[styles.container, isModal && styles.modalContainer]}>
-      {renderComingSoon()}
+    <View style={styles.container}>
+      {renderHeader()}
+      {renderTabBar()}
+      {renderSearchAndFilters()}
+      {renderCreatePostButton()}
+      {selectedTab === 'partners' ? renderPartners() : renderContent()}
+      {renderCreatePostModal()}
     </View>
   );
 }
@@ -359,410 +470,346 @@ const createStyles = (colors: any) => StyleSheet.create({
     flex: 1,
     backgroundColor: colors.background,
   },
-  modalContainer: {
-    flex: 0,
-    height: 500,
-    backgroundColor: colors.background,
-  },
   header: {
-    backgroundColor: colors.card,
-    paddingHorizontal: 20,
-    paddingTop: 16,
-    paddingBottom: 20,
-    borderBottomWidth: 1,
-    borderBottomColor: colors.border,
+    padding: 20,
+    paddingTop: 40,
   },
   headerTop: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
     alignItems: 'center',
+    justifyContent: 'space-between',
     marginBottom: 8,
   },
   headerTitle: {
     fontSize: 28,
-    fontWeight: '800',
+    fontWeight: 'bold',
     color: colors.text,
+    flex: 1,
   },
   headerSubtitle: {
     fontSize: 16,
-    color: colors.textSecondary,
+    color: colors.text + 'CC',
   },
-  notificationButton: {
-    position: 'relative',
-    padding: 8,
+  betaBadge: {
+    backgroundColor: colors.primary,
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 12,
+    marginLeft: 12,
   },
-  notificationDot: {
-    width: 8,
-    height: 8,
-    borderRadius: 4,
-    backgroundColor: colors.accent,
-  },
-  tabContainer: {
-    backgroundColor: colors.card,
-    borderBottomWidth: 1,
-    borderBottomColor: colors.border,
+  betaText: {
+    color: colors.background,
+    fontSize: 10,
+    fontWeight: 'bold',
+    letterSpacing: 0.5,
   },
   tabBar: {
-    paddingHorizontal: 16,
-    paddingVertical: 12,
+    borderBottomWidth: 1,
+    borderBottomColor: colors.border,
+    paddingHorizontal: 20,
   },
   tab: {
-    marginRight: 12,
-    borderRadius: 24,
-    backgroundColor: colors.surface,
-    paddingHorizontal: 16,
-    paddingVertical: 10,
+    paddingHorizontal: 20,
+    paddingVertical: 12,
+    marginRight: 10,
+    borderRadius: 20,
   },
   activeTab: {
-    backgroundColor: colors.primary,
-  },
-  tabContent: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
+    backgroundColor: colors.primary + '20',
   },
   tabText: {
     fontSize: 14,
-    fontWeight: '600',
-    color: colors.textSecondary,
+    color: colors.text + 'CC',
+    fontWeight: '500',
   },
   activeTabText: {
-    color: 'white',
-  },
-  tabBadge: {
-    backgroundColor: colors.accent,
-    borderRadius: 10,
-    paddingHorizontal: 6,
-    paddingVertical: 2,
-    minWidth: 20,
-    alignItems: 'center',
-  },
-  activeTabBadge: {
-    backgroundColor: 'rgba(255,255,255,0.3)',
-  },
-  tabBadgeText: {
-    fontSize: 10,
-    fontWeight: '700',
-    color: 'white',
-  },
-  activeTabBadgeText: {
-    color: 'white',
+    color: colors.primary,
+    fontWeight: '600',
   },
   searchContainer: {
     flexDirection: 'row',
-    padding: 16,
-    gap: 12,
-    backgroundColor: colors.background,
+    padding: 20,
+    alignItems: 'center',
   },
   searchBar: {
     flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: colors.surface,
-    borderRadius: 12,
-    paddingHorizontal: 16,
-    gap: 12,
+    borderRadius: 25,
+    paddingHorizontal: 15,
+    paddingVertical: 10,
+    marginRight: 10,
   },
   searchInput: {
     flex: 1,
-    fontSize: 16,
+    marginLeft: 10,
     color: colors.text,
-    paddingVertical: 14,
+    fontSize: 16,
+  },
+  searchButton: {
+    color: colors.primary,
+    fontWeight: '600',
   },
   filterButton: {
-    backgroundColor: colors.surface,
-    borderRadius: 12,
-    padding: 14,
+    flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'center',
+    paddingHorizontal: 15,
+    paddingVertical: 10,
+    backgroundColor: colors.surface,
+    borderRadius: 20,
   },
-  activeFilterButton: {
+  filterButtonText: {
+    marginLeft: 5,
+    color: colors.primary,
+    fontWeight: '600',
+  },
+  createPostButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
     backgroundColor: colors.primary,
+    marginHorizontal: 20,
+    marginBottom: 20,
+    paddingVertical: 12,
+    paddingHorizontal: 20,
+    borderRadius: 25,
+    alignSelf: 'flex-start',
   },
-  content: {
-    flex: 1,
-  },
-  listContent: {
-    padding: 16,
-    paddingBottom: 100,
-  },
+     createPostButtonText: {
+     color: '#FFFFFF',
+     fontWeight: '600',
+     marginLeft: 8,
+   },
   postCard: {
-    backgroundColor: colors.card,
-    borderRadius: 16,
-    padding: 20,
-    marginBottom: 16,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 8,
-    elevation: 3,
+    backgroundColor: colors.surface,
+    marginHorizontal: 20,
+    marginBottom: 15,
+    padding: 15,
+    borderRadius: 12,
   },
   postHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'flex-start',
-    marginBottom: 16,
+    alignItems: 'center',
+    marginBottom: 10,
   },
   postAuthor: {
     flexDirection: 'row',
     alignItems: 'center',
-    flex: 1,
   },
-  avatarPlaceholder: {
+  avatar: {
     width: 40,
     height: 40,
     borderRadius: 20,
-    backgroundColor: colors.primary,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginRight: 12,
-  },
-  avatarText: {
-    color: 'white',
-    fontSize: 16,
-    fontWeight: '700',
-  },
-  authorInfo: {
-    flex: 1,
+    backgroundColor: colors.primary + '30',
+    marginRight: 10,
   },
   authorName: {
     fontSize: 16,
     fontWeight: '600',
     color: colors.text,
-    marginBottom: 4,
   },
-  postMeta: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-  },
-  timeAgo: {
+  postTime: {
     fontSize: 12,
-    color: colors.textSecondary,
+    color: colors.text + '80',
   },
-  categoryBadge: {
-    backgroundColor: colors.primary + '20',
-    paddingHorizontal: 8,
-    paddingVertical: 2,
-    borderRadius: 8,
-  },
-  categoryText: {
-    fontSize: 10,
-    fontWeight: '600',
-    color: colors.primary,
-    textTransform: 'uppercase',
-  },
-  bookmarkButton: {
-    padding: 4,
-  },
-  postTitle: {
-    fontSize: 18,
-    fontWeight: '700',
-    color: colors.text,
-    marginBottom: 12,
-    lineHeight: 24,
-  },
-  postContent: {
-    fontSize: 15,
-    color: colors.textSecondary,
-    lineHeight: 22,
-    marginBottom: 16,
-  },
-  tags: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 8,
-    marginBottom: 16,
-  },
-  tag: {
-    backgroundColor: colors.surface,
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 16,
-  },
-  tagText: {
-    fontSize: 12,
-    color: colors.primary,
-    fontWeight: '500',
-  },
+     postContent: {
+     marginBottom: 15,
+   },
+   postTitle: {
+     fontSize: 18,
+     fontWeight: '700',
+     color: colors.text,
+     marginBottom: 8,
+   },
+   postDescription: {
+     fontSize: 14,
+     color: colors.text + 'CC',
+     marginBottom: 8,
+   },
+   postCategory: {
+     fontSize: 14,
+     color: colors.primary,
+     fontWeight: '600',
+     marginTop: 4,
+   },
   postActions: {
     flexDirection: 'row',
-    alignItems: 'center',
-    gap: 20,
+    justifyContent: 'space-around',
+    borderTopWidth: 1,
+    borderTopColor: colors.border,
+    paddingTop: 10,
   },
   actionButton: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 6,
+    paddingVertical: 5,
   },
   actionText: {
+    marginLeft: 5,
+    color: colors.text,
     fontSize: 14,
-    color: colors.textSecondary,
-    fontWeight: '500',
   },
-  helpfulBadge: {
-    flexDirection: 'row',
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
     alignItems: 'center',
-    gap: 4,
-    marginLeft: 'auto',
-    backgroundColor: colors.accent + '20',
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    borderRadius: 12,
   },
-  helpfulText: {
-    fontSize: 12,
-    color: colors.accent,
+  loadingText: {
+    fontSize: 16,
+    color: colors.text,
+  },
+  emptyContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingHorizontal: 40,
+  },
+  emptyText: {
+    fontSize: 18,
     fontWeight: '600',
+    color: colors.text,
+    textAlign: 'center',
+    marginBottom: 8,
+  },
+  emptySubtext: {
+    fontSize: 14,
+    color: colors.text + 'CC',
+    textAlign: 'center',
   },
   partnersContainer: {
-    padding: 16,
-  },
-  partnerCard: {
-    backgroundColor: colors.card,
-    borderRadius: 16,
-    padding: 20,
-    marginBottom: 16,
-    borderWidth: 2,
-    borderColor: colors.primary + '30',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 8,
-    elevation: 3,
-  },
-  partnerHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 16,
-  },
-  partnerAvatar: {
-    width: 50,
-    height: 50,
-    borderRadius: 25,
-    backgroundColor: colors.primary + '20',
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginRight: 16,
-  },
-  partnerInfo: {
     flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingHorizontal: 40,
   },
-  partnerType: {
-    fontSize: 18,
-    fontWeight: '700',
+  sectionTitle: {
+    fontSize: 24,
+    fontWeight: 'bold',
     color: colors.text,
-    marginBottom: 4,
+    textAlign: 'center',
+    marginBottom: 8,
   },
-  matchContainer: {
+  sectionSubtitle: {
+    fontSize: 16,
+    color: colors.text + 'CC',
+    textAlign: 'center',
+    marginBottom: 30,
+  },
+  findPartnersButton: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 4,
+    backgroundColor: colors.primary,
+    paddingVertical: 15,
+    paddingHorizontal: 30,
+    borderRadius: 25,
   },
-  matchScore: {
-    fontSize: 14,
-    color: colors.accent,
+     findPartnersButtonText: {
+     color: '#FFFFFF',
+     fontWeight: '600',
+     marginLeft: 8,
+   },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modalContent: {
+    backgroundColor: colors.surface,
+    borderRadius: 12,
+    padding: 20,
+    width: '90%',
+    maxWidth: 400,
+  },
+  modalTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: colors.text,
+    marginBottom: 15,
+    textAlign: 'center',
+  },
+  postInput: {
+    borderWidth: 1,
+    borderColor: colors.border,
+    borderRadius: 8,
+    padding: 15,
+    color: colors.text,
+    fontSize: 16,
+    minHeight: 100,
+    textAlignVertical: 'top',
+  },
+  modalButtons: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginTop: 20,
+  },
+  cancelButton: {
+    flex: 1,
+    paddingVertical: 12,
+    marginRight: 10,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: colors.border,
+  },
+  cancelButtonText: {
+    textAlign: 'center',
+    color: colors.text,
     fontWeight: '600',
   },
-  connectButton: {
+  postButton: {
+    flex: 1,
     backgroundColor: colors.primary,
-    borderRadius: 12,
-    padding: 12,
-    alignItems: 'center',
-    justifyContent: 'center',
+    paddingVertical: 12,
+    marginLeft: 10,
+    borderRadius: 8,
   },
-  sharedGoals: {
-    marginBottom: 16,
+     postButtonText: {
+     textAlign: 'center',
+     color: '#FFFFFF',
+     fontWeight: '600',
+   },
+  // Tag selection styles
+  tagSelectionContainer: {
+    marginBottom: 20,
   },
-  goalsTitle: {
+  tagSelectionTitle: {
     fontSize: 16,
     fontWeight: '600',
     color: colors.text,
-    marginBottom: 8,
+    marginBottom: 10,
   },
-  goalText: {
-    fontSize: 14,
-    color: colors.textSecondary,
-    marginBottom: 4,
-  },
-  supportStyles: {
+  tagSelectionGrid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
     gap: 8,
   },
-  supportStyleTag: {
-    backgroundColor: colors.primary,
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 16,
-  },
-  supportStyleText: {
-    fontSize: 12,
-    color: 'white',
-    fontWeight: '600',
-  },
-  fab: {
-    position: 'absolute',
-    bottom: 20,
-    right: 20,
-    width: 56,
-    height: 56,
-    borderRadius: 28,
-    backgroundColor: colors.primary,
-    alignItems: 'center',
-    justifyContent: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 8,
-    elevation: 8,
-  },
-  comingSoonContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 40,
-  },
-  comingSoonIcon: {
-    marginBottom: 24,
-  },
-  comingSoonTitle: {
-    fontSize: 24,
-    fontWeight: '700',
-    color: colors.text,
-    textAlign: 'center',
-    marginBottom: 8,
-  },
-  comingSoonSubtitle: {
-    fontSize: 16,
-    color: colors.textSecondary,
-    textAlign: 'center',
-    marginBottom: 24,
-  },
-  comingSoonDescription: {
-    fontSize: 14,
-    color: colors.textSecondary,
-    textAlign: 'center',
-    lineHeight: 20,
-    marginBottom: 32,
-  },
-  featuresList: {
-    alignItems: 'center',
-  },
-  featureItem: {
+  tagOption: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 12,
-    paddingHorizontal: 16,
+    backgroundColor: colors.card,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    borderRadius: 20,
+    borderWidth: 1,
+    borderColor: colors.border,
+    marginBottom: 8,
   },
-  featureText: {
+  tagOptionSelected: {
+    backgroundColor: colors.primary + '20',
+    borderColor: colors.primary,
+  },
+  tagOptionEmoji: {
+    fontSize: 16,
+    marginRight: 6,
+  },
+  tagOptionText: {
     fontSize: 14,
     color: colors.text,
-    marginLeft: 12,
     fontWeight: '500',
   },
-  comingSoonFeatures: {
-    alignItems: 'center',
-    marginTop: 16,
+  tagOptionTextSelected: {
+    color: colors.primary,
+    fontWeight: '600',
   },
 });

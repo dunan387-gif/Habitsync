@@ -3,15 +3,20 @@ export interface Habit {
   title: string;
   icon?: string;
   notes?: string;
+  description?: string; // Add missing description property
   streak: number;
+  currentStreak?: number; // Add missing currentStreak property
   bestStreak?: number;
   createdAt: string;
   completedToday: boolean;
   completedDates: string[]; // ISO date strings
+  completions?: any[]; // Add missing completions property
   reminderTime?: string; // Time in 24-hour format (HH:MM)
   reminderEnabled: boolean;
   reminderDays?: number[]; // Days of week: 0=Sunday, 1=Monday, ..., 6=Saturday
   order: number; // Add this field for drag & drop ordering
+  priority?: number; // Add missing priority property
+  frequency?: { days: number }; // Add missing frequency property
   // AI Enhancement fields
   category?: string;
   difficulty?: 'easy' | 'medium' | 'hard';
@@ -443,6 +448,7 @@ export type ThemeColors = {
   // Primary colors
   primary: string;
   primaryLight: string;
+  primaryExtraLight: string;
   primaryDark: string;
   
   // Accent colors
@@ -596,8 +602,10 @@ export interface UserLevel {
 
 export interface Achievement {
   id: string;
-  title: string;
-  description: string;
+  title?: string; // Keep for backward compatibility
+  titleKey?: string; // Translation key for title
+  description?: string; // Keep for backward compatibility
+  descriptionKey?: string; // Translation key for description
   icon: string;
   xpReward: number;
   condition: string;
@@ -678,4 +686,83 @@ export interface TriggerPattern {
   };
   correlatedMoods: string[];
   interventionStrategies: string[];
+}
+
+export interface SubscriptionTier {
+  id: string;
+  name: string;
+  price: {
+    monthly: number;
+    yearly: number;
+    currency: string;
+  };
+  features: {
+    maxHabits: number;
+    analyticsDays: number;
+    aiSuggestionsPerWeek: number;
+    themes: number;
+    remindersPerHabit: number;
+    socialFeatures: boolean;
+    dataExport: boolean;
+    customReminders: boolean;
+    moodHabitCorrelations: boolean;
+    advancedAnalytics: boolean;
+    wellnessIntegration: boolean;
+    performanceAlerts: boolean;
+    patternInsights: boolean;
+    teamManagement: boolean;
+    hipaaCompliance: boolean;
+    whiteLabeling: boolean;
+  };
+  limits: {
+    habits: number;
+    analyticsDays: number;
+    aiSuggestionsPerWeek: number;
+    themes: number;
+    remindersPerHabit: number;
+  };
+  isActive: boolean;
+}
+
+export interface SubscriptionStatus {
+  tier: string;
+  isActive: boolean;
+  startDate: string;
+  endDate?: string;
+  autoRenew: boolean;
+  platform: 'ios' | 'android' | 'web';
+  period?: 'monthly' | 'yearly'; // Add subscription period
+  planId?: string; // Add plan ID for tracking which plan was selected
+  transactionId?: string;
+  receiptData?: string;
+}
+
+export interface PricingPlan {
+  id: string;
+  name: string;
+  price: number;
+  period: 'monthly' | 'yearly';
+  currency: string;
+  savings?: number; // Percentage savings for yearly
+  features: string[];
+  isPopular?: boolean;
+  isIntroductory?: boolean;
+}
+
+export interface FeatureGate {
+  feature: string;
+  tier: 'free' | 'pro' | 'professional' | 'enterprise';
+  limit?: number;
+  message?: string;
+}
+
+export interface UpgradePrompt {
+  id: string;
+  trigger: 'habit_limit' | 'analytics_limit' | 'ai_limit' | 'theme_limit' | 'reminder_limit' | 'social_feature' | 'data_export' | 'wellness_integration' | 'pattern_insights' | 'performance_alerts' | 'mood_correlations' | 'onboarding';
+  title: string;
+  message: string;
+  ctaText: string;
+  dismissible: boolean;
+  shownCount: number;
+  lastShown?: string;
 }

@@ -1,16 +1,16 @@
 import React, { useState, useEffect, useMemo, useRef } from 'react';
-import { View, Text, StyleSheet, SafeAreaView, TouchableOpacity, Animated, Dimensions, Alert, Share } from 'react-native';
-import { ScrollView } from 'react-native-virtualized-view';
+import { View, Text, StyleSheet, SafeAreaView, TouchableOpacity, Animated, Dimensions, Alert, Share, ScrollView } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { 
   BarChart2, LineChart, TrendingUp, Calendar, Clock, Target, Award, Activity, 
   BarChart3, PieChart, Filter, Flame, Trophy, Zap, Star, ChevronDown,
-  Download, Share2, Users, Sparkles
+  Download, Share2, Users, Sparkles, Heart, Smile, Brain, Crown
 } from 'lucide-react-native';
 import { useHabits } from '@/context/HabitContext';
 import { useTheme } from '@/context/ThemeContext';
 import { useLanguage } from '@/context/LanguageContext';
+import { useSubscription } from '@/context/SubscriptionContext';
 import { MoodEntry, HabitMoodEntry } from '@/types';
 import ProgressChart from '@/components/ProgressChart';
 import HabitStats from '@/components/HabitStats';
@@ -20,24 +20,55 @@ import ShareProgress from '@/components/ShareProgress';
 import InviteFriends from '@/components/InviteFriends';
 import HabitHeatmap from '@/components/HabitHeatmap';
 import AdvancedAnalyticsDashboard from '@/components/AdvancedAnalyticsDashboard';
+import EnhancedCoachingDashboard from '@/components/EnhancedCoachingDashboard';
 import PatternInsights from '@/components/PatternInsights';
 import { PredictiveAnalyticsService } from '@/services/PredictiveAnalyticsService';
+import { WellnessIntegrationService } from '@/services/WellnessIntegrationService';
+import MoodHabitDashboard from '@/components/MoodHabitDashboard';
+import SleepTrackingForm from '@/components/SleepTrackingForm';
+import ExerciseTrackingForm from '@/components/ExerciseTrackingForm';
+import NutritionTrackingForm from '@/components/NutritionTrackingForm';
+import MeditationTrackingForm from '@/components/MeditationTrackingForm';
+import SocialActivityTrackingForm from '@/components/SocialActivityTrackingForm';
 
-type TimeFilter = 'today' | 'week' | 'month';
+
+type AnalyticsTab = 'overview' | 'mood' | 'wellness' | 'advanced';
 
 export default function StatsScreen() {
   const { habits, getCompletionRate, getDailyCompletionData, getTotalCompletions, getOverallCompletionRate } = useHabits();
   const { currentTheme } = useTheme();
   const { t } = useLanguage();
+  const { 
+    canAccessAnalytics, 
+    canAccessTimeframe, 
+    canExportData, 
+    canUseWellnessIntegration, 
+    canUsePerformanceAlerts, 
+    canUsePatternInsights,
+    canUseMoodHabitCorrelations,
+    showUpgradePrompt 
+  } = useSubscription();
 
+  const [selectedAnalyticsTab, setSelectedAnalyticsTab] = useState<AnalyticsTab>('overview');
   const [selectedInsightTab, setSelectedInsightTab] = useState<'overview' | 'charts' | 'activity' | 'advanced'>('overview');
-  const [timeFilter, setTimeFilter] = useState<TimeFilter>('week');
   const [selectedActivityFilter, setSelectedActivityFilter] = useState<'all' | 'completed' | 'missed'>('all');
   const [showShareModal, setShowShareModal] = useState(false);
   const [showDropdown, setShowDropdown] = useState(false);
   const [moodData, setMoodData] = useState<MoodEntry[]>([]);
   const [habitMoodData, setHabitMoodData] = useState<HabitMoodEntry[]>([]);
   const [isDataLoaded, setIsDataLoaded] = useState(false);
+
+  // Wellness data state
+  const [wellnessData, setWellnessData] = useState<any>(null);
+  const [wellnessAnalysis, setWellnessAnalysis] = useState<any>(null);
+  const [wellnessLoading, setWellnessLoading] = useState(false);
+  
+
+
+  // Wellness form state
+  const [showWellnessPopup, setShowWellnessPopup] = useState(false);
+  const [selectedWellnessCategory, setSelectedWellnessCategory] = useState<string | null>(null);
+  const [showWellnessForm, setShowWellnessForm] = useState(false);
   const animatedValue = useRef(new Animated.Value(0)).current;
   const [countAnimations] = useState({
     totalHabits: new Animated.Value(0),
@@ -68,6 +99,45 @@ export default function StatsScreen() {
 
     loadMoodAndHabitData();
   }, []);
+
+  // Load wellness data and analysis
+  useEffect(() => {
+    const loadWellnessData = async () => {
+      if (selectedAnalyticsTab === 'wellness') {
+        setWellnessLoading(true);
+        try {
+          // Load all wellness data
+          const [sleepData, exerciseData, nutritionData, meditationData, socialData] = await Promise.all([
+            WellnessIntegrationService.getSleepData(),
+            WellnessIntegrationService.getExerciseData(),
+            WellnessIntegrationService.getNutritionData(),
+            WellnessIntegrationService.getMeditationData(),
+            WellnessIntegrationService.getSocialActivityData()
+          ]);
+
+          setWellnessData({
+            sleep: sleepData,
+            exercise: exerciseData,
+            nutrition: nutritionData,
+            meditation: meditationData,
+            social: socialData
+          });
+
+          // Perform comprehensive wellness analysis
+          const analysis = await WellnessIntegrationService.performComprehensiveWellnessAnalysis('30d');
+          setWellnessAnalysis(analysis);
+        } catch (error) {
+          console.error('Error loading wellness data:', error);
+          setWellnessData(null);
+          setWellnessAnalysis(null);
+        } finally {
+          setWellnessLoading(false);
+        }
+      }
+    };
+
+    loadWellnessData();
+  }, [selectedAnalyticsTab]);
 
   // Calculate real statistics
   const stats = useMemo(() => {
@@ -183,7 +253,7 @@ export default function StatsScreen() {
   const weeklyActivityData = useMemo(() => {
     if (!habits || habits.length === 0) return [];
     
-    const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+    const days = [t('weeklyActivity.days.mon'), t('weeklyActivity.days.tue'), t('weeklyActivity.days.wed'), t('weeklyActivity.days.thu'), t('weeklyActivity.days.fri'), t('weeklyActivity.days.sat'), t('weeklyActivity.days.sun')];
     const today = new Date();
     
     return days.map((day, dayIndex) => {
@@ -226,57 +296,32 @@ export default function StatsScreen() {
 
   // Export functionality
   const handleExportData = async () => {
-    try {
-      const exportData = {
-        exportDate: new Date().toISOString(),
-        totalHabits: habits?.length || 0,
-        stats: {
-          currentStreak: stats.currentStreak,
-          longestStreak: stats.longestStreak,
-          weeklyCompletionRate: stats.weeklyCompletionRate,
-          monthlyCompletionRate: stats.monthlyCompletionRate,
-          totalCompletedToday: stats.totalCompletedToday,
-          totalCompletedAllTime: stats.totalCompletedAllTime,
-          averageCompletionRate: stats.averageCompletionRate
-        },
-        habits: habits?.map(habit => ({
-          title: habit.title,
-          icon: habit.icon,
-          streak: habit.streak,
-          bestStreak: habit.bestStreak,
-          completedDates: habit.completedDates,
-          createdAt: habit.createdAt
-        })) || [],
-        heatmapData: generateHeatmapData(habits || []),
-        yearlyStats: {
-          totalHabitsThisYear: getTotalHabitsThisYear(habits || []),
-          longestStreakThisYear: getLongestStreakThisYear(habits || []),
-          currentStreak: getCurrentStreak(habits || [])
-        }
-      };
+    if (!canExportData()) {
+      showUpgradePrompt('data_export');
+      return;
+    }
 
-      const csvContent = generateCSVContent(exportData);
+    try {
+      const habitsData = habits || [];
+      const moodEntries = moodData || [];
+      const habitMoodEntries = habitMoodData || [];
       
-      Alert.alert(
-        t('stats.export.title'),
-        t('stats.export.message'),
-        [
-          { text: t('common.cancel'), style: 'cancel' },
-          {
-            text: t('stats.export.json'),
-            onPress: () => shareData(JSON.stringify(exportData, null, 2), 'habits-data.json')
-          },
-          {
-            text: t('stats.export.csv'),
-            onPress: () => {
-              const csvData = generateCSVContent(exportData);
-              shareData(csvData, 'habits-data.csv');
-            }
-          }
-        ]
-      );
+      // Create comprehensive data export
+      const exportData = {
+        habits: habitsData,
+        moodEntries: moodEntries,
+        habitMoodEntries: habitMoodEntries,
+        exportDate: new Date().toISOString(),
+        appVersion: '1.0.0'
+      };
+      
+      const csvContent = generateCSVContent(exportData);
+      await shareData(csvContent, 'habit-tracker-data.csv');
+      
+      Alert.alert(t('stats.exportSuccess'), t('stats.exportSuccessMessage'));
     } catch (error) {
-      Alert.alert(t('common.error'), t('stats.export.error'));
+      console.error('Export failed:', error);
+      Alert.alert(t('stats.exportError'), t('stats.exportErrorMessage'));
     }
   };
 
@@ -350,6 +395,121 @@ export default function StatsScreen() {
     }
   };
 
+  
+
+
+
+  // Wellness popup and form handlers
+  const handleAddWellness = () => {
+    setShowWellnessPopup(true);
+  };
+
+  const handleSelectWellnessCategory = (category: string) => {
+    setSelectedWellnessCategory(category);
+    setShowWellnessPopup(false);
+    setShowWellnessForm(true);
+  };
+
+  const handleCloseWellnessForm = () => {
+    setShowWellnessForm(false);
+    setSelectedWellnessCategory(null);
+  };
+
+  const handleSaveWellnessData = () => {
+    // This will be handled by the individual form components
+    handleCloseWellnessForm();
+  };
+
+  // Calculate real wellness metrics
+  const calculateWellnessMetrics = () => {
+    if (!wellnessData || !wellnessAnalysis) {
+      return {
+        overallScore: 0,
+        weeklyTrend: 0,
+        sleep: { score: 0, trend: 0, avgHours: 0 },
+        exercise: { score: 0, trend: 0, avgSteps: 0 },
+        nutrition: { score: 0, trend: 0, avgWater: 0 },
+        meditation: { score: 0, trend: 0, avgDuration: 0 },
+        social: { score: 0, trend: 0, avgSatisfaction: 0 }
+      };
+    }
+
+    const analysis = wellnessAnalysis;
+    const data = wellnessData;
+
+    // Calculate overall wellness score
+    const overallScore = analysis.wellnessScore?.overall || 0;
+    
+    // Calculate weekly trend (simplified)
+    const weeklyTrend = analysis.wellnessScore?.trend === 'improving' ? 3 : 
+                       analysis.wellnessScore?.trend === 'declining' ? -2 : 0;
+
+    // Calculate sleep metrics
+    const sleepData = data.sleep || [];
+    const avgSleepHours = sleepData.length > 0 
+      ? sleepData.reduce((sum: number, entry: any) => sum + entry.duration, 0) / sleepData.length 
+      : 0;
+    const sleepScore = analysis.wellnessScore?.breakdown?.sleep || 0;
+
+    // Calculate exercise metrics
+    const exerciseData = data.exercise || [];
+    const avgExerciseDuration = exerciseData.length > 0 
+      ? exerciseData.reduce((sum: number, entry: any) => sum + entry.duration, 0) / exerciseData.length 
+      : 0;
+    const exerciseScore = analysis.wellnessScore?.breakdown?.exercise || 0;
+
+    // Calculate nutrition metrics
+    const nutritionData = data.nutrition || [];
+    const avgWaterIntake = nutritionData.length > 0 
+      ? nutritionData.reduce((sum: number, entry: any) => sum + entry.waterIntake, 0) / nutritionData.length 
+      : 0;
+    const nutritionScore = analysis.wellnessScore?.breakdown?.nutrition || 0;
+
+    // Calculate meditation metrics
+    const meditationData = data.meditation || [];
+    const avgMeditationDuration = meditationData.length > 0 
+      ? meditationData.reduce((sum: number, entry: any) => sum + entry.duration, 0) / meditationData.length 
+      : 0;
+    const meditationScore = analysis.wellnessScore?.breakdown?.meditation || 0;
+
+    // Calculate social metrics
+    const socialData = data.social || [];
+    const avgSocialSatisfaction = socialData.length > 0 
+      ? socialData.reduce((sum: number, entry: any) => sum + entry.satisfaction, 0) / socialData.length 
+      : 0;
+    const socialScore = analysis.wellnessScore?.breakdown?.social || 0;
+
+    return {
+      overallScore: Math.round(overallScore),
+      weeklyTrend,
+      sleep: { 
+        score: Math.round(sleepScore), 
+        trend: sleepScore > 80 ? 0.3 : sleepScore > 60 ? 0 : -0.2,
+        avgHours: Math.round(avgSleepHours * 10) / 10
+      },
+      exercise: { 
+        score: Math.round(exerciseScore), 
+        trend: exerciseScore > 80 ? 0.5 : exerciseScore > 60 ? 0 : -0.3,
+        avgSteps: Math.round(avgExerciseDuration * 100) // Convert minutes to approximate steps
+      },
+      nutrition: { 
+        score: Math.round(nutritionScore), 
+        trend: nutritionScore > 80 ? 0.2 : nutritionScore > 60 ? 0 : -0.1,
+        avgWater: Math.round(avgWaterIntake)
+      },
+      meditation: { 
+        score: Math.round(meditationScore), 
+        trend: meditationScore > 80 ? 0.4 : meditationScore > 60 ? 0 : -0.2,
+        avgDuration: Math.round(avgMeditationDuration)
+      },
+      social: { 
+        score: Math.round(socialScore), 
+        trend: socialScore > 80 ? 0.3 : socialScore > 60 ? 0 : -0.2,
+        avgSatisfaction: Math.round(avgSocialSatisfaction * 20) / 20
+      }
+    };
+  };
+
   const styles = useMemo(() => createStyles(currentTheme.colors), [currentTheme.colors]);
 
   // Animate icon on mount
@@ -384,34 +544,88 @@ export default function StatsScreen() {
     });
   }, [stats]);
 
-  const renderTimeFilter = () => (
-    <View style={styles.filterContainer}>
-      <TouchableOpacity 
-        style={[styles.filterButton, timeFilter === 'today' && styles.activeFilter]}
-        onPress={() => setTimeFilter('today')}
-      >
-        <Text style={[styles.filterText, timeFilter === 'today' && styles.activeFilterText]}>
-          {t('stats.filters.today')}
-        </Text>
-      </TouchableOpacity>
-      <TouchableOpacity 
-        style={[styles.filterButton, timeFilter === 'week' && styles.activeFilter]}
-        onPress={() => setTimeFilter('week')}
-      >
-        <Text style={[styles.filterText, timeFilter === 'week' && styles.activeFilterText]}>
-          {t('stats.filters.week')}
-        </Text>
-      </TouchableOpacity>
-      <TouchableOpacity 
-        style={[styles.filterButton, timeFilter === 'month' && styles.activeFilter]}
-        onPress={() => setTimeFilter('month')}
-      >
-        <Text style={[styles.filterText, timeFilter === 'month' && styles.activeFilterText]}>
-          {t('stats.filters.month')}
-        </Text>
-      </TouchableOpacity>
-    </View>
-  );
+  const renderAnalyticsSubtabs = () => {
+    const tabs = [
+      {
+        key: 'overview',
+        icon: BarChart3,
+        label: t('stats.tabs.overview'),
+        description: t('stats.tabs.overviewDesc'),
+        color: currentTheme.colors.primary
+      },
+      {
+        key: 'mood',
+        icon: Heart,
+        label: t('stats.tabs.mood'),
+        description: t('stats.tabs.moodDesc'),
+        color: currentTheme.colors.warning
+      },
+      {
+        key: 'wellness',
+        icon: Activity,
+        label: t('stats.tabs.wellness'),
+        description: t('stats.tabs.wellnessDesc'),
+        color: currentTheme.colors.success
+      },
+      {
+        key: 'advanced',
+        icon: Sparkles,
+        label: t('stats.tabs.advanced'),
+        description: t('stats.tabs.advancedDesc'),
+        color: currentTheme.colors.accent
+      }
+    ];
+
+    return (
+      <View style={styles.analyticsTabsContainer}>
+        <Text style={styles.analyticsTabsTitle}>{t('stats.analytics.title')}</Text>
+        <View style={styles.analyticsTabs}>
+          {tabs.map((tab) => {
+            const IconComponent = tab.icon;
+            const isActive = selectedAnalyticsTab === tab.key;
+            
+            return (
+              <TouchableOpacity
+                key={tab.key}
+                style={[
+                  styles.analyticsTab,
+                  isActive && styles.activeAnalyticsTab,
+                  { borderColor: isActive ? tab.color : 'transparent' }
+                ]}
+                onPress={() => handleAnalyticsTabChange(tab.key as AnalyticsTab)}
+              >
+                <View style={[
+                  styles.analyticsTabIcon,
+                  { backgroundColor: isActive ? `${tab.color}15` : `${currentTheme.colors.textMuted}10` }
+                ]}>
+                  <IconComponent 
+                    size={20} 
+                    color={isActive ? tab.color : currentTheme.colors.textMuted} 
+                  />
+                </View>
+                <Text style={[
+                  styles.analyticsTabText,
+                  isActive && styles.activeAnalyticsTabText,
+                  { color: isActive ? tab.color : currentTheme.colors.textMuted }
+                ]}>
+                  {tab.label}
+                </Text>
+                <Text style={[
+                  styles.analyticsTabDescription,
+                  isActive && styles.activeAnalyticsTabDescription
+                ]}>
+                  {tab.description}
+                </Text>
+                {isActive && (
+                  <View style={[styles.analyticsTabIndicator, { backgroundColor: tab.color }]} />
+                )}
+              </TouchableOpacity>
+            );
+          })}
+        </View>
+      </View>
+    );
+  };
 
   const renderEnhancedStatCard = (icon: React.ReactNode, value: number, label: string, color: string, type: 'fire' | 'trophy' | 'progress' | 'default') => {
     const getCardBackground = () => {
@@ -532,7 +746,7 @@ export default function StatsScreen() {
         <View style={styles.quickInsightCard}>
           <Zap size={20} color={currentTheme.colors.primary} />
           <Text style={styles.quickInsightValue}>{stats.totalCompletedToday}</Text>
-          <Text style={styles.quickInsightLabel}>Today</Text>
+          <Text style={styles.quickInsightLabel}>{t('stats.quickStats.today')}</Text>
           <View style={styles.sparkline}>
             <View style={styles.sparklineDot} />
             <View style={styles.sparklineDot} />
@@ -543,7 +757,7 @@ export default function StatsScreen() {
         <View style={styles.quickInsightCard}>
           <Star size={20} color={currentTheme.colors.success} />
           <Text style={styles.quickInsightValue}>{stats.totalCompletedAllTime}</Text>
-          <Text style={styles.quickInsightLabel}>All Time</Text>
+          <Text style={styles.quickInsightLabel}>{t('stats.quickStats.allTime')}</Text>
           <View style={styles.sparkline}>
             <View style={styles.sparklineDot} />
             <View style={styles.sparklineDot} />
@@ -556,7 +770,7 @@ export default function StatsScreen() {
         <View style={styles.quickInsightCard}>
           <Target size={20} color={currentTheme.colors.accent} />
           <Text style={styles.quickInsightValue}>{stats.monthlyCompletionRate}%</Text>
-          <Text style={styles.quickInsightLabel}>30-Day Rate</Text>
+          <Text style={styles.quickInsightLabel}>{t('stats.quickStats.thirtyDayRate')}</Text>
           <View style={styles.sparkline}>
             <View style={styles.sparklineDot} />
             <View style={styles.sparklineDot} />
@@ -569,20 +783,20 @@ export default function StatsScreen() {
 
   const renderTopHabitCard = () => (
     <View style={styles.topHabitContainer}>
-      <Text style={styles.sectionTitle}>🏆 Top Performing Habit</Text>
+      <Text style={styles.sectionTitle}>🏆 {t('stats.topHabit.title')}</Text>
       <View style={styles.enhancedTopHabitCard}>
         <View style={styles.topHabitHeader}>
-          <Text style={styles.topHabitTitle}>{topHabit?.title || 'No habits yet'}</Text>
+          <Text style={styles.topHabitTitle}>{topHabit?.title || t('stats.topHabit.noHabits')}</Text>
           <View style={styles.streakBadge}>
             <Flame size={16} color={currentTheme.colors.warning} />
             <Text style={styles.streakBadgeText}>{topHabit?.streak || 0}</Text>
           </View>
         </View>
-        <Text style={styles.topHabitStreak}>{topHabit?.streak || 0} day streak</Text>
+        <Text style={styles.topHabitStreak}>{t('stats.topHabit.dayStreak', { count: topHabit?.streak || 0 })}</Text>
         {(topHabit?.streak || 0) > 7 && (
           <View style={styles.celebrationBadge}>
             <Sparkles size={14} color={currentTheme.colors.primary} />
-            <Text style={styles.celebrationText}>👏 Keep it up!</Text>
+            <Text style={styles.celebrationText}>👏 {t('stats.topHabit.keepItUp')}</Text>
           </View>
         )}
         <View style={styles.progressRing}>
@@ -598,153 +812,55 @@ export default function StatsScreen() {
     </View>
   );
 
-  return (
-    <SafeAreaView style={styles.container}>
-      <StatusBar style={currentTheme.isDark ? 'light' : 'dark'} />
-      
-      {/* Enhanced Header */}
-      <View style={styles.header}>
-        <View style={styles.titleContainer}>
-          <Animated.View style={{
-            transform: [{
-              scale: animatedValue.interpolate({
-                inputRange: [0, 1],
-                outputRange: [1, 1.1]
-              })
-            }]
-          }}>
-            <BarChart3 size={24} color={currentTheme.colors.primary} style={styles.titleIcon} />
-          </Animated.View>
-          <Text style={styles.title}>{t('stats.title')}</Text>
-        </View>
-        <Text style={styles.subtitle}>{t('stats.subtitle')}</Text>
-        <Text style={styles.motivationalMessage}>{getMotivationalMessage()}</Text>
-        {renderTimeFilter()}
-      </View>
 
-      <ScrollView
-        style={styles.scrollView}
-        contentContainerStyle={styles.contentContainer}
-        showsVerticalScrollIndicator={false}
-      >
-        {/* Enhanced Stats Summary */}
-        <View style={styles.summaryContainer}>
-          <Text style={styles.sectionTitle}>📊 {t('stats.summary.title')}</Text>
-          <View style={styles.statsGrid}>
-            {renderEnhancedStatCard(
-              <Target size={24} color={currentTheme.colors.primary} />,
-              stats.totalHabits,
-              t('stats.summary.totalHabits'),
-              currentTheme.colors.primary,
-              'default'
-            )}
-            {renderEnhancedStatCard(
-              <Award size={24} color={currentTheme.colors.success} />,
-              stats.currentStreak,
-              t('stats.summary.currentStreak'),
-              currentTheme.colors.success,
-              'fire'
-            )}
-            {renderEnhancedStatCard(
-              <TrendingUp size={24} color={currentTheme.colors.accent} />,
-              stats.longestStreak,
-              t('stats.summary.longestStreak'),
-              currentTheme.colors.accent,
-              'trophy'
-            )}
-            {renderEnhancedStatCard(
-              <Calendar size={24} color={currentTheme.colors.primary} />,
-              stats.weeklyCompletionRate,
-              t('stats.summary.completionRate'),
-              currentTheme.colors.primary,
-              'progress'
-            )}
-          </View>
-        </View>
 
-        {/* Enhanced Insight Tabs */}
-        {renderInsightTabs()}
-
-        {/* Tab Content */}
-        {selectedInsightTab === 'overview' && (
+  const renderAnalyticsContent = () => {
+    switch (selectedAnalyticsTab) {
+      case 'overview':
+        return (
           <>
-            {/* Enhanced Quick Stats - using real data */}
-            <View style={styles.quickInsightsContainer}>
-              <View style={styles.quickInsightsRow}>
-                <View style={styles.quickInsightCard}>
-                  <Zap size={20} color={currentTheme.colors.primary} />
-                  <Text style={styles.quickInsightValue}>{stats.totalCompletedToday}</Text>
-                  <Text style={styles.quickInsightLabel}>{t('stats.quickStats.today')}</Text>
-                  <View style={styles.sparkline}>
-                    <View style={styles.sparklineDot} />
-                    <View style={styles.sparklineDot} />
-                    <View style={styles.sparklineDot} />
-                  </View>
-                </View>
-                
-                <View style={styles.quickInsightCard}>
-                  <Star size={20} color={currentTheme.colors.success} />
-                  <Text style={styles.quickInsightValue}>{stats.totalCompletedAllTime}</Text>
-                  <Text style={styles.quickInsightLabel}>{t('stats.quickStats.allTime')}</Text>
-                  <View style={styles.sparkline}>
-                    <View style={styles.sparklineDot} />
-                    <View style={styles.sparklineDot} />
-                    <View style={styles.sparklineDot} />
-                  </View>
-                </View>
-              </View>
-              
-              <View style={styles.quickInsightsCenteredRow}>
-                <View style={styles.quickInsightCard}>
-                  <Target size={20} color={currentTheme.colors.accent} />
-                  <Text style={styles.quickInsightValue}>{stats.monthlyCompletionRate}%</Text>
-                  <Text style={styles.quickInsightLabel}>{t('stats.quickStats.thirtyDayRate')}</Text>
-                  <View style={styles.sparkline}>
-                    <View style={styles.sparklineDot} />
-                    <View style={styles.sparklineDot} />
-                    <View style={styles.sparklineDot} />
-                  </View>
-                </View>
-              </View>
-            </View>
-            
-            {/* Enhanced Top Performing Habit - using real data */}
-            <View style={styles.topHabitContainer}>
-              <Text style={styles.sectionTitle}>🏆 {t('stats.topHabit.title')}</Text>
-              <View style={styles.enhancedTopHabitCard}>
-                <View style={styles.topHabitHeader}>
-                  <Text style={styles.topHabitTitle}>
-                    {topHabit ? `${topHabit.icon || '📋'} ${topHabit.title}` : t('stats.topHabit.noHabits')}
-                  </Text>
-                  <View style={styles.streakBadge}>
-                    <Flame size={16} color={currentTheme.colors.warning} />
-                    <Text style={styles.streakBadgeText}>{topHabit?.streak || 0}</Text>
-                  </View>
-                </View>
-                <Text style={styles.topHabitStreak}>{t('stats.topHabit.dayStreak', { count: topHabit?.streak || 0 })}</Text>
-                {(topHabit?.streak || 0) > 7 && (
-                  <View style={styles.celebrationBadge}>
-                    <Sparkles size={14} color={currentTheme.colors.primary} />
-                    <Text style={styles.celebrationText}>👏 {t('stats.topHabit.keepItUp')}</Text>
-                  </View>
+            {/* Enhanced Stats Summary */}
+            <View style={styles.summaryContainer}>
+              <Text style={styles.sectionTitle}>📊 {t('stats.summary.title')}</Text>
+              <View style={styles.statsGrid}>
+                {renderEnhancedStatCard(
+                  <Target size={24} color={currentTheme.colors.primary} />,
+                  stats.totalHabits,
+                  t('stats.summary.totalHabits'),
+                  currentTheme.colors.primary,
+                  'default'
                 )}
-                <View style={styles.progressRing}>
-                  <View style={[
-                    styles.progressFill,
-                    { 
-                      width: `${Math.min(((topHabit?.streak || 0) / 30) * 100, 100)}%`,
-                      backgroundColor: currentTheme.colors.success
-                    }
-                  ]} />
-                </View>
+                {renderEnhancedStatCard(
+                  <Award size={24} color={currentTheme.colors.success} />,
+                  stats.currentStreak,
+                  t('stats.summary.currentStreak'),
+                  currentTheme.colors.success,
+                  'fire'
+                )}
+                {renderEnhancedStatCard(
+                  <TrendingUp size={24} color={currentTheme.colors.accent} />,
+                  stats.longestStreak,
+                  t('stats.summary.longestStreak'),
+                  currentTheme.colors.accent,
+                  'trophy'
+                )}
+                {renderEnhancedStatCard(
+                  <Calendar size={24} color={currentTheme.colors.primary} />,
+                  stats.weeklyCompletionRate,
+                  t('stats.summary.completionRate'),
+                  currentTheme.colors.primary,
+                  'progress'
+                )}
               </View>
             </View>
-          </>
-        )}
 
-        {selectedInsightTab === 'charts' && (
-          <>
-            {/* Modern Analytics Dashboard */}
+            {/* Enhanced Quick Stats */}
+            {renderQuickInsightCards()}
+            
+            {/* Enhanced Top Performing Habit */}
+            {renderTopHabitCard()}
+
+            {/* Charts Section */}
             <View style={styles.analyticsContainer}>
               <View style={styles.analyticsHeader}>
                 <View>
@@ -753,7 +869,7 @@ export default function StatsScreen() {
                 </View>
               </View>
 
-              {/* Performance Metrics Grid - using real data */}
+              {/* Performance Metrics Grid */}
               <View style={styles.metricsGrid}>
                 <View style={styles.metricCard}>
                   <View style={styles.metricIcon}>
@@ -807,7 +923,7 @@ export default function StatsScreen() {
                 </View>
               </View>
 
-              {/* Habit Performance Leaderboard - using real data */}
+              {/* Habit Performance Leaderboard */}
               <View style={styles.leaderboardContainer}>
                 <Text style={styles.leaderboardTitle}>🏆 {t('stats.leaderboard.title')}</Text>
                 {habitPerformanceData.length > 0 ? habitPerformanceData.map((item, index) => (
@@ -835,7 +951,7 @@ export default function StatsScreen() {
                 )}
               </View>
 
-              {/* Weekly Heatmap - using real data */}
+              {/* Weekly Heatmap */}
               <View style={styles.weeklyHeatmap}>
                 <Text style={styles.heatmapTitle}>📅 {t('stats.heatmap.weeklyTitle')}</Text>
                 <View style={styles.heatmapGrid}>
@@ -873,100 +989,467 @@ export default function StatsScreen() {
                   <Text style={styles.legendText}>{t('stats.heatmap.more')}</Text>
                 </View>
               </View>
+                         </View>
+             <MiniProgressCharts />
+
+             {/* Enhanced Calendar View - Now with Habit Heatmap */}
+             <View style={styles.heatmapContainer}>
+               <View style={styles.heatmapHeader}>
+                 <Text style={styles.sectionTitle}>🔥 {t('stats.habitHeatmap.title')}</Text>
+                 <Text style={styles.heatmapSubtitle}>{t('stats.habitHeatmap.subtitle')}</Text>
+               </View>
+               <HabitHeatmap 
+                 data={generateHeatmapData(habits || [])}
+                 onDayPress={(date, count) => {
+                   // Handle day press - could show tooltip or details
+                   console.log(`Date: ${date}, Habits completed: ${count}`);
+                 }}
+               />
+               <View style={styles.heatmapStats}>
+                 <View style={styles.heatmapStat}>
+                   <Text style={styles.heatmapStatValue}>{getTotalHabitsThisYear(habits || [])}</Text>
+                   <Text style={styles.heatmapStatLabel}>{t('stats.habitHeatmap.thisYear')}</Text>
+                 </View>
+                 <View style={styles.heatmapStat}>
+                   <Text style={styles.heatmapStatValue}>{getLongestStreakThisYear(habits || [])}</Text>
+                   <Text style={styles.heatmapStatLabel}>{t('stats.habitHeatmap.longestStreak')}</Text>
+                 </View>
+                 <View style={styles.heatmapStat}>
+                   <Text style={styles.heatmapStatValue}>{getCurrentStreak(habits || [])}</Text>
+                   <Text style={styles.heatmapStatLabel}>{t('stats.habitHeatmap.currentStreak')}</Text>
+                 </View>
+               </View>
+             </View>
+
+             {/* Enhanced Individual Habit Breakdown */}
+             <View style={styles.habitsContainer}>
+               <View style={styles.habitsHeader}>
+                 <Text style={styles.sectionTitle}>📋 {t('stats.habits.title')}</Text>
+                 <TouchableOpacity 
+                   style={styles.exportButton}
+                   onPress={handleExportData}
+                 >
+                   <Download size={14} color={currentTheme.colors.primary} />
+                   <Text style={styles.exportText}>{t('stats.habits.export')}</Text>
+                 </TouchableOpacity>
+               </View>
+               <HabitStats habits={habits || []} />
+             </View>
+
+                         {/* Enhanced Social Features */}
+            <View style={styles.socialContainer}>
+              <View style={styles.socialHeader}>
+                <Text style={styles.sectionTitle}>🤝 {t('stats.social.title')}</Text>
+              </View>
+              <View style={styles.socialButtons}>
+                <TouchableOpacity 
+                  style={styles.socialButton}
+                  onPress={handleShareProgress}
+                >
+                  <Share2 size={16} color={currentTheme.colors.primary} />
+                  <Text style={styles.socialButtonText}>{t('stats.social.share')}</Text>
+                </TouchableOpacity>
+                <TouchableOpacity 
+                  style={styles.socialButton}
+                  onPress={handleInviteFriends}
+                >
+                  <Users size={16} color={currentTheme.colors.primary} />
+                  <Text style={styles.socialButtonText}>{t('stats.social.invite')}</Text>
+                </TouchableOpacity>
+              </View>
             </View>
-            <MiniProgressCharts />
+
+            {/* Advanced Analytics Dashboard - Only show for Pro users */}
+            {canAccessAnalytics(365) ? (
+              <View style={styles.advancedAnalyticsContainer}>
+                <View style={styles.advancedAnalyticsHeader}>
+                  <Text style={styles.sectionTitle}>🤖 {t('stats.advanced.title')}</Text>
+                  <Text style={styles.sectionSubtitle}>{t('stats.advanced.subtitle')}</Text>
+                </View>
+                {isDataLoaded ? (
+                  <AdvancedAnalyticsDashboard 
+                    moodData={moodData}
+                    habitMoodData={habitMoodData}
+                  />
+                ) : (
+                  <Text style={styles.loadingText}>{t('stats.loading')}</Text>
+                )}
+              </View>
+            ) : (
+              <View style={styles.upgradeContainer}>
+                <Text style={styles.sectionTitle}>🤖 {t('stats.advanced.title')}</Text>
+                <Text style={styles.sectionSubtitle}>{t('stats.advanced.subtitle')}</Text>
+                <TouchableOpacity 
+                  style={styles.upgradeButton}
+                  onPress={() => showUpgradePrompt('analytics_limit')}
+                >
+                  <Text style={styles.upgradeButtonText}>{t('premium.upgradeToPro')}</Text>
+                </TouchableOpacity>
+              </View>
+            )}
+           </>
+         );
+
+      case 'mood':
+        return (
+          <View style={styles.moodContainer}>
+            <Text style={styles.sectionTitle}>😊 {t('stats.mood.title')}</Text>
+            <Text style={styles.sectionSubtitle}>{t('stats.mood.subtitle')}</Text>
+            {canUseMoodHabitCorrelations() ? (
+              <MoodHabitDashboard />
+            ) : (
+              <View style={styles.upgradeContainer}>
+                <Text style={styles.sectionSubtitle}>{t('stats.mood.upgradeMessage')}</Text>
+                <TouchableOpacity 
+                  style={styles.upgradeButton}
+                  onPress={() => showUpgradePrompt('mood_correlations')}
+                >
+                  <Text style={styles.upgradeButtonText}>{t('premium.upgradeToPro')}</Text>
+                </TouchableOpacity>
+              </View>
+            )}
+          </View>
+        );
+
+            case 'wellness':
+        return (
+          <>
+            {!showWellnessForm ? (
+              <View style={styles.wellnessContainer}>
+                {wellnessLoading ? (
+                  <View style={styles.loadingContainer}>
+                    <Text style={styles.loadingText}>{t('stats.loading')}</Text>
+                  </View>
+                ) : (
+                  <>
+                    {/* Wellness Overview Header */}
+                    <View style={styles.wellnessHeader}>
+                      <Text style={styles.sectionTitle}>💚 {t('wellness.title')}</Text>
+                      <Text style={styles.sectionSubtitle}>{t('wellness.subtitle')}</Text>
+                    </View>
+
+                    {/* Wellness Score Overview */}
+                    <View style={styles.wellnessScoreContainer}>
+                      <View style={styles.wellnessScoreCard}>
+                        <View style={styles.wellnessScoreHeader}>
+                          <Heart size={28} color={currentTheme.colors.primary} />
+                          <Text style={styles.wellnessScoreTitle}>{t('wellness.overview.overallScore')}</Text>
+                        </View>
+                        <Text style={styles.wellnessScoreValue}>{calculateWellnessMetrics().overallScore}%</Text>
+                        <View style={styles.wellnessScoreProgress}>
+                          <View style={[styles.wellnessScoreFill, { width: `${calculateWellnessMetrics().overallScore}%`, backgroundColor: currentTheme.colors.primary }]} />
+                        </View>
+                        <Text style={styles.wellnessScoreTrend}>
+                          {calculateWellnessMetrics().weeklyTrend > 0 ? '↗️' : calculateWellnessMetrics().weeklyTrend < 0 ? '↘️' : '→'} 
+                          {calculateWellnessMetrics().weeklyTrend > 0 ? ` +${calculateWellnessMetrics().weeklyTrend}%` : 
+                           calculateWellnessMetrics().weeklyTrend < 0 ? ` ${calculateWellnessMetrics().weeklyTrend}%` : ' 0%'} {t('stats.thisWeek')}
+                        </Text>
+                      </View>
+                    </View>
+
+                    {/* Wellness Pillars Grid */}
+                    <View style={styles.wellnessPillarsContainer}>
+                      <Text style={styles.wellnessSectionTitle}>{t('wellness.pillars.title')}</Text>
+                      <View style={styles.wellnessPillarsGrid}>
+                        <View style={styles.wellnessPillarCard}>
+                          <View style={styles.wellnessPillarIcon}>
+                            <Activity size={24} color={currentTheme.colors.success} />
+                          </View>
+                          <Text style={styles.wellnessPillarTitle}>{t('wellness.categories.physical')}</Text>
+                          <Text style={styles.wellnessPillarValue}>{calculateWellnessMetrics().exercise.score}%</Text>
+                          <View style={styles.wellnessPillarProgress}>
+                            <View style={[styles.wellnessPillarFill, { width: `${calculateWellnessMetrics().exercise.score}%`, backgroundColor: currentTheme.colors.success }]} />
+                          </View>
+                          <Text style={styles.wellnessPillarDesc}>{t('wellness.categories.physicalSubtitle')}</Text>
+                        </View>
+
+                        <View style={styles.wellnessPillarCard}>
+                          <View style={styles.wellnessPillarIcon}>
+                            <Brain size={24} color={currentTheme.colors.accent} />
+                          </View>
+                          <Text style={styles.wellnessPillarTitle}>{t('wellness.categories.mental')}</Text>
+                          <Text style={styles.wellnessPillarValue}>{calculateWellnessMetrics().meditation.score}%</Text>
+                          <View style={styles.wellnessPillarProgress}>
+                            <View style={[styles.wellnessPillarFill, { width: `${calculateWellnessMetrics().meditation.score}%`, backgroundColor: currentTheme.colors.accent }]} />
+                          </View>
+                          <Text style={styles.wellnessPillarDesc}>{t('wellness.categories.mentalSubtitle')}</Text>
+                        </View>
+
+                        <View style={styles.wellnessPillarCard}>
+                          <View style={styles.wellnessPillarIcon}>
+                            <Users size={24} color={currentTheme.colors.warning} />
+                          </View>
+                          <Text style={styles.wellnessPillarTitle}>{t('wellness.categories.social')}</Text>
+                          <Text style={styles.wellnessPillarValue}>{calculateWellnessMetrics().social.score}%</Text>
+                          <View style={styles.wellnessPillarProgress}>
+                            <View style={[styles.wellnessPillarFill, { width: `${calculateWellnessMetrics().social.score}%`, backgroundColor: currentTheme.colors.warning }]} />
+                          </View>
+                          <Text style={styles.wellnessPillarDesc}>{t('wellness.categories.socialSubtitle')}</Text>
+                        </View>
+
+                        <View style={styles.wellnessPillarCard}>
+                          <View style={styles.wellnessPillarIcon}>
+                            <Target size={24} color={currentTheme.colors.primary} />
+                          </View>
+                          <Text style={styles.wellnessPillarTitle}>{t('wellness.categories.spiritual')}</Text>
+                          <Text style={styles.wellnessPillarValue}>{calculateWellnessMetrics().sleep.score}%</Text>
+                          <View style={styles.wellnessPillarProgress}>
+                            <View style={[styles.wellnessPillarFill, { width: `${calculateWellnessMetrics().sleep.score}%`, backgroundColor: currentTheme.colors.primary }]} />
+                          </View>
+                          <Text style={styles.wellnessPillarDesc}>{t('wellness.categories.spiritualSubtitle')}</Text>
+                        </View>
+                      </View>
+                    </View>
+
+                    {/* Wellness Metrics */}
+                    <View style={styles.wellnessMetricsContainer}>
+                      <Text style={styles.wellnessSectionTitle}>{t('wellness.metrics.title')}</Text>
+                      <View style={styles.wellnessMetricsGrid}>
+                        <View style={styles.wellnessMetricCard}>
+                          <View style={styles.wellnessMetricIcon}>
+                            <Clock size={20} color={currentTheme.colors.success} />
+                          </View>
+                          <Text style={styles.wellnessMetricValue}>{calculateWellnessMetrics().sleep.avgHours}h</Text>
+                          <Text style={styles.wellnessMetricLabel}>{t('stats.wellness.metrics.avgSleep')}</Text>
+                          <Text style={styles.wellnessMetricTrend}>
+                            {calculateWellnessMetrics().sleep.trend > 0 ? '↗️' : calculateWellnessMetrics().sleep.trend < 0 ? '↘️' : '→'} 
+                            {calculateWellnessMetrics().sleep.trend > 0 ? ` +${calculateWellnessMetrics().sleep.trend}h` : 
+                             calculateWellnessMetrics().sleep.trend < 0 ? ` ${calculateWellnessMetrics().sleep.trend}h` : ' 0h'}
+                          </Text>
+                        </View>
+
+                        <View style={styles.wellnessMetricCard}>
+                          <View style={styles.wellnessMetricIcon}>
+                            <Activity size={20} color={currentTheme.colors.primary} />
+                          </View>
+                          <Text style={styles.wellnessMetricValue}>{calculateWellnessMetrics().exercise.avgSteps}k</Text>
+                          <Text style={styles.wellnessMetricLabel}>{t('stats.wellness.metrics.dailySteps')}</Text>
+                          <Text style={styles.wellnessMetricTrend}>
+                            {calculateWellnessMetrics().exercise.trend > 0 ? '↗️' : calculateWellnessMetrics().exercise.trend < 0 ? '↘️' : '→'} 
+                            {calculateWellnessMetrics().exercise.trend > 0 ? ` +${calculateWellnessMetrics().exercise.trend}k` : 
+                             calculateWellnessMetrics().exercise.trend < 0 ? ` ${calculateWellnessMetrics().exercise.trend}k` : ' 0k'}
+                          </Text>
+                        </View>
+
+                        <View style={styles.wellnessMetricCard}>
+                          <View style={styles.wellnessMetricIcon}>
+                            <Zap size={20} color={currentTheme.colors.warning} />
+                          </View>
+                          <Text style={styles.wellnessMetricValue}>{calculateWellnessMetrics().meditation.avgDuration}m</Text>
+                          <Text style={styles.wellnessMetricLabel}>{t('stats.wellness.metrics.meditation')}</Text>
+                          <Text style={styles.wellnessMetricTrend}>
+                            {calculateWellnessMetrics().meditation.trend > 0 ? '↗️' : calculateWellnessMetrics().meditation.trend < 0 ? '↘️' : '→'} 
+                            {calculateWellnessMetrics().meditation.trend > 0 ? ` +${calculateWellnessMetrics().meditation.trend}m` : 
+                             calculateWellnessMetrics().meditation.trend < 0 ? ` ${calculateWellnessMetrics().meditation.trend}m` : ' 0m'}
+                          </Text>
+                        </View>
+
+                        <View style={styles.wellnessMetricCard}>
+                          <View style={styles.wellnessMetricIcon}>
+                            <Users size={20} color={currentTheme.colors.accent} />
+                          </View>
+                          <Text style={styles.wellnessMetricValue}>{calculateWellnessMetrics().nutrition.avgWater}</Text>
+                          <Text style={styles.wellnessMetricLabel}>{t('stats.wellness.metrics.waterGlasses')}</Text>
+                          <Text style={styles.wellnessMetricTrend}>
+                            {calculateWellnessMetrics().nutrition.trend > 0 ? '↗️' : calculateWellnessMetrics().nutrition.trend < 0 ? '↘️' : '→'} 
+                            {calculateWellnessMetrics().nutrition.trend > 0 ? ` +${calculateWellnessMetrics().nutrition.trend}` : 
+                             calculateWellnessMetrics().nutrition.trend < 0 ? ` ${calculateWellnessMetrics().nutrition.trend}` : ' 0'}
+                          </Text>
+                        </View>
+                      </View>
+                    </View>
+
+                    {/* Wellness Add Button */}
+                    <View style={styles.wellnessAddContainer}>
+                                          <Text style={styles.wellnessSectionTitle}>{t('stats.wellness.trackYourWellness')}</Text>
+                    <Text style={styles.wellnessAddSubtitle}>{t('stats.wellness.addWellnessSubtitle')}</Text>
+                      
+                      <TouchableOpacity style={styles.wellnessAddButton} onPress={handleAddWellness}>
+                        <View style={styles.wellnessAddButtonContent}>
+                          <Text style={styles.wellnessAddButtonIcon}>+</Text>
+                          <Text style={styles.wellnessAddButtonText}>{t('stats.wellness.addWellnessActivity')}</Text>
+                        </View>
+                      </TouchableOpacity>
+                    </View>
+
+                    {/* Wellness Recommendations */}
+                    <View style={styles.wellnessRecommendationsContainer}>
+                      <Text style={styles.wellnessSectionTitle}>{t('stats.recommendations.title')}</Text>
+                      <View style={styles.wellnessRecommendationsList}>
+                        <TouchableOpacity style={styles.wellnessRecommendationCard}>
+                          <View style={styles.wellnessRecommendationIcon}>
+                            <Activity size={20} color={currentTheme.colors.success} />
+                          </View>
+                          <View style={styles.wellnessRecommendationContent}>
+                            <Text style={styles.wellnessRecommendationTitle}>{t('stats.wellness.recommendations.increaseMovement')}</Text>
+                            <Text style={styles.wellnessRecommendationDesc}>{t('stats.wellness.recommendations.increaseMovementDesc')}</Text>
+                          </View>
+                          <ChevronDown size={16} color={currentTheme.colors.textMuted} />
+                        </TouchableOpacity>
+
+                        <TouchableOpacity style={styles.wellnessRecommendationCard}>
+                          <View style={styles.wellnessRecommendationIcon}>
+                            <Clock size={20} color={currentTheme.colors.primary} />
+                          </View>
+                          <View style={styles.wellnessRecommendationContent}>
+                            <Text style={styles.wellnessRecommendationTitle}>{t('stats.wellness.recommendations.optimizeSleep')}</Text>
+                            <Text style={styles.wellnessRecommendationDesc}>{t('stats.wellness.recommendations.optimizeSleepDesc')}</Text>
+                          </View>
+                          <ChevronDown size={16} color={currentTheme.colors.textMuted} />
+                        </TouchableOpacity>
+
+                        <TouchableOpacity style={styles.wellnessRecommendationCard}>
+                          <View style={styles.wellnessRecommendationIcon}>
+                            <Brain size={20} color={currentTheme.colors.accent} />
+                          </View>
+                          <View style={styles.wellnessRecommendationContent}>
+                            <Text style={styles.wellnessRecommendationTitle}>{t('stats.wellness.recommendations.deepBreathing')}</Text>
+                            <Text style={styles.wellnessRecommendationDesc}>{t('stats.wellness.recommendations.deepBreathingDesc')}</Text>
+                          </View>
+                          <ChevronDown size={16} color={currentTheme.colors.textMuted} />
+                        </TouchableOpacity>
+                      </View>
+                    </View>
+                  </>
+                )}
+              </View>
+            ) : (
+              <View style={styles.wellnessFormSection}>
+                <View style={styles.wellnessFormHeader}>
+                  <TouchableOpacity style={styles.wellnessFormBackButton} onPress={handleCloseWellnessForm}>
+                    <Text style={styles.wellnessFormBackIcon}>←</Text>
+                    <Text style={styles.wellnessFormBackText}>{t('stats.wellness.backToWellness')}</Text>
+                  </TouchableOpacity>
+                </View>
+                
+                {selectedWellnessCategory === 'sleep' && (
+                  <SleepTrackingForm 
+                    onSave={handleCloseWellnessForm}
+                    onCancel={handleCloseWellnessForm}
+                  />
+                )}
+
+                {selectedWellnessCategory === 'exercise' && (
+                  <ExerciseTrackingForm 
+                    onSave={handleCloseWellnessForm}
+                    onCancel={handleCloseWellnessForm}
+                  />
+                )}
+
+                {selectedWellnessCategory === 'nutrition' && (
+                  <NutritionTrackingForm 
+                    onSave={handleCloseWellnessForm}
+                    onCancel={handleCloseWellnessForm}
+                  />
+                )}
+
+                {selectedWellnessCategory === 'meditation' && (
+                  <MeditationTrackingForm 
+                    onSave={handleCloseWellnessForm}
+                    onCancel={handleCloseWellnessForm}
+                  />
+                )}
+
+                {selectedWellnessCategory === 'social' && (
+                  <SocialActivityTrackingForm 
+                    onSave={handleCloseWellnessForm}
+                    onCancel={handleCloseWellnessForm}
+                  />
+                )}
+              </View>
+            )}
           </>
-        )}
+        );
 
-        {selectedInsightTab === 'activity' && (
-          <View style={styles.activityContainer}>
-            <View style={styles.activityHeader}>
-              <Text style={styles.sectionTitle}>📋 {t('stats.activity.title')}</Text>
-              <TouchableOpacity 
-                style={styles.exportButton}
-                onPress={handleActivityFilter}
-              >
-                <Filter size={14} color={currentTheme.colors.primary} />
-                <Text style={styles.exportText}>{t('stats.activity.filter')}</Text>
-              </TouchableOpacity>
-            </View>
-            <ActivityLog/>
-          </View>
-        )}
 
-        {selectedInsightTab === 'advanced' && isDataLoaded && (
-          <AdvancedAnalyticsDashboard 
-            moodData={moodData}
-            habitMoodData={habitMoodData}
-          />
-        )}
 
-        {/* Enhanced Calendar View - Now with Habit Heatmap */}
-        <View style={styles.heatmapContainer}>
-          <View style={styles.heatmapHeader}>
-            <Text style={styles.sectionTitle}>🔥 {t('stats.habitHeatmap.title')}</Text>
-            <Text style={styles.heatmapSubtitle}>{t('stats.habitHeatmap.subtitle')}</Text>
+
+
+      case 'advanced':
+        return (
+          <View style={styles.aiCoachingContainer}>
+            <View style={styles.aiCoachingHeader}>
+              <View style={styles.aiCoachingTitleContainer}>
+                <Text style={styles.sectionTitle}>🤖 {t('stats.aiCoaching.title')}</Text>
+                <View style={styles.betaTag}>
+                  <Text style={styles.betaText}>BETA</Text>
+                </View>
+              </View>
+              <Text style={styles.sectionSubtitle}>{t('stats.aiCoaching.subtitle')}</Text>
+            </View>
+            
+            {isDataLoaded ? (
+              <EnhancedCoachingDashboard 
+                moodData={moodData}
+                habitMoodData={habitMoodData}
+              />
+            ) : (
+              <View style={styles.aiCoachingCard}>
+                <View style={styles.aiCoachingIcon}>
+                  <Sparkles size={32} color={currentTheme.colors.primary} />
+                </View>
+                <Text style={styles.aiCoachingTitle}>{t('stats.aiCoaching.loading')}</Text>
+                <Text style={styles.aiCoachingDescription}>
+                  {t('stats.aiCoaching.preparingSession')}
+                </Text>
+              </View>
+            )}
           </View>
-          <HabitHeatmap 
-            data={generateHeatmapData(habits || [])}
-            onDayPress={(date, count) => {
-              // Handle day press - could show tooltip or details
-              console.log(`Date: ${date}, Habits completed: ${count}`);
-            }}
-          />
-          <View style={styles.heatmapStats}>
-            <View style={styles.heatmapStat}>
-              <Text style={styles.heatmapStatValue}>{getTotalHabitsThisYear(habits || [])}</Text>
-              <Text style={styles.heatmapStatLabel}>{t('stats.habitHeatmap.thisYear')}</Text>
-            </View>
-            <View style={styles.heatmapStat}>
-              <Text style={styles.heatmapStatValue}>{getLongestStreakThisYear(habits || [])}</Text>
-              <Text style={styles.heatmapStatLabel}>{t('stats.habitHeatmap.longestStreak')}</Text>
-            </View>
-            <View style={styles.heatmapStat}>
-              <Text style={styles.heatmapStatValue}>{getCurrentStreak(habits || [])}</Text>
-              <Text style={styles.heatmapStatLabel}>{t('stats.habitHeatmap.currentStreak')}</Text>
-            </View>
-          </View>
+        );
+
+      default:
+        return null;
+    }
+  };
+
+  const handleAnalyticsTabChange = (tab: AnalyticsTab) => {
+    // Check if user can access advanced analytics
+    if (tab === 'wellness' && !canUseWellnessIntegration()) {
+      showUpgradePrompt('wellness_integration');
+      return;
+    }
+    
+    if (tab === 'advanced' && !canUsePerformanceAlerts()) {
+      showUpgradePrompt('analytics_limit');
+      return;
+    }
+    
+    setSelectedAnalyticsTab(tab);
+  };
+
+  return (
+    <SafeAreaView style={styles.container}>
+      <StatusBar style={currentTheme.isDark ? 'light' : 'dark'} />
+      
+      {/* Enhanced Header */}
+      <View style={styles.header}>
+        <View style={styles.titleContainer}>
+          <Animated.View style={{
+            transform: [{
+              scale: animatedValue.interpolate({
+                inputRange: [0, 1],
+                outputRange: [1, 1.1]
+              })
+            }]
+          }}>
+            <BarChart3 size={24} color={currentTheme.colors.primary} style={styles.titleIcon} />
+          </Animated.View>
+          <Text style={styles.title}>{t('stats.title')}</Text>
         </View>
+        <Text style={styles.subtitle}>{t('stats.subtitle')}</Text>
+        <Text style={styles.motivationalMessage}>{getMotivationalMessage()}</Text>
+        {renderAnalyticsSubtabs()}
+      </View>
 
-        {/* Enhanced Individual Habit Breakdown */}
-        <View style={styles.habitsContainer}>
-          <View style={styles.habitsHeader}>
-            <Text style={styles.sectionTitle}>📋 {t('stats.habits.title')}</Text>
-            <TouchableOpacity 
-              style={styles.exportButton}
-              onPress={handleExportData}
-            >
-              <Download size={14} color={currentTheme.colors.primary} />
-              <Text style={styles.exportText}>{t('stats.habits.export')}</Text>
-            </TouchableOpacity>
-          </View>
-          <HabitStats habits={habits || []} />
-        </View>
 
-        {/* Enhanced Social Features */}
-        <View style={styles.socialContainer}>
-          <View style={styles.socialHeader}>
-            <Text style={styles.sectionTitle}>🤝 {t('stats.social.title')}</Text>
-          </View>
-          <View style={styles.socialButtons}>
-            <TouchableOpacity 
-              style={styles.socialButton}
-              onPress={handleShareProgress}
-            >
-              <Share2 size={16} color={currentTheme.colors.primary} />
-              <Text style={styles.socialButtonText}>{t('stats.social.share')}</Text>
-            </TouchableOpacity>
-            <TouchableOpacity 
-              style={styles.socialButton}
-              onPress={handleInviteFriends}
-            >
-              <Users size={16} color={currentTheme.colors.primary} />
-              <Text style={styles.socialButtonText}>{t('stats.social.invite')}</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
+
+      <ScrollView
+        style={styles.scrollView}
+        contentContainerStyle={styles.contentContainer}
+        showsVerticalScrollIndicator={false}
+      >
+        {/* Render content based on selected tab */}
+        {renderAnalyticsContent()}
       </ScrollView>
 
       {/* ShareProgress Modal */}
@@ -974,6 +1457,44 @@ export default function StatsScreen() {
         visible={showShareModal}
         onClose={() => setShowShareModal(false)}
       />
+
+      {/* Wellness Category Selection Popup */}
+      {showWellnessPopup && (
+        <View style={styles.modalOverlay}>
+          <View style={styles.wellnessPopup}>
+            <View style={styles.wellnessPopupHeader}>
+              <Text style={styles.wellnessPopupTitle}>{t('stats.wellness.selectCategory')}</Text>
+              <TouchableOpacity onPress={() => setShowWellnessPopup(false)}>
+                <Text style={styles.wellnessPopupClose}>✕</Text>
+              </TouchableOpacity>
+            </View>
+            <View style={styles.wellnessPopupContent}>
+              {[
+                { key: 'sleep', icon: '😴', title: t('stats.wellness.categories.sleep.title'), desc: t('stats.wellness.categories.sleep.desc') },
+                { key: 'exercise', icon: '🏃‍♂️', title: t('stats.wellness.categories.exercise.title'), desc: t('stats.wellness.categories.exercise.desc') },
+                { key: 'nutrition', icon: '🥗', title: t('stats.wellness.categories.nutrition.title'), desc: t('stats.wellness.categories.nutrition.desc') },
+                { key: 'meditation', icon: '🧘‍♀️', title: t('stats.wellness.categories.meditation.title'), desc: t('stats.wellness.categories.meditation.desc') },
+                { key: 'social', icon: '👥', title: t('stats.wellness.categories.social.title'), desc: t('stats.wellness.categories.social.desc') }
+              ].map((category) => (
+                <TouchableOpacity
+                  key={category.key}
+                  style={styles.wellnessPopupOption}
+                  onPress={() => handleSelectWellnessCategory(category.key)}
+                >
+                  <Text style={styles.wellnessPopupIcon}>{category.icon}</Text>
+                  <View style={styles.wellnessPopupOptionContent}>
+                    <Text style={styles.wellnessPopupOptionTitle}>{category.title}</Text>
+                    <Text style={styles.wellnessPopupOptionDesc}>{category.desc}</Text>
+                  </View>
+                  <Text style={styles.wellnessPopupArrow}>›</Text>
+                </TouchableOpacity>
+              ))}
+            </View>
+          </View>
+        </View>
+      )}
+
+
     </SafeAreaView>
   );
 }
@@ -1653,6 +2174,80 @@ const createStyles = (colors: any) => StyleSheet.create({
     color: colors.text,
     fontWeight: '500',
   },
+  advancedAnalyticsContainer: {
+    marginBottom: 24,
+  },
+  advancedAnalyticsHeader: {
+    marginBottom: 16,
+  },
+  aiCoachingContainer: {
+    marginBottom: 24,
+  },
+  aiCoachingHeader: {
+    marginBottom: 24,
+  },
+  aiCoachingTitleContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 4,
+  },
+  betaTag: {
+    backgroundColor: colors.primary,
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 8,
+    marginLeft: 8,
+  },
+  betaText: {
+    fontSize: 12,
+    fontWeight: 'bold',
+    color: colors.background,
+  },
+  aiCoachingCard: {
+    backgroundColor: colors.card,
+    borderRadius: 20,
+    padding: 24,
+    alignItems: 'center',
+    shadowColor: colors.shadow,
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.1,
+    shadowRadius: 12,
+    elevation: 6,
+  },
+  aiCoachingIcon: {
+    width: 64,
+    height: 64,
+    borderRadius: 32,
+    backgroundColor: `${colors.primary}15`,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 16,
+  },
+  aiCoachingTitle: {
+    fontSize: 20,
+    fontWeight: '700',
+    color: colors.text,
+    marginBottom: 12,
+    textAlign: 'center',
+  },
+  aiCoachingDescription: {
+    fontSize: 14,
+    color: colors.textSecondary,
+    textAlign: 'center',
+    lineHeight: 20,
+    marginBottom: 24,
+  },
+  aiCoachingButton: {
+    backgroundColor: colors.primary,
+    borderRadius: 12,
+    paddingVertical: 12,
+    paddingHorizontal: 24,
+  },
+  aiCoachingButtonText: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: colors.background,
+  },
   heatmapContainer: {
     backgroundColor: colors.card,
     borderRadius: 16,
@@ -1699,5 +2294,632 @@ const createStyles = (colors: any) => StyleSheet.create({
     textAlign: 'center',
     fontStyle: 'italic',
     padding: 20,
+  },
+
+  moodContainer: {
+    marginBottom: 24,
+  },
+  wellnessContainer: {
+    marginBottom: 24,
+  },
+  wellnessHeader: {
+    marginBottom: 24,
+  },
+  wellnessScoreContainer: {
+    marginBottom: 24,
+  },
+  wellnessScoreCard: {
+    backgroundColor: colors.card,
+    borderRadius: 20,
+    padding: 24,
+    shadowColor: colors.shadow,
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.1,
+    shadowRadius: 12,
+    elevation: 6,
+  },
+  wellnessScoreHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 16,
+  },
+  wellnessScoreTitle: {
+    fontSize: 18,
+    fontWeight: '600',
+    color: colors.text,
+    marginLeft: 12,
+  },
+  wellnessScoreValue: {
+    fontSize: 36,
+    fontWeight: '800',
+    color: colors.primary,
+    marginBottom: 12,
+  },
+  wellnessScoreProgress: {
+    width: '100%',
+    height: 8,
+    backgroundColor: colors.surface,
+    borderRadius: 4,
+    marginBottom: 8,
+    overflow: 'hidden',
+  },
+  wellnessScoreFill: {
+    height: '100%',
+    borderRadius: 4,
+  },
+  wellnessScoreTrend: {
+    fontSize: 14,
+    color: colors.success,
+    fontWeight: '500',
+  },
+  wellnessSectionTitle: {
+    fontSize: 18,
+    fontWeight: '600',
+    color: colors.text,
+    marginBottom: 16,
+  },
+  wellnessPillarsContainer: {
+    marginBottom: 24,
+  },
+  wellnessPillarsGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-between',
+    gap: 12,
+  },
+  wellnessPillarCard: {
+    width: '48%',
+    backgroundColor: colors.card,
+    borderRadius: 16,
+    padding: 16,
+    shadowColor: colors.shadow,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
+    elevation: 4,
+  },
+  wellnessPillarIcon: {
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    backgroundColor: `${colors.primary}15`,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 12,
+  },
+  wellnessPillarTitle: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: colors.text,
+    marginBottom: 8,
+  },
+  wellnessPillarValue: {
+    fontSize: 20,
+    fontWeight: '700',
+    color: colors.primary,
+    marginBottom: 8,
+  },
+  wellnessPillarProgress: {
+    width: '100%',
+    height: 4,
+    backgroundColor: colors.surface,
+    borderRadius: 2,
+    marginBottom: 8,
+    overflow: 'hidden',
+  },
+  wellnessPillarFill: {
+    height: '100%',
+    borderRadius: 2,
+  },
+  wellnessPillarDesc: {
+    fontSize: 12,
+    color: colors.textSecondary,
+  },
+  wellnessMetricsContainer: {
+    marginBottom: 24,
+  },
+  wellnessMetricsGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-between',
+    gap: 12,
+  },
+  wellnessMetricCard: {
+    width: '48%',
+    backgroundColor: colors.card,
+    borderRadius: 16,
+    padding: 16,
+    alignItems: 'center',
+    shadowColor: colors.shadow,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
+    elevation: 4,
+  },
+  wellnessMetricIcon: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: `${colors.primary}15`,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 8,
+  },
+  wellnessMetricValue: {
+    fontSize: 18,
+    fontWeight: '700',
+    color: colors.text,
+    marginBottom: 4,
+  },
+  wellnessMetricLabel: {
+    fontSize: 12,
+    color: colors.textSecondary,
+    marginBottom: 4,
+  },
+  wellnessMetricTrend: {
+    fontSize: 11,
+    color: colors.success,
+    fontWeight: '500',
+  },
+  wellnessInsightsContainer: {
+    marginBottom: 24,
+  },
+  wellnessInsightsList: {
+    gap: 12,
+  },
+  wellnessInsightCard: {
+    backgroundColor: colors.card,
+    borderRadius: 16,
+    padding: 16,
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    shadowColor: colors.shadow,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
+    elevation: 4,
+  },
+  wellnessInsightIcon: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: `${colors.primary}15`,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginRight: 12,
+  },
+  wellnessInsightContent: {
+    flex: 1,
+  },
+  wellnessInsightTitle: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: colors.text,
+    marginBottom: 4,
+  },
+  wellnessInsightDesc: {
+    fontSize: 12,
+    color: colors.textSecondary,
+    lineHeight: 16,
+  },
+  wellnessRecommendationsContainer: {
+    marginBottom: 24,
+  },
+  wellnessRecommendationsList: {
+    gap: 12,
+  },
+  wellnessRecommendationCard: {
+    backgroundColor: colors.card,
+    borderRadius: 16,
+    padding: 16,
+    flexDirection: 'row',
+    alignItems: 'center',
+    shadowColor: colors.shadow,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
+    elevation: 4,
+  },
+  wellnessRecommendationIcon: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: `${colors.primary}15`,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginRight: 12,
+  },
+  wellnessRecommendationContent: {
+    flex: 1,
+  },
+  wellnessRecommendationTitle: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: colors.text,
+    marginBottom: 4,
+  },
+  wellnessRecommendationDesc: {
+    fontSize: 12,
+    color: colors.textSecondary,
+    lineHeight: 16,
+  },
+  wellnessAddContainer: {
+    marginBottom: 24,
+  },
+  wellnessAddSubtitle: {
+    fontSize: 14,
+    color: colors.textSecondary,
+    marginBottom: 20,
+  },
+  wellnessAddButton: {
+    backgroundColor: colors.primary,
+    borderRadius: 16,
+    padding: 20,
+    shadowColor: colors.shadow,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
+    elevation: 4,
+  },
+  wellnessAddButtonContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  wellnessAddButtonIcon: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: colors.background,
+    marginRight: 12,
+  },
+  wellnessAddButtonText: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: colors.background,
+  },
+  wellnessFormSection: {
+    flex: 1,
+    backgroundColor: colors.background,
+  },
+  wellnessFormHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: colors.border,
+    backgroundColor: colors.card,
+  },
+  wellnessFormBackButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    borderRadius: 8,
+    backgroundColor: colors.surface,
+  },
+  wellnessFormBackIcon: {
+    fontSize: 18,
+    color: colors.primary,
+    marginRight: 8,
+    fontWeight: 'bold',
+  },
+  wellnessFormBackText: {
+    fontSize: 16,
+    color: colors.primary,
+    fontWeight: '600',
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingVertical: 40,
+  },
+  loadingText: {
+    fontSize: 16,
+    color: colors.textMuted,
+    textAlign: 'center',
+  },
+  modalOverlay: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    zIndex: 1000,
+  },
+  wellnessPopup: {
+    backgroundColor: colors.background,
+    borderRadius: 20,
+    padding: 20,
+    margin: 20,
+    maxWidth: 400,
+    width: '90%',
+    shadowColor: colors.shadow,
+    shadowOffset: { width: 0, height: 10 },
+    shadowOpacity: 0.3,
+    shadowRadius: 20,
+    elevation: 10,
+  },
+  wellnessPopupHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 20,
+  },
+  wellnessPopupTitle: {
+    fontSize: 18,
+    fontWeight: '600',
+    color: colors.text,
+  },
+  wellnessPopupClose: {
+    fontSize: 20,
+    color: colors.textMuted,
+    fontWeight: 'bold',
+  },
+  wellnessPopupContent: {
+    gap: 12,
+  },
+  wellnessPopupOption: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 16,
+    backgroundColor: colors.card,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: colors.border,
+  },
+  wellnessPopupIcon: {
+    fontSize: 24,
+    marginRight: 16,
+  },
+  wellnessPopupOptionContent: {
+    flex: 1,
+  },
+  wellnessPopupOptionTitle: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: colors.text,
+    marginBottom: 4,
+  },
+  wellnessPopupOptionDesc: {
+    fontSize: 14,
+    color: colors.textSecondary,
+  },
+  wellnessPopupArrow: {
+    fontSize: 18,
+    color: colors.textMuted,
+    fontWeight: 'bold',
+  },
+
+  wellnessFormCard: {
+    backgroundColor: colors.card,
+    borderRadius: 16,
+    padding: 20,
+    marginBottom: 16,
+    shadowColor: colors.shadow,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
+    elevation: 4,
+  },
+
+  wellnessFormTitle: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: colors.text,
+    marginLeft: 12,
+  },
+  wellnessFormContent: {
+    gap: 16,
+  },
+  wellnessFormRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  wellnessFormLabel: {
+    fontSize: 14,
+    color: colors.textSecondary,
+    flex: 1,
+  },
+  wellnessFormInput: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: colors.surface,
+    borderRadius: 8,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    minWidth: 80,
+  },
+  wellnessFormValue: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: colors.text,
+    marginRight: 4,
+  },
+  wellnessFormUnit: {
+    fontSize: 12,
+    color: colors.textSecondary,
+  },
+  wellnessFormOptions: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 8,
+  },
+  wellnessFormOption: {
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 16,
+    backgroundColor: colors.surface,
+    borderWidth: 1,
+    borderColor: colors.border,
+  },
+  wellnessFormOptionActive: {
+    backgroundColor: colors.primary,
+    borderColor: colors.primary,
+  },
+  wellnessFormOptionText: {
+    fontSize: 12,
+    color: colors.textSecondary,
+    fontWeight: '500',
+  },
+  wellnessFormOptionTextActive: {
+    color: colors.background,
+  },
+  wellnessQualityStars: {
+    flexDirection: 'row',
+    gap: 4,
+  },
+  wellnessStar: {
+    padding: 2,
+  },
+  wellnessStarText: {
+    fontSize: 16,
+    opacity: 0.3,
+  },
+  wellnessStarActive: {
+    opacity: 1,
+  },
+  wellnessStressLevel: {
+    flexDirection: 'row',
+    gap: 8,
+  },
+  wellnessStressDot: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    backgroundColor: colors.surface,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth: 2,
+    borderColor: colors.border,
+  },
+  wellnessStressDotLow: {
+    backgroundColor: colors.success,
+    borderColor: colors.success,
+  },
+  wellnessStressText: {
+    fontSize: 12,
+    fontWeight: '600',
+    color: colors.text,
+  },
+  wellnessFormButton: {
+    backgroundColor: colors.primary,
+    borderRadius: 12,
+    paddingVertical: 12,
+    paddingHorizontal: 20,
+    alignItems: 'center',
+    marginTop: 8,
+  },
+  wellnessFormButtonText: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: colors.background,
+  },
+  sectionSubtitle: {
+    fontSize: 14,
+    color: colors.textSecondary,
+    marginBottom: 16,
+  },
+
+  analyticsTabsContainer: {
+    marginBottom: 24,
+  },
+  analyticsTabsTitle: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: colors.text,
+    marginBottom: 12,
+    textAlign: 'center',
+  },
+  analyticsTabs: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    gap: 8,
+  },
+  analyticsTab: {
+    flex: 1,
+    paddingVertical: 16,
+    paddingHorizontal: 12,
+    borderRadius: 16,
+    alignItems: 'center',
+    backgroundColor: colors.card,
+    borderWidth: 2,
+    borderColor: 'transparent',
+    shadowColor: colors.shadow,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+    position: 'relative',
+  },
+  activeAnalyticsTab: {
+    backgroundColor: colors.background,
+    shadowColor: colors.shadow,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.15,
+    shadowRadius: 8,
+    elevation: 6,
+  },
+  analyticsTabIcon: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 8,
+  },
+  analyticsTabText: {
+    fontSize: 12,
+    fontWeight: '700',
+    color: colors.text,
+    textAlign: 'center',
+    marginBottom: 4,
+  },
+  activeAnalyticsTabText: {
+    color: colors.primary,
+  },
+  analyticsTabDescription: {
+    fontSize: 10,
+    color: colors.textSecondary,
+    textAlign: 'center',
+    lineHeight: 12,
+  },
+  activeAnalyticsTabDescription: {
+    color: colors.textMuted,
+  },
+  analyticsTabIndicator: {
+    position: 'absolute',
+    bottom: -2,
+    left: '50%',
+    width: 20,
+    height: 3,
+    borderRadius: 2,
+    transform: [{ translateX: -10 }],
+  },
+  upgradeContainer: {
+    backgroundColor: colors.surface,
+    borderRadius: 12,
+    padding: 20,
+    marginVertical: 10,
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: colors.border,
+  },
+  upgradeButton: {
+    backgroundColor: colors.primary,
+    paddingVertical: 12,
+    paddingHorizontal: 24,
+    borderRadius: 8,
+    marginTop: 12,
+  },
+  upgradeButtonText: {
+    color: colors.background,
+    fontSize: 16,
+    fontWeight: '600',
+    textAlign: 'center',
   },
 });

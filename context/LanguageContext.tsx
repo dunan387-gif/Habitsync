@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useAuth } from '@/context/AuthContext';
 
 // Import all translation files statically
 import enTranslations from '../translations/en.json';
@@ -23,7 +24,7 @@ type LanguageContextType = {
 
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
 
-const LANGUAGE_STORAGE_KEY = '@productivity_app_language';
+
 
 // Translation map for static imports
 const TRANSLATION_MAP: Record<string, any> = {
@@ -43,13 +44,23 @@ const AVAILABLE_LANGUAGES: Language[] = [
 const DEFAULT_LANGUAGE = AVAILABLE_LANGUAGES[0]; // English
 
 export function LanguageProvider({ children }: { children: ReactNode }) {
+  const { user } = useAuth();
   const [currentLanguage, setCurrentLanguage] = useState<Language>(DEFAULT_LANGUAGE);
   const [isLoading, setIsLoading] = useState(true);
   const [translations, setTranslations] = useState<any>({});
 
+  // Get user-specific storage key
+  const getStorageKey = () => {
+    const userId = user?.id || 'anonymous';
+    return `@productivity_app_language_${userId}`;
+  };
+
   useEffect(() => {
-    loadLanguagePreference();
-  }, []);
+    // Only load data if auth is not loading
+    if (!user || user.id) {
+      loadLanguagePreference();
+    }
+  }, [user?.id]);
 
   useEffect(() => {
     loadTranslations(currentLanguage.code);
@@ -57,7 +68,8 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
 
   const loadLanguagePreference = async () => {
     try {
-      const storedLanguage = await AsyncStorage.getItem(LANGUAGE_STORAGE_KEY);
+      const storageKey = getStorageKey();
+      const storedLanguage = await AsyncStorage.getItem(storageKey);
       if (storedLanguage) {
         const language = AVAILABLE_LANGUAGES.find(l => l.code === storedLanguage);
         if (language) {
@@ -97,7 +109,8 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
       }
 
       setCurrentLanguage(language);
-      await AsyncStorage.setItem(LANGUAGE_STORAGE_KEY, languageCode);
+      const storageKey = getStorageKey();
+      await AsyncStorage.setItem(storageKey, languageCode);
     } catch (error) {
       console.error('Failed to set language:', error);
       throw error;

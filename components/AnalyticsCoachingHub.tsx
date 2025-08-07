@@ -27,7 +27,7 @@ export default function AnalyticsCoachingHub({ moodData, habitMoodData }: Analyt
           onPress={() => setActiveView('analytics')}
         >
           <Text style={[styles.navButtonText, activeView === 'analytics' && styles.activeNavButtonText]}>
-            📊 Analytics
+            {t('analytics.title')}
           </Text>
         </TouchableOpacity>
         
@@ -36,7 +36,7 @@ export default function AnalyticsCoachingHub({ moodData, habitMoodData }: Analyt
           onPress={() => setActiveView('coaching')}
         >
           <Text style={[styles.navButtonText, activeView === 'coaching' && styles.activeNavButtonText]}>
-            🤖 Coaching
+            {t('analytics.coaching')}
           </Text>
         </TouchableOpacity>
       </View>

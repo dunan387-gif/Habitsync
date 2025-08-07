@@ -97,10 +97,10 @@ const HabitHeatmap: React.FC<HabitHeatmapProps> = ({
 
   const weeks = generateMonthCalendarData();
   const monthNames = [
-    'January', 'February', 'March', 'April', 'May', 'June',
-    'July', 'August', 'September', 'October', 'November', 'December'
+    t('habitHeatmap.months.january'), t('habitHeatmap.months.february'), t('habitHeatmap.months.march'), t('habitHeatmap.months.april'), t('habitHeatmap.months.may'), t('habitHeatmap.months.june'),
+    t('habitHeatmap.months.july'), t('habitHeatmap.months.august'), t('habitHeatmap.months.september'), t('habitHeatmap.months.october'), t('habitHeatmap.months.november'), t('habitHeatmap.months.december')
   ];
-const dayLabels = [t('sun'), t('mon'), t('tue'), t('wed'), t('thu'), t('fri'), t('sat')];
+const dayLabels = [t('habitHeatmap.weekdays.sun'), t('habitHeatmap.weekdays.mon'), t('habitHeatmap.weekdays.tue'), t('habitHeatmap.weekdays.wed'), t('habitHeatmap.weekdays.thu'), t('habitHeatmap.weekdays.fri'), t('habitHeatmap.weekdays.sat')];
   
   const currentMonthName = monthNames[selectedDate.getMonth()];
   const currentYear = selectedDate.getFullYear();

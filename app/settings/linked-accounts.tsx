@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -14,14 +14,7 @@ import { useRouter } from 'expo-router';
 import { useTheme } from '@/context/ThemeContext';
 import { useLanguage } from '@/context/LanguageContext';
 import { useAuth } from '@/context/AuthContext';
-
-interface LinkedAccount {
-  id: string;
-  provider: string;
-  email?: string;
-  isConnected: boolean;
-  connectedAt?: string;
-}
+import { AuthService, LinkedAccount } from '@/services/AuthService';
 
 export default function LinkedAccountsScreen() {
   const { currentTheme } = useTheme();
@@ -29,54 +22,43 @@ export default function LinkedAccountsScreen() {
   const { user } = useAuth();
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
-  
-  // Mock data - replace with actual API data
-  const [linkedAccounts, setLinkedAccounts] = useState<LinkedAccount[]>([
-    {
-      id: '1',
-      provider: 'Google',
-      email: 'user@gmail.com',
-      isConnected: true,
-      connectedAt: '2024-01-15',
-    },
-    {
-      id: '2',
-      provider: 'Apple',
-      isConnected: false,
-    },
-    {
-      id: '3',
-      provider: 'Facebook',
-      isConnected: false,
-    },
-  ]);
+  const [linkedAccounts, setLinkedAccounts] = useState<LinkedAccount[]>([]);
+  const [isLoadingAccounts, setIsLoadingAccounts] = useState(true);
 
   const styles = createStyles(currentTheme.colors);
+
+  // Load linked accounts on component mount
+  useEffect(() => {
+    loadLinkedAccounts();
+  }, []);
+
+  const loadLinkedAccounts = async () => {
+    try {
+      setIsLoadingAccounts(true);
+      const accounts = await AuthService.getLinkedAccounts();
+      setLinkedAccounts(accounts);
+    } catch (error: any) {
+      console.error('Failed to load linked accounts:', error);
+      Alert.alert(t('linkedAccounts.alerts.error'), error.message);
+    } finally {
+      setIsLoadingAccounts(false);
+    }
+  };
 
   const handleToggleAccount = async (accountId: string, currentStatus: boolean) => {
     setIsLoading(true);
     try {
-      // TODO: Implement API call to connect/disconnect account
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      const action = currentStatus ? 'unlink' : 'link';
+      await AuthService.toggleLinkedAccount(accountId, action);
       
-      setLinkedAccounts(prev => 
-        prev.map(account => 
-          account.id === accountId 
-            ? { 
-                ...account, 
-                isConnected: !currentStatus,
-                connectedAt: !currentStatus ? new Date().toISOString().split('T')[0] : undefined,
-                email: !currentStatus ? `user@${account.provider.toLowerCase()}.com` : undefined
-              }
-            : account
-        )
-      );
+      // Refresh the accounts list
+      await loadLinkedAccounts();
       
-      const action = currentStatus ? t('linkedAccounts.alerts.successDisconnected') : t('linkedAccounts.alerts.successConnected');
+      const actionText = currentStatus ? t('linkedAccounts.alerts.successDisconnected') : t('linkedAccounts.alerts.successConnected');
       const account = linkedAccounts.find(acc => acc.id === accountId);
-      Alert.alert(t('linkedAccounts.alerts.success'), `${action} ${account?.provider}`);
-    } catch (error) {
-      Alert.alert(t('linkedAccounts.alerts.error'), t('linkedAccounts.alerts.failedToUpdate'));
+      Alert.alert(t('linkedAccounts.alerts.success'), `${actionText} ${account?.provider}`);
+    } catch (error: any) {
+      Alert.alert(t('linkedAccounts.alerts.error'), error.message || t('linkedAccounts.alerts.failedToUpdate'));
     } finally {
       setIsLoading(false);
     }
@@ -161,6 +143,7 @@ const createStyles = (colors: any) => StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: 20,
     paddingVertical: 16,
+    paddingTop: 50,
     borderBottomWidth: 1,
     borderBottomColor: colors.border,
   },

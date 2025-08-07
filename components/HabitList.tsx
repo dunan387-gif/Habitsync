@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Alert } from 'react-native';
-import DraggableFlatList, { RenderItemParams, ScaleDecorator } from 'react-native-draggable-flatlist';
+import React, { useState, useMemo, useCallback, useRef } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, Alert, Animated } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import DraggableFlatList, { ScaleDecorator } from 'react-native-draggable-flatlist';
 import { Trash2, X, CheckSquare } from 'lucide-react-native';
 import HabitItem from './HabitItem';
+import StreakSummary from './StreakSummary';
 import { useHabits } from '@/context/HabitContext';
 import { useTheme } from '@/context/ThemeContext';
 import { useLanguage } from '@/context/LanguageContext';
@@ -11,52 +12,151 @@ import { Habit } from '@/types';
 
 type HabitListProps = {
   habits: Habit[];
+  completedCount?: number;
+  totalCount?: number;
 };
 
-export default function HabitList({ habits }: HabitListProps) {
+// Memoized sub-components for better performance
+const MultiSelectHeader = React.memo(({ 
+  selectedHabits, 
+  onSelectAll, 
+  onBulkDelete, 
+  onCancel, 
+  t, 
+  colors 
+}: {
+  selectedHabits: string[];
+  onSelectAll: () => void;
+  onBulkDelete: () => void;
+  onCancel: () => void;
+  t: (key: string) => string;
+  colors: any;
+}) => {
+  const styles = createStyles(colors);
+  
+  return (
+    <View style={styles.multiSelectHeader}>
+      <View style={styles.multiSelectInfo}>
+        <Text style={styles.selectedCount}>
+          {selectedHabits.length} {t('selected')}
+        </Text>
+        <TouchableOpacity 
+          style={styles.selectAllButton}
+          onPress={onSelectAll}
+        >
+          <CheckSquare size={20} color={colors.primary} />
+          <Text style={styles.selectAllText}>{t('select_all')}</Text>
+        </TouchableOpacity>
+      </View>
+      <View style={styles.multiSelectActions}>
+        <TouchableOpacity 
+          style={[styles.actionButton, styles.deleteButton]}
+          onPress={onBulkDelete}
+          disabled={selectedHabits.length === 0}
+        >
+          <Trash2 size={20} color="#FFFFFF" />
+          <Text style={styles.deleteButtonText}>{t('delete')}</Text>
+        </TouchableOpacity>
+        <TouchableOpacity 
+          style={[styles.actionButton, styles.cancelButton]}
+          onPress={onCancel}
+        >
+          <X size={20} color={colors.text} />
+        </TouchableOpacity>
+      </View>
+    </View>
+  );
+});
+
+const MultiSelectToggle = React.memo(({ onPress, t, colors }: {
+  onPress: () => void;
+  t: (key: string) => string;
+  colors: any;
+}) => {
+  const styles = createStyles(colors);
+  
+  return (
+    <TouchableOpacity 
+      style={styles.multiSelectToggle}
+      onPress={onPress}
+    >
+      <CheckSquare size={20} color={colors.primary} />
+      <Text style={styles.multiSelectToggleText}>{t('select_multiple')}</Text>
+    </TouchableOpacity>
+  );
+});
+
+const SectionHeader = React.memo(({ title, count, t, colors }: {
+  title: string;
+  count?: number;
+  t: (key: string) => string;
+  colors: any;
+}) => {
+  const styles = createStyles(colors);
+  
+  return (
+    <View style={styles.sectionHeader}>
+      <Text style={styles.sectionTitle}>{title}</Text>
+      {count !== undefined && (
+        <View style={styles.completedBadge}>
+          <Text style={styles.completedBadgeText}>{count}</Text>
+        </View>
+      )}
+    </View>
+  );
+});
+
+export default function HabitList({ habits, completedCount = 0, totalCount = 0 }: HabitListProps) {
   const { reorderHabits, deleteMultipleHabits } = useHabits();
   const { currentTheme } = useTheme();
   const { t } = useLanguage();
-  const [isDragActive, setIsDragActive] = useState(false);
   const [isMultiSelectMode, setIsMultiSelectMode] = useState(false);
   const [selectedHabits, setSelectedHabits] = useState<string[]>([]);
+  const flatListRef = useRef<any>(null);
   
-  // Split habits into completed and incomplete sections
-  const completedHabits = habits.filter(habit => habit.completedToday);
-  const incompleteHabits = habits.filter(habit => !habit.completedToday);
+  // Memoized data processing - optimized for performance
+  const { completedHabits, incompleteHabits } = useMemo(() => {
+    if (!habits || habits.length === 0) {
+      return { completedHabits: [], incompleteHabits: [] };
+    }
+    
+    const completed: Habit[] = [];
+    const incomplete: Habit[] = [];
+    
+    // Single pass through habits array for better performance
+    for (let i = 0; i < habits.length; i++) {
+      const habit = habits[i];
+      if (habit.completedToday) {
+        completed.push(habit);
+      } else {
+        incomplete.push(habit);
+      }
+    }
+    
+    return { completedHabits: completed, incompleteHabits: incomplete };
+  }, [habits]);
   
-  const handleDragEnd = ({ data }: { data: Habit[] }) => {
-    requestAnimationFrame(() => {
-      const reorderedIncomplete = data.filter(habit => !habit.completedToday);
-      const allHabits = [...reorderedIncomplete, ...completedHabits];
-      reorderHabits(allHabits);
-      setIsDragActive(false);
-    });
-  };
+
   
-  const handleDragBegin = () => {
-    setIsDragActive(true);
-  };
-  
-  const toggleMultiSelectMode = () => {
+  const toggleMultiSelectMode = useCallback(() => {
     setIsMultiSelectMode(!isMultiSelectMode);
     setSelectedHabits([]);
-  };
+  }, [isMultiSelectMode]);
   
-  const toggleHabitSelection = (habitId: string) => {
+  const toggleHabitSelection = useCallback((habitId: string) => {
     setSelectedHabits(prev => 
       prev.includes(habitId) 
         ? prev.filter(id => id !== habitId)
         : [...prev, habitId]
     );
-  };
+  }, []);
   
-  const selectAllHabits = () => {
+  const selectAllHabits = useCallback(() => {
     const allHabitIds = habits.map(habit => habit.id);
     setSelectedHabits(allHabitIds);
-  };
+  }, [habits]);
   
-  const handleBulkDelete = () => {
+  const handleBulkDelete = useCallback(() => {
     if (selectedHabits.length === 0) return;
     
     const count = selectedHabits.length;
@@ -78,22 +178,20 @@ export default function HabitList({ habits }: HabitListProps) {
         },
       ]
     );
-  };
+  }, [selectedHabits, deleteMultipleHabits, t]);
+
+  // Drag and drop functions - optimized for performance
+  const handleDragEnd = useCallback(({ data }: { data: Habit[] }) => {
+    // Use requestAnimationFrame to defer the heavy work
+    requestAnimationFrame(() => {
+      console.log('Drag ended, reordering habits');
+      // Combine with completed habits and update
+      const allHabits = [...data, ...completedHabits];
+      reorderHabits(allHabits);
+    });
+  }, [completedHabits, reorderHabits]);
   
-  const renderHabitItem = ({ item, drag, isActive }: RenderItemParams<Habit>) => {
-    return (
-      <ScaleDecorator>
-        <HabitItem 
-          habit={item} 
-          onLongPress={!isMultiSelectMode ? drag : undefined}
-          isActive={isActive}
-          isMultiSelectMode={isMultiSelectMode}
-          isSelected={selectedHabits.includes(item.id)}
-          onToggleSelection={() => toggleHabitSelection(item.id)}
-        />
-      </ScaleDecorator>
-    );
-  };
+
   
   const styles = createStyles(currentTheme.colors);
   
@@ -101,113 +199,93 @@ export default function HabitList({ habits }: HabitListProps) {
     <GestureHandlerRootView style={styles.container}>
       {/* Multi-select header */}
       {isMultiSelectMode && (
-        <View style={styles.multiSelectHeader}>
-          <View style={styles.multiSelectInfo}>
-            <Text style={styles.selectedCount}>
-              {selectedHabits.length} {t('selected')}
-            </Text>
-            <TouchableOpacity 
-              style={styles.selectAllButton}
-              onPress={selectAllHabits}
-            >
-              <CheckSquare size={20} color={currentTheme.colors.primary} />
-              <Text style={styles.selectAllText}>{t('select_all')}</Text>
-            </TouchableOpacity>
-          </View>
-          <View style={styles.multiSelectActions}>
-            <TouchableOpacity 
-              style={[styles.actionButton, styles.deleteButton]}
-              onPress={handleBulkDelete}
-              disabled={selectedHabits.length === 0}
-            >
-              <Trash2 size={20} color="#FFFFFF" />
-              <Text style={styles.deleteButtonText}>{t('delete')}</Text>
-            </TouchableOpacity>
-            <TouchableOpacity 
-              style={[styles.actionButton, styles.cancelButton]}
-              onPress={toggleMultiSelectMode}
-            >
-              <X size={20} color={currentTheme.colors.text} />
-            </TouchableOpacity>
-          </View>
+        <MultiSelectHeader
+          selectedHabits={selectedHabits}
+          onSelectAll={selectAllHabits}
+          onBulkDelete={handleBulkDelete}
+          onCancel={toggleMultiSelectMode}
+          t={t}
+          colors={currentTheme.colors}
+        />
+      )}
+      
+      {/* Multi-select toggle button */}
+      {!isMultiSelectMode && habits.length > 0 && (
+        <View style={styles.toggleContainer}>
+          <MultiSelectToggle
+            onPress={toggleMultiSelectMode}
+            t={t}
+            colors={currentTheme.colors}
+          />
         </View>
       )}
       
-      <ScrollView 
-        style={styles.scrollContainer}
-        contentContainerStyle={styles.contentContainer}
+      {/* Use DraggableFlatList for better drag and drop handling */}
+      <DraggableFlatList
+        ref={flatListRef}
+        data={incompleteHabits}
+        keyExtractor={(item) => item.id}
+        onDragEnd={handleDragEnd}
+        renderItem={useCallback(({ item, drag, isActive }: any) => (
+          <ScaleDecorator>
+            <HabitItem 
+              habit={item as Habit} 
+              onLongPress={isMultiSelectMode ? undefined : drag}
+              isActive={isActive}
+              isMultiSelectMode={isMultiSelectMode}
+              isSelected={selectedHabits.includes((item as Habit).id)}
+              onToggleSelection={() => toggleHabitSelection((item as Habit).id)}
+            />
+          </ScaleDecorator>
+        ), [isMultiSelectMode, selectedHabits, toggleHabitSelection])}
         showsVerticalScrollIndicator={false}
-        bounces={true}
-        keyboardShouldPersistTaps="handled"
-        scrollEnabled={!isDragActive}
-        nestedScrollEnabled={true}
-      >
-        {/* Multi-select toggle button */}
-        {!isMultiSelectMode && habits.length > 0 && (
-          <TouchableOpacity 
-            style={styles.multiSelectToggle}
-            onPress={toggleMultiSelectMode}
-          >
-            <CheckSquare size={20} color={currentTheme.colors.primary} />
-            <Text style={styles.multiSelectToggleText}>{t('select_multiple')}</Text>
-          </TouchableOpacity>
-        )}
-        
-        {incompleteHabits.length > 0 && (
-          <View style={styles.section}>
-            <View style={styles.sectionHeader}>
-              <Text style={styles.sectionTitle}>{t('to_complete')}</Text>
-            </View>
-            <View style={styles.draggableContainer}>
-              <DraggableFlatList
-                data={incompleteHabits}
-                onDragEnd={handleDragEnd}
-                onDragBegin={handleDragBegin}
-                keyExtractor={(item) => item.id}
-                renderItem={renderHabitItem}
-                showsVerticalScrollIndicator={false}
-                scrollEnabled={false}
-                nestedScrollEnabled={true}
-                removeClippedSubviews={false}
-                maxToRenderPerBatch={10}
-                windowSize={10}
-                initialNumToRender={8}
-                containerStyle={styles.flatListContainer}
-                activationDistance={50} // Reduced from 100 for more responsive drag
-                dragItemOverflow={true}
-                autoscrollThreshold={80} // Increased for better auto-scroll
-                autoscrollSpeed={150} // Increased speed for smoother scrolling
-                simultaneousHandlers={[]}
-                animationConfig={{
-                  damping: 20, // Smoother animation
-                  stiffness: 200, // More responsive
-                  mass: 0.8, // Lighter feel
-                }}
-              />
-            </View>
-          </View>
-        )}
-        
-        {completedHabits.length > 0 && (
-          <View style={styles.section}>
-            <View style={styles.sectionHeader}>
-              <Text style={styles.sectionTitle}>{t('completed')}</Text>
-              <View style={styles.completedBadge}>
-                <Text style={styles.completedBadgeText}>{completedHabits.length}</Text>
+        removeClippedSubviews={true}
+        maxToRenderPerBatch={5}
+        windowSize={5}
+        initialNumToRender={5}
+        updateCellsBatchingPeriod={50}
+        contentContainerStyle={styles.flatListContainer}
+        ListHeaderComponent={() => (
+          <View style={styles.headerContainer}>
+            <StreakSummary 
+              completedCount={completedCount} 
+              totalCount={totalCount} 
+            />
+            {incompleteHabits.length > 0 && (
+              <View style={styles.section}>
+                <SectionHeader
+                  title={t('to_complete')}
+                  t={t}
+                  colors={currentTheme.colors}
+                />
               </View>
-            </View>
-            {completedHabits.map((habit) => (
-              <HabitItem 
-                key={habit.id} 
-                habit={habit} 
-                isMultiSelectMode={isMultiSelectMode}
-                isSelected={selectedHabits.includes(habit.id)}
-                onToggleSelection={() => toggleHabitSelection(habit.id)}
-              />
-            ))}
+            )}
           </View>
         )}
-      </ScrollView>
+        ListFooterComponent={() => (
+          <View style={styles.footerContainer}>
+            {completedHabits.length > 0 && (
+              <View style={styles.section}>
+                <SectionHeader
+                  title={t('completed')}
+                  count={completedHabits.length}
+                  t={t}
+                  colors={currentTheme.colors}
+                />
+                {completedHabits.map((habit) => (
+                  <HabitItem 
+                    key={habit.id} 
+                    habit={habit} 
+                    isMultiSelectMode={isMultiSelectMode}
+                    isSelected={selectedHabits.includes(habit.id)}
+                    onToggleSelection={() => toggleHabitSelection(habit.id)}
+                  />
+                ))}
+              </View>
+            )}
+          </View>
+        )}
+      />
     </GestureHandlerRootView>
   );
 }
@@ -216,18 +294,20 @@ const createStyles = (colors: any) => StyleSheet.create({
   container: {
     flex: 1,
   },
-  scrollContainer: {
-    flex: 1,
-  },
-  contentContainer: {
-    paddingBottom: 100,
+  toggleContainer: {
     paddingHorizontal: 4,
-  },
-  draggableContainer: {
-    minHeight: 50,
+    paddingVertical: 8,
   },
   flatListContainer: {
     flexGrow: 1,
+    paddingHorizontal: 4,
+    paddingBottom: 100,
+  },
+  headerContainer: {
+    paddingHorizontal: 4,
+  },
+  footerContainer: {
+    paddingHorizontal: 4,
   },
   section: {
     marginBottom: 20,

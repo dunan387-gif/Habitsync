@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text } from 'react-native';
 import Slider from '@react-native-community/slider';
+import { useLanguage } from '@/context/LanguageContext';
 
 interface AdvancedMoodSelectorProps {
   onMoodSelect: (mood: EnhancedMoodData) => void;
@@ -17,6 +18,7 @@ interface EnhancedMoodData {
 }
 
 export default function AdvancedMoodSelector({ onMoodSelect }: AdvancedMoodSelectorProps) {
+  const { t } = useLanguage();
   const [moodData, setMoodData] = useState<EnhancedMoodData>({
     primary: '',
     intensity: 5,
@@ -29,7 +31,7 @@ export default function AdvancedMoodSelector({ onMoodSelect }: AdvancedMoodSelec
   return (
     <View>
       {/* Multi-dimensional mood selection interface */}
-      <Text>Energy Level (Arousal)</Text>
+      <Text>{t('advancedMoodSelector.energyLevel')}</Text>
       <Slider
         value={moodData.arousal}
         onValueChange={(value: number) => setMoodData({...moodData, arousal: value})}
@@ -38,7 +40,7 @@ export default function AdvancedMoodSelector({ onMoodSelect }: AdvancedMoodSelec
         step={1}
       />
       
-      <Text>Positivity (Valence)</Text>
+      <Text>{t('advancedMoodSelector.positivity')}</Text>
       <Slider
         value={moodData.valence}
         onValueChange={(value: number) => setMoodData({...moodData, valence: value})}
@@ -47,7 +49,7 @@ export default function AdvancedMoodSelector({ onMoodSelect }: AdvancedMoodSelec
         step={1}
       />
       
-      <Text>Control (Dominance)</Text>
+      <Text>{t('advancedMoodSelector.control')}</Text>
       <Slider
         value={moodData.dominance}
         onValueChange={(value: number) => setMoodData({...moodData, dominance: value})}

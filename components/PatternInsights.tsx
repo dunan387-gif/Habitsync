@@ -1,6 +1,10 @@
 import React, { useMemo } from 'react';
-import { View, Text, ScrollView } from 'react-native';
+import { View, Text, ScrollView, TouchableOpacity, StyleSheet } from 'react-native';
 import { MoodEntry, HabitMoodEntry } from '../types';
+import { useLanguage } from '@/context/LanguageContext';
+import { useTheme } from '@/context/ThemeContext';
+import { useSubscription } from '@/context/SubscriptionContext';
+import { Crown } from 'lucide-react-native';
 
 interface PatternInsightsProps {
   moodData: MoodEntry[];
@@ -8,6 +12,38 @@ interface PatternInsightsProps {
 }
 
 export default function PatternInsights({ moodData, habitData }: PatternInsightsProps) {
+  const { t } = useLanguage();
+  const { currentTheme } = useTheme();
+  const { canUsePatternInsights, showUpgradePrompt } = useSubscription();
+  
+  // Safety check for currentTheme
+  if (!currentTheme || !currentTheme.colors) {
+    return (
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <Text>Loading...</Text>
+      </View>
+    );
+  }
+  
+  const styles = createStyles(currentTheme.colors);
+
+  // Check if user can access pattern insights
+  if (!canUsePatternInsights()) {
+    return (
+      <View style={styles.upgradeContainer}>
+        <Crown size={48} color={currentTheme.colors.primary} />
+        <Text style={styles.upgradeTitle}>{t('patternInsights.upgradeRequired')}</Text>
+        <Text style={styles.upgradeMessage}>{t('patternInsights.upgradeMessage')}</Text>
+        <TouchableOpacity 
+          style={styles.upgradeButton}
+          onPress={() => showUpgradePrompt('pattern_insights')}
+        >
+                      <Text style={styles.upgradeButtonText}>{t('premium.upgradeToPro')}</Text>
+        </TouchableOpacity>
+      </View>
+    );
+  }
+
   const patterns = useMemo(() => {
     return {
       weeklyPatterns: detectWeeklyPatterns(moodData),
@@ -22,19 +58,19 @@ export default function PatternInsights({ moodData, habitData }: PatternInsights
   return (
     <ScrollView>
       <View>
-        <Text>🔄 Weekly Patterns</Text>
+        <Text>{t('patternInsights.weeklyPatterns')}</Text>
         {patterns.weeklyPatterns.map(pattern => (
           <Text key={pattern.day}>
-            {pattern.day}: {pattern.averageMood.toFixed(1)} avg mood
+            {t(`patternInsights.weekdays.${pattern.day}`)}: {pattern.averageMood.toFixed(1)} {t('patternInsights.avgMood')}
           </Text>
         ))}
       </View>
       
       <View>
-        <Text>⏰ Daily Rhythms</Text>
+        <Text>{t('patternInsights.dailyRhythms')}</Text>
         {patterns.dailyRhythms.map(rhythm => (
           <Text key={rhythm.hour}>
-            {rhythm.hour}:00 - {rhythm.moodTrend}
+            {rhythm.hour}:00 - {t(`patternInsights.${rhythm.moodTrend}`)}
           </Text>
         ))}
       </View>
@@ -53,8 +89,10 @@ function detectWeeklyPatterns(moodData: MoodEntry[]) {
     return acc;
   }, {} as Record<number, number[]>);
   
+  const weekdayNames = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
+  
   return Object.entries(weeklyData).map(([day, intensities]) => ({
-    day: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'][parseInt(day)],
+    day: weekdayNames[parseInt(day)],
     averageMood: intensities.reduce((a, b) => a + b, 0) / intensities.length,
     variance: calculateVariance(intensities)
   }));
@@ -145,4 +183,41 @@ function calculateVariance(values: number[]): number {
   const mean = values.reduce((a, b) => a + b, 0) / values.length;
   const squaredDiffs = values.map(value => Math.pow(value - mean, 2));
   return squaredDiffs.reduce((a, b) => a + b, 0) / values.length;
+}
+
+function createStyles(colors: any) {
+  return StyleSheet.create({
+    upgradeContainer: {
+      flex: 1,
+      justifyContent: 'center' as const,
+      alignItems: 'center' as const,
+      padding: 20,
+      backgroundColor: colors.background,
+    },
+    upgradeTitle: {
+      fontSize: 24,
+      fontWeight: 'bold' as const,
+      marginTop: 10,
+      textAlign: 'center' as const,
+      color: colors.text,
+    },
+    upgradeMessage: {
+      fontSize: 16,
+      marginTop: 5,
+      textAlign: 'center' as const,
+      color: colors.textSecondary,
+    },
+    upgradeButton: {
+      backgroundColor: colors.primary,
+      paddingVertical: 10,
+      paddingHorizontal: 20,
+      borderRadius: 8,
+      marginTop: 20,
+    },
+    upgradeButtonText: {
+      color: colors.onPrimary,
+      fontSize: 18,
+      fontWeight: 'bold' as const,
+    },
+  });
 }

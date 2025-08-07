@@ -30,34 +30,34 @@ export default function SocialActivityTrackingForm({ onSave, onCancel }: SocialA
   });
 
   const activityTypes = [
-    { value: 'family_time', label: 'Family Time', icon: '👨‍👩‍👧‍👦' },
-    { value: 'friends_hangout', label: 'Friends', icon: '👥' },
-    { value: 'date_night', label: 'Date Night', icon: '💕' },
-    { value: 'party', label: 'Party', icon: '🎉' },
-    { value: 'networking', label: 'Networking', icon: '🤝' },
-    { value: 'team_building', label: 'Team Building', icon: '⚽' },
-    { value: 'community_event', label: 'Community', icon: '🏘️' },
-    { value: 'volunteer_work', label: 'Volunteer', icon: '🤲' },
-    { value: 'group_hobby', label: 'Group Hobby', icon: '🎨' }
+    { value: 'family_time', label: t('wellnessForms.social.activityTypes.familyTime'), icon: '👨‍👩‍👧‍👦' },
+    { value: 'friends_hangout', label: t('wellnessForms.social.activityTypes.friends'), icon: '👥' },
+    { value: 'date_night', label: t('wellnessForms.social.activityTypes.dateNight'), icon: '💕' },
+    { value: 'party', label: t('wellnessForms.social.activityTypes.party'), icon: '🎉' },
+    { value: 'networking', label: t('wellnessForms.social.activityTypes.networking'), icon: '🤝' },
+    { value: 'team_building', label: t('wellnessForms.social.activityTypes.teamBuilding'), icon: '⚽' },
+    { value: 'community_event', label: t('wellnessForms.social.activityTypes.community'), icon: '🏘️' },
+    { value: 'volunteer_work', label: t('wellnessForms.social.activityTypes.volunteer'), icon: '🤲' },
+    { value: 'group_hobby', label: t('wellnessForms.social.activityTypes.groupHobby'), icon: '🎨' }
   ];
 
   const settings = [
-    { value: 'home', label: 'Home', icon: '🏠' },
-    { value: 'restaurant', label: 'Restaurant', icon: '🍽️' },
-    { value: 'park', label: 'Park', icon: '🌳' },
-    { value: 'cafe', label: 'Café', icon: '☕' },
-    { value: 'gym', label: 'Gym', icon: '💪' },
-    { value: 'office', label: 'Office', icon: '🏢' },
-    { value: 'outdoors', label: 'Outdoors', icon: '🌲' },
-    { value: 'online', label: 'Online', icon: '💻' }
+    { value: 'home', label: t('wellnessForms.social.settings.home'), icon: '🏠' },
+    { value: 'restaurant', label: t('wellnessForms.social.settings.restaurant'), icon: '🍽️' },
+    { value: 'park', label: t('wellnessForms.social.settings.park'), icon: '🌳' },
+    { value: 'cafe', label: t('wellnessForms.social.settings.cafe'), icon: '☕' },
+    { value: 'gym', label: t('wellnessForms.social.settings.gym'), icon: '💪' },
+    { value: 'office', label: t('wellnessForms.social.settings.office'), icon: '🏢' },
+    { value: 'outdoors', label: t('wellnessForms.social.settings.outdoors'), icon: '🌲' },
+    { value: 'online', label: t('wellnessForms.social.settings.online'), icon: '💻' }
   ];
 
   const energyLevels = [
-    { value: 'drained', label: 'Drained', color: '#ef4444' },
-    { value: 'tired', label: 'Tired', color: '#f97316' },
-    { value: 'neutral', label: 'Neutral', color: '#eab308' },
-    { value: 'energized', label: 'Energized', color: '#22c55e' },
-    { value: 'pumped', label: 'Pumped', color: '#3b82f6' }
+    { value: 'drained', label: t('wellnessForms.social.energyLevels.drained'), color: '#ef4444' },
+    { value: 'tired', label: t('wellnessForms.social.energyLevels.tired'), color: '#f97316' },
+    { value: 'neutral', label: t('wellnessForms.social.energyLevels.neutral'), color: '#eab308' },
+    { value: 'energized', label: t('wellnessForms.social.energyLevels.energized'), color: '#22c55e' },
+    { value: 'pumped', label: t('wellnessForms.social.energyLevels.pumped'), color: '#3b82f6' }
   ];
 
   // Duration presets
@@ -76,17 +76,17 @@ export default function SocialActivityTrackingForm({ onSave, onCancel }: SocialA
 
   const handleSave = async () => {
     if (!formData.type || !formData.setting || !formData.date) {
-      Alert.alert('Missing Information', 'Please fill in all required fields.');
+      Alert.alert(t('wellnessForms.social.missingInfo'), t('wellnessForms.social.missingInfoMessage'));
       return;
     }
 
     setSaving(true);
     try {
       await WellnessIntegrationService.saveSocialActivityData(formData);
-      Alert.alert('Success', 'Social activity logged successfully!');
+      Alert.alert(t('wellnessForms.social.success'), t('wellnessForms.social.successMessage'));
       onSave?.();
     } catch (error) {
-      Alert.alert('Error', 'Failed to save social activity data.');
+      Alert.alert(t('wellnessForms.social.error'), t('wellnessForms.social.errorMessage'));
     } finally {
       setSaving(false);
     }
@@ -138,8 +138,8 @@ export default function SocialActivityTrackingForm({ onSave, onCancel }: SocialA
           <Users size={28} color={currentTheme.colors.primary} />
         </View>
         <View>
-          <Text style={styles.title}>Log Social Activity</Text>
-          <Text style={styles.subtitle}>Track your social interactions</Text>
+          <Text style={styles.title}>{t('wellnessForms.social.title')}</Text>
+          <Text style={styles.subtitle}>{t('wellnessForms.social.subtitle')}</Text>
         </View>
       </View>
 
@@ -147,7 +147,7 @@ export default function SocialActivityTrackingForm({ onSave, onCancel }: SocialA
       <View style={styles.card}>
         <View style={styles.cardHeader}>
           <Clock size={20} color={currentTheme.colors.primary} />
-          <Text style={styles.cardTitle}>When</Text>
+          <Text style={styles.cardTitle}>{t('wellnessForms.social.when')}</Text>
         </View>
         <TextInput
           style={styles.input}
@@ -162,7 +162,7 @@ export default function SocialActivityTrackingForm({ onSave, onCancel }: SocialA
       <View style={styles.card}>
         <View style={styles.cardHeader}>
           <Heart size={20} color={currentTheme.colors.primary} />
-          <Text style={styles.cardTitle}>Activity Type *</Text>
+          <Text style={styles.cardTitle}>{t('wellnessForms.social.activityType')} *</Text>
         </View>
         <View style={styles.typeGrid}>
           {activityTypes.map((type) => (
@@ -190,12 +190,12 @@ export default function SocialActivityTrackingForm({ onSave, onCancel }: SocialA
       <View style={styles.card}>
         <View style={styles.cardHeader}>
           <Clock size={20} color={currentTheme.colors.primary} />
-          <Text style={styles.cardTitle}>Duration & People</Text>
+          <Text style={styles.cardTitle}>{t('wellnessForms.social.durationAndPeople')}</Text>
         </View>
         
         {/* Duration Section */}
         <View style={styles.section}>
-          <Text style={styles.label}>Duration (minutes) *</Text>
+          <Text style={styles.label}>{t('wellnessForms.social.duration')} *</Text>
           <View style={styles.presetContainer}>
             {durationPresets.map((preset) => (
               <TouchableOpacity
@@ -234,7 +234,7 @@ export default function SocialActivityTrackingForm({ onSave, onCancel }: SocialA
         
         {/* Participants Section */}
         <View style={styles.section}>
-          <Text style={styles.label}>Number of Participants *</Text>
+          <Text style={styles.label}>{t('wellnessForms.social.numberOfParticipants')} *</Text>
           <View style={styles.presetContainer}>
             {participantPresets.map((preset) => (
               <TouchableOpacity
@@ -276,7 +276,7 @@ export default function SocialActivityTrackingForm({ onSave, onCancel }: SocialA
       <View style={styles.card}>
         <View style={styles.cardHeader}>
           <MapPin size={20} color={currentTheme.colors.primary} />
-          <Text style={styles.cardTitle}>Setting *</Text>
+          <Text style={styles.cardTitle}>{t('wellnessForms.social.setting')} *</Text>
         </View>
         <View style={styles.typeGrid}>
           {settings.map((setting) => (
@@ -304,7 +304,7 @@ export default function SocialActivityTrackingForm({ onSave, onCancel }: SocialA
       <View style={styles.card}>
         <View style={styles.cardHeader}>
           <Heart size={20} color={currentTheme.colors.primary} />
-          <Text style={styles.cardTitle}>Pre-Activity Mood *</Text>
+          <Text style={styles.cardTitle}>{t('wellnessForms.social.preActivityMood')} *</Text>
         </View>
         <TextInput
           style={styles.input}
@@ -313,10 +313,10 @@ export default function SocialActivityTrackingForm({ onSave, onCancel }: SocialA
             ...prev,
             preMood: { ...prev.preMood!, state: text }
           }))}
-          placeholder="How were you feeling before?"
+          placeholder={t('wellnessForms.social.howWereYouFeelingBefore')}
           placeholderTextColor={currentTheme.colors.textSecondary}
         />
-        <Text style={styles.subLabel}>Quick Select:</Text>
+        <Text style={styles.subLabel}>{t('wellnessForms.social.quickSelect')}:</Text>
         {renderMoodQuickSelect(
           formData.preMood?.state || '',
           (mood) => setFormData(prev => ({
@@ -324,7 +324,7 @@ export default function SocialActivityTrackingForm({ onSave, onCancel }: SocialA
             preMood: { ...prev.preMood!, state: mood }
           }))
         )}
-        <Text style={styles.subLabel}>Intensity (1-10)</Text>
+        <Text style={styles.subLabel}>{t('wellnessForms.social.intensity')} (1-10)</Text>
         <View style={styles.sliderContainer}>
           <Text style={styles.sliderValue}>{formData.preMood?.intensity}</Text>
           <View style={styles.sliderButtons}>
@@ -356,7 +356,7 @@ export default function SocialActivityTrackingForm({ onSave, onCancel }: SocialA
       <View style={styles.card}>
         <View style={styles.cardHeader}>
           <Heart size={20} color={currentTheme.colors.primary} />
-          <Text style={styles.cardTitle}>Post-Activity Mood *</Text>
+          <Text style={styles.cardTitle}>{t('wellnessForms.social.postActivityMood')} *</Text>
         </View>
         <TextInput
           style={styles.input}
@@ -365,10 +365,10 @@ export default function SocialActivityTrackingForm({ onSave, onCancel }: SocialA
             ...prev,
             postMood: { ...prev.postMood!, state: text }
           }))}
-          placeholder="How do you feel now?"
+          placeholder={t('wellnessForms.social.howDoYouFeelNow')}
           placeholderTextColor={currentTheme.colors.textSecondary}
         />
-        <Text style={styles.subLabel}>Quick Select:</Text>
+        <Text style={styles.subLabel}>{t('wellnessForms.social.quickSelect')}:</Text>
         {renderMoodQuickSelect(
           formData.postMood?.state || '',
           (mood) => setFormData(prev => ({
@@ -376,7 +376,7 @@ export default function SocialActivityTrackingForm({ onSave, onCancel }: SocialA
             postMood: { ...prev.postMood!, state: mood }
           }))
         )}
-        <Text style={styles.subLabel}>Intensity (1-10)</Text>
+        <Text style={styles.subLabel}>{t('wellnessForms.social.intensity')} (1-10)</Text>
         <View style={styles.sliderContainer}>
           <Text style={styles.sliderValue}>{formData.postMood?.intensity}</Text>
           <View style={styles.sliderButtons}>
@@ -408,17 +408,17 @@ export default function SocialActivityTrackingForm({ onSave, onCancel }: SocialA
       <View style={styles.card}>
         <View style={styles.cardHeader}>
           <Star size={20} color={currentTheme.colors.primary} />
-          <Text style={styles.cardTitle}>Satisfaction Level</Text>
+          <Text style={styles.cardTitle}>{t('wellnessForms.social.satisfactionLevel')}</Text>
         </View>
         <View style={styles.ratingContainer}>
           {renderStarRating(formData.satisfaction || 4, (rating) => 
             setFormData(prev => ({ ...prev, satisfaction: rating as any }))
           )}
           <Text style={styles.ratingText}>
-            {formData.satisfaction === 1 ? 'Poor' :
-             formData.satisfaction === 2 ? 'Fair' :
-             formData.satisfaction === 3 ? 'Good' :
-             formData.satisfaction === 4 ? 'Very Good' : 'Excellent'}
+            {formData.satisfaction === 1 ? t('wellnessForms.social.satisfaction.poor') :
+             formData.satisfaction === 2 ? t('wellnessForms.social.satisfaction.fair') :
+             formData.satisfaction === 3 ? t('wellnessForms.social.satisfaction.good') :
+             formData.satisfaction === 4 ? t('wellnessForms.social.satisfaction.veryGood') : t('wellnessForms.social.satisfaction.excellent')}
           </Text>
         </View>
       </View>
@@ -427,7 +427,7 @@ export default function SocialActivityTrackingForm({ onSave, onCancel }: SocialA
       <View style={styles.card}>
         <View style={styles.cardHeader}>
           <Zap size={20} color={currentTheme.colors.primary} />
-          <Text style={styles.cardTitle}>Energy Level After</Text>
+          <Text style={styles.cardTitle}>{t('wellnessForms.social.energyLevelAfter')}</Text>
         </View>
         <View style={styles.energyGridContainer}>
           {/* First row - 3 items */}
@@ -480,12 +480,12 @@ export default function SocialActivityTrackingForm({ onSave, onCancel }: SocialA
 
       {/* Notes Card */}
       <View style={styles.card}>
-        <Text style={styles.cardTitle}>Notes</Text>
+        <Text style={styles.cardTitle}>{t('wellnessForms.social.notes')}</Text>
         <TextInput
           style={[styles.input, styles.notesInput]}
           value={formData.notes}
           onChangeText={(text) => setFormData(prev => ({ ...prev, notes: text }))}
-          placeholder="Any additional notes about the social activity..."
+          placeholder={t('wellnessForms.social.notesPlaceholder')}
           placeholderTextColor={currentTheme.colors.textSecondary}
           multiline
           numberOfLines={4}
@@ -495,7 +495,7 @@ export default function SocialActivityTrackingForm({ onSave, onCancel }: SocialA
       {/* Action Buttons */}
       <View style={styles.buttonContainer}>
         <TouchableOpacity style={styles.cancelButton} onPress={onCancel}>
-          <Text style={styles.cancelButtonText}>Cancel</Text>
+          <Text style={styles.cancelButtonText}>{t('wellnessForms.social.cancel')}</Text>
         </TouchableOpacity>
         <TouchableOpacity 
           style={[styles.saveButton, saving && styles.disabledButton]} 
@@ -503,7 +503,7 @@ export default function SocialActivityTrackingForm({ onSave, onCancel }: SocialA
           disabled={saving}
         >
           <Text style={styles.saveButtonText}>
-            {saving ? 'Saving...' : 'Save Activity'}
+            {saving ? t('wellnessForms.social.saving') : t('wellnessForms.social.save')}
           </Text>
         </TouchableOpacity>
       </View>
