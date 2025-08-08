@@ -63,7 +63,6 @@ function RootLayoutContent() {
                 headerShown: false, // Hide all headers by default
               }}
             >
-              <Stack.Screen name="(auth)" options={{ headerShown: false }} />
               <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
               <Stack.Screen name="mood-tracking" options={{ headerShown: false }} />
               <Stack.Screen name="profile" options={{ headerShown: true, title: t('profile.title') }} />
