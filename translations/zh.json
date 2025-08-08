@@ -3647,6 +3647,7 @@
     "enterKeyPlaceholder": "输入您的高级密钥",
     "invalidKey": "无效的高级密钥，请重试。",
     "activate": "激活",
+    "activating": "激活中...",
     "errorTitle": "升级失败",
     "errorMessage": "升级到专业版失败，请重试。",
     "month": "月",

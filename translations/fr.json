@@ -3526,6 +3526,7 @@
     "enterKeyPlaceholder": "Entrez votre clé premium",
     "invalidKey": "Clé premium invalide. Veuillez réessayer.",
     "activate": "Activer",
+    "activating": "Activation...",
     "errorTitle": "Échec de la Mise à Niveau",
     "errorMessage": "Échec de la mise à niveau vers Pro. Veuillez réessayer.",
     "month": "mois",

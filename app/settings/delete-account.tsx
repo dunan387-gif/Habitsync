@@ -57,7 +57,7 @@ export default function DeleteAccountScreen() {
                     text: t('deleteAccount.alerts.success.ok'),
                     onPress: () => {
                       logout();
-                      router.replace('/(auth)/login');
+                      router.replace('/(auth)/login' as any);
                     },
                   },
                 ]

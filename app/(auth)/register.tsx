@@ -126,7 +126,7 @@ export default function RegisterScreen() {
 
           <TouchableOpacity
             style={styles.linkButton}
-            onPress={() => router.push('/(auth)/login')}
+            onPress={() => router.push('/(auth)/login' as any)}
           >
             <Text style={styles.linkText}>
               {t('auth.alreadyHaveAccount')}

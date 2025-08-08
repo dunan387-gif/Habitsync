@@ -9,6 +9,7 @@ import {
   Dimensions,
   Modal,
   TextInput,
+  ActivityIndicator,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTheme } from '@/context/ThemeContext';
@@ -52,7 +53,7 @@ const PricingScreen: React.FC<PricingScreenProps> = ({
 }) => {
   const { currentTheme } = useTheme();
   const { t } = useLanguage();
-  const { upgradeToPro } = useSubscription();
+  const { upgradeToPro, isUpgrading } = useSubscription();
   const [selectedPlan, setSelectedPlan] = useState<string | null>(null);
   const [selectedPlanDetails, setSelectedPlanDetails] = useState<any>(null);
   const [showPremiumKeyModal, setShowPremiumKeyModal] = useState(false);
@@ -432,12 +433,29 @@ const PricingScreen: React.FC<PricingScreenProps> = ({
               </TouchableOpacity>
               
               <TouchableOpacity
-                style={[styles.modalButton, styles.submitButton, { backgroundColor: currentTheme.colors.primary }]}
+                style={[
+                  styles.modalButton, 
+                  styles.submitButton, 
+                  { 
+                    backgroundColor: isUpgrading ? currentTheme.colors.textMuted : currentTheme.colors.primary,
+                    opacity: isUpgrading ? 0.7 : 1
+                  }
+                ]}
                 onPress={handlePremiumKeySubmit}
+                disabled={isUpgrading}
               >
-                <Text style={[styles.modalButtonText, { color: "#FFFFFF" }]}>
-                  {t('pricing.activate')}
-                </Text>
+                {isUpgrading ? (
+                  <View style={styles.loadingContainer}>
+                    <ActivityIndicator size="small" color="#FFFFFF" />
+                    <Text style={[styles.modalButtonText, { color: "#FFFFFF", marginLeft: 8 }]}>
+                      {t('pricing.activating')}
+                    </Text>
+                  </View>
+                ) : (
+                  <Text style={[styles.modalButtonText, { color: "#FFFFFF" }]}>
+                    {t('pricing.activate')}
+                  </Text>
+                )}
               </TouchableOpacity>
             </View>
           </View>
@@ -734,6 +752,11 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: '600',
     textAlign: 'center',
+  },
+  loadingContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 });
 

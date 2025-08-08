@@ -3633,6 +3633,7 @@
     "enterKeyPlaceholder": "Ingresa tu clave premium",
     "invalidKey": "Clave premium inválida. Por favor intenta de nuevo.",
     "activate": "Activar",
+    "activating": "Activando...",
     "errorTitle": "Error de Actualización",
     "errorMessage": "Error al actualizar a Pro. Por favor intenta de nuevo.",
     "month": "mes",

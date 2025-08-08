@@ -53,6 +53,15 @@ export default function PerformanceAlerts({
   const { settings: alertSettings } = usePerformanceAlerts();
   const { canUsePerformanceAlerts, showUpgradePrompt } = useSubscription();
   
+  // Alert thresholds - MUST be called before any conditional returns
+  const alertThresholds = useMemo(() => ({
+    renderTime: 100, // ms
+    memoryUsage: 80, // percentage
+    networkFailures: 5, // count
+    cacheHitRate: 50, // percentage
+    responseTime: 2000 // ms
+  }), []);
+  
   // Safety check for currentTheme
   if (!currentTheme || !currentTheme.colors) {
     return (
@@ -64,20 +73,8 @@ export default function PerformanceAlerts({
   
   const styles = createStyles(currentTheme.colors);
   
-  // Check if user can access performance alerts - only show upgrade prompt if there are actual alerts
-  if (!canUsePerformanceAlerts()) {
-    // Don't show upgrade prompt immediately, only when there are performance issues
-    return null;
-  }
-
-  // Alert thresholds
-  const alertThresholds = useMemo(() => ({
-    renderTime: 100, // ms
-    memoryUsage: 80, // percentage
-    networkFailures: 5, // count
-    cacheHitRate: 50, // percentage
-    responseTime: 2000 // ms
-  }), []);
+  // Check if user can access performance alerts - but don't return null to avoid hook order issues
+  const canAccessPerformanceAlerts = canUsePerformanceAlerts();
 
   // Generate alerts based on performance metrics
   useEffect(() => {
@@ -276,8 +273,8 @@ export default function PerformanceAlerts({
     setSettingsVisible(true);
   };
 
-  // Don't render if alerts are disabled or if there are no alerts to show
-  if (!alertSettings.enabled || (alerts.length === 0 && !settingsVisible)) {
+  // Don't render if alerts are disabled, user can't access them, or if there are no alerts to show
+  if (!alertSettings.enabled || !canAccessPerformanceAlerts || (alerts.length === 0 && !settingsVisible)) {
     return null;
   }
 

@@ -3745,6 +3745,7 @@
     "enterKeyPlaceholder": "Enter your premium key",
     "invalidKey": "Invalid premium key. Please try again.",
     "activate": "Activate",
+    "activating": "Activating...",
     "errorTitle": "Upgrade Failed",
     "errorMessage": "Failed to upgrade to Pro. Please try again.",
     "month": "month",

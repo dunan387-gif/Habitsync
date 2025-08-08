@@ -17,14 +17,10 @@ export default function ProtectedRoute({ children }: { children: React.ReactNode
 
     if (!isAuthenticated && !inAuthGroup) {
       // Navigate to auth if not authenticated and not already in auth group
-      setTimeout(() => {
-        router.replace('/(auth)/login');
-      }, 100);
+      router.replace('/(auth)/login' as any);
     } else if (isAuthenticated && inAuthGroup) {
       // Navigate to tabs if authenticated and currently in auth group
-      setTimeout(() => {
-        router.replace('/(tabs)');
-      }, 100);
+      router.replace('/(tabs)' as any);
     }
   }, [isAuthenticated, isLoading, segments]);
 
