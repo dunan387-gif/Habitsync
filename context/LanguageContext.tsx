@@ -3,10 +3,10 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useAuth } from '@/context/AuthContext';
 
 // Import all translation files statically
-import enTranslations from '../translations/en.json';
-import esTranslations from '../translations/es.json';
-import frTranslations from '../translations/fr.json';
-import zhTranslations from '../translations/zh.json';
+import enTranslations from '@/translations/en.json';
+import esTranslations from '@/translations/es.json';
+import frTranslations from '@/translations/fr.json';
+import zhTranslations from '@/translations/zh.json';
 
 type Language = {
   code: string;

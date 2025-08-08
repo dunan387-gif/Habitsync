@@ -36,6 +36,18 @@ export default function PerformanceAlerts({
   autoDismissDelay = 10000, // 10 seconds
   showSettings = true
 }: PerformanceAlertsProps) {
+  // ALWAYS call all hooks first, regardless of settings
+  const [alerts, setAlerts] = useState<PerformanceAlert[]>([]);
+  const [showAlerts, setShowAlerts] = useState(true);
+  const [settingsVisible, setSettingsVisible] = useState(false);
+  const slideAnim = new Animated.Value(0);
+
+  // Performance monitoring hooks
+  const { metrics, events } = usePerformanceMonitoring();
+  const { memoryInfo, isMemoryLow, isMemoryCritical, memoryAlerts, optimizeMemory } = useMemoryManagement();
+  const { getNetworkStats, isOnline, connectionQuality, clearRequestHistory } = useNetworkOptimization();
+
+  // Context hooks
   const { currentTheme } = useTheme();
   const { t } = useLanguage();
   const { settings: alertSettings } = usePerformanceAlerts();
@@ -57,17 +69,6 @@ export default function PerformanceAlerts({
     // Don't show upgrade prompt immediately, only when there are performance issues
     return null;
   }
-
-  // ALWAYS call all hooks first, regardless of settings
-  const [alerts, setAlerts] = useState<PerformanceAlert[]>([]);
-  const [showAlerts, setShowAlerts] = useState(true);
-  const [settingsVisible, setSettingsVisible] = useState(false);
-  const slideAnim = new Animated.Value(0);
-
-  // Performance monitoring hooks
-  const { metrics, events } = usePerformanceMonitoring();
-  const { memoryInfo, isMemoryLow, isMemoryCritical, memoryAlerts, optimizeMemory } = useMemoryManagement();
-  const { getNetworkStats, isOnline, connectionQuality, clearRequestHistory } = useNetworkOptimization();
 
   // Alert thresholds
   const alertThresholds = useMemo(() => ({

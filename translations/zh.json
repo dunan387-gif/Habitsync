@@ -397,6 +397,12 @@
     "overview": {
       "overallScore": "整体得分"
     },
+    "comprehensiveAnalysis": "综合健康分析",
+    "trend": {
+      "improving": "改善中",
+      "stable": "稳定",
+      "declining": "下降中"
+    },
     "pillars": {
       "title": "健康支柱"
     },
@@ -809,7 +815,19 @@
       "noStreakData": "暂无连续数据",
       "noMoodData": "暂无心情数据",
       "noDataTitle": "暂无数据",
-      "noDataMessage": "开始追踪您的习惯以查看详细分析和洞察。"
+      "noDataMessage": "开始追踪您的习惯以查看详细分析和洞察。",
+      "cachePerformance": "缓存性能",
+      "cacheHits": "缓存命中",
+      "cacheMisses": "缓存未命中",
+      "hitRate": "命中率",
+      "cacheSize": "缓存大小",
+      "clearCache": "清除缓存",
+      "clearCacheConfirm": "您确定要清除分析缓存吗？",
+      "cacheCleared": "分析缓存已成功清除",
+      "cacheEnabled": "缓存已启用",
+      "dataCached": "数据已缓存",
+      "performanceMetrics": "性能指标",
+      "averageStreak": "平均连续天数"
     },
     "emotionalWellnessTrends": {
       "title": "情绪健康趋势",
@@ -2581,7 +2599,8 @@
       "sharing": "专业分享",
       "dashboard": "专业仪表板",
       "performance": "性能仪表板",
-      "recommendations": "性能建议"
+      "recommendations": "性能建议",
+      "sharingEnabled": "专业分享已成功启用。"
     },
     "account": {
       "changePassword": "修改密码",

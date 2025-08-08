@@ -1,7 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { EncryptionService } from './EncryptionService';
 import { DataExportService } from './DataExportService';
-import { MoodEntry, HabitMoodEntry, EnhancedMoodEntry } from '../types';
+import { MoodEntry, HabitMoodEntry, EnhancedMoodEntry } from '@/types';
 
 export interface TherapistSharingOptions {
   therapistId: string;

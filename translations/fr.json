@@ -410,6 +410,12 @@
     "overview": {
       "overallScore": "Score global"
     },
+    "comprehensiveAnalysis": "Analyse Complète du Bien-être",
+    "trend": {
+      "improving": "Amélioration",
+      "stable": "Stable",
+      "declining": "Déclin"
+    },
     "pillars": {
       "title": "Piliers du bien-être"
     },
@@ -797,7 +803,19 @@
       "noStreakData": "Aucune donnée de série disponible",
       "noMoodData": "Aucune donnée d'humeur disponible",
       "noDataTitle": "Aucune Donnée Disponible",
-      "noDataMessage": "Commencez à suivre vos habitudes pour voir des analyses détaillées et des insights."
+      "noDataMessage": "Commencez à suivre vos habitudes pour voir des analyses détaillées et des insights.",
+      "cachePerformance": "Performance du Cache",
+      "cacheHits": "Hits du Cache",
+      "cacheMisses": "Misses du Cache",
+      "hitRate": "Taux de Hit",
+      "cacheSize": "Taille du Cache",
+      "clearCache": "Vider le Cache",
+      "clearCacheConfirm": "Êtes-vous sûr de vouloir vider le cache d'analyse ?",
+      "cacheCleared": "Cache d'analyse vidé avec succès",
+      "cacheEnabled": "Cache Activé",
+      "dataCached": "Données en Cache",
+      "performanceMetrics": "Métriques de Performance",
+      "averageStreak": "Série Moyenne"
     },
     "emotionalWellnessTrends": {
       "title": "Tendances du bien-être émotionnel",
@@ -2465,7 +2483,8 @@
       "sharing": "Partage professionnel",
       "dashboard": "Tableau de bord professionnel",
       "performance": "Tableau de bord de performance",
-      "recommendations": "Recommandations de performance"
+      "recommendations": "Recommandations de performance",
+      "sharingEnabled": "Le partage professionnel a été activé avec succès."
     },
     "account": {
       "changePassword": "Changer le mot de passe",

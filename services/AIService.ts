@@ -524,7 +524,7 @@ class AIService {
       .filter(cat => cat.id !== habit.category)
       .slice(0, 2);
     
-    const complementaryHabits = [];
+    const complementaryHabits: Array<{title: string; description: string; category: string}> = [];
     
     complementaryCategories.forEach(cat => {
       // Get a random habit from each complementary category

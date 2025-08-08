@@ -1,4 +1,4 @@
-import { MoodEntry, HabitMoodEntry, HabitSuccessPrediction } from '../types';
+import { MoodEntry, HabitMoodEntry, HabitSuccessPrediction } from '@/types';
 
 export class PredictiveAnalyticsService {
   private static instance: PredictiveAnalyticsService;

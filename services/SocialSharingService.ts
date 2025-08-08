@@ -1,6 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { EncryptionService } from './EncryptionService';
-import { MoodEntry, HabitMoodEntry, Habit } from '../types';
+import { MoodEntry, HabitMoodEntry, Habit } from '@/types';
 
 export interface AnonymousPattern {
   id: string;

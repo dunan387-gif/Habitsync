@@ -40,11 +40,10 @@ export default function MoodCheckIn({ onMoodSubmit }: MoodCheckInProps) {
 
   // Update submittedMoodData when todaysMood changes (for detailed mood submissions)
   useEffect(() => {
-    console.log('🔄 MoodCheckIn: todaysMood changed:', todaysMood);
-    console.log('🔄 MoodCheckIn: submittedMoodData:', submittedMoodData);
+
     
     if (todaysMood && !submittedMoodData) {
-      console.log('🔄 MoodCheckIn: Setting submittedMoodData from todaysMood');
+      
       setSubmittedMoodData({
         moodState: todaysMood.moodState,
         intensity: todaysMood.intensity,
@@ -66,13 +65,11 @@ export default function MoodCheckIn({ onMoodSubmit }: MoodCheckInProps) {
   const handleQuickMoodSelect = async (moodState: MoodState) => {
     if (!canCheck) return;
     
-    console.log('🎯 Starting mood selection for:', moodState);
+
     setIsSubmitting(true);
     
     try {
-      console.log('📝 Adding mood entry...');
       await addMoodEntry(moodState, 5, undefined, []);
-      console.log('✅ Mood entry added successfully');
       
       const moodData = {
         moodState,
@@ -83,20 +80,20 @@ export default function MoodCheckIn({ onMoodSubmit }: MoodCheckInProps) {
       };
       
       setSubmittedMoodData(moodData);
-      console.log('📊 Submitted mood data set');
+
       
       // Trigger smart notifications in the background to avoid blocking the UI
-      console.log('🔔 Triggering smart notifications...');
+
       triggerSmartNotifications().catch(error => {
         console.error('Smart notifications error:', error);
       });
       
-      console.log('🎉 Mood selection completed successfully');
+
     } catch (error) {
       console.error('❌ Mood save error:', error);
       Alert.alert(t('common.error'), t('moodCheckIn.alerts.saveFailed'));
     } finally {
-      console.log('🏁 Finishing mood selection...');
+  
       setIsSubmitting(false);
     }
 
@@ -106,7 +103,7 @@ export default function MoodCheckIn({ onMoodSubmit }: MoodCheckInProps) {
   const renderSubmittedMood = () => {
     // Use todaysMood if available, otherwise use submittedMoodData
     const moodDataToShow = todaysMood || submittedMoodData;
-    console.log('🎨 MoodCheckIn: renderSubmittedMood - moodDataToShow:', moodDataToShow);
+
     if (!moodDataToShow) return null;
 
     const moodData = MOOD_STATES.find(m => m.id === moodDataToShow.moodState);

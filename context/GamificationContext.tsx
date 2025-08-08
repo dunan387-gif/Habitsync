@@ -3,6 +3,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Achievement, UserLevel, MoodEntry, StreakMilestone, GamificationData, Habit, HabitMoodEntry } from '@/types';
 import { useCelebration } from '@/context/CelebrationContext';
 import { useLanguage } from '@/context/LanguageContext';
+import { useAuth } from '@/context/AuthContext';
 import { getLocalDateString } from '@/utils/timezone';
 
 // Add AdaptiveChallenge interface
@@ -34,8 +35,10 @@ interface GamificationContextType {
   createAdaptiveChallenge: (type: string, difficulty: 'easy' | 'medium' | 'hard') => Promise<void>;
   completeAdaptiveChallenge: (challengeId: string) => Promise<void>;
   getActiveAdaptiveChallenges: () => AdaptiveChallenge[];
-  // Level perks method
-  getLevelPerks: (level: number) => string[];
+        // Level perks method
+      getLevelPerks: (level: number) => string[];
+  // Clear gamification data method
+  clearGamificationData: () => Promise<void>;
 }
 
 const GamificationContext = createContext<GamificationContextType | undefined>(undefined);
@@ -262,6 +265,7 @@ export function GamificationProvider({ children }: { children: ReactNode }) {
   const [gamificationData, setGamificationData] = useState<GamificationData | null>(null);
   const [adaptiveChallenges, setAdaptiveChallenges] = useState<AdaptiveChallenge[]>([]);
   const { showCelebration } = useCelebration();
+  const { user } = useAuth();
   
   const unlockedAchievementsRef = useRef<string[]>([]);
   const [isCheckingAchievements, setIsCheckingAchievements] = useState(false);
@@ -276,6 +280,11 @@ export function GamificationProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     loadGamificationData();
   }, []);
+
+  // Reload gamification data when user changes
+  useEffect(() => {
+    loadGamificationData();
+  }, [user?.id]);
 
   useEffect(() => {
     if (gamificationData) {
@@ -315,14 +324,29 @@ export function GamificationProvider({ children }: { children: ReactNode }) {
 
   const loadGamificationData = async () => {
     try {
-      const stored = await AsyncStorage.getItem('gamificationData');
-      if (stored) {
-        const data = JSON.parse(stored);
-        const loadedData = { ...INITIAL_GAMIFICATION_DATA, ...data, achievements: ACHIEVEMENTS };
-        setGamificationData(loadedData);
+      if (!user) {
+        // No user - use global key for anonymous state
+        const stored = await AsyncStorage.getItem('gamificationData');
+        if (stored) {
+          const data = JSON.parse(stored);
+          const loadedData = { ...INITIAL_GAMIFICATION_DATA, ...data, achievements: ACHIEVEMENTS };
+          setGamificationData(loadedData);
+        } else {
+          const initialData = { ...INITIAL_GAMIFICATION_DATA, achievements: ACHIEVEMENTS };
+          setGamificationData(initialData);
+        }
       } else {
-        const initialData = { ...INITIAL_GAMIFICATION_DATA, achievements: ACHIEVEMENTS };
-        setGamificationData(initialData);
+        // User exists - use user-specific key
+        const userGamificationKey = `gamification_${user.id}`;
+        const stored = await AsyncStorage.getItem(userGamificationKey);
+        if (stored) {
+          const data = JSON.parse(stored);
+          const loadedData = { ...INITIAL_GAMIFICATION_DATA, ...data, achievements: ACHIEVEMENTS };
+          setGamificationData(loadedData);
+        } else {
+          const initialData = { ...INITIAL_GAMIFICATION_DATA, achievements: ACHIEVEMENTS };
+          setGamificationData(initialData);
+        }
       }
     } catch (error) {
       console.error('Failed to load gamification data:', error);
@@ -333,10 +357,15 @@ export function GamificationProvider({ children }: { children: ReactNode }) {
 
   const saveGamificationData = async () => {
     if (!gamificationData) return;
-    console.log('💾 Saving gamification data...');
     try {
-      await AsyncStorage.setItem('gamificationData', JSON.stringify(gamificationData));
-      console.log('✅ Gamification data saved successfully');
+      if (!user) {
+        // No user - save to global key
+        await AsyncStorage.setItem('gamificationData', JSON.stringify(gamificationData));
+      } else {
+        // User exists - save to user-specific key
+        const userGamificationKey = `gamification_${user.id}`;
+        await AsyncStorage.setItem(userGamificationKey, JSON.stringify(gamificationData));
+      }
     } catch (error) {
       console.error('❌ Failed to save gamification data:', error);
     }
@@ -347,10 +376,7 @@ export function GamificationProvider({ children }: { children: ReactNode }) {
   };
 
   const addXP = async (amount: number, source: string) => {
-    console.log('🎯 addXP called with:', { amount, source });
-    
     if (!gamificationData) {
-      console.log('❌ No gamification data available for XP');
       return;
     }
 
@@ -359,13 +385,7 @@ export function GamificationProvider({ children }: { children: ReactNode }) {
     let newLevel = gamificationData.userLevel.level;
     let xpToNextLevel = gamificationData.userLevel.xpToNextLevel;
 
-    console.log('📊 XP calculation:', {
-      currentLevel: newLevel,
-      currentXP: gamificationData.userLevel.currentXP,
-      newCurrentXP,
-      xpToNextLevel,
-      amount
-    });
+
 
     // Check for level up
     while (newCurrentXP >= xpToNextLevel) {
@@ -373,7 +393,7 @@ export function GamificationProvider({ children }: { children: ReactNode }) {
       const remainingXP = newCurrentXP - xpToNextLevel;
       xpToNextLevel = calculateXPToNextLevel(newLevel);
       
-      console.log('🎉 Level up! New level:', newLevel);
+
       
       // Show level up celebration
       showCelebration('level_up', t('gamification.messages.levelUp', { level: newLevel }));
@@ -392,10 +412,8 @@ export function GamificationProvider({ children }: { children: ReactNode }) {
       dailyXPEarned: gamificationData.dailyXPEarned + amount
     };
 
-    console.log('💾 Setting gamification data for XP update...');
     try {
       setGamificationData(updatedData);
-      console.log('✅ XP update completed');
     } catch (error) {
       console.error('❌ Error setting gamification data for XP:', error);
       throw error;
@@ -407,17 +425,13 @@ export function GamificationProvider({ children }: { children: ReactNode }) {
     if (!gamificationData || 
         gamificationData.unlockedAchievements.includes(achievementId) ||
         unlockedAchievementsRef.current.includes(achievementId)) {
-      console.log(`Achievement ${achievementId} already unlocked, skipping`);
       return;
     }
   
     const achievement = ACHIEVEMENTS.find(a => a.id === achievementId);
     if (!achievement) {
-      console.log(`Achievement ${achievementId} not found`);
       return;
     }
-  
-    console.log(`Unlocking achievement: ${t(achievement.titleKey || '')}`);
   
     // ✅ Update ref immediately for synchronous access
     unlockedAchievementsRef.current = [...unlockedAchievementsRef.current, achievementId];
@@ -455,7 +469,7 @@ export function GamificationProvider({ children }: { children: ReactNode }) {
 
     try {
       setGamificationData(updatedData);
-      console.log('✅ Achievement data updated');
+  
     } catch (error) {
       console.error('❌ Error setting gamification data for achievement:', error);
       throw error;
@@ -618,7 +632,7 @@ export function GamificationProvider({ children }: { children: ReactNode }) {
     note?: string, 
     triggers?: ('work' | 'relationships' | 'health' | 'weather' | 'sleep' | 'exercise' | 'social')[]
   ): Promise<void> => {
-    console.log('🎯 addMoodEntry called with:', { moodState, intensity, note, triggers });
+
     
     try {
       if (!gamificationData) {
@@ -627,10 +641,7 @@ export function GamificationProvider({ children }: { children: ReactNode }) {
       }
 
       const today = getLocalDateString();
-      console.log('📅 Today\'s date:', today);
-      
       const existingEntryIndex = gamificationData.moodEntries.findIndex(entry => entry.date === today);
-      console.log('🔍 Existing entry index:', existingEntryIndex);
       
       let updatedEntries;
       if (existingEntryIndex !== -1) {
@@ -647,7 +658,7 @@ export function GamificationProvider({ children }: { children: ReactNode }) {
         
         updatedEntries = [...gamificationData.moodEntries];
         updatedEntries[existingEntryIndex] = updatedEntry;
-        console.log('✅ Updated existing mood entry:', updatedEntry);
+
       } else {
         // Create new entry
         const newEntry: MoodEntry = {
@@ -661,7 +672,7 @@ export function GamificationProvider({ children }: { children: ReactNode }) {
         };
         
         updatedEntries = [...gamificationData.moodEntries, newEntry];
-        console.log('✅ Created new mood entry:', newEntry);
+
       }
       
       const updatedData = {
@@ -669,21 +680,17 @@ export function GamificationProvider({ children }: { children: ReactNode }) {
         moodEntries: updatedEntries
       };
       
-      console.log('💾 Setting gamification data...');
       try {
         setGamificationData(updatedData);
-        console.log('✅ Gamification data updated');
       } catch (error) {
         console.error('❌ Error setting gamification data:', error);
         throw error;
       }
       
       // Add XP for mood check-in with a small delay to avoid race conditions
-      console.log('⭐ Adding XP for mood check-in...');
       setTimeout(async () => {
         try {
           await addXP(XP_REWARDS.mood_checkin, 'mood_checkin');
-          console.log('✅ XP added successfully');
         } catch (error) {
           console.error('❌ Error adding XP:', error);
         }
@@ -704,7 +711,7 @@ export function GamificationProvider({ children }: { children: ReactNode }) {
     
     try {
       setGamificationData(updatedData);
-      console.log('✅ Habit mood entry added successfully');
+
     } catch (error) {
       console.error('❌ Error adding habit mood entry:', error);
       throw error;
@@ -720,14 +727,10 @@ export function GamificationProvider({ children }: { children: ReactNode }) {
   };
 
   const getMoodEntries = (): MoodEntry[] => {
-    console.log('🔍 getMoodEntries called');
     if (!gamificationData) {
-      console.log('❌ No gamificationData in getMoodEntries');
       return [];
     }
     const entries = gamificationData.moodEntries || [];
-    console.log('📊 Returning mood entries:', entries.length, 'entries');
-    console.log('📊 Mood entries details:', entries.map(e => ({ date: e.date, mood: e.moodState })));
     return entries;
   };
 
@@ -764,7 +767,7 @@ export function GamificationProvider({ children }: { children: ReactNode }) {
     
     try {
       setAdaptiveChallenges(prev => [...prev, newChallenge]);
-      console.log('✅ Adaptive challenge created successfully');
+
       await addXP(XP_REWARDS.adaptive_challenge, 'adaptive_challenge_created');
     } catch (error) {
       console.error('❌ Error creating adaptive challenge:', error);
@@ -781,7 +784,7 @@ export function GamificationProvider({ children }: { children: ReactNode }) {
             : challenge
         )
       );
-      console.log('✅ Adaptive challenge completed successfully');
+
       await addXP(XP_REWARDS.adaptive_challenge, 'adaptive_challenge_completed');
     } catch (error) {
       console.error('❌ Error completing adaptive challenge:', error);
@@ -791,6 +794,24 @@ export function GamificationProvider({ children }: { children: ReactNode }) {
 
   const getActiveAdaptiveChallenges = (): AdaptiveChallenge[] => {
     return adaptiveChallenges.filter(challenge => !challenge.completed);
+  };
+
+  const clearGamificationData = async (): Promise<void> => {
+    try {
+      // Reset to initial state
+      const initialData = { ...INITIAL_GAMIFICATION_DATA, achievements: ACHIEVEMENTS };
+      setGamificationData(initialData);
+      
+      // Clear from storage
+      if (!user) {
+        await AsyncStorage.removeItem('gamificationData');
+      } else {
+        const userGamificationKey = `gamification_${user.id}`;
+        await AsyncStorage.removeItem(userGamificationKey);
+      }
+    } catch (error) {
+      console.error('Failed to clear gamification data:', error);
+    }
   };
 
   return (
@@ -813,7 +834,9 @@ export function GamificationProvider({ children }: { children: ReactNode }) {
       completeAdaptiveChallenge,
       getActiveAdaptiveChallenges,
       // Level perks method
-      getLevelPerks
+      getLevelPerks,
+      // Clear gamification data method
+      clearGamificationData
     }}>      {children}
     </GamificationContext.Provider>
   );

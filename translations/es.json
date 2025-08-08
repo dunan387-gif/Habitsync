@@ -417,6 +417,12 @@
     "overview": {
       "overallScore": "Puntuación general"
     },
+    "comprehensiveAnalysis": "Análisis Integral de Bienestar",
+    "trend": {
+      "improving": "Mejorando",
+      "stable": "Estable",
+      "declining": "Disminuyendo"
+    },
     "pillars": {
       "title": "Pilares del bienestar"
     },
@@ -804,7 +810,19 @@
       "noStreakData": "No hay datos de rachas disponibles",
       "noMoodData": "No hay datos de ánimo disponibles",
       "noDataTitle": "No Hay Datos Disponibles",
-      "noDataMessage": "Comienza a rastrear tus hábitos para ver análisis detallados e insights."
+      "noDataMessage": "Comienza a rastrear tus hábitos para ver análisis detallados e insights.",
+      "cachePerformance": "Rendimiento de Caché",
+      "cacheHits": "Aciertos de Caché",
+      "cacheMisses": "Fallos de Caché",
+      "hitRate": "Tasa de Acierto",
+      "cacheSize": "Tamaño de Caché",
+      "clearCache": "Limpiar Caché",
+      "clearCacheConfirm": "¿Estás seguro de que quieres limpiar el caché de análisis?",
+      "cacheCleared": "Caché de análisis limpiado exitosamente",
+      "cacheEnabled": "Caché Habilitado",
+      "dataCached": "Datos en Caché",
+      "performanceMetrics": "Métricas de Rendimiento",
+      "averageStreak": "Racha Promedio"
     },
     "emotionalWellnessTrends": {
       "title": "Tendencias de bienestar emocional",
@@ -2570,7 +2588,8 @@
       "sharing": "Compartir profesionalmente",
       "dashboard": "Panel profesional",
       "performance": "Panel de rendimiento",
-      "recommendations": "Recomendaciones de rendimiento"
+      "recommendations": "Recomendaciones de rendimiento",
+      "sharingEnabled": "El uso compartido profesional se ha habilitado correctamente."
     },
     "account": {
       "changePassword": "Cambiar contraseña",

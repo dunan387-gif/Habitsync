@@ -468,7 +468,7 @@ export default function ProfessionalDashboard({ clientId, userRole }: Profession
       </Text>
       <TouchableOpacity 
         style={styles.emptyStateButton} 
-        onPress={() => router.push('/(tabs)/wellness')}
+        onPress={() => router.push('/')}
       >
         <Text style={styles.emptyStateButtonText}>{t('professional.getStarted')}</Text>
       </TouchableOpacity>

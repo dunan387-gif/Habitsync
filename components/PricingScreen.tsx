@@ -11,10 +11,10 @@ import {
   TextInput,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useTheme } from '../context/ThemeContext';
-import { useLanguage } from '../context/LanguageContext';
-import { useSubscription } from '../context/SubscriptionContext';
-import { PRICING_PLANS, INTRODUCTORY_PRICING } from '../constants/pricing';
+import { useTheme } from '@/context/ThemeContext';
+import { useLanguage } from '@/context/LanguageContext';
+import { useSubscription } from '@/context/SubscriptionContext';
+import { PRICING_PLANS, INTRODUCTORY_PRICING } from '@/constants/pricing';
 import {
   Check,
   X,

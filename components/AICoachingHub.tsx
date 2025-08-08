@@ -8,9 +8,9 @@ import {
   Alert,
   Dimensions,
 } from 'react-native';
-import { useTheme } from '../context/ThemeContext';
-import { useLanguage } from '../context/LanguageContext';
-import { useSubscription } from '../context/SubscriptionContext';
+import { useTheme } from '@/context/ThemeContext';
+import { useLanguage } from '@/context/LanguageContext';
+import { useSubscription } from '@/context/SubscriptionContext';
 import {
   Brain,
   Target,

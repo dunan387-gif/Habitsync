@@ -127,7 +127,6 @@ export function HabitProvider({ children }: { children: ReactNode }) {
     getMoodEntries = gamification.getMoodEntries;
   } catch (error) {
     // GamificationContext not available yet
-    console.log('GamificationContext not available');
   }
 
   // Make subscription optional
@@ -142,7 +141,6 @@ export function HabitProvider({ children }: { children: ReactNode }) {
     trackFeatureUsage = subscription.trackFeatureUsage;
   } catch (error) {
     // SubscriptionContext not available yet
-    console.log('SubscriptionContext not available');
   }
 
   // Load habits from storage on mount and when user changes
@@ -233,7 +231,7 @@ export function HabitProvider({ children }: { children: ReactNode }) {
       
       setHabits(updatedHabits);
       await saveHabits(updatedHabits);
-      console.log('Reset completed today for', updatedHabits.length, 'habits'); // Add logging
+  
     } catch (error) {
       console.error('Failed to reset completed today:', error);
     }
@@ -1919,7 +1917,7 @@ export function HabitProvider({ children }: { children: ReactNode }) {
       const updateAdaptiveSchedule = useCallback((habitId: string, feedback: { rating: number; comment?: string }) => {
         // This would typically update the schedule based on user feedback
         // For now, we'll just log the feedback
-        console.log(`Schedule feedback for habit ${habitId}:`, feedback);
+    
       }, []);
 
       const getPersonalizedCoachingData = useCallback((): PersonalizedCoachingData => {
@@ -1958,34 +1956,26 @@ export function HabitProvider({ children }: { children: ReactNode }) {
         if (!habits || !getMoodEntries || !getHabitMoodEntries) return;
         
         try {
-          console.log('🔔 Starting smart notifications...');
           const moodEntries = getMoodEntries();
           const habitMoodEntries = getHabitMoodEntries();
           
           if (moodEntries.length === 0) {
-            console.log('🔔 No mood entries, skipping notifications');
             return;
           }
           
           const currentMood = moodEntries[moodEntries.length - 1];
           const previousMood = moodEntries.length > 1 ? moodEntries[moodEntries.length - 2] : null;
           
-          console.log('🔔 Current mood:', currentMood.moodState);
-          
           // Simplified notification logic to avoid blocking
           const pendingHabits = habits.filter(habit => !habit.completedToday && habit.reminderEnabled);
-          console.log('🔔 Pending habits:', pendingHabits.length);
           
           // Only do basic mood-aware reminders for now
           if (pendingHabits.length > 0 && currentMood) {
-            console.log('🔔 Scheduling basic mood-aware reminders...');
             // Simplified version - just log for now
             pendingHabits.forEach(habit => {
-              console.log(`🔔 Would schedule reminder for ${habit.title} based on ${currentMood.moodState} mood`);
+              // Would schedule reminder based on mood
             });
           }
-          
-          console.log('🔔 Smart notifications completed');
           
         } catch (error) {
           console.error('❌ Smart notifications error:', error);

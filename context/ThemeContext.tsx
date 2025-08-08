@@ -63,13 +63,7 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
         throw new Error(`Theme with id ${themeId} not found`);
       }
 
-      console.log('🎨 Theme validation:', {
-        themeId,
-        themeName: theme.name,
-        isPremium: theme.isPremium,
-        currentTier,
-        canUse: !theme.isPremium || currentTier === 'pro'
-      });
+
 
       // Check if theme requires premium using subscription context
       if (theme.isPremium && currentTier !== 'pro') {
@@ -82,7 +76,7 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
       const keys = getStorageKeys();
       await AsyncStorage.setItem(keys.theme, JSON.stringify(preference));
       
-      console.log('✅ Theme set successfully:', theme.name);
+
     } catch (error) {
       console.error('Failed to set theme:', error);
       throw error;

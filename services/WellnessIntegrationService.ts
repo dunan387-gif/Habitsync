@@ -242,9 +242,20 @@ interface WellnessScore {
   lastUpdated: string;
 }
 
-export class WellnessIntegrationService {
+import { CachedService, CachedServiceConfig } from './CachedService';
+import { CacheExpiry } from './CacheService';
+
+export class WellnessIntegrationService extends CachedService {
   private static migrationCompleted = false;
-  private static migrationInProgress = false; // Add this flag
+  private static migrationInProgress = false;
+
+  constructor() {
+    super({
+      serviceName: 'WellnessIntegrationService',
+      defaultExpiry: CacheExpiry.LONG,
+      enableCaching: true
+    });
+  }
 
   // Modify this method to prevent concurrent migrations
   private static async ensureMigration(): Promise<void> {
@@ -843,6 +854,11 @@ export class WellnessIntegrationService {
 
   // Enhanced Multi-Factor Correlation Analysis
   static async performComprehensiveWellnessAnalysis(timeframe: string = '30d'): Promise<ComprehensiveWellnessAnalysis> {
+    const instance = new WellnessIntegrationService();
+    return await instance.cachedCall(
+      'performComprehensiveWellnessAnalysis',
+      [timeframe],
+      async () => {
     const [moodData, sleepData, exerciseData, nutritionData, meditationData, socialData] = await Promise.all([
       DataExportService.getAllMoodData(),
       this.getSleepData(),
@@ -871,14 +887,17 @@ export class WellnessIntegrationService {
     // Wellness score calculation
     const wellnessScore = await this.calculateComprehensiveWellnessScore(correlationMatrix);
     
-    return {
-      timeframe,
-      correlationMatrix,
-      predictiveInsights,
-      optimizationRecommendations,
-      wellnessScore,
-      generatedAt: new Date().toISOString()
-    };
+        return {
+          timeframe,
+          correlationMatrix,
+          predictiveInsights,
+          optimizationRecommendations,
+          wellnessScore,
+          generatedAt: new Date().toISOString()
+        };
+      },
+      CacheExpiry.LONG
+    );
   }
 
   // Enhanced correlation matrix with advanced algorithms

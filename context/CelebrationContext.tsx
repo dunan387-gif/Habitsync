@@ -63,15 +63,11 @@ export function CelebrationProvider({ children }: { children: ReactNode }) {
   };
 
   const showCelebration = (type: CelebrationType, message: string) => {
-    console.log('🎉 showCelebration called:', { type, message });
-    
     if (!animationsEnabled) {
-      console.log('🎉 Animations disabled, skipping celebration');
       return;
     }
     
     setCurrentCelebration({ type, message });
-    console.log('🎉 Celebration set successfully');
   };
 
   const hideCelebration = () => {

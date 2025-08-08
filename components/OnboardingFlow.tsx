@@ -9,9 +9,9 @@ import {
   Image,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useTheme } from '../context/ThemeContext';
-import { useLanguage } from '../context/LanguageContext';
-import { useSubscription } from '../context/SubscriptionContext';
+import { useTheme } from '@/context/ThemeContext';
+import { useLanguage } from '@/context/LanguageContext';
+import { useSubscription } from '@/context/SubscriptionContext';
 import {
   Crown,
   Star,
@@ -43,7 +43,7 @@ interface OnboardingStep {
 }
 
 interface OnboardingFlowProps {
-  onComplete?: () => void;
+  onComplete?: (skipped?: boolean) => void;
 }
 
 const OnboardingFlow: React.FC<OnboardingFlowProps> = ({ onComplete }) => {
@@ -67,7 +67,6 @@ const OnboardingFlow: React.FC<OnboardingFlowProps> = ({ onComplete }) => {
 
   // Function to reset onboarding for testing
   const resetOnboarding = () => {
-    console.log('🔄 Resetting onboarding to step 0');
     setCurrentStep(0);
   };
 
@@ -141,8 +140,6 @@ const OnboardingFlow: React.FC<OnboardingFlowProps> = ({ onComplete }) => {
   const handleNext = () => {
     if (currentStep < onboardingSteps.length - 1) {
       const nextStep = currentStep + 1;
-      console.log('🔄 Moving to step:', nextStep, 'of', onboardingSteps.length - 1);
-      console.log('📋 Next step data:', onboardingSteps[nextStep]);
       setCurrentStep(nextStep);
     }
   };
@@ -154,25 +151,17 @@ const OnboardingFlow: React.FC<OnboardingFlowProps> = ({ onComplete }) => {
   };
   
   const handleSkip = () => {
-    // Complete onboarding and navigate to main app
-    console.log('✅ Onboarding completed');
+    // Complete onboarding and navigate to login page
     if (onComplete) {
-      onComplete();
+      onComplete(true); // Pass true to indicate it was skipped
     }
   };
 
   const handleUpgrade = () => {
-    console.log('🔧 Upgrade button pressed in onboarding');
-    console.log('🔧 Current tier:', currentTier);
     showUpgradePrompt('onboarding');
   };
 
   const currentStepData = onboardingSteps[currentStep];
-  
-  // Debug logging
-  console.log('🎯 Current step:', currentStep, 'of', onboardingSteps.length - 1);
-  console.log('📋 Current step data:', currentStepData);
-  console.log('🔤 Is language step:', currentStepData.id === 'language');
 
   const renderFeatureIcon = (feature: string) => {
     const iconProps = { size: 20, color: currentTheme.colors.success };
@@ -312,15 +301,19 @@ const OnboardingFlow: React.FC<OnboardingFlowProps> = ({ onComplete }) => {
         )}
         
         {currentStep === onboardingSteps.length - 1 ? (
-          <TouchableOpacity
+                            <TouchableOpacity
             style={[styles.primaryButton, { backgroundColor: currentTheme.colors.primary }]}
-            onPress={handleSkip}
+            onPress={() => {
+              if (onComplete) {
+                onComplete(false); // Pass false to indicate it was completed normally
+              }
+            }}
           >
-            <Text style={[styles.primaryButtonText, { color: "#FFFFFF" }]}>
-              {t('onboarding.getStarted')}
-            </Text>
-            <ArrowRight size={20} color="#FFFFFF" />
-          </TouchableOpacity>
+          <Text style={[styles.primaryButtonText, { color: "#FFFFFF" }]}>
+            {t('onboarding.getStarted')}
+          </Text>
+          <ArrowRight size={20} color="#FFFFFF" />
+        </TouchableOpacity>
         ) : (
         <TouchableOpacity 
             style={[styles.primaryButton, { backgroundColor: currentTheme.colors.primary }]}

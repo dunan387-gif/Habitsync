@@ -72,10 +72,7 @@ export default function MoreScreen() {
   const router = useRouter();
   const { showPricing } = useLocalSearchParams();
   
-  // Debug: Log the showPricing parameter value
-  useEffect(() => {
-    console.log('🔍 Settings screen loaded, showPricing parameter:', showPricing, 'type:', typeof showPricing);
-  }, [showPricing]);
+
   
   const [showThemeSelector, setShowThemeSelector] = useState(false);
   const [showLanguageSelector, setShowLanguageSelector] = useState(false);
@@ -98,7 +95,6 @@ export default function MoreScreen() {
   // Handle showPricing URL parameter - only for upgrade flow from alerts
   useEffect(() => {
     if (showPricing === 'true') {
-      console.log('🎯 Upgrade flow detected: showPricing=true, opening pricing screen');
       setShowPricingScreen(true);
       // Clear the URL parameter to prevent it from persisting
       router.setParams({ showPricing: undefined });
@@ -141,10 +137,12 @@ export default function MoreScreen() {
                 setProfessionalSharingEnabled(true);
                 await AsyncStorage.setItem(key, 'true');
                 
-                // Show professional dashboard after enabling
-                setTimeout(() => {
-                  setShowProfessionalDashboard(true);
-                }, 500);
+                // Show success message instead of automatically opening dashboard
+                Alert.alert(
+                  t('common.success'),
+                  t('settings.professional.sharingEnabled'),
+                  [{ text: t('common.ok') }]
+                );
               }
             }
           ]

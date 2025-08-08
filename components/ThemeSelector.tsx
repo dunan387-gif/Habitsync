@@ -24,18 +24,16 @@ export default function ThemeSelector({ visible, onClose }: ThemeSelectorProps) 
 
 
   const handleThemeSelect = async (theme: Theme) => {
-    console.log('🎨 Theme selected:', theme.name, 'ID:', theme.id);
-    console.log('🎨 Can use theme:', canUseTheme(theme.id));
-    console.log('🎨 Theme is premium:', theme.isPremium);
+
     
     // Check if user can use this theme
     if (!canUseTheme(theme.id)) {
-      console.log('🎨 User cannot use theme - showing upgrade reminder');
+      
       setShowUpgradeModal(true);
       return;
     }
 
-    console.log('🎨 User can use theme - changing theme');
+    
     setIsChangingTheme(true);
     try {
       await setTheme(theme.id);
@@ -50,7 +48,7 @@ export default function ThemeSelector({ visible, onClose }: ThemeSelectorProps) 
     setShowUpgradeModal(false);
     
     // PricingScreen is now handled by the parent component
-    console.log('🎯 Upgrade requested - handled by parent component');
+    
   };
 
   const renderThemeOption = (theme: Theme) => {

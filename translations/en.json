@@ -320,7 +320,19 @@
     "noStreakData": "No streak data available",
     "noMoodData": "No mood data available",
     "noDataTitle": "No Data Available",
-    "noDataMessage": "Start tracking your habits to see detailed analytics and insights."
+    "noDataMessage": "Start tracking your habits to see detailed analytics and insights.",
+    "cachePerformance": "Cache Performance",
+    "cacheHits": "Cache Hits",
+    "cacheMisses": "Cache Misses",
+    "hitRate": "Hit Rate",
+    "cacheSize": "Cache Size",
+    "clearCache": "Clear Cache",
+    "clearCacheConfirm": "Are you sure you want to clear the analytics cache?",
+    "cacheCleared": "Analytics cache cleared successfully",
+    "cacheEnabled": "Cache Enabled",
+    "dataCached": "Data Cached",
+    "performanceMetrics": "Performance Metrics",
+    "averageStreak": "Average Streak"
   },
   "moodCheckIn": {
     "title": "Detailed Mood Tracking",
@@ -484,6 +496,12 @@
     "upgradeMessage": "Track your sleep, exercise, nutrition, and meditation to see how they affect your habits and mood.",
     "overview": {
       "overallScore": "Overall Wellness Score"
+    },
+    "comprehensiveAnalysis": "Comprehensive Wellness Analysis",
+    "trend": {
+      "improving": "Improving",
+      "stable": "Stable", 
+      "declining": "Declining"
     },
     "pillars": {
       "title": "Wellness Pillars"
@@ -2635,7 +2653,8 @@
       "sharing": "Professional Sharing",
       "dashboard": "Professional Dashboard",
       "performance": "Performance Dashboard",
-      "recommendations": "Performance Recommendations"
+      "recommendations": "Performance Recommendations",
+      "sharingEnabled": "Professional sharing has been enabled successfully."
     },
     "account": {
       "changePassword": "Change Password",

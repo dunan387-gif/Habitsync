@@ -12,7 +12,7 @@ import {
   SafeAreaView,
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
-import { useTheme } from '../context/ThemeContext';
+import { useTheme } from '@/context/ThemeContext';
 import {
   Crown,
   X,
@@ -51,9 +51,9 @@ const StyledReminder: React.FC<StyledReminderProps> = ({
   const modalOpenTime = useRef<number>(0);
 
   useEffect(() => {
-    console.log('🎨 StyledReminder useEffect - visible:', visible);
+
     if (visible) {
-      console.log('🎨 Starting entrance animation');
+      
       modalOpenTime.current = Date.now();
       // Reset animations
       fadeAnim.setValue(0);
@@ -74,7 +74,7 @@ const StyledReminder: React.FC<StyledReminderProps> = ({
         }),
       ]).start();
     } else {
-      console.log('🎨 Starting exit animation');
+      
       // Start exit animation
       Animated.parallel([
         Animated.timing(fadeAnim, {
@@ -95,10 +95,8 @@ const StyledReminder: React.FC<StyledReminderProps> = ({
     const timeSinceOpen = Date.now() - modalOpenTime.current;
     // Only allow closing if modal has been open for at least 500ms
     if (timeSinceOpen > 500) {
-      console.log('🎨 Modal onRequestClose triggered (after delay)');
+      
       onClose();
-    } else {
-      console.log('🎨 Modal onRequestClose blocked (too soon)');
     }
   };
 
@@ -161,14 +159,10 @@ const StyledReminder: React.FC<StyledReminderProps> = ({
     }
   };
 
-  console.log('🎨 StyledReminder render - visible:', visible, 'title:', title);
 
   if (!visible) {
-    console.log('🎨 StyledReminder not visible, returning null');
     return null;
   }
-
-  console.log('🎨 About to render Modal component');
 
   return (
     <Modal
@@ -219,7 +213,6 @@ const StyledReminder: React.FC<StyledReminderProps> = ({
                 </View>
                 <TouchableOpacity 
                   onPress={() => {
-                    console.log('🎨 Close button pressed');
                     onClose();
                   }} 
                   style={styles.closeButton}
@@ -268,7 +261,6 @@ const StyledReminder: React.FC<StyledReminderProps> = ({
               <TouchableOpacity
                 style={[styles.secondaryButton, { borderColor: currentTheme.colors.border }]}
                 onPress={() => {
-                  console.log('🎨 Maybe Later button pressed');
                   onClose();
                 }}
                 activeOpacity={0.7}
@@ -281,7 +273,6 @@ const StyledReminder: React.FC<StyledReminderProps> = ({
               <TouchableOpacity
                 style={styles.primaryButton}
                 onPress={() => {
-                  console.log('🎨 Upgrade Now button pressed');
                   onUpgrade();
                 }}
                 activeOpacity={0.8}

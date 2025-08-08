@@ -30,6 +30,7 @@ interface AuthContextType {
   updateProfile: (data: ProfileUpdateData) => Promise<void>;
   uploadAvatar: (imageUri: string) => Promise<void>;
   deleteAccount: () => Promise<void>;
+  clearGuestUser: () => Promise<void>;
   privacySettings: PrivacySettings | null;
   updatePrivacySetting: (key: keyof PrivacySettings, value: boolean) => Promise<void>;
   canShowProfileData: () => Promise<boolean>;
@@ -68,11 +69,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [privacySettings, setPrivacySettings] = useState<PrivacySettings | null>(null);
+  const [preventGuestCreation, setPreventGuestCreation] = useState(false);
 
   useEffect(() => {
     let unsubscribe: (() => void) | undefined;
     
     const setupAuth = async () => {
+      setPreventGuestCreation(false); // Reset flag on app startup
       if (!OFFLINE_MODE) {
         unsubscribe = await checkAuthState();
       } else {
@@ -111,16 +114,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       } else {
         // First, check if we have a current Firebase user (for immediate restoration)
         const currentUser = auth.currentUser;
-        console.log('🔥 Current Firebase user on app start:', currentUser ? 'User found' : 'No user');
         
         if (currentUser) {
           try {
-            console.log('🔄 Converting current Firebase user to app user...');
             const user = await convertFirebaseUserToAppUser(currentUser);
             await migrateGuestDataToUser(user.id);
             await saveLastAuthenticatedUser(user);
             setUser(user);
-            console.log('✅ Current Firebase user converted successfully:', user.id);
             setIsLoading(false);
           } catch (error) {
             console.error('❌ Error converting current Firebase user:', error);
@@ -128,10 +128,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           }
         } else {
           // No current Firebase user, try to restore last authenticated user
-          console.log('🔄 No current Firebase user, checking for last authenticated user...');
           const lastUser = await restoreLastAuthenticatedUser();
           if (lastUser) {
-            console.log('✅ Restored last authenticated user:', lastUser.id);
             setUser(lastUser);
             setIsLoading(false);
           }
@@ -139,30 +137,23 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
         // Set up Firebase auth state listener for future changes
         const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
-          console.log('🔥 Firebase auth state changed:', firebaseUser ? 'User logged in' : 'No user');
-          
           // Skip if we already have a user set from currentUser check
           if (user && !user.id.startsWith('guest-')) {
-            console.log('ℹ️ User already set, skipping auth state change');
             return;
           }
           
           if (firebaseUser) {
             try {
-              console.log('🔄 Converting Firebase user to app user...');
               const user = await convertFirebaseUserToAppUser(firebaseUser);
               await migrateGuestDataToUser(user.id);
               setUser(user);
-              console.log('✅ Firebase user converted successfully:', user.id);
             } catch (error) {
               console.error('❌ Error converting Firebase user:', error);
               // If Firebase user conversion fails, create a guest user
-              console.log('🔄 Falling back to guest user...');
               await createGuestUser();
             }
           } else {
             // No Firebase user, check if we have a guest user
-            console.log('🔄 No Firebase user, checking for guest user...');
             await createGuestUser();
           }
           setIsLoading(false);
@@ -181,17 +172,19 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const createGuestUser = async () => {
     try {
-      console.log('🔍 Checking for existing guest user...');
+      // Check if guest creation is prevented (e.g., after logout)
+      if (preventGuestCreation) {
+        return;
+      }
+
       // Check if we already have a guest user
       const existingGuestUser = await AsyncStorage.getItem('guestUserData');
       if (existingGuestUser) {
         const guestUser = JSON.parse(existingGuestUser);
-        console.log('✅ Found existing guest user:', guestUser.id);
         setUser(guestUser);
         return;
       }
 
-      console.log('🆕 Creating new guest user...');
       // Create a new guest user
       const guestUser: User = {
         id: 'guest-' + Date.now(),
@@ -215,7 +208,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       // Save guest user data
       await AsyncStorage.setItem('guestUserData', JSON.stringify(guestUser));
       setUser(guestUser);
-      console.log('✅ Created and saved guest user:', guestUser.id);
     } catch (error) {
       console.error('❌ Error creating guest user:', error);
       setUser(null);
@@ -224,17 +216,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const migrateGuestDataToUser = async (newUserId: string) => {
     try {
-      console.log('🔄 Attempting to migrate guest data to user:', newUserId);
-      
       // Get guest user data
       const guestUserData = await AsyncStorage.getItem('guestUserData');
       if (!guestUserData) {
-        console.log('ℹ️ No guest user data to migrate');
         return;
       }
 
       const guestUser = JSON.parse(guestUserData);
-      console.log('📦 Found guest user data:', guestUser.id);
 
       // Get guest habits data
       const guestHabitsKey = `habits_${guestUser.id}`;
@@ -248,14 +236,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       if (guestHabits) {
         const newHabitsKey = `habits_${newUserId}`;
         await AsyncStorage.setItem(newHabitsKey, guestHabits);
-        console.log('✅ Migrated habits data');
       }
 
       // Migrate gamification data
       if (guestGamification) {
         const newGamificationKey = `gamification_${newUserId}`;
         await AsyncStorage.setItem(newGamificationKey, guestGamification);
-        console.log('✅ Migrated gamification data');
       }
 
       // Clear guest user data after migration
@@ -264,8 +250,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         guestHabitsKey,
         guestGamificationKey
       ]);
-      
-      console.log('✅ Guest data migration completed');
     } catch (error) {
       console.error('❌ Error migrating guest data:', error);
     }
@@ -275,7 +259,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     try {
       if (!user.id.startsWith('guest-')) {
         await AsyncStorage.setItem('lastAuthenticatedUser', JSON.stringify(user));
-        console.log('💾 Saved last authenticated user:', user.id);
       }
     } catch (error) {
       console.error('❌ Error saving last authenticated user:', error);
@@ -287,7 +270,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       const lastUserData = await AsyncStorage.getItem('lastAuthenticatedUser');
       if (lastUserData) {
         const lastUser = JSON.parse(lastUserData);
-        console.log('🔄 Restoring last authenticated user:', lastUser.id);
         return lastUser;
       }
       return null;
@@ -333,7 +315,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         await saveLastAuthenticatedUser(user);
         
         setUser(user);
-        console.log('✅ User logged in successfully:', user.id);
+        setPreventGuestCreation(false); // Reset flag on successful login
       }
     } catch (error) {
       throw error;
@@ -376,16 +358,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         await AsyncStorage.setItem('registeredAccounts', JSON.stringify(accounts));
         await AsyncStorage.setItem(`userData_${newUser.id}`, JSON.stringify(newUser));
         await AsyncStorage.setItem('userData', JSON.stringify(newUser));
+        
+        // Clear global gamification data to prevent data from previous sessions
+        await AsyncStorage.removeItem('gamificationData');
+        
         await SecureStore.setItemAsync('authToken', 'offline-token-' + Date.now());
         setUser(newUser);
       } else {
         // Use Firebase authentication
-        console.log('Attempting Firebase signup with:', { email, name });
-        
         const userCredential = await createUserWithEmailAndPassword(auth, email, password);
         const firebaseUser = userCredential.user;
-        
-        console.log('Firebase signup successful:', firebaseUser.uid);
         
         // Create user profile in Firestore
         await setDoc(doc(db, 'users', firebaseUser.uid), {
@@ -412,11 +394,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         // Migrate guest data to real user account
         await migrateGuestDataToUser(user.id);
         
+        // Clear global gamification data to prevent data from previous sessions
+        await AsyncStorage.removeItem('gamificationData');
+        
         // Save the authenticated user for future restoration
         await saveLastAuthenticatedUser(user);
         
         setUser(user);
-        console.log('✅ User registered successfully:', user.id);
+        setPreventGuestCreation(false); // Reset flag on successful registration
       }
     } catch (error) {
       throw error;
@@ -434,9 +419,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       } else {
         // Check if current user is a guest user
         if (user && user.id.startsWith('guest-')) {
-          // For guest users, just clear the guest data and create a new guest
+          // For guest users, clear the guest data and redirect to login
+          setPreventGuestCreation(true); // Prevent immediate guest user creation
           await AsyncStorage.removeItem('guestUserData');
-          await createGuestUser();
+          // Also clear any guest-specific data to prevent recreation
+          const guestHabitsKey = `habits_${user.id}`;
+          const guestGamificationKey = `gamification_${user.id}`;
+          await AsyncStorage.multiRemove([guestHabitsKey, guestGamificationKey]);
+          setUser(null);
         } else {
           // Use Firebase logout for authenticated users
           await firebaseSignOut(auth);
@@ -519,7 +509,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       await AsyncStorage.setItem('userData', JSON.stringify(appUser));
       await SecureStore.setItemAsync('authToken', userInfo.idToken);
       setUser(appUser);
-      console.log('✅ Google user logged in successfully:', appUser.id);
     } catch (error: any) {
       console.error('Google login failed:', error);
       throw new Error('Google login failed: ' + error.message);
@@ -592,7 +581,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       await AsyncStorage.setItem('userData', JSON.stringify(appUser));
       await SecureStore.setItemAsync('authToken', credential.identityToken);
       setUser(appUser);
-      console.log('✅ Apple user logged in successfully:', appUser.id);
     } catch (error: any) {
       console.error('Apple login failed:', error);
       throw new Error('Apple login failed: ' + error.message);
@@ -649,6 +637,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
+  const clearGuestUser = async () => {
+    try {
+      await AsyncStorage.removeItem('guestUserData');
+      setUser(null);
+    } catch (error) {
+      console.error('❌ Error clearing guest user data:', error);
+      throw error;
+    }
+  };
+
   const updatePrivacySetting = async (key: keyof PrivacySettings, value: boolean) => {
     try {
       await PrivacyService.updatePrivacySetting(key, value);
@@ -682,6 +680,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     updateProfile,
     uploadAvatar,
     deleteAccount,
+    clearGuestUser,
     privacySettings,
     updatePrivacySetting,
     canShowProfileData,
@@ -695,24 +694,25 @@ export const useAuth = () => {
   const context = useContext(AuthContext);
   if (context === undefined) {
     // Return a default context instead of throwing an error
-    return {
-      user: null,
-      isLoading: true,
-      isAuthenticated: false,
-      isGuestUser: false,
-      login: async () => { throw new Error('Auth not initialized'); },
-      register: async () => { throw new Error('Auth not initialized'); },
-      logout: async () => { throw new Error('Auth not initialized'); },
-      loginWithGoogle: async () => { throw new Error('Auth not initialized'); },
-      loginWithApple: async () => { throw new Error('Auth not initialized'); },
-      updateProfile: async () => { throw new Error('Auth not initialized'); },
-      uploadAvatar: async () => { throw new Error('Auth not initialized'); },
-      deleteAccount: async () => { throw new Error('Auth not initialized'); },
-      privacySettings: null,
-      updatePrivacySetting: async () => { throw new Error('Auth not initialized'); },
-      canShowProfileData: async () => false,
-      canCollectAnalytics: async () => false,
-    };
+      return {
+    user: null,
+    isLoading: true,
+    isAuthenticated: false,
+    isGuestUser: false,
+    login: async () => { throw new Error('Auth not initialized'); },
+    register: async () => { throw new Error('Auth not initialized'); },
+    logout: async () => { throw new Error('Auth not initialized'); },
+    loginWithGoogle: async () => { throw new Error('Auth not initialized'); },
+    loginWithApple: async () => { throw new Error('Auth not initialized'); },
+    updateProfile: async () => { throw new Error('Auth not initialized'); },
+    uploadAvatar: async () => { throw new Error('Auth not initialized'); },
+    deleteAccount: async () => { throw new Error('Auth not initialized'); },
+    clearGuestUser: async () => { throw new Error('Auth not initialized'); },
+    privacySettings: null,
+    updatePrivacySetting: async () => { throw new Error('Auth not initialized'); },
+    canShowProfileData: async () => false,
+    canCollectAnalytics: async () => false,
+  };
   }
   return context;
 };

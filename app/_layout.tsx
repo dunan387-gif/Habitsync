@@ -29,32 +29,11 @@ function RootLayoutContent() {
   const { currentError } = useError();
   const { currentCelebration, hideCelebration } = useCelebration();
 
-  console.log('RootLayoutContent - using alert-based upgrade system');
-  console.log('Current user:', user ? (isGuestUser ? 'Guest User' : 'Authenticated User') : 'No User');
-
-  if (!user) {
-    return (
-      <Stack
-        screenOptions={{
-          headerStyle: {
-            backgroundColor: currentTheme.colors.background,
-          },
-          headerTintColor: currentTheme.colors.text,
-          headerTitleStyle: {
-            fontWeight: 'bold',
-          },
-        }}
-      >
-        <Stack.Screen name="(auth)" options={{ headerShown: false }} />
-        <Stack.Screen name="+not-found" />
-      </Stack>
-    );
-  }
-
   return (
     <ErrorBoundary>
       <MoodHabitOnboarding>
-        <ProtectedRoute>
+        {!user ? (
+          // No user - show auth screens
           <Stack
             screenOptions={{
               headerStyle: {
@@ -64,34 +43,52 @@ function RootLayoutContent() {
               headerTitleStyle: {
                 fontWeight: 'bold',
               },
-              headerShown: false, // Hide all headers by default
             }}
           >
             <Stack.Screen name="(auth)" options={{ headerShown: false }} />
-            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-            <Stack.Screen name="mood-tracking" options={{ headerShown: false }} />
-            <Stack.Screen name="profile" options={{ headerShown: true, title: t('profile.title') }} />
-            <Stack.Screen name="habit/[id]" options={{ headerShown: true, title: t('habit_details') }} />
-            <Stack.Screen name="settings" options={{ headerShown: false }} />
             <Stack.Screen name="+not-found" />
           </Stack>
-          
-          {currentCelebration && (
-            <CelebrationOverlay
-              visible={!!currentCelebration}
-              type={currentCelebration.type}
-              message={currentCelebration.message}
-              onComplete={hideCelebration}
-            />
-          )}
-          
-          {/* Global Performance Alerts */}
-          <PerformanceAlerts />
-          
-          {/* Global Error Toast */}
-          <ErrorToastContainer />
-          
-        </ProtectedRoute>
+        ) : (
+          // User exists - show main app
+          <ProtectedRoute>
+            <Stack
+              screenOptions={{
+                headerStyle: {
+                  backgroundColor: currentTheme.colors.background,
+                },
+                headerTintColor: currentTheme.colors.text,
+                headerTitleStyle: {
+                  fontWeight: 'bold',
+                },
+                headerShown: false, // Hide all headers by default
+              }}
+            >
+              <Stack.Screen name="(auth)" options={{ headerShown: false }} />
+              <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+              <Stack.Screen name="mood-tracking" options={{ headerShown: false }} />
+              <Stack.Screen name="profile" options={{ headerShown: true, title: t('profile.title') }} />
+              <Stack.Screen name="habit/[id]" options={{ headerShown: true, title: t('habit_details') }} />
+              <Stack.Screen name="settings" options={{ headerShown: false }} />
+              <Stack.Screen name="+not-found" />
+            </Stack>
+            
+            {currentCelebration && (
+              <CelebrationOverlay
+                visible={!!currentCelebration}
+                type={currentCelebration.type}
+                message={currentCelebration.message}
+                onComplete={hideCelebration}
+              />
+            )}
+            
+            {/* Global Performance Alerts */}
+            <PerformanceAlerts />
+            
+            {/* Global Error Toast */}
+            <ErrorToastContainer />
+            
+          </ProtectedRoute>
+        )}
       </MoodHabitOnboarding>
     </ErrorBoundary>
   );
@@ -117,7 +114,6 @@ export default function RootLayout() {
     const initializeApp = async () => {
       try {
         await EncryptionService.initializeEncryption();
-        console.log('Encryption initialized successfully');
       } catch (error) {
         console.error('Failed to initialize encryption:', error);
       }

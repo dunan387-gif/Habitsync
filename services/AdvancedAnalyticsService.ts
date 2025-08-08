@@ -1,4 +1,4 @@
-import { MoodEntry, HabitMoodEntry, Habit } from '../types';
+import { MoodEntry, HabitMoodEntry, Habit } from '@/types';
 import { PredictiveAnalyticsService } from './PredictiveAnalyticsService';
 import { WellnessIntegrationService } from './WellnessIntegrationService';
 

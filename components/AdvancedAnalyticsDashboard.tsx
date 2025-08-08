@@ -8,10 +8,10 @@ import {
   Dimensions,
   Alert,
 } from 'react-native';
-import { useTheme } from '../context/ThemeContext';
-import { useLanguage } from '../context/LanguageContext';
-import { useSubscription } from '../context/SubscriptionContext';
-import { useHabits } from '../context/HabitContext';
+import { useTheme } from '@/context/ThemeContext';
+import { useLanguage } from '@/context/LanguageContext';
+import { useSubscription } from '@/context/SubscriptionContext';
+import { useHabits } from '@/context/HabitContext';
 import {
   BarChart3,
   TrendingUp,
@@ -28,7 +28,7 @@ import {
   Filter,
   RefreshCw,
 } from 'lucide-react-native';
-import { MoodEntry, HabitMoodEntry } from '../types';
+import { MoodEntry, HabitMoodEntry } from '@/types';
 
 const { width } = Dimensions.get('window');
 

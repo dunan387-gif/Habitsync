@@ -1,5 +1,5 @@
 import { Habit, MoodEntry, HabitMoodEntry } from '../types';
-import { useHabits } from '../context/HabitContext';
+import { CacheService, CacheKeys, CacheExpiry } from './CacheService';
 
 export interface AdvancedAnalyticsData {
   habitCompletions: {
@@ -77,17 +77,11 @@ export interface AdvancedAnalyticsData {
   };
 }
 
-export interface AnalyticsCache {
-  data: AdvancedAnalyticsData;
-  timestamp: number;
-  timeframe: string;
-  userId: string;
-}
+
 
 export class EnhancedAnalyticsService {
   private static instance: EnhancedAnalyticsService;
-  private cache: Map<string, AnalyticsCache> = new Map();
-  private cacheExpiry = 5 * 60 * 1000; // 5 minutes
+  private cacheService: CacheService;
   private t?: (key: string) => string;
 
   static getInstance(): EnhancedAnalyticsService {
@@ -95,6 +89,10 @@ export class EnhancedAnalyticsService {
       EnhancedAnalyticsService.instance = new EnhancedAnalyticsService();
     }
     return EnhancedAnalyticsService.instance;
+  }
+
+  constructor() {
+    this.cacheService = CacheService.getInstance();
   }
 
   setTranslationFunction(t: (key: string) => string) {
@@ -112,36 +110,31 @@ export class EnhancedAnalyticsService {
     timeframe: '7d' | '30d' | '90d' | '365d',
     userId: string
   ): Promise<AdvancedAnalyticsData> {
-    const cacheKey = `${userId}_${timeframe}`;
-    const cached = this.cache.get(cacheKey);
+    const cacheKey = CacheKeys.analytics(userId, timeframe);
     
-    // Check if cache is still valid
-    if (cached && Date.now() - cached.timestamp < this.cacheExpiry) {
-      return cached.data;
-    }
+    return await this.cacheService.getOrSet(
+      cacheKey,
+      async () => {
+        const days = this.getDaysFromTimeframe(timeframe);
+        
+        const analyticsData: AdvancedAnalyticsData = {
+          habitCompletions: await this.calculateHabitCompletions(habits, days),
+          streakData: await this.calculateStreakData(habits, days),
+          moodTrends: await this.calculateMoodTrends(moodData, days),
+          performanceMetrics: await this.calculatePerformanceMetrics(habits, moodData, habitMoodData, days),
+          predictiveInsights: await this.generatePredictiveInsights(habits, moodData, habitMoodData, days),
+          patternAnalysis: await this.analyzePatterns(habits, moodData, habitMoodData, days)
+        };
 
-    // Calculate days based on timeframe
-    const days = this.getDaysFromTimeframe(timeframe);
-    
-    // Generate real analytics data
-    const analyticsData: AdvancedAnalyticsData = {
-      habitCompletions: await this.calculateHabitCompletions(habits, days),
-      streakData: await this.calculateStreakData(habits, days),
-      moodTrends: await this.calculateMoodTrends(moodData, days),
-      performanceMetrics: await this.calculatePerformanceMetrics(habits, moodData, habitMoodData, days),
-      predictiveInsights: await this.generatePredictiveInsights(habits, moodData, habitMoodData, days),
-      patternAnalysis: await this.analyzePatterns(habits, moodData, habitMoodData, days)
-    };
-
-    // Cache the results
-    this.cache.set(cacheKey, {
-      data: analyticsData,
-      timestamp: Date.now(),
-      timeframe,
-      userId
-    });
-
-    return analyticsData;
+        return analyticsData;
+      },
+      CacheExpiry.MEDIUM,
+      {
+        source: 'EnhancedAnalyticsService',
+        userId,
+        params: { timeframe, habitsCount: habits.length, moodDataCount: moodData.length }
+      }
+    );
   }
 
   private getDaysFromTimeframe(timeframe: string): number {
@@ -194,63 +187,63 @@ export class EnhancedAnalyticsService {
     return completions;
   }
 
-  private async calculateStreakData(habits: Habit[], days: number): Promise<AdvancedAnalyticsData['streakData']> {
-    return habits.map(habit => {
-      const currentStreak = this.calculateCurrentStreak(habit);
-      const longestStreak = this.calculateLongestStreak(habit);
-      const completionRate = this.calculateHabitCompletionRate(habit, days);
-      const trend = this.calculateHabitTrend(habit, days);
-      const confidence = this.calculateConfidence(habit, days);
+           private async calculateStreakData(habits: Habit[], days: number): Promise<AdvancedAnalyticsData['streakData']> {
+           return habits.map(habit => {
+             const currentStreak = this.calculateCurrentStreak(habit);
+             const longestStreak = this.calculateLongestStreak(habit);
+             const completionRate = this.calculateHabitCompletionRate(habit, days);
+             const trend = this.calculateHabitTrend(habit, days);
+             const confidence = this.calculateConfidence(habit, days);
 
-      return {
-        habitId: habit.id,
-        habitName: habit.name,
-        currentStreak,
-        longestStreak,
-        completionRate,
-        trend,
-        confidence
-      };
-    });
-  }
+             return {
+               habitId: habit.id,
+               habitName: habit.title,
+               currentStreak,
+               longestStreak,
+               completionRate,
+               trend,
+               confidence
+             };
+           });
+         }
 
-  private async calculateMoodTrends(moodData: MoodEntry[], days: number): Promise<AdvancedAnalyticsData['moodTrends']> {
-    const trends: AdvancedAnalyticsData['moodTrends'] = [];
-    const endDate = new Date();
-    const startDate = new Date(endDate.getTime() - (days * 24 * 60 * 60 * 1000));
+           private async calculateMoodTrends(moodData: MoodEntry[], days: number): Promise<AdvancedAnalyticsData['moodTrends']> {
+           const trends: AdvancedAnalyticsData['moodTrends'] = [];
+           const endDate = new Date();
+           const startDate = new Date(endDate.getTime() - (days * 24 * 60 * 60 * 1000));
 
-    // Group mood data by date
-    const moodByDate = new Map<string, MoodEntry[]>();
-    moodData.forEach(entry => {
-      const date = entry.timestamp.split('T')[0];
-      if (!moodByDate.has(date)) {
-        moodByDate.set(date, []);
-      }
-      moodByDate.get(date)!.push(entry);
-    });
+           // Group mood data by date
+           const moodByDate = new Map<string, MoodEntry[]>();
+           moodData.forEach(entry => {
+             const date = entry.timestamp.split('T')[0];
+             if (!moodByDate.has(date)) {
+               moodByDate.set(date, []);
+             }
+             moodByDate.get(date)!.push(entry);
+           });
 
-    for (let i = 0; i < days; i++) {
-      const date = new Date(startDate.getTime() + (i * 24 * 60 * 60 * 1000));
-      const dateStr = date.toISOString().split('T')[0];
-      const dayMoods = moodByDate.get(dateStr) || [];
+           for (let i = 0; i < days; i++) {
+             const date = new Date(startDate.getTime() + (i * 24 * 60 * 60 * 1000));
+             const dateStr = date.toISOString().split('T')[0];
+             const dayMoods = moodByDate.get(dateStr) || [];
 
-      if (dayMoods.length > 0) {
-        const averageMood = dayMoods.reduce((sum, entry) => sum + entry.mood, 0) / dayMoods.length;
-        const dominantMood = this.getDominantMood(dayMoods);
-        const moodStability = this.calculateMoodStability(dayMoods);
+             if (dayMoods.length > 0) {
+               const averageMood = dayMoods.reduce((sum, entry) => sum + entry.intensity, 0) / dayMoods.length;
+               const dominantMood = this.getDominantMood(dayMoods);
+               const moodStability = this.calculateMoodStability(dayMoods);
 
-        trends.push({
-          date: dateStr,
-          averageMood,
-          moodCount: dayMoods.length,
-          dominantMood,
-          moodStability
-        });
-      }
-    }
+               trends.push({
+                 date: dateStr,
+                 averageMood,
+                 moodCount: dayMoods.length,
+                 dominantMood,
+                 moodStability
+               });
+             }
+           }
 
-    return trends;
-  }
+           return trends;
+         }
 
   private async calculatePerformanceMetrics(
     habits: Habit[], 
@@ -487,69 +480,69 @@ export class EnhancedAnalyticsService {
     return Math.max(0, 1 - (stdDev / 100));
   }
 
-  private getDominantMood(moods: MoodEntry[]): string {
-    if (moods.length === 0) return 'neutral';
-    
-    const moodCounts = new Map<string, number>();
-    moods.forEach(mood => {
-      const moodCategory = this.categorizeMood(mood.mood);
-      moodCounts.set(moodCategory, (moodCounts.get(moodCategory) || 0) + 1);
-    });
-    
-    let dominantMood = 'neutral';
-    let maxCount = 0;
-    
-    moodCounts.forEach((count, mood) => {
-      if (count > maxCount) {
-        maxCount = count;
-        dominantMood = mood;
-      }
-    });
-    
-    return dominantMood;
-  }
+           private getDominantMood(moods: MoodEntry[]): string {
+           if (moods.length === 0) return 'neutral';
+           
+           const moodCounts = new Map<string, number>();
+           moods.forEach(mood => {
+             const moodCategory = this.categorizeMood(mood.intensity);
+             moodCounts.set(moodCategory, (moodCounts.get(moodCategory) || 0) + 1);
+           });
+           
+           let dominantMood = 'neutral';
+           let maxCount = 0;
+           
+           moodCounts.forEach((count, mood) => {
+             if (count > maxCount) {
+               maxCount = count;
+               dominantMood = mood;
+             }
+           });
+           
+           return dominantMood;
+         }
 
-  private categorizeMood(moodValue: number): string {
-    if (moodValue >= 4) return 'positive';
-    if (moodValue <= 2) return 'negative';
-    return 'neutral';
-  }
+         private categorizeMood(moodValue: number): string {
+           if (moodValue >= 4) return 'positive';
+           if (moodValue <= 2) return 'negative';
+           return 'neutral';
+         }
 
-  private calculateMoodStability(moods: MoodEntry[]): number {
-    if (moods.length < 2) return 1;
-    
-    const moodValues = moods.map(mood => mood.mood);
-    const mean = moodValues.reduce((sum, val) => sum + val, 0) / moodValues.length;
-    const variance = moodValues.reduce((sum, val) => sum + Math.pow(val - mean, 2), 0) / moodValues.length;
-    const stdDev = Math.sqrt(variance);
-    
-    // Convert to stability score (0-1, where 1 is most stable)
-    return Math.max(0, 1 - (stdDev / 5));
-  }
+         private calculateMoodStability(moods: MoodEntry[]): number {
+           if (moods.length < 2) return 1;
+           
+           const moodValues = moods.map(mood => mood.intensity);
+           const mean = moodValues.reduce((sum, val) => sum + val, 0) / moodValues.length;
+           const variance = moodValues.reduce((sum, val) => sum + Math.pow(val - mean, 2), 0) / moodValues.length;
+           const stdDev = Math.sqrt(variance);
+           
+           // Convert to stability score (0-1, where 1 is most stable)
+           return Math.max(0, 1 - (stdDev / 5));
+         }
 
-  private findBestPerformingHabit(habits: Habit[], days: number): string {
-    if (habits.length === 0) return '';
-    
-    let bestHabit = habits[0];
-    let bestRate = this.calculateHabitCompletionRate(habits[0], days);
-    
-    habits.forEach(habit => {
-      const rate = this.calculateHabitCompletionRate(habit, days);
-      if (rate > bestRate) {
-        bestRate = rate;
-        bestHabit = habit;
-      }
-    });
-    
-    return bestHabit.name;
-  }
+           private findBestPerformingHabit(habits: Habit[], days: number): string {
+           if (habits.length === 0) return '';
+           
+           let bestHabit = habits[0];
+           let bestRate = this.calculateHabitCompletionRate(habits[0], days);
+           
+           habits.forEach(habit => {
+             const rate = this.calculateHabitCompletionRate(habit, days);
+             if (rate > bestRate) {
+               bestRate = rate;
+               bestHabit = habit;
+             }
+           });
+           
+           return bestHabit.title;
+         }
 
-  private findHabitsNeedingAttention(habits: Habit[], days: number): string[] {
-    return habits
-      .filter(habit => this.calculateHabitCompletionRate(habit, days) < 30)
-      .map(habit => habit.name)
-      .slice(0, 3); // Return top 3
-  }
+         private findHabitsNeedingAttention(habits: Habit[], days: number): string[] {
+           return habits
+             .filter(habit => this.calculateHabitCompletionRate(habit, days) < 30)
+             .map(habit => habit.title)
+             .slice(0, 3); // Return top 3
+         }
 
   private calculateOverallTrend(habits: Habit[], days: number): 'improving' | 'declining' | 'stable' {
     if (habits.length === 0) return 'stable';
@@ -664,66 +657,71 @@ export class EnhancedAnalyticsService {
     return 'hard';
   }
 
-  private findMoodCorrelations(
-    habits: Habit[], 
-    moodData: MoodEntry[], 
-    habitMoodData: HabitMoodEntry[]
-  ): Array<{habit: string, mood: string, correlation: number, significance: number}> {
-    const correlations: Array<{habit: string, mood: string, correlation: number, significance: number}> = [];
-    
-    if (moodData.length === 0 || habitMoodData.length === 0) return correlations;
-    
-    // Simplified correlation analysis
-    habits.forEach(habit => {
-      const habitMoodEntries = habitMoodData.filter(entry => entry.habitId === habit.id);
-      
-      if (habitMoodEntries.length > 5) {
-        const avgMood = habitMoodEntries.reduce((sum, entry) => sum + entry.mood, 0) / habitMoodEntries.length;
-        const correlation = this.calculateCorrelation(habitMoodEntries);
-        
-        if (Math.abs(correlation) > 0.3) {
-          correlations.push({
-            habit: habit.name,
-            mood: this.categorizeMood(avgMood),
-            correlation: Math.abs(correlation),
-            significance: Math.min(95, habitMoodEntries.length * 5)
-          });
-        }
-      }
-    });
-    
-    return correlations
-      .sort((a, b) => b.correlation - a.correlation)
-      .slice(0, 5); // Return top 5 correlations
-  }
+           private findMoodCorrelations(
+           habits: Habit[], 
+           moodData: MoodEntry[], 
+           habitMoodData: HabitMoodEntry[]
+         ): Array<{habit: string, mood: string, correlation: number, significance: number}> {
+           const correlations: Array<{habit: string, mood: string, correlation: number, significance: number}> = [];
+           
+           if (moodData.length === 0 || habitMoodData.length === 0) return correlations;
+           
+           // Simplified correlation analysis
+           habits.forEach(habit => {
+             const habitMoodEntries = habitMoodData.filter(entry => entry.habitId === habit.id);
+             
+             if (habitMoodEntries.length > 5) {
+               // Use preMood intensity if available, otherwise use a default value
+               const avgMood = habitMoodEntries.reduce((sum, entry) => {
+                 const moodIntensity = entry.preMood?.intensity || 5; // Default to neutral
+                 return sum + moodIntensity;
+               }, 0) / habitMoodEntries.length;
+               
+               const correlation = this.calculateCorrelation(habitMoodEntries);
+               
+               if (Math.abs(correlation) > 0.3) {
+                 correlations.push({
+                   habit: habit.title,
+                   mood: this.categorizeMood(avgMood),
+                   correlation: Math.abs(correlation),
+                   significance: Math.min(95, habitMoodEntries.length * 5)
+                 });
+               }
+             }
+           });
+           
+           return correlations
+             .sort((a, b) => b.correlation - a.correlation)
+             .slice(0, 5); // Return top 5 correlations
+         }
 
-  private calculateCorrelation(entries: HabitMoodEntry[]): number {
-    if (entries.length < 2) return 0;
-    
-    // Simplified correlation calculation
-    const completionRates = entries.map(entry => entry.completed ? 1 : 0);
-    const moods = entries.map(entry => entry.mood);
-    
-    const avgCompletion = completionRates.reduce((sum, val) => sum + val, 0) / completionRates.length;
-    const avgMood = moods.reduce((sum, val) => sum + val, 0) / moods.length;
-    
-    let numerator = 0;
-    let denominatorX = 0;
-    let denominatorY = 0;
-    
-    for (let i = 0; i < entries.length; i++) {
-      const xDiff = completionRates[i] - avgCompletion;
-      const yDiff = moods[i] - avgMood;
-      
-      numerator += xDiff * yDiff;
-      denominatorX += xDiff * xDiff;
-      denominatorY += yDiff * yDiff;
-    }
-    
-    if (denominatorX === 0 || denominatorY === 0) return 0;
-    
-    return numerator / Math.sqrt(denominatorX * denominatorY);
-  }
+         private calculateCorrelation(entries: HabitMoodEntry[]): number {
+           if (entries.length < 2) return 0;
+           
+           // Simplified correlation calculation
+           const completionRates = entries.map(entry => entry.action === 'completed' ? 1 : 0);
+           const moods = entries.map(entry => entry.preMood?.intensity || 5);
+           
+           const avgCompletion = completionRates.reduce((sum: number, val: number) => sum + val, 0) / completionRates.length;
+           const avgMood = moods.reduce((sum: number, val: number) => sum + val, 0) / moods.length;
+           
+           let numerator = 0;
+           let denominatorX = 0;
+           let denominatorY = 0;
+           
+           for (let i = 0; i < entries.length; i++) {
+             const xDiff = completionRates[i] - avgCompletion;
+             const yDiff = moods[i] - avgMood;
+             
+             numerator += xDiff * yDiff;
+             denominatorX += xDiff * xDiff;
+             denominatorY += yDiff * yDiff;
+           }
+           
+           if (denominatorX === 0 || denominatorY === 0) return 0;
+           
+           return numerator / Math.sqrt(denominatorX * denominatorY);
+         }
 
   private detectCyclicalPatterns(
     habits: Habit[], 
@@ -847,18 +845,18 @@ export class EnhancedAnalyticsService {
     return triggers;
   }
 
-  private findMoodTriggeredHabits(habitMoodData: HabitMoodEntry[], moodType: string): string[] {
-    const habitIds = new Set<string>();
-    
-    habitMoodData.forEach(entry => {
-      const entryMoodType = this.categorizeMood(entry.mood);
-      if (entryMoodType === moodType && entry.completed) {
-        habitIds.add(entry.habitId);
-      }
-    });
-    
-    return Array.from(habitIds);
-  }
+           private findMoodTriggeredHabits(habitMoodData: HabitMoodEntry[], moodType: string): string[] {
+           const habitIds = new Set<string>();
+           
+           habitMoodData.forEach(entry => {
+             const entryMoodType = this.categorizeMood(entry.preMood?.intensity || 5);
+             if (entryMoodType === moodType && entry.action === 'completed') {
+               habitIds.add(entry.habitId);
+             }
+           });
+           
+           return Array.from(habitIds);
+         }
 
   private calculateTriggerFrequency(affectedHabits: string[], days: number): number {
     return Math.min(100, (affectedHabits.length / days) * 100);
@@ -883,11 +881,11 @@ export class EnhancedAnalyticsService {
           return hour >= 18 && hour <= 22;
         }).length;
         
-        if (morningCompletions > eveningCompletions) {
-          morningHabits.push(habit.name);
-        } else if (eveningCompletions > morningCompletions) {
-          eveningHabits.push(habit.name);
-        }
+                       if (morningCompletions > eveningCompletions) {
+                 morningHabits.push(habit.title);
+               } else if (eveningCompletions > morningCompletions) {
+                 eveningHabits.push(habit.title);
+               }
       }
     });
     
@@ -932,12 +930,12 @@ export class EnhancedAnalyticsService {
         const successRate = this.calculateChainSuccessRate(primaryHabit, dependentHabits, habitMoodData);
         
         if (chainStrength > 0.3) {
-          chains.push({
-            primaryHabit: primaryHabit.name,
-            dependentHabits: dependentHabits.map(h => h.name),
-            chainStrength,
-            successRate
-          });
+                         chains.push({
+                 primaryHabit: primaryHabit.title,
+                 dependentHabits: dependentHabits.map(h => h.title),
+                 chainStrength,
+                 successRate
+               });
         }
       }
     });
@@ -995,7 +993,7 @@ export class EnhancedAnalyticsService {
     const dates2 = new Set(habit2Data.map(entry => entry.date));
     
     const commonDates = Array.from(dates1).filter(date => dates2.has(date));
-    const totalDates = new Set([...dates1, ...dates2]);
+               const totalDates = new Set(Array.from(dates1).concat(Array.from(dates2)));
     
     return commonDates.length / totalDates.size;
   }
@@ -1005,36 +1003,31 @@ export class EnhancedAnalyticsService {
     
     let totalSuccessRate = 0;
     
-    dependentHabits.forEach(habit => {
-      const habitData = habitMoodData.filter(entry => entry.habitId === habit.id);
-      const successRate = habitData.length > 0 
-        ? habitData.filter(entry => entry.completed).length / habitData.length 
-        : 0;
-      totalSuccessRate += successRate;
-    });
+               dependentHabits.forEach(habit => {
+             const habitData = habitMoodData.filter(entry => entry.habitId === habit.id);
+             const successRate = habitData.length > 0 
+               ? habitData.filter(entry => entry.action === 'completed').length / habitData.length 
+               : 0;
+             totalSuccessRate += successRate;
+           });
     
     return (totalSuccessRate / dependentHabits.length) * 100;
   }
 
-  // Cache management methods
+    // Cache management methods
   clearCache(userId?: string): void {
     if (userId) {
-      // Clear cache for specific user
-      for (const [key, cache] of this.cache.entries()) {
-        if (cache.userId === userId) {
-          this.cache.delete(key);
-        }
-      }
+      this.cacheService.clearByUser(userId);
     } else {
-      // Clear all cache
-      this.cache.clear();
+      this.cacheService.clear();
     }
   }
 
   getCacheStats(): {size: number, entries: number} {
+    const stats = this.cacheService.getStats();
     return {
-      size: this.cache.size,
-      entries: Array.from(this.cache.values()).length
+      size: stats.size,
+      entries: stats.size
     };
   }
 }

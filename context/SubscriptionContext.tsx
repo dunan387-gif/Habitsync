@@ -95,7 +95,7 @@ export function SubscriptionProvider({ children }: { children: ReactNode }) {
     
     // Only load data if user is loaded and user ID has actually changed
     if (user !== undefined && currentUserId !== previousUserIdRef.current) {
-      console.log('👤 User changed, reloading subscription data for:', currentUserId || 'anonymous');
+  
       previousUserIdRef.current = currentUserId;
       loadSubscriptionData();
       loadUpgradePrompts();
@@ -120,7 +120,7 @@ export function SubscriptionProvider({ children }: { children: ReactNode }) {
             await AsyncStorage.setItem(`${keys.subscription}_last_reminder`, now.toString());
             setTimeout(() => {
               if (currentTier === 'free') {
-                console.log('🕐 Default reminder triggered - showing styled reminder');
+            
                 showUpgradeAlert(
                   '🎉 You\'re Doing Great!',
                   'You\'ve been building amazing habits for 24 hours! Ready to unlock unlimited potential?',
@@ -134,7 +134,7 @@ export function SubscriptionProvider({ children }: { children: ReactNode }) {
             const reminderInterval = 7 * 24 * 60 * 60 * 1000; // 7 days
             
             if (timeSinceLastReminder >= reminderInterval) {
-              console.log('🕐 Periodic reminder triggered - showing styled reminder');
+          
               showUpgradeAlert(
                 '🌟 Weekly Progress Check!',
                 'Amazing work this week! You\'re building incredible habits. Ready for the next level?',
@@ -159,7 +159,7 @@ export function SubscriptionProvider({ children }: { children: ReactNode }) {
       const modalState = await AsyncStorage.getItem(`${keys.subscription}_modal_state`);
       if (modalState) {
         const state = JSON.parse(modalState);
-        console.log('🔄 Loading modal state from storage:', state);
+    
         // Don't auto-restore modal state on app start
         // setIsUpgradeModalVisible(state.isVisible || false);
         // setCurrentUpgradeTrigger(state.trigger || null);
@@ -184,7 +184,7 @@ export function SubscriptionProvider({ children }: { children: ReactNode }) {
   const checkSubscriptionStatus = useCallback(async () => {
     if (subscriptionStatus && subscriptionStatus.tier === 'pro') {
       if (isSubscriptionExpired(subscriptionStatus)) {
-        console.log('⚠️ Subscription expired during runtime check');
+    
         
         if (subscriptionStatus.autoRenew && subscriptionStatus.period) {
           // Auto-renew logic
@@ -206,7 +206,7 @@ export function SubscriptionProvider({ children }: { children: ReactNode }) {
           setCurrentTier('pro');
           const keys = getStorageKeys();
           await AsyncStorage.setItem(keys.subscription, JSON.stringify(renewedStatus));
-          console.log(`🔄 Subscription auto-renewed, new expiry: ${newEndDate.toISOString()}`);
+      
         } else {
           // Downgrade to free - implement inline to avoid dependency issues
           const freeStatus: SubscriptionStatus = {
@@ -221,7 +221,6 @@ export function SubscriptionProvider({ children }: { children: ReactNode }) {
           setCurrentTier('free');
           const keys = getStorageKeys();
           await AsyncStorage.setItem(keys.subscription, JSON.stringify(freeStatus));
-          console.log('📉 Subscription expired, downgraded to free tier');
         }
       }
     }
@@ -230,19 +229,17 @@ export function SubscriptionProvider({ children }: { children: ReactNode }) {
   const loadSubscriptionData = async () => {
     try {
       const keys = getStorageKeys();
-      console.log('🔄 Loading subscription data for user:', user?.id || 'anonymous');
       const stored = await AsyncStorage.getItem(keys.subscription);
-      console.log('📦 Stored subscription data:', stored);
       if (stored) {
         const status: SubscriptionStatus = JSON.parse(stored);
         
         // Check if subscription has expired
         if (isSubscriptionExpired(status)) {
-          console.log('⚠️ Subscription expired, downgrading to free tier');
+
           
           // Auto-renewal logic (if enabled)
           if (status.autoRenew && status.period) {
-            console.log('🔄 Auto-renewing subscription...');
+
             // For now, just extend the subscription by the same period
             const newEndDate = new Date(status.endDate!);
             if (status.period === 'monthly') {
@@ -261,7 +258,7 @@ export function SubscriptionProvider({ children }: { children: ReactNode }) {
             setSubscriptionStatus(renewedStatus);
             setCurrentTier('pro');
             await AsyncStorage.setItem(keys.subscription, JSON.stringify(renewedStatus));
-            console.log(`🔄 Subscription auto-renewed, tier: pro, new expiry: ${newEndDate.toISOString()}`);
+
           } else {
             // Downgrade to free tier
             const freeStatus: SubscriptionStatus = {
@@ -275,13 +272,13 @@ export function SubscriptionProvider({ children }: { children: ReactNode }) {
             setSubscriptionStatus(freeStatus);
             setCurrentTier('free');
             await AsyncStorage.setItem(keys.subscription, JSON.stringify(freeStatus));
-            console.log('📉 Subscription expired, downgraded to free tier');
+
           }
         } else {
           // Subscription is still valid
           setSubscriptionStatus(status);
           setCurrentTier(status.tier);
-          console.log(`✅ Subscription valid, tier: ${status.tier}, expires: ${status.endDate}`);
+
         }
       } else {
         // No stored subscription data - create default free tier
@@ -295,7 +292,7 @@ export function SubscriptionProvider({ children }: { children: ReactNode }) {
         setSubscriptionStatus(defaultStatus);
         setCurrentTier('free');
         await AsyncStorage.setItem(keys.subscription, JSON.stringify(defaultStatus));
-        console.log('📱 No stored subscription found, defaulting to free tier');
+
       }
     } catch (error) {
       console.error('Failed to load subscription data:', error);
@@ -309,10 +306,8 @@ export function SubscriptionProvider({ children }: { children: ReactNode }) {
     try {
       const keys = getStorageKeys();
       const stored = await AsyncStorage.getItem(keys.upgradePrompts);
-      console.log('Loading upgrade prompts - stored:', stored);
       if (stored) {
         const prompts = JSON.parse(stored);
-        console.log('Loaded stored prompts:', prompts);
         setUpgradePrompts(prompts);
       } else {
         // Initialize default prompts
@@ -408,7 +403,7 @@ export function SubscriptionProvider({ children }: { children: ReactNode }) {
             shownCount: 0
           }
         ];
-        console.log('Setting default prompts:', defaultPrompts);
+
         setUpgradePrompts(defaultPrompts);
         await AsyncStorage.setItem(keys.upgradePrompts, JSON.stringify(defaultPrompts));
       }
@@ -468,7 +463,7 @@ export function SubscriptionProvider({ children }: { children: ReactNode }) {
     const canAdd = limit === -1 || currentHabitCount < limit;
     
     if (!canAdd && currentTier === 'free') {
-      console.log('🚫 Habit limit reached - showing styled reminder');
+  
       showUpgradeAlert(
         '🎯 You\'ve Mastered 4 Habits!',
         'That\'s incredible progress! You\'re building amazing habits.',
@@ -571,8 +566,7 @@ export function SubscriptionProvider({ children }: { children: ReactNode }) {
         const keys = getStorageKeys();
         await AsyncStorage.setItem(keys.subscription, JSON.stringify(paymentResult.subscriptionStatus));
         
-        console.log(`🚀 Upgraded to Pro tier - ${plan.period} plan, transaction: ${paymentResult.transactionId}`);
-        console.log(`💾 Saved subscription to storage: ${keys.subscription}`);
+        
       }
     } catch (error) {
       console.error('Failed to upgrade to Pro:', error);
@@ -595,7 +589,7 @@ export function SubscriptionProvider({ children }: { children: ReactNode }) {
       const keys = getStorageKeys();
       await AsyncStorage.setItem(keys.subscription, JSON.stringify(newStatus));
       
-      console.log('Downgraded to Free tier');
+  
     } catch (error) {
       console.error('Failed to downgrade to Free:', error);
       throw error;
@@ -613,9 +607,9 @@ export function SubscriptionProvider({ children }: { children: ReactNode }) {
         const keys = getStorageKeys();
         await AsyncStorage.setItem(keys.subscription, JSON.stringify(restoredSubscription));
         
-        console.log('✅ Purchases restored successfully');
+    
       } else {
-        console.log('ℹ️ No active purchases found to restore');
+        
       }
     } catch (error) {
       console.error('Failed to restore purchases:', error);
@@ -624,7 +618,7 @@ export function SubscriptionProvider({ children }: { children: ReactNode }) {
   };
 
   const showUpgradeAlert = useCallback((title: string, message: string, type: 'default' | 'habit_limit' | 'analytics_limit' | 'ai_limit' | 'onboarding' = 'default') => {
-    console.log('🎨 Showing upgrade alert:', title);
+
     
     const getFeatureList = (alertType: string) => {
       switch (alertType) {
@@ -688,13 +682,13 @@ export function SubscriptionProvider({ children }: { children: ReactNode }) {
         {
           text: '💪 Maybe Later',
           style: 'cancel',
-          onPress: () => console.log('User chose Maybe Later')
+          onPress: () => {}
         },
         {
           text: '🚀 Upgrade Now',
           style: 'default',
           onPress: () => {
-            console.log('User chose to upgrade - navigating to pricing');
+    
             // Navigate to settings with a parameter to show pricing screen
             router.push('/settings?showPricing=true');
           }
@@ -706,10 +700,10 @@ export function SubscriptionProvider({ children }: { children: ReactNode }) {
 
   // Upgrade prompt system
   const showUpgradePrompt = useCallback((trigger: UpgradePrompt['trigger']) => {
-    console.log('🚀 showUpgradePrompt called with trigger:', trigger);
+
     
     if (currentTier === 'free') {
-      console.log('🚀 Showing upgrade alert for trigger:', trigger);
+      
       
       const getTriggerData = (trigger: string) => {
         switch (trigger) {
@@ -747,7 +741,7 @@ export function SubscriptionProvider({ children }: { children: ReactNode }) {
   }, [currentTier, showUpgradeAlert]);
 
   const showDefaultReminder = useCallback(() => {
-    console.log('🕐 Manual default reminder triggered');
+
     showUpgradeAlert(
       '🎉 Amazing Progress!',
       'You\'re building incredible habits! Ready to unlock your full potential?',
@@ -790,7 +784,7 @@ export function SubscriptionProvider({ children }: { children: ReactNode }) {
 
   // Test function to manually trigger upgrade prompt
   const testUpgradePrompt = useCallback(() => {
-    console.log('🧪 Test upgrade prompt triggered');
+
     showUpgradePrompt('habit_limit');
   }, [showUpgradePrompt]);
 
@@ -815,23 +809,21 @@ export function SubscriptionProvider({ children }: { children: ReactNode }) {
     const keys = getStorageKeys();
     await AsyncStorage.setItem(keys.subscription, JSON.stringify(testStatus));
     
-    console.log(`🧪 Test subscription created, expires in 1 minute: ${endDate.toISOString()}`);
+
   }, []);
 
   // Test function to verify subscription persistence
   const testSubscriptionPersistence = useCallback(async () => {
     try {
-      console.log('🧪 Testing subscription persistence...');
-      console.log('📊 Current tier:', currentTier);
-      console.log('📊 Current subscription status:', subscriptionStatus);
+      
       
       const keys = getStorageKeys();
       const stored = await AsyncStorage.getItem(keys.subscription);
-      console.log('📦 Stored subscription data:', stored);
+      
       
       if (stored) {
         const parsed = JSON.parse(stored);
-        console.log('📊 Parsed subscription data:', parsed);
+        
         Alert.alert('Persistence Test', `Current tier: ${currentTier}\nStored tier: ${parsed.tier}\nStorage key: ${keys.subscription}`);
       } else {
         Alert.alert('Persistence Test', `Current tier: ${currentTier}\nNo stored data found\nStorage key: ${keys.subscription}`);

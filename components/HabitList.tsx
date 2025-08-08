@@ -184,7 +184,7 @@ export default function HabitList({ habits, completedCount = 0, totalCount = 0 }
   const handleDragEnd = useCallback(({ data }: { data: Habit[] }) => {
     // Use requestAnimationFrame to defer the heavy work
     requestAnimationFrame(() => {
-      console.log('Drag ended, reordering habits');
+  
       // Combine with completed habits and update
       const allHabits = [...data, ...completedHabits];
       reorderHabits(allHabits);
