@@ -556,7 +556,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         return;
       }
 
-      await FirebaseService.updateUserProfile(user.id, { name: user.name, preferences: user.preferences });
+      await FirebaseService.updateUserProfile(user.id, { onboardingCompleted: true });
       const updatedUser = { ...user, onboardingCompleted: true };
       setUser(updatedUser);
     } catch (error: any) {

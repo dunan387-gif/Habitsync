@@ -528,7 +528,8 @@ export interface ProfileUpdateData {
   location?: string;
   avatar?: string;
   coverImage?: string;
-  preferences: Partial<User['preferences']>;
+  preferences?: Partial<User['preferences']>;
+  onboardingCompleted?: boolean;
 }
 
 export interface MoodData {
