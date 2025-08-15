@@ -23,16 +23,20 @@ export default function Index() {
     if (!isLoading) {
       // Add a small delay to ensure auth state is fully loaded
       const timer = setTimeout(() => {
-        if (user && user.id) {
+        if (user && user.id && !user.id.startsWith('guest-') && user.id !== 'anonymous') {
           // User is authenticated, navigate to main app
           console.log('✅ User authenticated, navigating to main app');
+          router.replace('/(tabs)');
+        } else if (user && (user.id.startsWith('guest-') || user.id === 'anonymous')) {
+          // Guest user, navigate to main app (they can use the app without onboarding)
+          console.log('👻 Guest user, navigating to main app');
           router.replace('/(tabs)');
         } else {
           // User is not authenticated, navigate to login
           console.log('🚪 User not authenticated, navigating to login');
           router.replace('/(auth)/login');
         }
-      }, 500); // 500ms delay
+      }, 1000); // Increased delay to 1 second for better stability
       
       return () => clearTimeout(timer);
     } else {

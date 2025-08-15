@@ -47,8 +47,30 @@ export default function MoodHabitOnboarding({ children }: MoodHabitOnboardingPro
         console.log('👻 Guest/anonymous user, not showing onboarding');
         setShowOnboarding(false);
       } else {
-        // Authenticated user - show onboarding only if not completed
-        const shouldShowOnboarding = !user.onboardingCompleted;
+        // Authenticated user - check both user object and AsyncStorage
+        let shouldShowOnboarding = !user.onboardingCompleted;
+        
+        // Double-check with AsyncStorage as backup
+        try {
+          const userDataKey = `userData_${user.id}`;
+          const storedUserData = await AsyncStorage.getItem(userDataKey);
+          if (storedUserData) {
+            const parsedUserData = JSON.parse(storedUserData);
+            console.log('📱 Stored user data onboarding status:', parsedUserData.onboardingCompleted);
+            shouldShowOnboarding = !parsedUserData.onboardingCompleted;
+          }
+          
+          // Also check the global onboarding key as fallback
+          const globalOnboardingKey = `onboarding_completed_${user.id}`;
+          const globalOnboardingStatus = await AsyncStorage.getItem(globalOnboardingKey);
+          if (globalOnboardingStatus === 'true') {
+            console.log('🌐 Global onboarding key shows completed');
+            shouldShowOnboarding = false;
+          }
+        } catch (storageError) {
+          console.warn('⚠️ Error checking AsyncStorage for onboarding status:', storageError);
+        }
+        
         console.log('✅ Authenticated user, showing onboarding:', shouldShowOnboarding);
         setShowOnboarding(shouldShowOnboarding);
       }
@@ -81,12 +103,36 @@ export default function MoodHabitOnboarding({ children }: MoodHabitOnboardingPro
       // Mark onboarding as completed for authenticated users
       if (user && !user.id.startsWith('guest-') && user.id !== 'anonymous') {
         console.log('✅ Marking onboarding as completed for authenticated user');
+        
+        // Save completion status in multiple places for redundancy
         try {
+          // 1. Use the main markOnboardingCompleted function
           await markOnboardingCompleted();
-          console.log('✅ Onboarding completion saved successfully');
+          console.log('✅ Onboarding completion saved via main function');
+          
+          // 2. Also save a global onboarding key as backup
+          const globalOnboardingKey = `onboarding_completed_${user.id}`;
+          await AsyncStorage.setItem(globalOnboardingKey, 'true');
+          console.log('✅ Global onboarding key saved');
+          
+          // 3. Update the user data directly in AsyncStorage
+          const updatedUser = { ...user, onboardingCompleted: true };
+          await AsyncStorage.setItem(`userData_${user.id}`, JSON.stringify(updatedUser));
+          await AsyncStorage.setItem(keys.lastAuthenticatedUser, JSON.stringify(updatedUser));
+          console.log('✅ User data updated in AsyncStorage');
+          
         } catch (error) {
           console.warn('⚠️ Onboarding completion had issues, but continuing:', error);
           // Continue anyway - the user has completed onboarding
+          
+          // Try to save at least the global key
+          try {
+            const globalOnboardingKey = `onboarding_completed_${user.id}`;
+            await AsyncStorage.setItem(globalOnboardingKey, 'true');
+            console.log('✅ Global onboarding key saved as fallback');
+          } catch (fallbackError) {
+            console.error('❌ Even fallback save failed:', fallbackError);
+          }
         }
       } else {
         console.log('👻 Not marking onboarding for guest/anonymous user');
@@ -144,6 +190,17 @@ export default function MoodHabitOnboarding({ children }: MoodHabitOnboardingPro
       console.log('  - Onboarding completed:', user?.onboardingCompleted);
       console.log('  - Show onboarding:', showOnboarding);
       console.log('  - Is loading:', isLoading);
+    };
+    (global as any).clearOnboardingStatus = async () => {
+      if (user) {
+        try {
+          const globalOnboardingKey = `onboarding_completed_${user.id}`;
+          await AsyncStorage.removeItem(globalOnboardingKey);
+          console.log('🧹 Cleared global onboarding status');
+        } catch (error) {
+          console.error('Error clearing onboarding status:', error);
+        }
+      }
     };
   }
   
