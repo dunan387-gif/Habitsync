@@ -50,13 +50,30 @@ function RootLayoutContent() {
   // CRITICAL: Wait for everything to be loaded before rendering ANYTHING
   useEffect(() => {
     try {
+      console.log('🔄 RootLayoutContent - Loading states:', { 
+        isLoading, 
+        isLanguageLoading, 
+        isAppReady 
+      });
+      
       if (!isLoading && !isLanguageLoading) {
         // Add a small delay to ensure everything is truly ready
         const timer = setTimeout(() => {
+          console.log('✅ Setting isAppReady to true');
           setIsAppReady(true);
         }, 100);
         return () => clearTimeout(timer);
+      } else {
+        console.log('⏳ Still waiting for loading to complete:', { isLoading, isLanguageLoading });
       }
+      
+      // Add a timeout to prevent infinite loading
+      const timeout = setTimeout(() => {
+        console.warn('⚠️ Loading timeout reached, forcing app ready state');
+        setIsAppReady(true);
+      }, 10000); // 10 second timeout
+      
+      return () => clearTimeout(timeout);
     } catch (error) {
       console.error('Error in RootLayoutContent initialization:', error);
       setHasError(true);

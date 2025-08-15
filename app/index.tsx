@@ -17,6 +17,9 @@ export default function Index() {
       userObject: user
     });
     
+    // Add immediate logging for debugging
+    console.log('📍 Index component rendered with:', { isLoading, user: !!user });
+    
     if (!isLoading) {
       // Add a small delay to ensure auth state is fully loaded
       const timer = setTimeout(() => {
@@ -35,6 +38,14 @@ export default function Index() {
     } else {
       console.log('⏳ Still loading auth state...');
     }
+    
+    // Add a timeout to prevent infinite loading
+    const timeout = setTimeout(() => {
+      console.warn('⚠️ Auth loading timeout reached, forcing navigation to login');
+      router.replace('/(auth)/login');
+    }, 15000); // 15 second timeout
+    
+    return () => clearTimeout(timeout);
   }, [user, isLoading]);
 
   // Show loading screen while checking authentication
