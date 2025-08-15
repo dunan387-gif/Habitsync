@@ -11,19 +11,20 @@ let FIREBASE_STORAGE_BUCKET: string;
 let FIREBASE_MESSAGING_SENDER_ID: string;
 let FIREBASE_APP_ID: string;
 let FIREBASE_MEASUREMENT_ID: string;
-
+ // Use Expo's built-in environment variable support
 try {
-  const env = require('@env');
-  FIREBASE_API_KEY = env.FIREBASE_API_KEY;
-  FIREBASE_AUTH_DOMAIN = env.FIREBASE_AUTH_DOMAIN;
-  FIREBASE_PROJECT_ID = env.FIREBASE_PROJECT_ID;
-  FIREBASE_STORAGE_BUCKET = env.FIREBASE_STORAGE_BUCKET;
-  FIREBASE_MESSAGING_SENDER_ID = env.FIREBASE_MESSAGING_SENDER_ID;
-  FIREBASE_APP_ID = env.FIREBASE_APP_ID;
-  FIREBASE_MEASUREMENT_ID = env.FIREBASE_MEASUREMENT_ID;
+  FIREBASE_API_KEY = process.env.EXPO_PUBLIC_FIREBASE_API_KEY || 'AIzaSyCMTJy32lr_ItKHab895uamktkSV1KiLkY';
+  FIREBASE_AUTH_DOMAIN = process.env.EXPO_PUBLIC_FIREBASE_AUTH_DOMAIN || 'habitsync-7b08f.firebaseapp.com';
+  FIREBASE_PROJECT_ID = process.env.EXPO_PUBLIC_FIREBASE_PROJECT_ID || 'habitsync-7b08f';
+  FIREBASE_STORAGE_BUCKET = process.env.EXPO_PUBLIC_FIREBASE_STORAGE_BUCKET || 'habitsync-7b08f.appspot.com';
+  FIREBASE_MESSAGING_SENDER_ID = process.env.EXPO_PUBLIC_FIREBASE_MESSAGING_SENDER_ID || '641731906688';
+  FIREBASE_APP_ID = process.env.EXPO_PUBLIC_FIREBASE_APP_ID || '1:641731906688:web:f90a43606c0b0fd2816a65';
+  FIREBASE_MEASUREMENT_ID = process.env.EXPO_PUBLIC_FIREBASE_MEASUREMENT_ID || 'G-53N0W997QV';
+  
+  console.log('✅ Firebase environment variables loaded successfully');
 } catch (error) {
-  console.warn('Firebase environment variables not found, using fallback configuration');
-  // Fallback configuration - you should replace these with your actual Firebase config
+  console.warn('⚠️ Firebase environment variables not found, using fallback configuration');
+  // Fallback configuration
   FIREBASE_API_KEY = 'AIzaSyCMTJy32lr_ItKHab895uamktkSV1KiLkY';
   FIREBASE_AUTH_DOMAIN = 'habitsync-7b08f.firebaseapp.com';
   FIREBASE_PROJECT_ID = 'habitsync-7b08f';
