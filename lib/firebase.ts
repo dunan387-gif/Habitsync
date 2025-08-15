@@ -3,15 +3,35 @@ import { getAuth } from 'firebase/auth';
 import { getFirestore } from 'firebase/firestore';
 import { getAnalytics } from 'firebase/analytics';
 import { getRemoteConfig } from 'firebase/remote-config';
-import {
-  FIREBASE_API_KEY,
-  FIREBASE_AUTH_DOMAIN,
-  FIREBASE_PROJECT_ID,
-  FIREBASE_STORAGE_BUCKET,
-  FIREBASE_MESSAGING_SENDER_ID,
-  FIREBASE_APP_ID,
-  FIREBASE_MEASUREMENT_ID,
-} from '@env';
+// Import environment variables with fallbacks
+let FIREBASE_API_KEY: string;
+let FIREBASE_AUTH_DOMAIN: string;
+let FIREBASE_PROJECT_ID: string;
+let FIREBASE_STORAGE_BUCKET: string;
+let FIREBASE_MESSAGING_SENDER_ID: string;
+let FIREBASE_APP_ID: string;
+let FIREBASE_MEASUREMENT_ID: string;
+
+try {
+  const env = require('@env');
+  FIREBASE_API_KEY = env.FIREBASE_API_KEY;
+  FIREBASE_AUTH_DOMAIN = env.FIREBASE_AUTH_DOMAIN;
+  FIREBASE_PROJECT_ID = env.FIREBASE_PROJECT_ID;
+  FIREBASE_STORAGE_BUCKET = env.FIREBASE_STORAGE_BUCKET;
+  FIREBASE_MESSAGING_SENDER_ID = env.FIREBASE_MESSAGING_SENDER_ID;
+  FIREBASE_APP_ID = env.FIREBASE_APP_ID;
+  FIREBASE_MEASUREMENT_ID = env.FIREBASE_MEASUREMENT_ID;
+} catch (error) {
+  console.warn('Firebase environment variables not found, using fallback configuration');
+  // Fallback configuration - you should replace these with your actual Firebase config
+  FIREBASE_API_KEY = 'AIzaSyCMTJy32lr_ItKHab895uamktkSV1KiLkY';
+  FIREBASE_AUTH_DOMAIN = 'habitsync-7b08f.firebaseapp.com';
+  FIREBASE_PROJECT_ID = 'habitsync-7b08f';
+  FIREBASE_STORAGE_BUCKET = 'habitsync-7b08f.appspot.com';
+  FIREBASE_MESSAGING_SENDER_ID = '641731906688';
+  FIREBASE_APP_ID = '1:641731906688:web:f90a43606c0b0fd2816a65';
+  FIREBASE_MEASUREMENT_ID = 'G-53N0W997QV';
+}
 
 const firebaseConfig = {
   apiKey: FIREBASE_API_KEY,
@@ -23,27 +43,40 @@ const firebaseConfig = {
   measurementId: FIREBASE_MEASUREMENT_ID,
 };
 
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
+// Initialize Firebase with error handling
+let app;
+let firebaseAuth;
+let firebaseFirestore;
 
-// Initialize Firebase services with React Native compatibility
-export const firebaseAuth = getAuth(app);
-export const firebaseFirestore = getFirestore(app);
+try {
+  app = initializeApp(firebaseConfig);
+  firebaseAuth = getAuth(app);
+  firebaseFirestore = getFirestore(app);
+  console.log('Firebase initialized successfully');
+} catch (error) {
+  console.error('Failed to initialize Firebase:', error);
+  // Create fallback objects to prevent crashes
+  app = null;
+  firebaseAuth = null;
+  firebaseFirestore = null;
+}
 
-// Analytics - only initialize if in web environment
+export { firebaseAuth, firebaseFirestore };
+
+// Analytics - only initialize if in web environment and app exists
 let firebaseAnalytics: any = null;
 try {
-  if (typeof document !== 'undefined') {
+  if (typeof document !== 'undefined' && app) {
     firebaseAnalytics = getAnalytics(app);
   }
 } catch (error) {
   console.log('Analytics not available in React Native environment');
 }
 
-// Remote Config - only initialize if in web environment
+// Remote Config - only initialize if in web environment and app exists
 let firebaseRemoteConfig: any = null;
 try {
-  if (typeof document !== 'undefined') {
+  if (typeof document !== 'undefined' && app) {
     firebaseRemoteConfig = getRemoteConfig(app);
   }
 } catch (error) {

@@ -21,6 +21,9 @@ import { AuthProvider, useAuth } from '@/context/AuthContext';
 import { requestNotificationPermissions } from '@/services/NotificationService';
 import MoodHabitOnboarding from '@/components/MoodHabitOnboarding';
 
+// Add gesture handler import at the top level
+import 'react-native-gesture-handler';
+
 function ErrorToastContainer() {
   const { currentError, clearError } = useError();
   
@@ -42,17 +45,42 @@ function RootLayoutContent() {
   const { t, isLoading: isLanguageLoading } = useLanguage();
   const { currentCelebration, hideCelebration } = useCelebration();
   const [isAppReady, setIsAppReady] = useState(false);
+  const [hasError, setHasError] = useState(false);
 
   // CRITICAL: Wait for everything to be loaded before rendering ANYTHING
   useEffect(() => {
-    if (!isLoading && !isLanguageLoading) {
-      // Add a small delay to ensure everything is truly ready
-      const timer = setTimeout(() => {
-        setIsAppReady(true);
-      }, 100);
-      return () => clearTimeout(timer);
+    try {
+      if (!isLoading && !isLanguageLoading) {
+        // Add a small delay to ensure everything is truly ready
+        const timer = setTimeout(() => {
+          setIsAppReady(true);
+        }, 100);
+        return () => clearTimeout(timer);
+      }
+    } catch (error) {
+      console.error('Error in RootLayoutContent initialization:', error);
+      setHasError(true);
     }
   }, [isLoading, isLanguageLoading]);
+
+  // Show error screen if something went wrong
+  if (hasError) {
+    return (
+      <View style={{ 
+        flex: 1, 
+        justifyContent: 'center', 
+        alignItems: 'center', 
+        backgroundColor: '#f5f5f5'
+      }}>
+        <Text style={{ fontSize: 18, color: '#333', textAlign: 'center', marginBottom: 20 }}>
+          Something went wrong while loading the app.
+        </Text>
+        <Text style={{ fontSize: 14, color: '#666', textAlign: 'center' }}>
+          Please try restarting the app.
+        </Text>
+      </View>
+    );
+  }
 
   // Show loading screen until everything is ready
   if (!isAppReady) {
