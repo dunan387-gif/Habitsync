@@ -30,6 +30,10 @@ export class FirebaseService {
   // Authentication methods
   static async signUpWithEmail(email: string, password: string, name: string): Promise<User> {
     try {
+      if (!firebaseAuth || !firebaseFirestore) {
+        throw new Error('Firebase not initialized');
+      }
+      
       const userCredential = await createUserWithEmailAndPassword(firebaseAuth, email, password);
       const firebaseUser = userCredential.user;
       
@@ -69,6 +73,10 @@ export class FirebaseService {
 
   static async signInWithEmail(email: string, password: string): Promise<User> {
     try {
+      if (!firebaseAuth || !firebaseFirestore) {
+        throw new Error('Firebase not initialized');
+      }
+      
       const userCredential = await signInWithEmailAndPassword(firebaseAuth, email, password);
       const firebaseUser = userCredential.user;
       
@@ -88,6 +96,10 @@ export class FirebaseService {
 
   static async signOut(): Promise<void> {
     try {
+      if (!firebaseAuth) {
+        throw new Error('Firebase not initialized');
+      }
+      
       await signOut(firebaseAuth);
     } catch (error: any) {
       console.error('Firebase signout error:', error);
@@ -97,6 +109,10 @@ export class FirebaseService {
 
   static async getCurrentUser(): Promise<User | null> {
     try {
+      if (!firebaseAuth || !firebaseFirestore) {
+        return null;
+      }
+      
       const firebaseUser = firebaseAuth.currentUser;
       if (!firebaseUser) {
         return null;
@@ -118,6 +134,10 @@ export class FirebaseService {
   // User profile methods
   static async updateUserProfile(userId: string, data: ProfileUpdateData): Promise<void> {
     try {
+      if (!firebaseFirestore) {
+        throw new Error('Firebase not initialized');
+      }
+      
       // Convert ProfileUpdateData to Firestore-compatible format
       const updateData: any = {};
       
@@ -138,6 +158,10 @@ export class FirebaseService {
 
   static async getUserProfile(userId: string): Promise<User | null> {
     try {
+      if (!firebaseFirestore) {
+        return null;
+      }
+      
       const userDoc = await getDoc(doc(firebaseFirestore, 'users', userId));
 
       if (!userDoc.exists()) {
@@ -153,6 +177,11 @@ export class FirebaseService {
 
   // Auth state listener
   static onAuthStateChanged(callback: (user: User | null) => void): () => void {
+    if (!firebaseAuth || !firebaseFirestore) {
+      console.warn('Firebase not initialized, auth state listener not available');
+      return () => {}; // Return empty unsubscribe function
+    }
+    
     return onAuthStateChanged(firebaseAuth, async (firebaseUser) => {
       if (firebaseUser) {
         try {
@@ -176,6 +205,10 @@ export class FirebaseService {
   // Password reset
   static async resetPassword(email: string): Promise<void> {
     try {
+      if (!firebaseAuth) {
+        throw new Error('Firebase not initialized');
+      }
+      
       await sendPasswordResetEmail(firebaseAuth, email);
     } catch (error: any) {
       console.error('Firebase resetPassword error:', error);
@@ -186,6 +219,10 @@ export class FirebaseService {
   // Delete account
   static async deleteAccount(): Promise<void> {
     try {
+      if (!firebaseAuth || !firebaseFirestore) {
+        throw new Error('Firebase not initialized');
+      }
+      
       const firebaseUser = firebaseAuth.currentUser;
       if (!firebaseUser) {
         throw new Error('No user logged in');
@@ -205,6 +242,11 @@ export class FirebaseService {
   // Real-time data synchronization methods
   static subscribeToUserHabits(userId: string, callback: (habits: any[]) => void) {
     try {
+      if (!firebaseFirestore) {
+        console.warn('Firebase not initialized, habits subscription not available');
+        return () => {}; // Return empty unsubscribe function
+      }
+      
       const q = query(
         collection(firebaseFirestore, 'habits'),
         where('userId', '==', userId),
@@ -230,6 +272,11 @@ export class FirebaseService {
   }
 
   static subscribeToUserMoodEntries(userId: string, callback: (entries: any[]) => void) {
+    if (!firebaseFirestore) {
+      console.warn('Firebase not initialized, mood entries subscription not available');
+      return () => {}; // Return empty unsubscribe function
+    }
+    
     const q = query(
       collection(firebaseFirestore, 'mood_entries'),
       where('userId', '==', userId),
@@ -248,6 +295,11 @@ export class FirebaseService {
   // Offline support
   static async enableOfflineSupport() {
     try {
+      if (!firebaseFirestore) {
+        console.warn('Firebase not initialized, cannot enable offline support');
+        return;
+      }
+      
       await enableNetwork(firebaseFirestore);
       console.log('Online mode enabled');
     } catch (error) {
@@ -257,6 +309,11 @@ export class FirebaseService {
 
   static async disableOfflineSupport() {
     try {
+      if (!firebaseFirestore) {
+        console.warn('Firebase not initialized, cannot disable offline support');
+        return;
+      }
+      
       await disableNetwork(firebaseFirestore);
       console.log('Offline mode enabled');
     } catch (error) {
@@ -266,6 +323,10 @@ export class FirebaseService {
 
   // Batch operations for better performance
   static async batchUpdateHabits(updates: { habitId: string, data: any }[]) {
+    if (!firebaseFirestore) {
+      throw new Error('Firebase not initialized');
+    }
+    
     const batch = writeBatch(firebaseFirestore);
     
     updates.forEach(({ habitId, data }) => {
@@ -277,6 +338,10 @@ export class FirebaseService {
   }
 
   static async batchCreateHabits(habits: any[]) {
+    if (!firebaseFirestore) {
+      throw new Error('Firebase not initialized');
+    }
+    
     const batch = writeBatch(firebaseFirestore);
     
     habits.forEach((habit) => {
@@ -290,6 +355,10 @@ export class FirebaseService {
   // Habit management methods
   static async createHabit(userId: string, habitData: any): Promise<string> {
     try {
+      if (!firebaseFirestore) {
+        throw new Error('Firebase not initialized');
+      }
+      
       const habitRef = doc(collection(firebaseFirestore, 'habits'));
       const habit = {
         ...habitData,
@@ -314,6 +383,10 @@ export class FirebaseService {
 
   static async updateHabit(habitId: string, data: any): Promise<void> {
     try {
+      if (!firebaseFirestore) {
+        throw new Error('Firebase not initialized');
+      }
+      
       const habitRef = doc(firebaseFirestore, 'habits', habitId);
       await updateDoc(habitRef, {
         ...data,
@@ -327,6 +400,10 @@ export class FirebaseService {
 
   static async deleteHabit(habitId: string): Promise<void> {
     try {
+      if (!firebaseFirestore) {
+        throw new Error('Firebase not initialized');
+      }
+      
       await deleteDoc(doc(firebaseFirestore, 'habits', habitId));
     } catch (error: any) {
       console.error('Firebase deleteHabit error:', error);
@@ -337,6 +414,10 @@ export class FirebaseService {
   // Mood tracking methods
   static async logMoodEntry(userId: string, moodData: any): Promise<string> {
     try {
+      if (!firebaseFirestore) {
+        throw new Error('Firebase not initialized');
+      }
+      
       const entryRef = doc(collection(firebaseFirestore, 'mood_entries'));
       const entry = {
         ...moodData,

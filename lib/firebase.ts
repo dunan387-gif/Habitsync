@@ -44,9 +44,9 @@ const firebaseConfig = {
 };
 
 // Initialize Firebase with error handling
-let app;
-let firebaseAuth;
-let firebaseFirestore;
+let app: any = null;
+let firebaseAuth: any = null;
+let firebaseFirestore: any = null;
 
 try {
   app = initializeApp(firebaseConfig);
