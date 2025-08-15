@@ -81,7 +81,13 @@ export default function MoodHabitOnboarding({ children }: MoodHabitOnboardingPro
       // Mark onboarding as completed for authenticated users
       if (user && !user.id.startsWith('guest-') && user.id !== 'anonymous') {
         console.log('✅ Marking onboarding as completed for authenticated user');
-        await markOnboardingCompleted();
+        try {
+          await markOnboardingCompleted();
+          console.log('✅ Onboarding completion saved successfully');
+        } catch (error) {
+          console.warn('⚠️ Onboarding completion had issues, but continuing:', error);
+          // Continue anyway - the user has completed onboarding
+        }
       } else {
         console.log('👻 Not marking onboarding for guest/anonymous user');
       }
@@ -89,7 +95,9 @@ export default function MoodHabitOnboarding({ children }: MoodHabitOnboardingPro
       setShowOnboarding(false);
       console.log('✅ Onboarding flow hidden');
     } catch (error) {
-      console.error('❌ Error saving onboarding completion:', error);
+      console.error('❌ Error in onboarding completion:', error);
+      // Still hide onboarding even if there's an error
+      setShowOnboarding(false);
     }
   };
 

@@ -556,9 +556,33 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         return;
       }
 
-      await FirebaseService.updateUserProfile(user.id, { onboardingCompleted: true });
+      // Try to update Firebase, but don't fail if it doesn't work
+      try {
+        await FirebaseService.updateUserProfile(user.id, { onboardingCompleted: true });
+        console.log('✅ Onboarding status updated in Firebase');
+      } catch (firebaseError: any) {
+        console.warn('⚠️ Firebase update failed, but continuing with local update:', firebaseError.message);
+        // Continue with local update even if Firebase fails
+      }
+
+      // Always update locally regardless of Firebase success
       const updatedUser = { ...user, onboardingCompleted: true };
+      
+      // Update in AsyncStorage
+      await AsyncStorage.setItem(keys.user, JSON.stringify(updatedUser));
+      await AsyncStorage.setItem(`userData_${user.id}`, JSON.stringify(updatedUser));
+      await AsyncStorage.setItem(keys.lastAuthenticatedUser, JSON.stringify(updatedUser));
+      
+      // Update in development cache
+      if (__DEV__) {
+        await AsyncStorage.setItem('dev_last_user', JSON.stringify({
+          ...updatedUser,
+          timestamp: Date.now()
+        }));
+      }
+      
       setUser(updatedUser);
+      console.log('✅ Onboarding marked as completed locally');
     } catch (error: any) {
       console.error('Failed to mark onboarding completed:', error);
       throw new Error(error.message || 'Failed to mark onboarding completed');

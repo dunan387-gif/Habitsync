@@ -1,0 +1,52 @@
+[debug] [2025-08-15T11:37:24.964Z] ----------------------------------------------------------------------
+[debug] [2025-08-15T11:37:24.968Z] Command:       C:\Program Files\nodejs\node.exe C:\Users\sabbi\AppData\Roaming\npm\node_modules\firebase-tools\lib\bin\firebase.js login --reauth
+[debug] [2025-08-15T11:37:24.969Z] CLI Version:   14.12.1
+[debug] [2025-08-15T11:37:24.969Z] Platform:      win32
+[debug] [2025-08-15T11:37:24.969Z] Node Version:  v22.17.0
+[debug] [2025-08-15T11:37:24.970Z] Time:          Fri Aug 15 2025 19:37:24 GMT+0800 (China Standard Time)
+[debug] [2025-08-15T11:37:24.970Z] ----------------------------------------------------------------------
+[debug] 
+[info] 
+[info] Visit this URL on this device to log in:
+[info] https://accounts.google.com/o/oauth2/auth?client_id=563584335869-fgrhgmd47bqnekij5i8b5pr03ho849e6.apps.googleusercontent.com&scope=email%20openid%20https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fcloudplatformprojects.readonly%20https%3A%2F%2Fwww.googleapis.com%2Fauth%2Ffirebase%20https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fcloud-platform&response_type=code&state=902648163&redirect_uri=http%3A%2F%2Flocalhost%3A9005
+[info] 
+[info] Waiting for authentication...
+[debug] [2025-08-15T11:37:32.391Z] >>> [apiv2][query] POST https://accounts.google.com/o/oauth2/token [none]
+[debug] [2025-08-15T11:37:32.391Z] >>> [apiv2][body] POST https://accounts.google.com/o/oauth2/token [omitted]
+[debug] [2025-08-15T11:37:53.730Z] *** [apiv2] error from fetch(https://accounts.google.com/o/oauth2/token, {"headers":{},"method":"POST","body":{"_overheadLength":543,"_valueLength":208,"_valuesToMeasure":[],"writable":false,"readable":true,"dataSize":0,"maxDataSize":2097152,"pauseStreams":true,"_released":true,"_streams":[],"_currentStream":null,"_insideLoop":false,"_pendingNext":false,"_boundary":"--------------------------1be495e8e9945db8d558121c","_events":{},"_eventsCount":1}}): FetchError: request to https://accounts.google.com/o/oauth2/token failed, reason: 
+[debug] [2025-08-15T11:37:53.731Z] Token Fetch Error: FirebaseError: Failed to make request to https://accounts.google.com/o/oauth2/token
+    at RetryOperation._fn (C:\Users\sabbi\AppData\Roaming\npm\node_modules\firebase-tools\lib\apiv2.js:261:31)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+[error] Authentication Error: Your credentials are no longer valid. Please run firebase login --reauth
+
+For CI servers and headless environments, generate a new token with firebase login:ci
+[debug] [2025-08-15T11:37:53.735Z] >>> [apiv2][query] POST https://auth.firebase.tools/attest [none]
+[debug] [2025-08-15T11:37:53.735Z] >>> [apiv2][body] POST https://auth.firebase.tools/attest {"session_id":"dcb4dcc1-ae05-47ba-b30d-af7477f9ddaa"}
+[debug] [2025-08-15T11:37:54.598Z] <<< [apiv2][status] POST https://auth.firebase.tools/attest 200
+[debug] [2025-08-15T11:37:54.598Z] <<< [apiv2][body] POST https://auth.firebase.tools/attest {"token":"7EffopIvC5TFTWANrL9GKSstuf8toumiCVx3Ti4QrUo"}
+[info] 
+[info] To sign in to the Firebase CLI:
+[info] 
+[info] 1. Take note of your session ID:
+[info] 
+[info]    DCB4D
+[info] 
+[info] 2. Visit the URL below on any device and follow the instructions to get your code:
+[info] 
+[info]    https://auth.firebase.tools/login?code_challenge=QDYiHULVnq_8HA0dIlt7QhExXD-OzsIWOXZ7jluKpG0&session=dcb4dcc1-ae05-47ba-b30d-af7477f9ddaa&attest=7EffopIvC5TFTWANrL9GKSstuf8toumiCVx3Ti4QrUo
+[info] 
+[info] 3. Paste or enter the authorization code below once you have it:
+[info] 
+[debug] [2025-08-15T11:38:05.801Z] ExitPromptError: User force closed the prompt with SIGINT
+    at Interface.sigint (C:\Users\sabbi\AppData\Roaming\npm\node_modules\firebase-tools\node_modules\@inquirer\core\dist\commonjs\lib\create-prompt.js:101:37)
+    at Interface.emit (node:events:518:28)
+    at Interface.emit (node:domain:489:12)
+    at [_ttyWrite] [as _ttyWrite] (node:internal/readline/interface:1132:18)
+    at ReadStream.onkeypress (node:internal/readline/interface:271:20)
+    at ReadStream.emit (node:events:530:35)
+    at ReadStream.emit (node:domain:489:12)
+    at emitKeys (node:internal/readline/utils:370:14)
+    at emitKeys.next (<anonymous>)
+    at ReadStream.onData (node:internal/readline/emitKeypressEvents:64:36)
+[error] 
+[error] Error: An unexpected error has occurred.
