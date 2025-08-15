@@ -266,7 +266,10 @@ export const useNetworkOptimization = (options: UseNetworkOptimizationOptions = 
       }
     } catch (error) {
       // Network test failed - this helps determine offline status
-      console.log('Network connectivity test failed:', error);
+      // Only log if it's not an expected timeout/abort
+      if (error instanceof Error && error.name !== 'AbortError') {
+        console.log('Network connectivity test failed:', error);
+      }
       
       // Add failed test to history
       const testRequest: NetworkRequest = {

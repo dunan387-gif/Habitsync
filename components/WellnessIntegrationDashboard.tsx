@@ -64,14 +64,14 @@ export default function WellnessIntegrationDashboard({ moodData }: WellnessInteg
 
   useEffect(() => {
     loadWellnessData();
-    console.log('WellnessIntegrationDashboard - moodData changed or component mounted, refreshing data');
+    // console.log('WellnessIntegrationDashboard - moodData changed or component mounted, refreshing data');
   }, [moodData.length]); // Keep this dependency on length only
 
   const loadWellnessData = async () => {
     try {
       setLoading(true);
-      console.log('Loading wellness data...');
-      console.log('Mood data received:', moodData.length, 'entries');
+          // console.log('Loading wellness data...');
+    // console.log('Mood data received:', moodData.length, 'entries');
       
       // Add timeout protection
       const timeoutPromise = new Promise((_, reject) => {
@@ -79,11 +79,11 @@ export default function WellnessIntegrationDashboard({ moodData }: WellnessInteg
       });
       
       // Log mood data details for debugging
-      console.log('Mood data details:', moodData.map(m => ({
-        date: m.date,
-        moodState: m.moodState,
-        intensity: m.intensity
-      })));
+      // console.log('Mood data details:', moodData.map(m => ({
+      //   date: m.date,
+      //   moodState: m.moodState,
+      //   intensity: m.intensity
+      // })));
       
       const [sleep, exercise, nutrition, meditation, social] = await Promise.race([
         Promise.all([
@@ -96,13 +96,13 @@ export default function WellnessIntegrationDashboard({ moodData }: WellnessInteg
         timeoutPromise
       ]) as [SleepData[], ExerciseData[], NutritionData[], MeditationData[], SocialActivityData[]];
 
-      console.log('Wellness data loaded:', {
-        sleep: sleep.length,
-        exercise: exercise.length,
-        nutrition: nutrition.length,
-        meditation: meditation.length,
-        social: social.length
-      });
+      // console.log('Wellness data loaded:', {
+      //   sleep: sleep.length,
+      //   exercise: exercise.length,
+      //   nutrition: nutrition.length,
+      //   meditation: meditation.length,
+      //   social: social.length
+      // });
 
       setSleepData(sleep);
       setExerciseData(exercise);
@@ -111,7 +111,7 @@ export default function WellnessIntegrationDashboard({ moodData }: WellnessInteg
       setSocialData(social);
 
       // Calculate correlations with debouncing
-      console.log('Calculating correlations...');
+      // console.log('Calculating correlations...');
       const sleepCorr = await WellnessIntegrationService.analyzeSleepMoodCorrelation(sleep, moodData);
       const exerciseCorr = await WellnessIntegrationService.analyzeExerciseMoodCorrelation(exercise, moodData);
       const nutritionCorr = await WellnessIntegrationService.analyzeNutritionMoodCorrelation(nutrition, moodData);
@@ -119,20 +119,20 @@ export default function WellnessIntegrationDashboard({ moodData }: WellnessInteg
       const socialCorr = await WellnessIntegrationService.analyzeSocialActivityCorrelation(social);
 
       const newCorrelations = [sleepCorr, exerciseCorr, nutritionCorr, meditationCorr, socialCorr];
-      console.log('Correlations calculated:', newCorrelations.map(c => ({
-        type: c.type,
-        strength: c.correlationStrength,
-        dataPoints: c.dataPoints
-      })));
+      // console.log('Correlations calculated:', newCorrelations.map(c => ({
+      //   type: c.type,
+      //   strength: c.correlationStrength,
+      //   dataPoints: c.dataPoints
+      // })));
       
       // Only update correlations if they've actually changed
       setCorrelations(prev => {
         const hasChanged = JSON.stringify(prev) !== JSON.stringify(newCorrelations);
         if (hasChanged) {
-          console.log('Correlations updated in state');
+          // console.log('Correlations updated in state');
           return newCorrelations;
         }
-        console.log('Correlations unchanged, skipping state update');
+        // console.log('Correlations unchanged, skipping state update');
         return prev;
       });
     } catch (error) {
@@ -370,7 +370,7 @@ export default function WellnessIntegrationDashboard({ moodData }: WellnessInteg
   const renderTrackingForm = () => {
     const handleFormSave = async () => {
     setShowForm(null);
-    console.log('Form saved, refreshing wellness data');
+    // console.log('Form saved, refreshing wellness data');
     // Add a small delay to ensure the data is saved before refreshing
     setTimeout(() => {
       loadWellnessData(); // Refresh data after saving

@@ -23,6 +23,7 @@ import {
 } from '@/types';
 import { 
   scheduleHabitReminder, 
+  scheduleHabitReminderWithTracking,
   cancelHabitReminder, 
   requestNotificationPermissions,
   checkAndScheduleMotivationalSupport,
@@ -34,9 +35,14 @@ import {
   scheduleWeeklyMoodHabitSummary,
   saveNotificationSchedule,
   getNotificationSchedule,
-  schedulePostHabitMoodCheck
+  schedulePostHabitMoodCheck,
+  updateHabitNotificationIds,
+  getHabitNotificationIds,
+  checkNotificationHealth,
+  cleanupOrphanedNotifications
 } from '@/services/NotificationService';
 import { aiService } from '@/services/AIService';
+import { mlPatternRecognitionService } from '@/services/MLPatternRecognitionService';
 import { useCelebration } from '@/context/CelebrationContext';
 import { useLanguage } from './LanguageContext';
 import { useGamification } from './GamificationContext';
@@ -259,11 +265,24 @@ export function HabitProvider({ children }: { children: ReactNode }) {
       // Track feature usage
       trackFeatureUsage?.('habit_created');
       
-      // Schedule reminder if enabled
-      if (habit.reminderEnabled && habit.reminderTime) {
+      // Schedule reminder if enabled with tracking
+      if ((habit.reminderEnabled && habit.reminderTime) || (habit.reminders && habit.reminders.length > 0)) {
         const hasPermission = await requestNotificationPermissions();
         if (hasPermission) {
-          await scheduleHabitReminder(newHabit);
+          const notificationIds = await scheduleHabitReminderWithTracking(newHabit);
+          if (notificationIds) {
+            // Update habit with notification IDs
+            const habitWithNotifications = {
+              ...newHabit,
+              notificationIds,
+              lastNotificationUpdate: new Date().toISOString()
+            };
+            const updatedHabitsWithNotifications = habits.map(h => 
+              h.id === newHabit.id ? habitWithNotifications : h
+            );
+            setHabits(updatedHabitsWithNotifications);
+            await saveHabits(updatedHabitsWithNotifications);
+          }
         }
       }
     } catch (error) {
@@ -284,14 +303,38 @@ export function HabitProvider({ children }: { children: ReactNode }) {
       setHabits(updatedHabits);
       await saveHabits(updatedHabits);
       
-      // Handle reminder changes
-      if (updatedHabit.reminderEnabled && updatedHabit.reminderTime) {
+      // Handle reminder changes with tracking
+      if ((updatedHabit.reminderEnabled && updatedHabit.reminderTime) || (updatedHabit.reminders && updatedHabit.reminders.length > 0)) {
         const hasPermission = await requestNotificationPermissions();
         if (hasPermission) {
-          await scheduleHabitReminder(updatedHabit);
+          const notificationIds = await scheduleHabitReminderWithTracking(updatedHabit);
+          if (notificationIds) {
+            // Update habit with new notification IDs
+            const habitWithNotifications = {
+              ...updatedHabit,
+              notificationIds,
+              lastNotificationUpdate: new Date().toISOString()
+            };
+            const updatedHabitsWithNotifications = habits.map(h => 
+              h.id === id ? habitWithNotifications : h
+            );
+            setHabits(updatedHabitsWithNotifications);
+            await saveHabits(updatedHabitsWithNotifications);
+          }
         }
       } else {
-        await cancelHabitReminder(id);
+        await cancelHabitReminder(id, updatedHabit.notificationIds);
+        // Clear notification IDs from habit
+        const habitWithoutNotifications = {
+          ...updatedHabit,
+          notificationIds: undefined,
+          lastNotificationUpdate: new Date().toISOString()
+        };
+        const updatedHabitsWithoutNotifications = habits.map(h => 
+          h.id === id ? habitWithoutNotifications : h
+        );
+        setHabits(updatedHabitsWithoutNotifications);
+        await saveHabits(updatedHabitsWithoutNotifications);
       }
     } catch (error) {
       console.error('Failed to update habit:', error);
@@ -303,12 +346,15 @@ export function HabitProvider({ children }: { children: ReactNode }) {
     if (!habits) return;
     
     try {
+      const habitToDelete = habits.find(habit => habit.id === id);
       const updatedHabits = habits.filter(habit => habit.id !== id);
       setHabits(updatedHabits);
       await saveHabits(updatedHabits);
       
-      // Cancel any reminders for this habit
-      await cancelHabitReminder(id);
+      // Cancel any reminders for this habit using stored IDs
+      if (habitToDelete) {
+        await cancelHabitReminder(id, habitToDelete.notificationIds);
+      }
     } catch (error) {
       console.error('Failed to delete habit:', error);
     }
@@ -319,13 +365,14 @@ export function HabitProvider({ children }: { children: ReactNode }) {
     if (!habits || ids.length === 0) return;
     
     try {
+      const habitsToDelete = habits.filter(habit => ids.includes(habit.id));
       const updatedHabits = habits.filter(habit => !ids.includes(habit.id));
       setHabits(updatedHabits);
       await saveHabits(updatedHabits);
       
-      // Cancel reminders for all deleted habits
-      for (const id of ids) {
-        await cancelHabitReminder(id);
+      // Cancel reminders for all deleted habits using stored IDs
+      for (const habit of habitsToDelete) {
+        await cancelHabitReminder(habit.id, habit.notificationIds);
       }
     } catch (error) {
       console.error('Failed to delete multiple habits:', error);
@@ -472,6 +519,36 @@ export function HabitProvider({ children }: { children: ReactNode }) {
               );
             }
           }
+
+                // 🧠 NEW: Trigger smart notifications after habit completion
+      // This will analyze mood patterns and send intelligent notifications
+      setTimeout(async () => {
+        try {
+          await triggerSmartNotifications();
+        } catch (error) {
+          console.error('❌ Failed to trigger smart notifications after completion:', error);
+        }
+      }, 3000); // Additional delay to ensure mood data is processed
+
+      // 📊 NEW: Record user interaction pattern for ML analysis
+      setTimeout(async () => {
+        try {
+          const now = new Date();
+          const completedHabit = updatedHabits.find(h => h.id === id);
+          await mlPatternRecognitionService.recordUserInteraction({
+            habitId: id,
+            notificationType: 'habit_completion',
+            responseType: completedHabit?.completedToday ? 'completed' : 'ignored',
+            responseTime: 0, // Immediate response
+            moodState: preMood?.moodState || 'neutral',
+            moodIntensity: preMood?.intensity || 5,
+            timeOfDay: now.getHours(),
+            dayOfWeek: now.getDay()
+          });
+        } catch (error) {
+          console.error('❌ Failed to record user interaction pattern:', error);
+        }
+      }, 1000);
         } catch (error) {
           console.error('AI analysis error:', error);
         }
@@ -484,11 +561,14 @@ export function HabitProvider({ children }: { children: ReactNode }) {
   const checkForCelebrations = (updatedHabits: Habit[], completedHabitId: string) => {
     const completedHabit = updatedHabits.find(h => h.id === completedHabitId);
     
-    if (!completedHabit || !completedHabit.completedToday) return;
+    if (!completedHabit || !completedHabit.completedToday) {
+      return;
+    }
     
     // Check for streak milestones
     if (completedHabit.isNewStreakRecord && completedHabit.streak >= 7) {
       const streakMessage = getStreakMessage(completedHabit.streak);
+      console.log('🔥 Showing streak celebration:', streakMessage);
       showCelebration('streak', streakMessage);
       return; // Only show streak celebration
     }
@@ -496,16 +576,21 @@ export function HabitProvider({ children }: { children: ReactNode }) {
     // Check if all habits are completed today
     const allCompleted = updatedHabits.every(habit => habit.completedToday);
     if (allCompleted && updatedHabits.length > 0) {
+      console.log('🎉 Showing all complete celebration!');
       showCelebration('allComplete', '🎉 All habits complete today! You\'re crushing it!');
       return;
     }
     
     // Check for specific milestones
     if (completedHabit.streak === 30) {
+      console.log('🏆 Showing 30-day milestone celebration!');
       showCelebration('milestone', '🏆 30-day streak! You\'re a habit master!');
     } else if (completedHabit.streak === 100) {
+      console.log('💎 Showing 100-day milestone celebration!');
       showCelebration('milestone', '💎 100-day streak! Absolutely legendary!');
     }
+    
+    console.log('✅ Celebration check completed');
   };
   
   const getStreakMessage = (streak: number): string => {
@@ -1966,19 +2051,178 @@ export function HabitProvider({ children }: { children: ReactNode }) {
           const currentMood = moodEntries[moodEntries.length - 1];
           const previousMood = moodEntries.length > 1 ? moodEntries[moodEntries.length - 2] : null;
           
-          // Simplified notification logic to avoid blocking
+          // Get pending habits that need attention
           const pendingHabits = habits.filter(habit => !habit.completedToday && habit.reminderEnabled);
           
-          // Only do basic mood-aware reminders for now
-          if (pendingHabits.length > 0 && currentMood) {
-            // Simplified version - just log for now
-            pendingHabits.forEach(habit => {
-              // Would schedule reminder based on mood
-            });
+          if (pendingHabits.length === 0) {
+            return;
           }
-          
+
+          // 1. Mood-aware reminders for pending habits
+          for (const habit of pendingHabits) {
+            try {
+              // Check if we should send a mood-aware reminder
+              const shouldSendReminder = await shouldSendMoodAwareReminder(habit, currentMood, moodEntries);
+              
+              if (shouldSendReminder) {
+                await scheduleMoodAwareReminder(habit, currentMood, moodEntries, t);
+              }
+            } catch (error) {
+              console.error(`❌ Failed to schedule mood-aware reminder for ${habit.title}:`, error);
+            }
+          }
+
+          // 2. Encouragement for difficult mood days
+          if (currentMood.intensity < 5) {
+            const strugglingHabits = pendingHabits.filter(habit => 
+              habit.streak > 0 && !habit.completedToday
+            );
+            
+            if (strugglingHabits.length > 0) {
+              try {
+                await scheduleEncouragementForDifficultMood(currentMood, strugglingHabits, t);
+              } catch (error) {
+                console.error('❌ Failed to schedule encouragement:', error);
+              }
+            }
+          }
+
+          // 3. Mood improvement celebration
+          if (previousMood && currentMood.intensity > previousMood.intensity + 1) {
+            const completedHabits = habits.filter(habit => habit.completedToday);
+            if (completedHabits.length > 0) {
+              try {
+                await scheduleMoodImprovementCelebration(previousMood, currentMood, completedHabits, t);
+              } catch (error) {
+                console.error('❌ Failed to schedule mood celebration:', error);
+              }
+            }
+          }
+
+          // 4. Risk pattern check-in
+          const riskAlerts = getRiskAlerts(currentMood);
+          if (riskAlerts.length > 0) {
+            try {
+              await scheduleRiskPatternCheckIn(riskAlerts, moodEntries, t);
+            } catch (error) {
+              console.error('❌ Failed to schedule risk check-in:', error);
+            }
+          }
+
         } catch (error) {
           console.error('❌ Smart notifications error:', error);
+        }
+      };
+
+      // Helper function to determine if we should send a mood-aware reminder
+      const shouldSendMoodAwareReminder = async (
+        habit: Habit, 
+        currentMood: any, 
+        moodHistory: any[]
+      ): Promise<boolean> => {
+        try {
+          // Don't send if habit was completed recently
+          if (habit.completedToday) return false;
+
+          // Don't send if we already sent a reminder recently (within 2 hours)
+          const lastReminderTime = habit.lastMotivationalNudge;
+          if (lastReminderTime) {
+            const timeSinceLastReminder = Date.now() - new Date(lastReminderTime).getTime();
+            if (timeSinceLastReminder < 2 * 60 * 60 * 1000) { // 2 hours
+              return false;
+            }
+          }
+
+          // Check if this is a good time based on mood and habit patterns
+          const optimalTime = calculateOptimalReminderTime(habit, currentMood, moodHistory);
+          const now = new Date();
+          const optimalDate = new Date(optimalTime);
+          
+          // Only send if we're within 30 minutes of optimal time
+          const timeDiff = Math.abs(now.getTime() - optimalDate.getTime());
+          if (timeDiff > 30 * 60 * 1000) { // 30 minutes
+            return false;
+          }
+
+          // Check if user typically completes this habit in similar mood states
+          const habitMoodEntries = getHabitMoodEntries ? getHabitMoodEntries() : [];
+          const similarMoodCompletions = habitMoodEntries.filter((entry: any) => 
+            entry.habitId === habit.id &&
+            entry.preMood?.moodState === currentMood.moodState &&
+            Math.abs(entry.preMood.intensity - currentMood.intensity) <= 2 &&
+            entry.action === 'completed'
+          );
+
+          // Send if user has successfully completed this habit in similar mood states
+          return similarMoodCompletions.length > 0;
+          
+        } catch (error) {
+          console.error('Error checking if should send mood-aware reminder:', error);
+          return false;
+        }
+      };
+
+      // Helper function to calculate optimal reminder time
+      const calculateOptimalReminderTime = (
+        habit: Habit, 
+        currentMood: any, 
+        moodHistory: any[]
+      ): string => {
+        // Analyze when user typically completes habits in similar mood states
+        const similarMoodEntries = moodHistory.filter(entry => 
+          entry.moodState === currentMood.moodState &&
+          Math.abs(entry.intensity - currentMood.intensity) <= 2
+        );
+
+        if (habit.completionTimes && habit.completionTimes.length > 0) {
+          // Use existing completion patterns
+          return habit.completionTimes[0];
+        }
+
+        // Default optimal times based on mood state
+        const moodOptimalTimes = {
+          'energetic': '07:00',
+          'happy': '09:00',
+          'calm': '19:00',
+          'tired': '20:00',
+          'stressed': '18:00',
+          'anxious': '16:00',
+          'sad': '14:00'
+        };
+
+        const now = new Date();
+        const optimalHour = moodOptimalTimes[currentMood.moodState as keyof typeof moodOptimalTimes] || '10:00';
+        const [hour, minute] = optimalHour.split(':').map(Number);
+        
+        const optimalTime = new Date(now);
+        optimalTime.setHours(hour, minute, 0, 0);
+        
+        // If optimal time has passed today, schedule for tomorrow
+        if (optimalTime <= now) {
+          optimalTime.setDate(optimalTime.getDate() + 1);
+        }
+
+        return optimalTime.toISOString();
+      };
+
+      // NEW: Notification health check and cleanup functions
+      const checkNotificationHealthStatus = async () => {
+        try {
+          const health = await checkNotificationHealth();
+          return health;
+        } catch (error) {
+          console.error('❌ Failed to check notification health:', error);
+          return null;
+        }
+      };
+
+      const cleanupOrphanedNotificationsStatus = async () => {
+        try {
+          const cleanedCount = await cleanupOrphanedNotifications();
+          return cleanedCount;
+        } catch (error) {
+          console.error('❌ Failed to cleanup orphaned notifications:', error);
+          return 0;
         }
       };
 

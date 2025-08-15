@@ -44,10 +44,12 @@ const AVAILABLE_LANGUAGES: Language[] = [
 const DEFAULT_LANGUAGE = AVAILABLE_LANGUAGES[0]; // English
 
 export function LanguageProvider({ children }: { children: ReactNode }) {
-  const { user } = useAuth();
   const [currentLanguage, setCurrentLanguage] = useState<Language>(DEFAULT_LANGUAGE);
   const [isLoading, setIsLoading] = useState(true);
   const [translations, setTranslations] = useState<any>({});
+
+  // Get user from auth context - this will be handled by the provider hierarchy
+  const { user } = useAuth();
 
   // Get user-specific storage key
   const getStorageKey = () => {
@@ -56,15 +58,20 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
   };
 
   useEffect(() => {
-    // Only load data if auth is not loading
-    if (!user || user.id) {
-      loadLanguagePreference();
-    }
+    // Load language preference regardless of user state
+    loadLanguagePreference();
   }, [user?.id]);
 
   useEffect(() => {
     loadTranslations(currentLanguage.code);
   }, [currentLanguage]);
+
+  // Load default translations immediately
+  useEffect(() => {
+    if (Object.keys(translations).length === 0) {
+      loadTranslations(DEFAULT_LANGUAGE.code);
+    }
+  }, []);
 
   const loadLanguagePreference = async () => {
     try {
@@ -122,6 +129,11 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
     const keys = key.split('.');
     let translation: any = translations;
     
+    // If translations are not loaded yet, return the key as a safe string
+    if (Object.keys(translations).length === 0) {
+      return String(key || 'Loading...');
+    }
+    
     for (const k of keys) {
       if (translation && typeof translation === 'object' && k in translation) {
         translation = translation[k];
@@ -145,7 +157,9 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
       });
     }
     
-    return translation;
+    // Ensure we always return a string - this is critical for navigation titles
+    const result = typeof translation === 'string' ? translation : String(translation || key || 'Loading...');
+    return result || 'Loading...'; // Fallback to prevent empty strings
   };
 
   const value: LanguageContextType = {
@@ -166,7 +180,25 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
 export function useLanguage() {
   const context = useContext(LanguageContext);
   if (context === undefined) {
-    throw new Error('useLanguage must be used within a LanguageProvider');
+    // Return a fallback context instead of throwing an error
+    return {
+      currentLanguage: DEFAULT_LANGUAGE,
+      setLanguage: async () => {},
+      availableLanguages: AVAILABLE_LANGUAGES,
+      t: (key: string, params?: Record<string, any>) => {
+        // Fallback translation function
+        let translation = key;
+        if (params) {
+          Object.keys(params).forEach(paramKey => {
+            const placeholder = `{${paramKey}}`;
+            translation = translation.replace(new RegExp(placeholder, 'g'), String(params[paramKey]));
+          });
+        }
+        // Ensure we always return a string
+        return typeof translation === 'string' ? translation : String(translation || key);
+      },
+      isLoading: false,
+    };
   }
   return context;
 }

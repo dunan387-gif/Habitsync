@@ -11,7 +11,16 @@ import {
   getFeatureLimit 
 } from '@/constants/pricing';
 import { useAuth } from '@/context/AuthContext';
-import { PaymentService, PaymentPlan } from '@/services/PaymentService';
+// Offline mode - no GooglePayService needed
+interface PaymentPlan {
+  id: string;
+  name: string;
+  price: number;
+  currency: string;
+  period: 'monthly' | 'yearly';
+  features: string[];
+  trialDays?: number;
+}
 
 interface SubscriptionContextType {
   // Current subscription state
@@ -49,7 +58,7 @@ interface SubscriptionContextType {
   dismissUpgradePrompt: (id: string) => void;
   
   // Simple alert-based upgrade system
-  showUpgradeAlert: (title: string, message: string, type?: 'default' | 'habit_limit' | 'analytics_limit' | 'ai_limit' | 'onboarding') => void;
+  showUpgradeAlert: (title: string, message: string, type?: 'default' | 'habit_limit' | 'analytics_limit' | 'ai_limit' | 'onboarding' | 'courses') => void;
   
   // Analytics
   trackFeatureUsage: (feature: string) => void;
@@ -543,11 +552,12 @@ export function SubscriptionProvider({ children }: { children: ReactNode }) {
     try {
       setIsUpgrading(true);
       
-      // Use PaymentService for actual payment processing
+            // Offline mode - simulate payment processing
       const plan: PaymentPlan = {
         id: planDetails?.id || 'pro-monthly',
         name: planDetails?.period === 'yearly' ? 'Pro Yearly' : 'Pro Monthly',
         price: planDetails?.period === 'yearly' ? 99.99 : 9.99,
+        currency: 'USD',
         period: planDetails?.period || 'monthly',
         features: [
           'Unlimited habits',
@@ -558,18 +568,22 @@ export function SubscriptionProvider({ children }: { children: ReactNode }) {
         ]
       };
 
-      const paymentResult = await PaymentService.processPayment(plan);
-      
-      if (!paymentResult.success) {
-        throw new Error(paymentResult.error || 'Payment processing failed');
-      }
+      // Simulate successful payment in offline mode
+      const newStatus: SubscriptionStatus = {
+        tier: 'pro',
+        isActive: true,
+        startDate: new Date().toISOString(),
+        endDate: planDetails?.period === 'yearly' ? new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString() : new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
+        autoRenew: true,
+        platform: 'web',
+        period: planDetails?.period || 'monthly',
+        planId: plan.id
+      };
 
-      if (paymentResult.subscriptionStatus) {
-        setSubscriptionStatus(paymentResult.subscriptionStatus);
-        setCurrentTier('pro');
-        const keys = getStorageKeys();
-        await AsyncStorage.setItem(keys.subscription, JSON.stringify(paymentResult.subscriptionStatus));
-      }
+      setSubscriptionStatus(newStatus);
+      setCurrentTier('pro');
+      const keys = getStorageKeys();
+      await AsyncStorage.setItem(keys.subscription, JSON.stringify(newStatus));
     } catch (error) {
       console.error('Failed to upgrade to Pro:', error);
       throw error;
@@ -602,18 +616,14 @@ export function SubscriptionProvider({ children }: { children: ReactNode }) {
 
   const restorePurchases = async (): Promise<void> => {
     try {
-      // Use PaymentService for actual purchase restoration
-      const restoredSubscription = await PaymentService.restorePurchases();
+      // Offline mode - check local storage for existing subscription
+      const keys = getStorageKeys();
+      const storedSubscription = await AsyncStorage.getItem(keys.subscription);
       
-      if (restoredSubscription) {
-        setSubscriptionStatus(restoredSubscription);
-        setCurrentTier(restoredSubscription.tier);
-        const keys = getStorageKeys();
-        await AsyncStorage.setItem(keys.subscription, JSON.stringify(restoredSubscription));
-        
-    
-      } else {
-        
+      if (storedSubscription) {
+        const subscription = JSON.parse(storedSubscription);
+        setSubscriptionStatus(subscription);
+        setCurrentTier(subscription.tier);
       }
     } catch (error) {
       console.error('Failed to restore purchases:', error);
@@ -621,7 +631,7 @@ export function SubscriptionProvider({ children }: { children: ReactNode }) {
     }
   };
 
-  const showUpgradeAlert = useCallback((title: string, message: string, type: 'default' | 'habit_limit' | 'analytics_limit' | 'ai_limit' | 'onboarding' = 'default') => {
+  const showUpgradeAlert = useCallback((title: string, message: string, type: 'default' | 'habit_limit' | 'analytics_limit' | 'ai_limit' | 'onboarding' | 'courses' = 'default') => {
 
     
     const getFeatureList = (alertType: string) => {
@@ -652,6 +662,15 @@ export function SubscriptionProvider({ children }: { children: ReactNode }) {
             '📊 AI-powered analytics',
             '🔮 Predictive insights',
             '🎓 Learning from your patterns'
+          ];
+        case 'courses':
+          return [
+            '📚 Expert-guided habit formation courses',
+            '🎓 Advanced learning materials & resources',
+            '🧠 AI-powered personalized coaching',
+            '📊 Progress tracking & analytics',
+            '🎯 Guided setup wizards',
+            '📱 Interactive learning experiences'
           ];
         case 'onboarding':
           return [
@@ -725,6 +744,11 @@ export function SubscriptionProvider({ children }: { children: ReactNode }) {
             return {
               title: '🧠 You\'ve Discovered AI Coaching!',
               message: 'Ready for unlimited AI insights and personalized suggestions?'
+            };
+          case 'courses':
+            return {
+              title: '📚 Unlock Premium Courses!',
+              message: 'Ready to accelerate your habit formation with expert-guided courses and advanced learning materials?'
             };
           case 'onboarding':
             return {

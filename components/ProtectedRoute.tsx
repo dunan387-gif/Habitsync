@@ -17,10 +17,24 @@ export default function ProtectedRoute({ children }: { children: React.ReactNode
 
     if (!isAuthenticated && !inAuthGroup) {
       // Navigate to auth if not authenticated and not already in auth group
-      router.replace('/(auth)/login' as any);
+      try {
+        router.replace('/(auth)/login' as any);
+      } catch (error) {
+        console.log('Navigation error (auth):', error);
+      }
     } else if (isAuthenticated && inAuthGroup) {
       // Navigate to tabs if authenticated and currently in auth group
-      router.replace('/(tabs)' as any);
+      try {
+        router.replace('/(tabs)' as any);
+      } catch (error) {
+        console.log('Navigation error (tabs):', error);
+        // Fallback: try navigating to the index tab specifically
+        try {
+          router.replace('/(tabs)/index' as any);
+        } catch (fallbackError) {
+          console.log('Fallback navigation error:', fallbackError);
+        }
+      }
     }
   }, [isAuthenticated, isLoading, segments]);
 

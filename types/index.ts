@@ -11,9 +11,13 @@ export interface Habit {
   completedToday: boolean;
   completedDates: string[]; // ISO date strings
   completions?: any[]; // Add missing completions property
+  // Single reminder (legacy support)
   reminderTime?: string; // Time in 24-hour format (HH:MM)
   reminderEnabled: boolean;
   reminderDays?: number[]; // Days of week: 0=Sunday, 1=Monday, ..., 6=Saturday
+  
+  // Multiple reminders
+  reminders?: HabitReminder[]; // Array of multiple reminders
   order: number; // Add this field for drag & drop ordering
   priority?: number; // Add missing priority property
   frequency?: { days: number }; // Add missing frequency property
@@ -27,9 +31,22 @@ export interface Habit {
   duration?: number; // Duration in minutes for habit completion
   // NEW: Habit-Mood Integration fields
   moodEntries?: HabitMoodEntry[]; // Track mood at completion/skip
+  // NEW: Notification ID tracking for efficient management
+  notificationIds?: string[]; // Array of scheduled notification IDs for this habit
+  lastNotificationUpdate?: string; // ISO timestamp of last notification schedule update
 }
 
 // NEW: Habit-Mood Integration interfaces
+// NEW: Multiple Reminders interface
+export interface HabitReminder {
+  id: string;
+  time: string; // Time in 24-hour format (HH:MM)
+  enabled: boolean;
+  days: number[]; // Days of week: 0=Sunday, 1=Monday, ..., 6=Saturday
+  message?: string; // Custom reminder message
+  notificationId?: string; // ID of scheduled notification
+}
+
 export interface HabitMoodEntry {
   id: string;
   habitId: string;
@@ -490,6 +507,7 @@ export interface User {
   location?: string;
   coverImage?: string;
   joinedAt: string;
+  onboardingCompleted?: boolean; // Track if user has completed onboarding
   preferences: {
     notifications: boolean;
     emailUpdates: boolean;
@@ -609,7 +627,7 @@ export interface Achievement {
   icon: string;
   xpReward: number;
   condition: string;
-  category: 'habit' | 'streak' | 'mood' | 'social' | 'milestone';
+  category: 'habit' | 'streak' | 'mood' | 'social' | 'milestone' | 'learning';
   rarity: 'common' | 'rare' | 'epic' | 'legendary';
   unlockedAt?: string; // ISO date string
 }
@@ -665,6 +683,29 @@ export interface GamificationData {
   // NEW: Habit-Mood Integration
   habitMoodEntries: HabitMoodEntry[]; // Track mood at habit completion/skip
   xp: number; // Add missing xp property
+  // Phase 3A: Learning Integration
+  coursesEnrolled?: string[];
+  coursesCompleted?: string[];
+  modulesCompleted?: string[];
+  guidedSetupsCompleted?: string[];
+  learningStreak?: number;
+  knowledgeShared?: number;
+  communityInteractions?: number;
+  crossFeatureUsage?: {
+    habitCreationFromLibrary: number;
+    moodTrackingFromLibrary: number;
+    communitySharingFromLibrary: number;
+    analyticsFromLibrary: number;
+  };
+  // Phase 3B: Social Learning Integration
+  studyGroupsCreated?: number;
+  studyGroupsJoined?: number;
+  studySessionsCompleted?: number;
+  studySessionsLed?: number;
+  peerRecommendationsGiven?: number;
+  peerRecommendationsReceived?: number;
+  learningCircleContributions?: number;
+  collaborativeSessions?: number;
 }
 
 export interface MoodTrigger {
@@ -730,7 +771,7 @@ export interface SubscriptionStatus {
   startDate: string;
   endDate?: string;
   autoRenew: boolean;
-  platform: 'ios' | 'android' | 'web';
+  platform: 'ios' | 'android' | 'web' | 'google_pay';
   period?: 'monthly' | 'yearly'; // Add subscription period
   planId?: string; // Add plan ID for tracking which plan was selected
   transactionId?: string;
@@ -758,11 +799,168 @@ export interface FeatureGate {
 
 export interface UpgradePrompt {
   id: string;
-  trigger: 'habit_limit' | 'analytics_limit' | 'ai_limit' | 'theme_limit' | 'reminder_limit' | 'social_feature' | 'data_export' | 'wellness_integration' | 'pattern_insights' | 'performance_alerts' | 'mood_correlations' | 'onboarding';
+  trigger: 'habit_limit' | 'analytics_limit' | 'ai_limit' | 'theme_limit' | 'reminder_limit' | 'social_feature' | 'data_export' | 'wellness_integration' | 'pattern_insights' | 'performance_alerts' | 'mood_correlations' | 'onboarding' | 'courses';
   title: string;
   message: string;
   ctaText: string;
   dismissible: boolean;
   shownCount: number;
   lastShown?: string;
+}
+
+// Advanced Community Features Types
+export interface LearningChallenge {
+  id: string;
+  title: string;
+  description: string;
+  category: 'habit' | 'wellness' | 'productivity' | 'learning' | 'social';
+  difficulty: 'beginner' | 'intermediate' | 'advanced';
+  duration: number; // days
+  participants: number;
+  maxParticipants?: number;
+  startDate: string;
+  endDate: string;
+  rewards: {
+    xp: number;
+    badges?: string[];
+    achievements?: string[];
+  };
+  requirements: {
+    habits?: string[];
+    streakDays?: number;
+    completionRate?: number;
+  };
+  progress: {
+    completed: boolean;
+    currentDay: number;
+    totalDays: number;
+    participantsCompleted: number;
+  };
+  createdBy: string;
+  createdAt: string;
+  isActive: boolean;
+}
+
+export interface ChallengeParticipant {
+  userId: string;
+  challengeId: string;
+  joinedAt: string;
+  progress: {
+    currentDay: number;
+    completedDays: number[];
+    streak: number;
+    lastActivity: string;
+  };
+  status: 'active' | 'completed' | 'abandoned';
+  completedAt?: string;
+}
+
+export interface PeerMentor {
+  id: string;
+  userId: string;
+  expertise: string[];
+  experience: number; // years
+  rating: number;
+  menteesCount: number;
+  availability: {
+    days: string[];
+    timeSlots: string[];
+  };
+  bio: string;
+  achievements: string[];
+  isActive: boolean;
+  createdAt: string;
+}
+
+export interface MentorshipRequest {
+  id: string;
+  menteeId: string;
+  mentorId: string;
+  topic: string;
+  description: string;
+  goals: string[];
+  preferredTimes: string[];
+  status: 'pending' | 'accepted' | 'rejected' | 'completed';
+  createdAt: string;
+  acceptedAt?: string;
+  completedAt?: string;
+}
+
+export interface KnowledgeShare {
+  id: string;
+  authorId: string;
+  title: string;
+  content: string;
+  type: 'article' | 'tip' | 'experience' | 'tutorial';
+  category: 'habits' | 'wellness' | 'productivity' | 'learning' | 'motivation';
+  tags: string[];
+  likes: number;
+  shares: number;
+  comments: number;
+  isPublic: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface CommunityAnalytics {
+  totalMembers: number;
+  activeMembers: number;
+  challengesCreated: number;
+  challengesCompleted: number;
+  mentorshipConnections: number;
+  knowledgeShares: number;
+  engagementRate: number;
+  topContributors: {
+    userId: string;
+    name: string;
+    contributions: number;
+    impact: number;
+  }[];
+  popularTopics: {
+    topic: string;
+    engagement: number;
+  }[];
+}
+
+export interface SocialLearningCircle {
+  id: string;
+  name: string;
+  description: string;
+  category: 'study' | 'wellness' | 'productivity' | 'creative';
+  maxMembers: number;
+  currentMembers: number;
+  topics: string[];
+  meetingSchedule: {
+    frequency: 'daily' | 'weekly' | 'biweekly';
+    dayOfWeek?: number;
+    time: string;
+  };
+  isPrivate: boolean;
+  createdBy: string;
+  createdAt: string;
+  isActive: boolean;
+}
+
+export interface CircleMember {
+  userId: string;
+  circleId: string;
+  role: 'leader' | 'moderator' | 'member';
+  joinedAt: string;
+  contributions: number;
+  lastActivity: string;
+}
+
+export interface CircleSession {
+  id: string;
+  circleId: string;
+  title: string;
+  description: string;
+  duration: number; // minutes
+  scheduledAt: string; // ISO date string
+  status: 'scheduled' | 'in-progress' | 'completed' | 'cancelled';
+  participants: string[];
+  materials: string[];
+  notes?: string;
+  createdBy: string;
+  createdAt: string;
 }

@@ -30,7 +30,7 @@ export default function LevelProgress() {
         </View>
       </View>
       
-      <Text style={styles.title}>{userLevel.title}</Text>
+      <Text style={styles.title}>{t(userLevel.title)}</Text>
       
       <View style={styles.progressContainer}>
         <View style={styles.progressBar}>
@@ -46,7 +46,7 @@ export default function LevelProgress() {
       <View style={styles.perksContainer}>
         <Text style={styles.perksTitle}>{t('gamification.levelProgress.levelPerks')}</Text>
         {userLevel.perks.map((perk, index) => (
-          <Text key={index} style={styles.perk}>• {perk}</Text>
+          <Text key={index} style={styles.perk}>• {t(perk)}</Text>
         ))}
       </View>
     </View>

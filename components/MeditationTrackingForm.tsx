@@ -71,10 +71,8 @@ const moodStates = [
       };
 
       await WellnessIntegrationService.saveMeditationData(meditationData);
-      console.log('Meditation data saved successfully');
       Alert.alert(t('wellnessForms.meditation.success'), t('wellnessForms.meditation.successMessage'));
       if (onSave) {
-        console.log('Calling onSave callback from MeditationTrackingForm');
         onSave();
       }
     } catch (error) {

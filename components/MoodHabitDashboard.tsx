@@ -72,8 +72,7 @@ export default function MoodHabitDashboard() {
     loadThresholdData();
   }, [adaptiveThresholdService]);
 
-  console.log('Current language:', currentLanguage);
-  console.log('Translation test:', t('moodAnalytics.title'));
+
   
   // Debug translation function
   const translate = (key: string, fallback?: string) => {
@@ -87,13 +86,9 @@ export default function MoodHabitDashboard() {
 
   // Helper function to translate dynamic content
   const translateDynamicContent = (content: string, type: 'reasoning' | 'moodBasedRecommendation' | 'activity' | 'suggestion') => {
-    // Debug logging
-    console.log(`Translating dynamic content: "${content}" (type: ${type})`);
-    
     // If content is already a translation key (starts with 'dynamicContent.' or 'moodAnalytics.'), use it directly
     if (content.startsWith('dynamicContent.') || content.startsWith('moodAnalytics.')) {
       const translated = t(content);
-      console.log(`Direct translation key: "${content}" -> "${translated}"`);
       if (translated !== content) {
         return translated;
       }
@@ -145,7 +140,6 @@ export default function MoodHabitDashboard() {
     for (const [pattern, translationKey] of Object.entries(translationMap)) {
       if (contentLower.includes(pattern)) {
         const translated = t(translationKey);
-        console.log(`Found pattern "${pattern}" -> "${translationKey}" -> "${translated}"`);
         if (translated !== translationKey) {
           return translated;
         }
@@ -153,7 +147,6 @@ export default function MoodHabitDashboard() {
     }
     
     // Fallback if no translation found
-    console.log(`No translation found for: "${content}"`);
     return content;
   };
   
@@ -1395,7 +1388,6 @@ export default function MoodHabitDashboard() {
   };
 
   const handleFeedbackSubmitted = (feedback: any) => {
-    console.log('Feedback submitted:', feedback);
     // The feedback is already recorded in the AI service
     // You can add additional analytics here
     setShowFeedbackModal(false);

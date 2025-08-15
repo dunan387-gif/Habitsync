@@ -6,13 +6,22 @@ import DailyMoodReminder from './DailyMoodReminder';
 import { useTheme } from '@/context/ThemeContext';
 import { useAuth } from '@/context/AuthContext';
 
+// Storage keys (copied from AuthContext for consistency)
+const keys = {
+  user: 'user_data',
+  guestUser: 'guest_user_data',
+  lastAuthenticatedUser: 'last_authenticated_user',
+  privacySettings: 'privacy_settings',
+  subscription: 'subscription_status',
+};
+
 interface MoodHabitOnboardingProps {
   children: React.ReactNode;
 }
 
 export default function MoodHabitOnboarding({ children }: MoodHabitOnboardingProps) {
   const { currentTheme } = useTheme();
-  const { user, clearGuestUser } = useAuth();
+  const { user, clearGuestUser, markOnboardingCompleted } = useAuth();
   const [showOnboarding, setShowOnboarding] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   
@@ -20,26 +29,28 @@ export default function MoodHabitOnboarding({ children }: MoodHabitOnboardingPro
   
   useEffect(() => {
     checkOnboardingStatus();
-  }, [user?.id]);
+  }, [user?.id, user?.onboardingCompleted]);
   
   const checkOnboardingStatus = async () => {
     try {
-      // Only show onboarding for:
-      // 1. No user (first app launch)
-      // 2. Guest users (users with IDs starting with 'guest-')
-      // 3. Anonymous users
+      console.log('🔍 Checking onboarding status for user:', user ? user.email : 'No user');
+      console.log('👤 User onboarding completed:', user?.onboardingCompleted);
+      console.log('👤 User ID type:', user ? (user.id.startsWith('guest-') ? 'Guest' : 'Authenticated') : 'No user');
       
+      // Only show onboarding for authenticated users who haven't completed it
       if (!user) {
-        // No user - show onboarding
-        setShowOnboarding(true);
-      } else if (user.id === 'anonymous' || user.id.startsWith('guest-')) {
-        // Guest or anonymous user - check if they've completed onboarding
-        const onboardingKey = `mood_habit_onboarding_completed_${user.id}`;
-        const hasCompletedOnboarding = await AsyncStorage.getItem(onboardingKey);
-        setShowOnboarding(!hasCompletedOnboarding);
-      } else {
-        // Authenticated user (real account) - never show onboarding
+        // No user - don't show onboarding (will be handled by auth flow)
+        console.log('❌ No user found, not showing onboarding');
         setShowOnboarding(false);
+      } else if (user.id.startsWith('guest-') || user.id === 'anonymous') {
+        // Guest or anonymous users - don't show onboarding
+        console.log('👻 Guest/anonymous user, not showing onboarding');
+        setShowOnboarding(false);
+      } else {
+        // Authenticated user - show onboarding only if not completed
+        const shouldShowOnboarding = !user.onboardingCompleted;
+        console.log('✅ Authenticated user, showing onboarding:', shouldShowOnboarding);
+        setShowOnboarding(shouldShowOnboarding);
       }
       
       // Clean up old global onboarding key if it exists
@@ -48,14 +59,15 @@ export default function MoodHabitOnboarding({ children }: MoodHabitOnboardingPro
         const oldGlobalValue = await AsyncStorage.getItem(oldGlobalKey);
         if (oldGlobalValue) {
           await AsyncStorage.removeItem(oldGlobalKey);
+          console.log('🧹 Cleaned up old global onboarding key');
         }
       } catch (cleanupError) {
         // Silent cleanup failure
       }
       
     } catch (error) {
-      console.error('Error checking onboarding status:', error);
-      setShowOnboarding(true); // Default to showing onboarding on error
+      console.error('❌ Error checking onboarding status:', error);
+      setShowOnboarding(false); // Default to not showing onboarding on error
     } finally {
       setIsLoading(false);
     }
@@ -63,32 +75,51 @@ export default function MoodHabitOnboarding({ children }: MoodHabitOnboardingPro
   
   const handleOnboardingComplete = async (skipped: boolean = false) => {
     try {
-      // Only save onboarding completion for guest/anonymous users
-      if (user && (user.id === 'anonymous' || user.id.startsWith('guest-'))) {
-        const onboardingKey = `mood_habit_onboarding_completed_${user.id}`;
-        await AsyncStorage.setItem(onboardingKey, 'true');
-      }
+      console.log('🎉 Onboarding completed, skipped:', skipped);
+      console.log('👤 Current user:', user ? user.email : 'No user');
       
-      // If user is a guest user AND they skipped onboarding, redirect to login page
-      if (skipped && user && user.id.startsWith('guest-')) {
-        // Clear the guest user data to force login flow
-        await clearGuestUser();
-        // The AuthContext will handle the redirect to login when user becomes null
+      // Mark onboarding as completed for authenticated users
+      if (user && !user.id.startsWith('guest-') && user.id !== 'anonymous') {
+        console.log('✅ Marking onboarding as completed for authenticated user');
+        await markOnboardingCompleted();
+      } else {
+        console.log('👻 Not marking onboarding for guest/anonymous user');
       }
       
       setShowOnboarding(false);
+      console.log('✅ Onboarding flow hidden');
     } catch (error) {
-      console.error('Error saving onboarding completion:', error);
+      console.error('❌ Error saving onboarding completion:', error);
     }
   };
 
   // Function to reset onboarding for testing (can be called from console)
   const resetOnboarding = async () => {
     try {
-      if (user) {
-        const onboardingKey = `mood_habit_onboarding_completed_${user.id}`;
-        await AsyncStorage.removeItem(onboardingKey);
+      if (user && !user.id.startsWith('guest-') && user.id !== 'anonymous') {
+        console.log('🔄 Resetting onboarding for user:', user.email);
+        
+        // For authenticated users, we need to update the user object directly
+        const updatedUser = { ...user, onboardingCompleted: false };
+        
+        // Update in AsyncStorage
+        await AsyncStorage.setItem('userData', JSON.stringify(updatedUser));
+        await AsyncStorage.setItem(`userData_${user.id}`, JSON.stringify(updatedUser));
+        await AsyncStorage.setItem(keys.lastAuthenticatedUser, JSON.stringify(updatedUser));
+        
+        // Update in development cache
+        if (__DEV__) {
+          await AsyncStorage.setItem('dev_last_user', JSON.stringify({
+            ...updatedUser,
+            timestamp: Date.now()
+          }));
+        }
+        
+        // Force re-check onboarding status
         setShowOnboarding(true);
+        console.log('✅ Onboarding reset successfully');
+      } else {
+        console.log('❌ Cannot reset onboarding for this user type');
       }
     } catch (error) {
       console.error('Error resetting onboarding:', error);
@@ -98,6 +129,14 @@ export default function MoodHabitOnboarding({ children }: MoodHabitOnboardingPro
   // Expose reset function globally for testing
   if (typeof global !== 'undefined') {
     (global as any).resetOnboarding = resetOnboarding;
+    (global as any).checkOnboardingStatus = () => {
+      console.log('🔍 Current onboarding status:');
+      console.log('  - User:', user ? user.email : 'No user');
+      console.log('  - User ID:', user ? user.id : 'No user');
+      console.log('  - Onboarding completed:', user?.onboardingCompleted);
+      console.log('  - Show onboarding:', showOnboarding);
+      console.log('  - Is loading:', isLoading);
+    };
   }
   
   if (isLoading) {

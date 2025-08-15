@@ -1,5 +1,5 @@
 import { MoodEntry, HabitMoodEntry, Habit } from '@/types';
-import { PredictiveAnalyticsService } from './PredictiveAnalyticsService';
+import PredictiveAnalyticsService from './PredictiveAnalyticsService';
 import { WellnessIntegrationService } from './WellnessIntegrationService';
 
 export interface DetailedCorrelationReport {
@@ -161,17 +161,22 @@ export class AdvancedAnalyticsService {
       const predictedMood = await this.predictMoodForDate(futureDate, moodData);
       const contextualFactors = this.getContextualFactors(futureDate);
       
-      const prediction = predictiveService.predictHabitSuccess(
+      const prediction = await predictiveService.predictHabitSuccess(
         habitId,
-        predictedMood,
-        historicalData,
-        contextualFactors
+        {
+          currentMood: {
+            moodState: predictedMood.moodState,
+            intensity: predictedMood.intensity || 5
+          },
+          timeOfDay: futureDate.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' }),
+          dayOfWeek: futureDate.getDay()
+        }
       );
       
       predictions.push({
         date: futureDate.toISOString().split('T')[0],
         predictedMood: predictedMood.moodState,
-        successProbability: prediction.predictedSuccessRate,
+        successProbability: prediction.successProbability,
         confidence: prediction.confidence
       });
     }

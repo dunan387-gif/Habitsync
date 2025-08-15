@@ -79,7 +79,7 @@ export default function ErrorHandlingExample() {
     );
 
     if (result) {
-      console.log('Operation succeeded:', result);
+      // Operation succeeded
     }
     
     setIsLoading(false);

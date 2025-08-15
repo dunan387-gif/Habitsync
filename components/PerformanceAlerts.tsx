@@ -55,11 +55,11 @@ export default function PerformanceAlerts({
   
   // Alert thresholds - MUST be called before any conditional returns
   const alertThresholds = useMemo(() => ({
-    renderTime: 100, // ms
-    memoryUsage: 80, // percentage
-    networkFailures: 5, // count
-    cacheHitRate: 50, // percentage
-    responseTime: 2000 // ms
+    renderTime: 200, // ms - increased threshold to reduce false positives
+    memoryUsage: 90, // percentage - increased threshold
+    networkFailures: 10, // count - increased threshold
+    cacheHitRate: 30, // percentage - decreased threshold (only alert if really bad)
+    responseTime: 5000 // ms - increased threshold
   }), []);
   
   // Safety check for currentTheme
@@ -96,7 +96,6 @@ export default function PerformanceAlerts({
           dismissed: false,
           action: () => {
             // In a real app, you might trigger performance optimization
-            console.log('Optimizing render performance...');
           },
           actionLabel: t('performance.alerts.optimize')
         });
@@ -273,9 +272,32 @@ export default function PerformanceAlerts({
     setSettingsVisible(true);
   };
 
-  // Don't render if alerts are disabled, user can't access them, or if there are no alerts to show
-  if (!alertSettings.enabled || !canAccessPerformanceAlerts || (alerts.length === 0 && !settingsVisible)) {
+  // Don't render if user can't access them, or if there are no alerts to show and settings not visible
+  if (!canAccessPerformanceAlerts || (alerts.length === 0 && !settingsVisible)) {
     return null;
+  }
+
+  // If alerts are disabled, show a subtle indicator
+  if (!alertSettings.enabled) {
+    return (
+      <>
+        <View style={styles.disabledIndicator}>
+          <TouchableOpacity
+            style={styles.disabledButton}
+            onPress={showSettingsModal}
+          >
+            <Bell size={16} color={currentTheme.colors.textSecondary} />
+            <Text style={styles.disabledText}>{t('performance.alerts.disabled')}</Text>
+          </TouchableOpacity>
+        </View>
+
+        {/* Settings Modal */}
+        <PerformanceAlertsSettings
+          visible={settingsVisible}
+          onClose={() => setSettingsVisible(false)}
+        />
+      </>
+    );
   }
 
   return (
@@ -539,5 +561,24 @@ const createStyles = (colors: any) => StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
     color: colors.background,
+  },
+  disabledIndicator: {
+    position: 'absolute',
+    top: 10,
+    right: 10,
+    zIndex: 1000,
+  },
+  disabledButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: colors.surface + '80',
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 12,
+    gap: 4,
+  },
+  disabledText: {
+    fontSize: 10,
+    color: colors.textSecondary,
   },
 }); 

@@ -285,7 +285,6 @@ export const useMemoryManagement = (options: UseMemoryManagementOptions = {}): U
       tempObjects.length = 0;
       
       trackEvent('garbage_collection_forced', 0, {});
-      console.log('Garbage collection triggered');
     } catch (error) {
       console.error('Failed to force garbage collection:', error);
     }
@@ -321,8 +320,6 @@ export const useMemoryManagement = (options: UseMemoryManagementOptions = {}): U
 
     const cleanupTime = Date.now() - startTime;
     trackEvent('memory_cleanup', cleanupTime, { cleanedSize });
-    
-    console.log(`Memory cleanup completed in ${cleanupTime}ms, freed ${cleanedSize}MB`);
   }, [trackEvent]);
 
   // Optimize memory usage
@@ -364,8 +361,6 @@ export const useMemoryManagement = (options: UseMemoryManagementOptions = {}): U
 
     const optimizationTime = Date.now() - startTime;
     trackEvent('memory_optimization', optimizationTime, { optimizations });
-    
-    console.log(`Memory optimization completed in ${optimizationTime}ms:`, optimizations);
   }, [memoryInfo, forceGarbageCollection, trackEvent]);
 
   // Get memory report
@@ -458,8 +453,6 @@ export const useMemoryManagement = (options: UseMemoryManagementOptions = {}): U
     
     const clearTime = Date.now() - startTime;
     trackEvent('all_caches_cleared', clearTime, { cacheSize });
-    
-    console.log(`All caches cleared in ${clearTime}ms, removed ${cacheSize} entries`);
   }, [trackEvent]);
 
   // Clear memory alerts
@@ -598,7 +591,6 @@ export const withMemoryMonitoring = <P extends object>(
 export const initializeMemoryManagement = () => {
   if (!(global as any).appStartTime) {
     (global as any).appStartTime = Date.now();
-    console.log('Memory management initialized');
   }
 };
 

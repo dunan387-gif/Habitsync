@@ -98,25 +98,158 @@
   "weekends": "Weekends",
   "no_days_selected": "No days selected",
   "reminders_on": "Reminders on:",
+  "single_reminder": "Single Reminder",
+  "multiple_reminders": "Multiple Reminders",
+  "reminders": "Reminders",
+  "add_reminder": "Add Reminder",
+  "no_reminders_set": "No reminders set",
+  "reminder": "Reminder",
+  "repeat_on": "Repeat on",
+  "all": "All",
+  "every_day": "Every day",
+  "please_add_at_least_one_reminder": "Please add at least one reminder",
+  "max_reminders_reached": "Maximum number of reminders reached (3)",
+  "premium_feature": "Premium Feature",
+  "upgrade_for_multiple_reminders": "Upgrade to Pro to use multiple reminders",
+  "notificationManager": {
+    "title": "Notification Manager",
+    "permissions": "Permissions",
+    "permissionStatus": "Permission Status",
+    "granted": "Granted",
+    "denied": "Denied",
+    "checking": "Checking...",
+    "healthStatus": "Health Status",
+    "totalScheduled": "Total Scheduled",
+    "active": "Active",
+    "failed": "Failed",
+    "orphaned": "Orphaned",
+    "statusGood": "All systems operational",
+    "statusWarning": "Some issues detected",
+    "statusError": "Critical issues found",
+    "actions": "Actions",
+    "cleanupOrphaned": "Cleanup Orphaned",
+    "requestPermissions": "Request Permissions",
+    "cleanupTitle": "Cleanup Orphaned Notifications",
+    "cleanupMessage": "This will remove notifications that are no longer associated with existing habits. Continue?",
+    "cleanupComplete": "Cleanup Complete",
+    "cleanedCount": "Cleaned up {{count}} orphaned notifications",
+    "cleanupFailed": "Failed to cleanup notifications",
+    "loading": "Loading...",
+    "noData": "No data available",
+    "habitSummary": "Habit Summary",
+    "totalHabits": "Total Habits: {{count}}",
+    "habitsWithReminders": "Habits with Reminders: {{count}}",
+    "habitsWithTracking": "Habits with Tracking: {{count}}"
+  },
+  "mood_reminder_energetic_title": "Time to crush {{habit}}! 💪",
+  "mood_reminder_energetic_body": "You're feeling energetic - perfect time to tackle {{habit}} with enthusiasm!",
+  "mood_reminder_happy_title": "Ready for {{habit}}? 😊",
+  "mood_reminder_happy_body": "Your positive mood is perfect for completing {{habit}} with joy!",
+  "mood_reminder_calm_title": "Peaceful moment for {{habit}} 🧘",
+  "mood_reminder_calm_body": "Your calm state is ideal for mindfully completing {{habit}}.",
+  "mood_reminder_tired_title": "Gentle reminder for {{habit}} 😴",
+  "mood_reminder_tired_body": "Even when tired, small steps count. Ready for {{habit}}?",
+  "mood_reminder_stressed_title": "Take a breath, then {{habit}} 🌬️",
+  "mood_reminder_stressed_body": "{{habit}} can help you feel more grounded. You've got this!",
+  "mood_reminder_anxious_title": "Small steps: {{habit}} 🫂",
+  "mood_reminder_anxious_body": "{{habit}} can bring you back to center. One step at a time.",
+  "mood_reminder_sad_title": "You're not alone - {{habit}} 💙",
+  "mood_reminder_sad_body": "{{habit}} might help lift your spirits. We're here for you.",
+  "mood_reminder_default_title": "Time for {{habit}} ⏰",
+  "mood_reminder_default_body": "It's time to complete {{habit}}. You can do this!",
+  "encouragement_sad": "It's okay to have {{count}} habits waiting. Small steps matter.",
+  "encouragement_anxious": "{{count}} habits can wait. Focus on what feels manageable right now.",
+  "encouragement_stressed": "You're doing great with {{count}} habits. Take it one at a time.",
+  "encouragement_tired": "{{count}} habits are waiting, but rest is important too. Do what you can.",
+  "encouragement_default": "You have {{count}} habits waiting. Remember, progress over perfection.",
+  "mood_improvement_celebration": "Amazing! Your mood improved by {{improvement}} points! {{habitsCount}} habits completed. Keep shining! ✨",
+  "risk_pattern_check_in": "We noticed some patterns with {{habits}}. How are you feeling? 🤗",
+  "weekly_summary_message": "Weekly Summary: {{completionRate}}% completion rate, {{moodTrend}} mood trend, {{topHabit}} was your top habit!",
   "habit_library": "Habit Library",
   "discover_manage_habits": "Discover and manage your habits",
   "search_habits": "Search habits...",
   "my_habits": "My Habits",
   "suggestions": "Suggestions",
+  "courses_tab": "Courses",
+  "study_groups": "Study Groups",
   "create_new_habit": "Create New Habit",
   "no_habits_found": "No habits found",
   "create_habit_or_add_suggestion": "Create a new habit or add from our suggestions",
-  "all": "All",
-  "success": "✅ Success!",
+  "success_general": "✅ Success!",
   "habit_added_success": "Added to your habits!",
   "great": "Great!",
   "awesome": "🎉 Awesome!",
   "habit_added_start_building": "Added to your habits! Start building this positive habit today.",
   "lets_go": "Let's Go!",
+  "add_new_habit": "Add New Habit",
+  "set_goals": "Set Goals",
+  "view_stats": "View Stats",
+  "start_building": "Start building your daily routines",
+  "keep_going": "💪 Keep Going!",
+  "week_progress": "Week progress",
+  "current_streak": "🔥 Current Streak",
+  "days": "days",
+  "create_first_habit": "Create Your First Habit",
+  "motivation_quote": "The only bad workout is the one that didn't happen. Every small step counts towards your bigger goals.",
+  "error_general": "Error",
+  "ok_general": "OK",
+  "please_login_enroll": "Please log in to enroll in courses",
+  "course_enrolled_success": "You have successfully enrolled in \"{course}\"!",
+  "locale": "en-US",
+  "optimal_time_suggestion": "Optimal time: {time}",
+  "unknown_habit": "Unknown Habit",
+  "accuracy": "accuracy",
+  "ai": {
+    "collaborative": {
+      "type": "Collaborative",
+      "description": "Based on {similarUsers} similar users, {successRate}% success rate",
+      "reason": "Popular among similar users in the {category} category"
+    },
+    "semantic": {
+      "type": "Semantic",
+      "description": "{relevance}% relevance to your current habits",
+      "reason": "Related to your {relatedHabits} habits in {context} context"
+    },
+    "gapAnalysis": {
+      "type": "Gap Analysis",
+      "description": "Missing {category} habits in your routine",
+      "reason": "You have {currentHabits} habits but none in {category}"
+    },
+    "optimization": {
+      "type": "Optimization",
+      "description": "Optimized version of your current habits",
+      "reason": "Based on your completion patterns and preferences"
+    },
+    "contextAware": {
+      "type": "Context Aware",
+      "description": "Perfect for your current context and time",
+      "reason": "Matches your current situation and schedule"
+    },
+    "general": {
+      "type": "General",
+      "description": "General recommendation based on your profile",
+      "reason": "Based on your overall habit patterns"
+    },
+    "mlOptimization": {
+      "title": "Optimize {habitTitle}",
+      "description": "Based on your patterns, this habit has a {probability}% success rate. Consider scheduling it at {optimalTime} for better results.",
+      "reason": "Our AI analysis shows that {habitTitle} could be more effective with these modifications: {modifications}"
+    },
+    "mlComplementaryReason": "Since you're doing great with {habitTitle} ({streak} day streak), here are complementary habits that work well together: {insights}",
+    "mlAlternativeReason": "If {habitTitle} feels challenging, try this easier alternative. Analysis shows: {analysis}",
+    "mlGapFilling": "You don't have any {category} habits yet. This might be a great addition",
+    "complementaryHabit": "Complementary {category} habit",
+    "complementaryDescription": "This habit complements your existing {habit} routine",
+    "easierAlternative": "Easier alternative to {habit}",
+    "easierAlternativeDescription": "A simpler version that builds the same positive behavior",
+    "categorySuggestion": "Add a {category} habit",
+    "categorySuggestionDescription": "Expand your routine with this {category} habit",
+    "why_suggested": "Why suggested"
+  },
   "icon": "Icon",
   "change_icon": "Change Icon",
   "choose_icon": "Choose Icon",
-  "title": "Title",
+  "title_general": "Title",
   "enter_habit_title": "Enter habit title",
   "notes_optional": "Notes (optional)",
   "add_notes_habit": "Add notes about this habit",
@@ -231,22 +364,6 @@
   "ai_encouraging_3": "🚀 You're building the future you want, one habit at a time.",
   "ai_encouraging_4": "💎 Consistency is the mother of mastery. Keep going!",
   "ai_encouraging_5": "🌈 Your future self will thank you for the work you do today.",
-  "ai": {
-    "mlOptimization": {
-      "title": "Optimize {habitTitle}",
-      "description": "Based on your patterns, this habit has a {probability}% success rate. Consider scheduling it at {optimalTime} for better results.",
-      "reason": "Our AI analysis shows that {habitTitle} could be more effective with these modifications: {modifications}"
-    },
-    "mlComplementaryReason": "Since you're doing great with {habitTitle} ({streak} day streak), here are complementary habits that work well together: {insights}",
-    "mlAlternativeReason": "If {habitTitle} feels challenging, try this easier alternative. Analysis shows: {analysis}",
-    "mlGapFilling": "You're missing habits in the {category} category. Based on your preferences ({preferences}), here's what we recommend:",
-    "complementaryHabit": "Complementary {category} habit",
-    "complementaryDescription": "This habit complements your existing {habit} routine",
-    "easierAlternative": "Easier alternative to {habit}",
-    "easierAlternativeDescription": "A simpler version that builds the same positive behavior",
-    "categorySuggestion": "Add a {category} habit",
-    "categorySuggestionDescription": "Expand your routine with this {category} habit"
-  },
   "ai_complementary_walk": "Take a 5-minute walk",
   "ai_complementary_walk_desc": "Light exercise to complement your wellness habits",
   "ai_complementary_water": "Drink a glass of water",
@@ -266,6 +383,12 @@
   "ai_alternative_one_page_desc": "Just read one page as a simple reading alternative",
   "ai_alternative_three_breaths": "Three deep breaths",
   "ai_alternative_three_breaths_desc": "Take three deep breaths as a simple meditation alternative",
+  "morning_meditation": "Morning Meditation",
+  "morning_meditation_desc": "Practice mindfulness meditation in the morning for 5 minutes",
+  "morning_meditation_benefits": "Sets positive tone for the day, reduces stress, improves focus",
+  "evening_reading": "Evening Reading",
+  "evening_reading_desc": "Read for 20 minutes before bed",
+  "evening_reading_benefits": "Improves sleep quality, expands knowledge, reduces screen time",
   "habit_added_message": "Added to your habits!",
   "habit_added_ai_message": "Added to your habits! Start building this positive habit today.",
   "noDescription": "No description",
@@ -646,6 +769,7 @@
       "noData": "No Data",
       "ok": "OK",
       "cancel": "Cancel",
+      "cleanup": "Cleanup",
       "anonymous": "Anonymous",
       "untitled": "Untitled",
       "timeAgo": "2 hours ago",
@@ -720,7 +844,7 @@
       "aiInsights": "AI Insights",
       "progress": "Progress",
       "correlations": "Correlations",
-      "wellness": "Wellness",
+      "wellness_tab": "Wellness",
       "reports": "Reports",
       "calendar": "Calendar",
       "trends": "Trends",
@@ -1989,11 +2113,32 @@
   "stats": {
     "title": "Analytics",
     "subtitle": "Track your progress and insights",
+    
     "analyticsTabs": {
       "wholeAnalytics": "Whole Analytics",
       "mood": "Mood",
-      "wellness": "Wellness",
+      "wellness_tab": "Wellness",
       "aiCoachingSession": "AI Coaching Session"
+    },
+    "library": {
+      "title": "Library Analytics",
+      "subtitle": "Track your learning progress and Library usage",
+      "loading": "Loading Library analytics...",
+      "noData": "No Library Data Yet",
+      "noDataDesc": "Start using the Library to see your analytics here",
+      "usageStats": "Usage Statistics",
+      "totalVisits": "Total Visits",
+      "timeSpent": "Time Spent (min)",
+      "habitsAdded": "Habits Added",
+      "coursesCompleted": "Courses Completed",
+      "learningProgress": "Learning Progress",
+      "coursesEnrolled": "Courses Enrolled",
+      "of": "of",
+      "completed": "completed",
+      "recentActivity": "Recent Activity",
+      "popularSearches": "Popular Searches",
+      "engagementScore": "Engagement Score",
+      "engagementDescription": "Your overall engagement with Library features"
     },
     "aiCoaching": {
       "loading": "Loading AI Coaching...",
@@ -2090,10 +2235,12 @@
       "overviewDesc": "Quick stats and insights",
       "mood": "Mood",
       "moodDesc": "Emotional insights",
-      "wellness": "Wellness",
+      "wellnesstab": "Wellness",
       "wellnessDesc": "Health tracking",
       "advanced": "Advanced",
-            "advancedDesc": "AI analysis"
+      "advancedDesc": "AI analysis",
+      "library": "Library",
+      "libraryDesc": "Learning analytics"
     },
     "quickStats": {
       "today": "Today",
@@ -2442,11 +2589,11 @@
       },
       "emotionalIntelligence": {
         "title": "🧠 Emotional Intelligence",
-        "description": "Maintain habits across all 7 mood states"
+        "description": "Complete habits in all mood states"
       },
       "adaptiveChampion": {
         "title": "🎯 Adaptive Champion",
-        "description": "Complete 10 mood-appropriate challenges"
+        "description": "Complete 10 adaptive challenges"
       },
       "resilienceMaster": {
         "title": "🏔️ Resilience Master",
@@ -2463,6 +2610,70 @@
       "balanceKeeper": {
         "title": "⚖️ Balance Keeper",
         "description": "Maintain mood-habit balance for 21 days"
+      },
+      "firstCourse": {
+        "title": "First Steps in Learning",
+        "description": "Complete your first habit formation course"
+      },
+      "courseCollector": {
+        "title": "Course Collector",
+        "description": "Complete 5 different courses"
+      },
+      "knowledgeSeeker": {
+        "title": "Knowledge Seeker",
+        "description": "Spend 10 hours learning in the Library"
+      },
+      "guidedMaster": {
+        "title": "Guided Master",
+        "description": "Complete 10 guided setup wizards"
+      },
+      "learningStreak": {
+        "title": "Learning Streak",
+        "description": "Learn something new for 7 consecutive days"
+      },
+      "knowledgeSharer": {
+        "title": "Knowledge Sharer",
+        "description": "Share 5 course insights with the community"
+      },
+      "libraryExplorer": {
+        "title": "Library Explorer",
+        "description": "Explore all categories in the Library"
+      },
+      "feedbackContributor": {
+        "title": "Feedback Contributor",
+        "description": "Provide feedback on Library features 3 times"
+      },
+      "studyGroupCreator": {
+        "title": "Study Group Creator",
+        "description": "Created your first study group"
+      },
+      "studyGroupJoiner": {
+        "title": "Study Group Joiner",
+        "description": "Joined 3 different study groups"
+      },
+      "learningCircleLeader": {
+        "title": "Learning Circle Leader",
+        "description": "Led 5 study sessions"
+      },
+      "peerMentor": {
+        "title": "Peer Mentor",
+        "description": "Helped 10 other learners"
+      },
+      "recommendationExpert": {
+        "title": "Recommendation Expert",
+        "description": "Made 20 helpful course recommendations"
+      },
+      "communityEducator": {
+        "title": "Community Educator",
+        "description": "Shared educational content 15 times"
+      },
+      "collaborativeLearner": {
+        "title": "Collaborative Learner",
+        "description": "Participated in 10 collaborative learning sessions"
+      },
+      "knowledgeNetworker": {
+        "title": "Knowledge Networker",
+        "description": "Connected with 25 other learners"
       }
     },
     "moodCheckIn": {
@@ -2620,6 +2831,7 @@
       "pro": "Pro"
     },
     "preferences": {
+      "description": "Customize your app experience and notification preferences",
       "theme": "Theme",
       "language": "Language",
       "animations": "Animations",
@@ -2641,6 +2853,9 @@
         "asia": "Asia",
         "africa": "Africa",
         "oceania": "Oceania"
+      },
+      "countries": {
+        "BD": "Bangladesh"
       }
     },
     "experience": {
@@ -3046,75 +3261,238 @@
     }
   },
   "community": {
-    "title": "👥 Community & Social",
-    "subtitle": "Connect, share, grow together",
-    "upgradeRequired": "Upgrade Required",
-    "upgradeMessage": "Upgrade to Pro to access community features and connect with other users",
+    "title": "Community",
+    "analytics": "Community Analytics",
+    "subtitle": "Track community engagement and insights",
     "feed": "Feed",
-    "trending": "Trending",
-    "stories": "Success Stories",
-    "support": "Support",
-    "partners": "Partners",
-    "searchPlaceholder": "Search posts, topics, or users...",
-    "share": "Share",
-    "sharingComingSoon": "Sharing features coming soon!",
-    "success": "Success",
-    "liked": "Liked!",
-    "error": "Error",
-    "failedToLoadData": "Failed to load community data",
+    "feedDesc": "Community updates and discussions",
+    "analyticsDesc": "Community engagement metrics",
+    "totalMembers": "Total Members",
+    "activeMembers": "Active Members",
+    "challengesCreated": "Challenges Created",
+    "challengesCompleted": "Challenges Completed",
+    "mentorshipConnections": "Mentorship Connections",
+    "knowledgeShares": "Knowledge Shares",
+    "engagementRate": "Engagement Rate",
+    "topContributors": "Top Contributors",
+    "popularTopics": "Popular Topics",
+    "contributions": "Contributions",
+    "impact": "Impact",
+    "engagement": "Engagement",
+    "search": "Search",
     "createPost": "Create Post",
+    "createPostPlaceholder": "What's on your mind?",
     "post": "Post",
-    "whatsOnYourMind": "What's on your mind?",
-    "photo": "Photo",
-    "gallery": "Gallery",
-    "loadingFeed": "Loading community feed...",
     "noPostsYet": "No posts yet",
-    "beFirstToShare": "Be the first to share your journey!",
-    "patternDiscovery": "Pattern Discovery",
-    "anonymousUser": "Anonymous User",
+    "beFirstToPost": "Be the first to post!",
     "accountabilityPartners": "Accountability Partners",
-    "connectWithUsers": "Connect with users who share similar goals",
-    "noPartnersYet": "No partners yet",
-    "weWillMatchYou": "We'll match you with compatible users soon!",
-    "failedToUpdateLike": "Failed to update like",
-    "failedToUpdateBookmark": "Failed to update bookmark",
-    "searchFailed": "Search failed",
-    "failedToCreatePost": "Failed to create post",
+    "accountabilityPartnersPlaceholder": "Find accountability partners",
+    "findPartners": "Find Partners",
+    "findPartnersPlaceholder": "Find accountability partners",
+    "postPlaceholder": "What's on your mind?",
+    "searchPlaceholder": "Search community...",
+    "sortBy": "Sort By",
+    "filterBy": "Filter By",
+    "category": "Category",
+    "allCategories": "All Categories",
+    "allTypes": "All Types",
+    "filters": "Filters",
+    "noPosts": "No posts yet",
+    "noPostsPlaceholder": "Be the first to post!",
+    "upgradeRequired": "Upgrade Required",
+    "upgradeMessage": "Community features are available for Pro users",
+    "beta": {
+      "badge": "BETA",
+      "description": "Community features are in beta. Your feedback helps us improve!"
+    },
+    "encouragementSupport": "Encouragement Support",
     "tabs": {
       "feed": "Feed",
+      "analytics": "Analytics",
+      "challenges": "Challenges",
+      "mentorship": "Mentorship",
+      "knowledgeSharing": "Knowledge Sharing",
       "trending": "Trending",
       "stories": "Stories",
       "support": "Support",
+      "celebrations": "Celebrations",
       "partners": "Partners"
-    },
-    "habit": "Habit",
-    "moodTarget": "Mood Target",
-    "match": "Match",
-    "sharedGoals": "Shared Goals",
-    "helpful": "Helpful",
-    "search": "Search",
-    "filters": "Filters",
-    "postPlaceholder": "What's on your mind? Share your thoughts with the community...",
-    "justNow": "Just now",
-    "beFirstToPost": "Be the first to post!",
-    "findPartners": "Find Partners",
-    "loadFailed": "Failed to load community data",
-    "effectiveness": "Effectiveness",
+    }
+  },
+  "challenges": {
+    "title": "Learning Challenges",
+    "description": "Join community challenges and compete with others",
+    "create": "Create Challenge",
+    "createNew": "Create New Challenge",
+    "join": "Join Challenge",
+    "updateProgress": "Update Progress",
+    "completed": "Completed",
+    "progress": "Progress",
+    "days": "days",
+    "fillAllFields": "Please fill in all required fields",
+    "createdSuccessfully": "Challenge created successfully!",
+    "creationFailed": "Failed to create challenge",
+    "joinedSuccessfully": "Successfully joined the challenge!",
+    "joinFailed": "Failed to join challenge",
+    "progressUpdated": "Progress updated successfully!",
+    "progressUpdateFailed": "Failed to update progress",
+    "titlePlaceholder": "Enter challenge title",
+    "descriptionPlaceholder": "Describe your challenge",
+    "category": "Category",
     "duration": "Duration",
-    "postCreated": "Post created successfully!",
-    "loading": "Loading...",
-    "beta": {
-      "badge": "BETA",
-      "description": "Community features are in beta. More features coming soon!"
+    "maxParticipants": "Max Participants",
+    "categories": {
+      "habit": "Habit",
+      "wellness_category": "Wellness",
+      "productivity": "Productivity",
+      "learning": "Learning",
+      "social": "Social"
+    },
+    "difficulty": {
+      "beginner": "Beginner",
+      "intermediate": "Intermediate",
+      "advanced": "Advanced"
+    }
+  },
+  "mentorship": {
+    "title": "Peer Mentorship",
+    "description": "Connect with mentors and mentees",
+    "availableMentors": "Available Mentors",
+    "becomeMentor": "Become a Mentor",
+    "requestMentorship": "Request Mentorship",
+    "mentorshipRequests": "Mentorship Requests",
+    "expertise": "Expertise",
+    "experience": "Experience",
+    "years": "years",
+    "yearsExperience": "years experience",
+    "rating": "Rating",
+    "menteesCount": "Mentees",
+    "availability": "Availability",
+    "bio": "Bio",
+    "bioPlaceholder": "Tell us about your experience and what you can help with...",
+    "achievements": "Achievements",
+    "topic": "Topic",
+    "topicPlaceholder": "What would you like to learn about?",
+    "descriptionPlaceholder": "Describe your learning goals and what you hope to achieve...",
+    "goals": "Goals",
+    "preferredTimes": "Preferred Times",
+    "mentor": "Mentor",
+    "mentee": "Mentee",
+    "you": "You",
+    "daysAvailable": "days available",
+    "requestPending": "Request Pending",
+    "accept": "Accept",
+    "reject": "Reject",
+    "sendRequest": "Send Request",
+    "fillAllFields": "Please fill in all required fields",
+    "profileCreatedSuccessfully": "Mentor profile created successfully!",
+    "profileCreationFailed": "Failed to create mentor profile",
+    "requestSentSuccessfully": "Mentorship request sent successfully!",
+    "requestFailed": "Failed to send mentorship request",
+    "requestAccepted": "Mentorship request accepted!",
+    "requestRejected": "Mentorship request rejected",
+    "statusUpdateFailed": "Failed to update request status",
+    "status": {
+      "pending": "Pending",
+      "accepted": "Accepted",
+      "rejected": "Rejected",
+      "completed": "Completed"
+    }
+  },
+  "knowledgeSharing": {
+    "title": "Knowledge Sharing",
+    "description": "Share insights and learn from others",
+    "createShare": "Create Share",
+    "recentShares": "Recent Shares",
+    "noShares": "No shares yet",
+    "beFirstToShare": "Be the first to share your knowledge!",
+    "searchPlaceholder": "Search knowledge shares...",
+    "filters": "Filters",
+    "fillAllFields": "Please fill all required fields.",
+    "shareCreatedSuccessfully": "Knowledge share created successfully!",
+    "creationFailed": "Failed to create knowledge share. Please try again.",
+    "like": "Like",
+    "comment": "Comment",
+    "share": "Share",
+    "you": "You",
+    "comingSoon": "Coming Soon",
+    "commentsComingSoon": "Comments feature coming soon!",
+    "shareComingSoon": "Share feature coming soon!",
+    "titlePlaceholder": "Enter share title",
+    "contentPlaceholder": "Share your knowledge, tips, or experiences...",
+    "tagPlaceholder": "Add a tag",
+    "type": "Type",
+    "category": "Category",
+    "tags": "Tags",
+    "types": {
+      "article": "Article",
+      "tip": "Tip",
+      "experience": "Experience",
+      "tutorial": "Tutorial"
+    },
+    "categories": {
+      "habits": "Habits",
+      "wellness_category": "Wellness",
+      "productivity": "Productivity",
+      "learning": "Learning",
+      "motivation": "Motivation"
+    },
+    "allCategories": "All Categories",
+    "allTypes": "All Types",
+    "clearFilters": "Clear Filters",
+    "applyFilters": "Apply Filters"
+  },
+  "learningCircles": {
+    "title": "Social Learning Circles",
+    "description": "Join collaborative study groups",
+    "availableCircles": "Available Circles",
+    "createCircle": "Create Circle",
+    "joinCircle": "Join Circle",
+    "createSession": "Create Session",
+    "discuss": "Discuss",
+    "leader": "Leader",
+    "sessions": "sessions",
+    "minutes": "minutes",
+    "participants": "participants",
+    "circle": "Circle",
+    "maxMembers": "Max Members",
+    "duration": "Duration",
+    "titlePlaceholder": "Enter circle title",
+    "descriptionPlaceholder": "Describe your learning circle",
+    "topicPlaceholder": "Enter learning topic",
+    "sessionTitlePlaceholder": "Enter session title",
+    "sessionDescriptionPlaceholder": "Describe the session",
+    "fillAllFields": "Please fill in all required fields",
+    "circleCreatedSuccessfully": "Learning circle created successfully!",
+    "creationFailed": "Failed to create learning circle",
+    "joinedSuccessfully": "Successfully joined the circle!",
+    "joinFailed": "Failed to join circle",
+    "sessionCreatedSuccessfully": "Session created successfully!",
+    "sessionCreationFailed": "Failed to create session",
+    "comingSoon": "Coming Soon",
+    "discussionsComingSoon": "Discussion features coming soon!",
+    "status": {
+      "scheduled": "Scheduled",
+      "in-progress": "In Progress",
+      "completed": "Completed",
+      "cancelled": "Cancelled"
     }
   },
   "onboarding": {
     "welcome": {
-      "title": "Welcome to Your Wellness Journey",
-      "subtitle": "Start building better habits and tracking your mood with AI-powered insights and personalized coaching.",
-      "feature1": "Track your moods",
-      "feature2": "Build healthy habits", 
-      "feature3": "Discover patterns"
+      "title": "Welcome to HabitSync",
+      "subtitle": "Your AI-powered habit tracker and mood companion. Build better habits, track your wellness, and discover patterns that lead to success.",
+      "feature1": "AI-powered habit suggestions",
+      "feature2": "Advanced mood tracking", 
+      "feature3": "Personalized insights"
+    },
+    "appOverview": {
+      "title": "What Makes HabitSync Special",
+      "subtitle": "Discover the unique features that set HabitSync apart from other habit trackers.",
+      "feature1": "AI-powered habit suggestions & coaching",
+      "feature2": "Advanced mood tracking with correlations",
+      "feature3": "Multiple reminders & smart notifications",
+      "feature4": "Gamification & achievement system"
     },
     "language": {
       "title": "Choose Your Language",
@@ -3125,27 +3503,27 @@
     },
     "freeFeatures": {
       "title": "Free Features",
-      "subtitle": "Everything you need to get started on your wellness journey.",
-      "feature1": "Track up to 4 habits",
-      "feature2": "7-day analytics",
-      "feature3": "Basic mood tracking",
-      "feature4": "Simple reminders"
+      "subtitle": "Start your wellness journey with powerful features designed to help you succeed.",
+      "feature1": "Track up to 4 habits with reminders",
+      "feature2": "7-day analytics & insights",
+      "feature3": "Basic mood tracking & patterns",
+      "feature4": "Data export & performance alerts"
     },
     "proFeatures": {
       "title": "Pro Features",
-      "subtitle": "Unlock unlimited potential with advanced features and AI coaching.",
-      "feature1": "Unlimited habits",
-      "feature2": "365-day analytics",
-      "feature3": "AI-powered coaching",
-      "feature4": "Advanced mood insights",
-      "feature5": "Premium themes & customization"
+      "subtitle": "Unlock unlimited potential with advanced AI coaching and premium features.",
+      "feature1": "Unlimited habits & multiple reminders",
+      "feature2": "365-day analytics & pattern insights",
+      "feature3": "AI-powered habit suggestions & coaching",
+      "feature4": "Advanced mood correlations & wellness integration",
+      "feature5": "Premium themes, social features & team management"
     },
     "getStartedStep": {
-      "title": "Ready to Get Started?",
-      "subtitle": "Your wellness journey begins now. Let's create your first habit!",
-      "feature1": "Create your first habit",
-      "feature2": "Set up mood tracking",
-      "feature3": "Start your journey"
+      "title": "Ready to Transform Your Life?",
+      "subtitle": "Join thousands of users who have already improved their habits and wellbeing with HabitSync.",
+      "feature1": "Create your first habit in seconds",
+      "feature2": "Set up personalized mood tracking",
+      "feature3": "Start your AI-powered wellness journey"
     },
     "skip": "Skip",
     "previous": "Previous",
@@ -3154,7 +3532,7 @@
     "proFeature": "Pro Feature",
     "upgrade": "Upgrade to Pro",
     "upgradeNow": "Upgrade Now",
-    "description": "Start building better habits and tracking your mood with AI-powered insights and personalized coaching.",
+    "description": "HabitSync is your AI-powered habit tracker and mood companion. Build better habits, track your wellness journey, and discover patterns that lead to lasting success with personalized insights and coaching.",
     "features": {
       "trackMoods": "Track your moods",
       "buildHabits": "Build healthy habits",
@@ -3163,22 +3541,22 @@
     },
     "coreFeatures": {
       "title": "Core Features",
-      "description": "Everything you need to build better habits and track your wellness journey.",
+      "description": "Everything you need to build better habits and track your wellness journey with AI-powered insights.",
       "moodTracking": {
-        "title": "Mood Tracking",
-        "description": "Track your daily moods and emotional patterns"
+        "title": "Advanced Mood Tracking",
+        "description": "Track your daily moods with detailed emotional patterns and correlations"
       },
       "habitBuilding": {
-        "title": "Habit Building",
-        "description": "Create and track positive habits with smart reminders"
+        "title": "Smart Habit Building",
+        "description": "Create and track positive habits with AI-powered suggestions and multiple reminders"
       },
       "insights": {
-        "title": "Smart Insights",
-        "description": "Discover patterns between your habits and mood"
+        "title": "AI-Powered Insights",
+        "description": "Discover patterns between your habits and mood with predictive analytics"
       },
       "gamification": {
-        "title": "Gamification",
-        "description": "Earn rewards and stay motivated with achievements"
+        "title": "Engaging Gamification",
+        "description": "Earn rewards, unlock achievements, and stay motivated with streaks and milestones"
       }
     },
     "aiBenefits": {
@@ -3314,7 +3692,11 @@
         "soundNotifications": "Sound Notifications",
         "soundNotificationsDesc": "Play sound for new alerts",
         "vibration": "Vibration",
-        "vibrationDesc": "Vibrate for new alerts"
+        "vibrationDesc": "Vibrate for new alerts",
+        "testAlerts": "Test Alerts",
+        "testAlert": "Test Alert",
+        "testAlertTitle": "Test Alert",
+        "testAlertMessage": "This is a test alert to verify your settings are working correctly."
       }
     },
     "recommendations": {
@@ -3802,5 +4184,858 @@
     "sevenDayProgress": "7-Day Progress",
     "completed": "Completed",
     "today": "Today"
+  },
+  "library": {
+    "feedback": {
+      "title": "Library Feedback",
+      "introTitle": "Help us improve your experience!",
+      "introText": "Your feedback helps us make the Library better for everyone. Share your thoughts about finding and adding habits.",
+      "rateExperience": "Rate your Library experience",
+      "selectRating": "Tap a star to rate",
+      "rating1": "Poor - Needs significant improvement",
+      "rating2": "Fair - Could be better",
+      "rating3": "Good - Satisfactory experience",
+      "rating4": "Very Good - Great experience",
+      "rating5": "Excellent - Perfect experience",
+      "shareThoughts": "Share your thoughts",
+      "optional": "(Optional)",
+      "placeholder": "Tell us what you think about the Library, what features you'd like to see, or any issues you've encountered...",
+      "quickFeedback": "Quick feedback options",
+      "easyToUse": "Easy to use",
+      "needsImprovement": "Needs improvement",
+      "moreHabits": "Need more habits",
+      "betterSearch": "Better search",
+      "aiSuggestions": "Better AI suggestions",
+      "educationalContent": "More educational content",
+      "submit": "Submit Feedback",
+      "submitting": "Submitting...",
+      "thankYou": "Thank You!",
+      "submittedMessage": "Your feedback has been submitted. We'll use it to improve the Library experience!",
+      "ratingRequired": "Rating Required",
+      "pleaseRate": "Please select a rating before submitting.",
+      "submitError": "Failed to submit feedback. Please try again."
+    }
+  },
+  "courses": {
+    "title": "Habit Formation Courses",
+    "subtitle": "Learn the science behind habits and build lasting change",
+    "loading": "Loading courses...",
+    "courseLoading": "Loading course...",
+    "courseNotFound": "Course not found",
+    "goBack": "Go Back",
+    "yourProgress": "Your Progress",
+    "modulesCompleted": "modules completed",
+    "minutes": "min",
+    "enrolled": "enrolled",
+    "courseModules": "Course Modules",
+    "currentModule": "Current Module: ",
+    "completeModule": "Complete Module",
+    "yourAchievements": "Your Achievements",
+    "guidedSetups": "Guided Setups",
+    "guidedSetupsDescription": "Quick, interactive guides to help you create your first habits",
+    "firstHabitSetup": "Your First Habit",
+    "firstHabitSetupDescription": "A step-by-step guide to creating your first successful habit",
+    "productivitySetup": "Productivity Habits",
+    "productivitySetupDescription": "Build habits that will transform your productivity",
+    "startSetup": "Start Setup",
+    "recommended": "Recommended for You",
+    "recommendedDescription": "Courses tailored to your preferences and goals",
+    "allCourses": "All Courses",
+    "allCoursesDescription": "Complete library of habit formation courses",
+    "learningPath": "Learning Path",
+    "learningPathDescription": "Follow this structured path to master habit formation",
+    "enroll": "Enroll",
+    "continue": "Continue",
+    "review": "Review",
+    "enrolledTitle": "Enrolled Successfully!",
+    "enrolledMessage": "You're now enrolled in the course. Start learning!",
+    "enrollError": "Failed to enroll in course. Please try again.",
+    "aiRecommended": "AI Recommended",
+    "aiRecommendedDescription": "Courses personalized for you based on your habits and goals",
+    "preview": "Preview",
+    "previewError": "Failed to load course preview. Please try again.",
+    "startCourse": "Start Course",
+    "completed": "Completed",
+    "completionError": "Failed to complete course. Please try again.",
+    "celebrationTitle": "🎉 Course Completed!",
+    "celebrationMessage": "Congratulations! You've completed \"{courseTitle}\" and earned {xpEarned} XP!",
+    "shareCompletion": "Share Achievement",
+    "sharedTitle": "Shared Successfully!",
+    "sharedMessage": "Your course completion has been shared with the community!",
+    "shareError": "Failed to share completion. Please try again.",
+    "learningStreak": "Learning Streak",
+    "consecutiveDays": "consecutive days",
+    "weekStreak": "Week Streak!",
+    "details": "Details",
+    "studyGroup": "Study Group",
+    "download": "Download",
+    "downloading": "Downloading...",
+    "offline": "Offline",
+    "delete": "Delete",
+    "coursePreview": "Course Preview",
+    "courseModulesLabel": "Course Modules:",
+    "moreModules": "more modules",
+    "learningObjectives": "Learning Objectives:",
+    "whatYouWillLearn": "What You'll Learn:",
+    "sampleContent": "Sample Content:",
+    "instructor": "Instructor:",
+    "studentReviews": "Student Reviews:",
+    "members": "Members",
+    "messages": "Messages",
+    "createNewStudyGroup": "Create New Study Group",
+    "studyGroupName": "Study Group Name",
+    "create": "Create",
+    "cancel": "Cancel",
+    "yourCourses": "Your Courses",
+    "noCoursesAvailable": "No courses available at the moment",
+    "noEnrolledCourses": "You haven't enrolled in any courses yet",
+    "browseCourses": "Browse Courses",
+    "difficulty": {
+      "beginner": "Beginner",
+      "intermediate": "Intermediate",
+      "advanced": "Advanced"
+    },
+    "loadingPreview": "Loading preview...",
+    "deleteCourseTitle": "Delete Course",
+    "deleteCourseMessage": "Are you sure you want to delete \"{courseTitle}\" from your courses? This will remove all your progress and cannot be undone.",
+    "deleteCourseSuccess": "{courseTitle} has been deleted from your courses.",
+    "deleteCourseError": "Failed to delete course. Please try again.",
+    "studyGroupTitle": "{courseTitle} Study Group",
+    "studyGroupDescription": "Join or create a study group for this course to learn together!",
+    "existingGroups": "Existing Groups",
+    "existingGroupsDescription": "Join an existing group to collaborate with others.",
+    "studyGroupForCourse": "Study group for {courseTitle} course - Join us to learn together!",
+    "studyGroupCreated": "Created new study group for this course!",
+    "studyGroupJoined": "Joined study group successfully!",
+    "studyGroupError": "Failed to handle study group",
+    "joinStudyGroupError": "Failed to join study group",
+    "createStudyGroupError": "Failed to create study group",
+    "invalidStudyGroupName": "Please enter a valid name for the study group",
+    "courseDownloaded": "{courseTitle} has been downloaded for offline use!",
+    "downloadCourseError": "Failed to download course",
+    "loginToEnroll": "Please log in to enroll in courses",
+    "enrollCourseError": "Failed to enroll in course. Please try again.",
+    "learnCourseSpecificSkills": "Learn course-specific skills",
+    "applyKnowledgeInPractice": "Apply knowledge in practice",
+    "developNewCapabilities": "Develop new capabilities",
+    "achieveLearningGoals": "Achieve learning goals",
+    "yourCoursesDescription": "Continue your learning journey with enrolled courses"
+  },
+  "guidedSetup": {
+    "step": "Step",
+    "of": "of",
+    "minutes": "minutes",
+    "enterYourAnswer": "Enter your answer...",
+    "next": "Next",
+    "previous": "Previous",
+    "complete": "Complete",
+    "successTitle": "Setup Complete!",
+    "successMessage": "Your habit has been created successfully!",
+    "loadError": "Failed to load guided setup",
+    "createError": "Failed to create habit"
+  },
+  "guidedSetups": {
+    "first-habit-setup": {
+      "title": "Your First Habit",
+      "description": "A guided walkthrough to help you create your first successful habit"
+    },
+    "productivity-setup": {
+      "title": "Productivity Habits",
+      "description": "Build habits that will transform your productivity"
+    },
+    "steps": {
+      "goal-setting": {
+        "title": "Set Your Goal",
+        "description": "What do you want to achieve?"
+      },
+      "habit-selection": {
+        "title": "Choose Your Habit",
+        "description": "Select a habit that will help you reach your goal"
+      },
+      "specificity": {
+        "title": "Make It Specific",
+        "description": "Define exactly what, when, and where you will do this habit"
+      },
+      "cue-identification": {
+        "title": "Identify Your Cue",
+        "description": "What will trigger this habit?"
+      },
+      "reward-planning": {
+        "title": "Plan Your Reward",
+        "description": "How will you reward yourself for completing the habit?"
+      },
+      "confirmation": {
+        "title": "Confirm Your Plan",
+        "description": "Review and confirm your habit plan"
+      },
+      "productivity-assessment": {
+        "title": "Assess Your Current Productivity",
+        "description": "Rate your current productivity in different areas"
+      },
+      "productivity-goals": {
+        "title": "Set Productivity Goals",
+        "description": "What productivity improvements do you want to make?"
+      },
+      "implementation-plan": {
+        "title": "Create Implementation Plan",
+        "description": "Plan how you will implement these habits"
+      }
+    },
+    "options": {
+      "exercise": "Exercise",
+      "reading": "Reading",
+      "meditation": "Meditation",
+      "journaling": "Journaling",
+      "learning": "Learning",
+      "other": "Other",
+      "timeBlocking": "Time Blocking",
+      "taskPrioritization": "Task Prioritization",
+      "emailManagement": "Email Management",
+      "deepWork": "Deep Work",
+      "breakManagement": "Break Management"
+    }
+  },
+  "predictive": {
+    "title": "AI Predictions",
+    "moodForecast": "Mood Forecast",
+    "successPrediction": "Success Prediction",
+    "riskAlerts": "Risk Alerts",
+    "optimalTiming": "Optimal Timing",
+    "severity": {
+      "low": "Low",
+      "medium": "Medium",
+      "high": "High",
+      "critical": "Critical"
+    },
+    "alertTypes": {
+      "habit_failure": "Habit Failure Risk",
+      "mood_dip": "Mood Dip Alert",
+      "streak_risk": "Streak Risk",
+      "wellness_decline": "Wellness Decline"
+    },
+    "timeframes": {
+      "immediate": "Immediate",
+      "today": "Today",
+      "this_week": "This Week"
+    }
+  },
+  "communityAnalytics": {
+    "title": "Community Analytics",
+    "description": "Insights into community engagement and activity",
+    "loadError": "Failed to load community analytics. Please try again.",
+    "noData": "No analytics data available yet.",
+    "lastUpdated": "Last updated",
+    "engagementRate": "Engagement Rate",
+    "excellent": "Excellent",
+    "good": "Good",
+    "fair": "Fair",
+    "needsImprovement": "Needs Improvement",
+    "totalMembers": "Total Members",
+    "activeMembers": "Active Members",
+    "challengesCreated": "Challenges Created",
+    "challengesCompleted": "Challenges Completed",
+    "mentorshipConnections": "Mentorship Connections",
+    "knowledgeShares": "Knowledge Shares",
+    "topContributors": "Top Contributors",
+    "popularTopics": "Popular Topics",
+    "contributions": "contributions",
+    "impact": "impact",
+    "engagements": "engagements",
+    "periods": {
+      "week": "Week",
+      "month": "Month",
+      "year": "Year"
+    }
+  },
+  "courseContent": {
+    "habitFormationFoundations": {
+      "title": "Habit Formation Foundations",
+      "description": "Learn the science behind habit formation and build a solid foundation for lasting change."
+    },
+    "sleepHabits": {
+      "title": "Sleep Optimization Habits",
+      "description": "Master the art of quality sleep through effective habit formation."
+    },
+    "creativeThinkingHabits": {
+      "title": "Creative Thinking Habits",
+      "description": "Unlock your creative potential through systematic habit formation."
+    },
+    "productivityHabits": {
+      "title": "Productivity Habits",
+      "description": "Build habits that will transform your productivity and efficiency."
+    },
+    "fitnessHabits": {
+      "title": "Fitness Habits",
+      "description": "Create sustainable fitness habits for a healthier lifestyle."
+    },
+    "mindfulnessHabits": {
+      "title": "Mindfulness Habits",
+      "description": "Develop mindfulness habits for better mental health and clarity."
+    },
+    "learningHabits": {
+      "title": "Learning Habits",
+      "description": "Master effective learning habits for continuous growth."
+    },
+    "financialHabits": {
+      "title": "Financial Habits",
+      "description": "Build healthy financial habits for long-term security."
+    },
+    "communicationHabits": {
+      "title": "Communication Habits",
+      "description": "Improve your relationships through better communication habits."
+    },
+    "leadershipHabits": {
+      "title": "Leadership Habits",
+      "description": "Develop leadership habits for personal and professional growth."
+    },
+    "wellnessHabits": {
+      "title": "Wellness Habits",
+      "description": "Create comprehensive wellness habits for overall well-being."
+    },
+    "holistic-wellness-habits": {
+      "title": "Holistic Wellness Habits",
+      "description": "Develop comprehensive wellness habits for mind, body, and spirit."
+    },
+    "leadership-development-habits": {
+      "title": "Leadership Development Habits",
+      "description": "Cultivate leadership habits for personal and professional growth."
+    },
+    "financial-habits-money-management": {
+      "title": "Financial Habits & Money Management",
+      "description": "Build healthy financial habits for long-term financial success."
+    },
+    "effective-communication-habits": {
+      "title": "Effective Communication Habits",
+      "description": "Build powerful communication habits for personal and professional success."
+    },
+    "modules": {
+      "whatAreHabits": {
+        "title": "What Are Habits?",
+        "description": "Understanding the psychology behind habit formation"
+      },
+      "habitLoop": {
+        "title": "The Habit Loop",
+        "description": "Understanding cue, craving, response, and reward"
+      },
+      "buildingHabits": {
+        "title": "Building New Habits",
+        "description": "Practical strategies for creating lasting habits"
+      },
+      "morningScience": {
+        "title": "The Science of Mornings",
+        "description": "Why morning routines are so powerful"
+      },
+      "designRoutine": {
+        "title": "Designing Your Routine",
+        "description": "Step-by-step guide to creating your perfect morning routine"
+      },
+      "implementation": {
+        "title": "Implementation Strategies",
+        "description": "How to stick to your morning routine"
+      },
+      "fitnessPsychology": {
+        "title": "The Psychology of Fitness",
+        "description": "Understanding motivation and consistency in fitness"
+      },
+      "workoutPlanning": {
+        "title": "Workout Planning & Scheduling",
+        "description": "Create a sustainable workout routine that fits your life"
+      },
+      "nutritionHabits": {
+        "title": "Nutrition Habits for Fitness",
+        "description": "Building healthy eating habits that support your fitness goals"
+      },
+      "recoveryHabits": {
+        "title": "Recovery & Rest Habits",
+        "description": "Essential recovery practices for sustainable fitness"
+      },
+      "productivityPrinciples": {
+        "title": "Core Productivity Principles",
+        "description": "Understanding the fundamental principles of productivity"
+      },
+      "timeManagement": {
+        "title": "Advanced Time Management",
+        "description": "Master time blocking, prioritization, and scheduling"
+      },
+      "focusHabits": {
+        "title": "Building Focus Habits",
+        "description": "Develop deep work and concentration habits"
+      },
+      "productivitySystems": {
+        "title": "Productivity Systems Integration",
+        "description": "Integrate multiple productivity systems for maximum effectiveness"
+      },
+      "mindfulnessBasics": {
+        "title": "Mindfulness Fundamentals",
+        "description": "Understanding mindfulness and its benefits"
+      },
+      "meditationTechniques": {
+        "title": "Meditation Techniques",
+        "description": "Learn various meditation techniques and practices"
+      },
+      "stressManagement": {
+        "title": "Stress Management Through Mindfulness",
+        "description": "Use mindfulness techniques for stress management"
+      },
+      "learningScience": {
+        "title": "The Science of Learning",
+        "description": "Understanding how we learn and retain information"
+      },
+      "studyTechniques": {
+        "title": "Effective Study Techniques",
+        "description": "Master proven study techniques and methods"
+      },
+      "memoryTechniques": {
+        "title": "Memory & Retention Techniques",
+        "description": "Learn techniques to improve memory and retention"
+      },
+      "sleepScience": {
+        "title": "The Science of Sleep",
+        "description": "Understanding sleep cycles and their importance"
+      },
+      "sleepHygiene": {
+        "title": "Sleep Hygiene Practices",
+        "description": "Learn essential sleep hygiene habits for better rest"
+      },
+      "sleepEnvironment": {
+        "title": "Optimizing Your Sleep Environment",
+        "description": "Create the perfect sleep environment for quality rest"
+      },
+      "sleepDisorders": {
+        "title": "Managing Sleep Challenges",
+        "description": "Address common sleep issues and disorders"
+      }
+    }
+  },
+  "achievements": {
+    "first_course": {
+      "title": "Knowledge Seeker",
+      "description": "Enrolled in your first course"
+    },
+    "course_collector": {
+      "title": "Course Collector", 
+      "description": "Enrolled in 5 different courses"
+    },
+    "knowledge_seeker": {
+      "title": "Knowledge Seeker",
+      "description": "Completed 3 course modules"
+    },
+    "guided_master": {
+      "title": "Guided Master",
+      "description": "Completed 3 guided setups"
+    },
+    "learning_streak": {
+      "title": "Learning Streak",
+      "description": "Learned for 5 consecutive days"
+    },
+    "knowledge_sharer": {
+      "title": "Knowledge Sharer",
+      "description": "Shared knowledge with the community"
+    },
+    "library_explorer": {
+      "title": "Library Explorer",
+      "description": "Explored all library sections"
+    },
+    "feedback_contributor": {
+      "title": "Feedback Contributor",
+      "description": "Provided feedback on library content"
+    },
+    "study_group_creator": {
+      "title": "Study Group Creator",
+      "description": "Created your first study group"
+    },
+    "study_group_joiner": {
+      "title": "Study Group Joiner",
+      "description": "Joined 3 different study groups"
+    },
+    "learning_circle_leader": {
+      "title": "Learning Circle Leader",
+      "description": "Led 5 study sessions"
+    },
+    "peer_mentor": {
+      "title": "Peer Mentor",
+      "description": "Helped 10 other learners"
+    }
+  },
+  "contentStrings": {
+    "sleep-science-intro": "Introduction to Sleep Science",
+    "sleep-hygiene-guide": "Sleep Hygiene Guide",
+    "sleep-environment-guide": "Sleep Environment Guide", 
+    "sleep-disorders-quiz": "Sleep Disorders Quiz",
+    "habit-formation-intro": "Introduction to Habit Formation",
+    "habit-loop-explanation": "Habit Loop Explanation",
+    "habit-building-strategies": "Habit Building Strategies",
+    "morning-routine-science": "Morning Routine Science",
+    "routine-design-guide": "Routine Design Guide",
+    "implementation-strategies": "Implementation Strategies",
+    "fitness-psychology-intro": "Introduction to Fitness Psychology",
+    "workout-planning-guide": "Workout Planning Guide",
+    "nutrition-habits-guide": "Nutrition Habits Guide",
+    "recovery-habits-quiz": "Recovery Habits Quiz",
+    "productivity-principles-intro": "Introduction to Productivity Principles",
+    "time-management-systems": "Time Management Systems",
+    "focus-habits-guide": "Focus Habits Guide",
+    "productivity-systems-integration": "Productivity Systems Integration",
+    "mindfulness-basics-intro": "Introduction to Mindfulness Basics",
+    "meditation-techniques-guide": "Meditation Techniques Guide",
+    "stress-management-mindfulness": "Stress Management Through Mindfulness",
+    "learning-science-intro": "Introduction to Learning Science",
+    "study-techniques-guide": "Study Techniques Guide",
+    "memory-techniques-guide": "Memory Techniques Guide",
+    "continuous-learning-habits": "Continuous Learning Habits",
+    "financial-mindset-intro": "Introduction to Financial Mindset",
+    "budgeting-basics-guide": "Budgeting Basics Guide",
+    "saving-investing-guide": "Saving and Investing Guide",
+    "debt-management-quiz": "Debt Management Quiz",
+    "communication-fundamentals-intro": "Introduction to Communication Fundamentals",
+    "active-listening-guide": "Active Listening Guide",
+    "assertive-communication-guide": "Assertive Communication Guide",
+    "conflict-resolution-skills": "Conflict Resolution Skills",
+    "creativity-basics-intro": "Introduction to Creativity Basics",
+    "creative-techniques-guide": "Creative Techniques Guide",
+    "creative-routines-guide": "Creative Routines Guide",
+    "leadership-principles-intro": "Introduction to Leadership Principles",
+    "emotional-intelligence-leadership": "Emotional Intelligence in Leadership",
+    "team-building-guide": "Team Building Guide",
+    "leadership-communication-skills": "Leadership Communication Skills",
+    "wellness-overview-intro": "Introduction to Wellness Overview",
+    "physical-wellness-guide": "Physical Wellness Guide",
+    "mental-wellness-guide": "Mental Wellness Guide",
+    "spiritual-wellness-quiz": "Spiritual Wellness Quiz"
+  },
+  "studyGroups": {
+    "title": "Study Groups",
+    "loading": "Loading study groups...",
+    "searchPlaceholder": "Search study groups...",
+    "noGroupsFound": "No study groups found",
+    "noGroupsFoundWithFilters": "Try adjusting your search or filters",
+    "createFirstGroup": "Create your first study group to get started!",
+    "createStudyGroup": "Create Study Group",
+    "joinGroup": "Join Group",
+    "joinGroupById": "Join Group by ID",
+    "joinGroupByIdPrompt": "Enter the unique Group ID to join:",
+    "joinGroupByIdError": "Please enter a valid Group ID",
+    "groupNotFound": "Group not found or you are already a member",
+    "groupDetails": "Group Details",
+    "groupName": "Group Name *",
+    "groupNamePlaceholder": "Enter group name",
+    "groupNameRequired": "Group name is required",
+    "groupNameMinLength": "Group name must be at least 3 characters",
+    "description": "Description *",
+    "descriptionPlaceholder": "Describe your study group's purpose and focus",
+    "descriptionRequired": "Description is required",
+    "descriptionMinLength": "Description must be at least 10 characters",
+    "category": "Category",
+    "selectCategory": "Select Category",
+    "selectCategoryPrompt": "Choose a category for your study group",
+    "maxMembers": "Maximum Members",
+    "maxMembersPlaceholder": "15",
+    "maxMembersRange": "Maximum members must be between 2 and 50",
+    "meetingInformation": "Meeting Information",
+    "meetingFrequency": "Meeting Frequency",
+    "selectFrequency": "Select Frequency",
+    "selectFrequencyPrompt": "How often will your group meet?",
+    "meetingTime": "Meeting Time",
+    "meetingTimePlaceholder": "10:00",
+    "duration": "Duration (minutes)",
+    "durationPlaceholder": "60",
+    "location": "Location",
+    "meetingType": "Meeting Type",
+    "virtual": "Virtual",
+    "physical": "Physical",
+    "meetingLink": "Meeting Link *",
+    "meetingLinkPlaceholder": "https://meet.google.com/...",
+    "meetingLinkRequired": "Meeting link is required for virtual meetings",
+    "address": "Address *",
+    "addressPlaceholder": "Enter meeting location address",
+    "addressRequired": "Address is required for physical meetings",
+    "contactInformation": "Contact Information",
+    "email": "Email",
+    "emailPlaceholder": "Enter contact email",
+    "invalidEmail": "Please enter a valid email address",
+    "phone": "Phone",
+    "phonePlaceholder": "Enter contact phone",
+    "groupSettings": "Group Settings",
+    "level": "Level",
+    "beginner": "Beginner",
+    "intermediate": "Intermediate",
+    "advanced": "Advanced",
+    "commitment": "Commitment",
+    "casual": "Casual",
+    "moderate": "Moderate",
+    "intensive": "Intensive",
+    "tags": "Tags",
+    "tagsPlaceholder": "Add tags to help others find your group",
+    "rules": "Rules",
+    "rulesPlaceholder": "Add group rules and guidelines",
+    "topics": "Topics",
+    "topicsPlaceholder": "Add discussion topics",
+    "createGroup": "Create Group",
+    "creatingGroup": "Creating...",
+    "groupCreatedSuccess": "Study group created successfully! 🎉",
+    "groupCreatedError": "Failed to create study group",
+    "joinedGroupSuccess": "Joined study group successfully! 🎉",
+    "joinedGroupError": "Failed to join study group",
+    "deleteGroup": "Delete Group",
+    "deleteGroupConfirm": "Are you sure you want to delete \"{groupName}\"? This action cannot be undone and will remove all group data, sessions, and chat messages.",
+    "groupDeletedSuccess": "Group deleted successfully",
+    "groupDeletedError": "Failed to delete group",
+    "onlyLeaderCanDelete": "Only group leaders can delete groups",
+    "shareGroup": "Share Group",
+    "shareMessage": "Join my study group \"{groupName}\" on HabitSync! 📚\\n\\n{description}\\n\\nCategory: {category}\\nMembers: {currentMembers}/{maxMembers}\\n\\nGroup ID: {groupId}\\n\\nDownload HabitSync and use this Group ID to join!",
+    "shareTitle": "Join {groupName} Study Group",
+    "inviteMembers": "Invite Members",
+    "inviteMessage": "You're invited to join \"{groupName}\" study group on HabitSync! 📚\\n\\n{description}\\n\\nCategory: {category}\\nCurrent members: {currentMembers}/{maxMembers}\\n\\nGroup ID: {groupId}\\n\\nDownload HabitSync and use this Group ID to join!",
+    "inviteTitle": "Invitation to {groupName}",
+    "categories": {
+      "all": "All Groups",
+      "productivity": "Productivity",
+      "health": "Health & Wellness",
+      "learning": "Learning",
+      "motivation": "Motivation"
+    },
+    "frequencies": {
+      "daily": "Daily",
+      "weekly": "Weekly",
+      "biweekly": "Bi-weekly",
+      "monthly": "Monthly"
+    },
+    "groupCard": {
+      "members": "members",
+      "completion": "completion",
+      "upcomingSessions": "Upcoming Sessions",
+      "viewMoreSessions": "View {count} more sessions",
+      "leader": "Leader",
+      "joinGroup": "Join Group",
+      "min": " min"
+    },
+    "more": "more",
+    "sampleGroups": {
+      "morningProductivityMasters": {
+        "name": "Morning Productivity Masters",
+        "description": "Join us for daily morning routines and productivity hacks. We focus on building sustainable habits that stick.",
+        "tags": ["morning", "productivity", "habits", "routine"],
+        "rules": ["Be respectful", "Share your progress", "Support others"],
+        "topics": ["Morning routines", "Time management", "Goal setting"],
+        "sessions": {
+          "weeklyGoalReview": {
+            "title": "Weekly Goal Review",
+            "description": "Let's review our weekly goals and set new ones for next week."
+          }
+        },
+        "chatMessages": {
+          "morningGreeting": "Good morning everyone! Ready for another productive day? 🌅",
+          "meditationResponse": "Morning Sarah! Just finished my 5-minute meditation. Feeling great! 🧘‍♂️"
+        }
+      },
+      "healthWellnessWarriors": {
+        "name": "Health & Wellness Warriors",
+        "description": "A supportive community focused on physical and mental wellness. Share your fitness journey and get motivated!",
+        "tags": ["fitness", "wellness", "mental-health", "nutrition"],
+        "rules": ["Be supportive", "Share progress", "No judgment"],
+        "topics": ["Workout routines", "Nutrition tips", "Mental health"]
+      },
+      "learningEnthusiasts": {
+        "name": "Learning Enthusiasts",
+        "description": "Expand your knowledge with fellow learners. We explore various topics and share resources.",
+        "tags": ["learning", "education", "knowledge", "skills"],
+        "rules": ["Share resources", "Ask questions", "Help others learn"],
+        "topics": ["Skill development", "Book discussions", "Online courses"]
+      },
+      "motivationBoosters": {
+        "name": "Motivation Boosters",
+        "description": "Stay motivated and inspired with daily encouragement and success stories.",
+        "tags": ["motivation", "inspiration", "success", "mindset"],
+        "rules": ["Share wins", "Encourage others", "Stay positive"],
+        "topics": ["Success stories", "Motivation techniques", "Mindset shifts"]
+      }
+    },
+    "chat": {
+      "title": "Group Chat",
+      "placeholder": "Type a message...",
+      "sending": "Sending...",
+      "sendError": "Failed to send message",
+      "typing": "{user} is typing..."
+    },
+    "sessions": {
+      "title": "Study Sessions",
+      "createSession": "Create Session",
+      "creatingSession": "Creating...",
+      "sessionCreatedSuccess": "Study session created successfully! 📅",
+      "sessionCreatedError": "Failed to create study session",
+      "joinedSessionSuccess": "Joined study session successfully! 🎉",
+      "joinedSessionError": "Failed to join study session",
+      "sessionTitle": "Session Title *",
+      "sessionTitlePlaceholder": "Enter session title",
+      "sessionDescription": "Session Description *",
+      "sessionDescriptionPlaceholder": "Describe what will be covered in this session",
+      "sessionDate": "Session Date",
+      "sessionTime": "Session Time",
+      "sessionDuration": "Duration (minutes)",
+      "maxParticipants": "Max Participants",
+      "sessionTopics": "Topics",
+      "sessionTopicsPlaceholder": "Add topics to be discussed",
+      "sessionMaterials": "Materials",
+      "sessionMaterialsPlaceholder": "Add materials needed for the session",
+      "fillRequiredFields": "Please fill in all required fields"
+    },
+    "members": {
+      "title": "Group Members",
+      "member": "member",
+      "members": "members",
+      "joined": "joined",
+      "role": "role",
+      "contributionScore": "contribution score"
+    },
+    "analytics": {
+      "title": "Group Analytics",
+      "completionRate": "Completion Rate",
+      "totalSessions": "Total Sessions",
+      "activeMembers": "Active Members",
+      "averageAttendance": "Average Attendance",
+      "totalLearningTime": "Total Learning Time",
+      "collaborativeProjects": "Collaborative Projects",
+      "knowledgeShared": "Knowledge Shared"
+    },
+    "modals": {
+      "contactInformation": "Contact Information (Optional)",
+      "email": "Email",
+      "emailPlaceholder": "your.email@example.com",
+      "phone": "Phone",
+      "phonePlaceholder": "+1 (555) 123-4567",
+      "groupSettings": "Group Settings",
+      "difficultyLevel": "Difficulty Level",
+      "selectLevel": "Select Level",
+      "selectLevelPrompt": "Choose the difficulty level for your group",
+      "commitmentLevel": "Commitment Level",
+      "selectCommitment": "Select Commitment",
+      "selectCommitmentPrompt": "Choose the commitment level for your group",
+      "scheduleStudySession": "Schedule Study Session",
+      "sessionTitle": "Session Title",
+      "sessionTitlePlaceholder": "Session Title",
+      "description": "Description",
+      "descriptionPlaceholder": "Description",
+      "date": "Date",
+      "datePlaceholder": "YYYY-MM-DD",
+      "time": "Time",
+      "timePlaceholder": "HH:MM",
+      "duration": "Duration (minutes)",
+      "durationPlaceholder": "60",
+      "maxParticipants": "Max Participants",
+      "maxParticipantsPlaceholder": "10",
+      "scheduleSession": "Schedule Session",
+      "noMembersYet": "No members yet",
+      "beFirstToJoin": "Be the first to join this study group!"
+    }
+  },
+  "peerRecommendations": {
+    "title": "Peer Recommendations",
+    "searchPlaceholder": "Search recommendations...",
+    "sortBy": "Sort by",
+    "sortOptions": {
+      "newest": "Newest",
+      "highestRated": "Highest Rated",
+      "mostPopular": "Most Popular"
+    },
+    "categories": {
+      "all": "All",
+      "productivity": "Productivity",
+      "healthFitness": "Health & Fitness",
+      "learning": "Learning",
+      "mindfulness": "Mindfulness",
+      "relationships": "Relationships",
+      "career": "Career",
+      "finance": "Finance",
+      "creativity": "Creativity"
+    },
+    "difficultyLevels": {
+      "beginner": "Beginner",
+      "intermediate": "Intermediate",
+      "advanced": "Advanced"
+    },
+    "featured": "Featured",
+    "featuredSection": "Featured Recommendations",
+    "weeklySection": "This Week's Recommendations",
+    "emptyState": {
+      "title": "No recommendations found",
+      "searchMessage": "Try adjusting your search or filters",
+      "defaultMessage": "Be the first to share a recommendation!"
+    },
+    "loading": "Loading recommendations...",
+    "createButton": "Share Your Recommendation",
+    "form": {
+      "title": "Share Your Recommendation",
+      "titleField": "Title *",
+      "titlePlaceholder": "Give your recommendation a catchy title",
+      "descriptionField": "Description *",
+      "descriptionPlaceholder": "Brief description of your recommendation",
+      "experienceField": "Personal Experience *",
+      "experiencePlaceholder": "Share your personal experience with this habit",
+      "categoryField": "Category",
+      "difficultyField": "Difficulty Level",
+      "timeField": "Time Commitment",
+      "timePlaceholder": "e.g., 15 minutes daily, 1 hour weekly",
+      "tagsField": "Tags",
+      "tagPlaceholder": "Add tags (press Enter)",
+      "submitButton": "Share Recommendation",
+      "requiredFieldsError": "Please fill in all required fields"
+    },
+    "card": {
+      "personalExperience": "Personal Experience:",
+      "comments": "Comments",
+      "rate": "Rate",
+      "anonymous": "Anonymous"
+    },
+    "comments": {
+      "title": "Comments",
+      "noComments": "No comments yet. Be the first to comment!",
+      "addComment": "Add a comment...",
+      "sendButton": "Send",
+      "helpfulVotes": "helpful"
+    },
+    "rating": {
+      "title": "Rate this Recommendation",
+      "description": "How helpful was this recommendation?",
+      "selectRating": "Select a rating",
+      "poor": "Poor",
+      "fair": "Fair",
+      "good": "Good",
+      "veryGood": "Very Good",
+      "excellent": "Excellent",
+      "submitButton": "Submit Rating",
+      "selectRatingError": "Please select a rating"
+    },
+    "deleteRecommendation": "Delete Recommendation",
+    "deleteRecommendationConfirm": "Are you sure you want to delete '{title}'? This action cannot be undone.",
+    "alerts": {
+      "createSuccess": "Recommendation created successfully!",
+      "createError": "Failed to create recommendation",
+      "ratingSuccess": "Rating submitted successfully!",
+      "ratingError": "Failed to submit rating",
+      "commentError": "Failed to add comment",
+      "commentRequired": "Please enter a comment",
+      "loadError": "Failed to load recommendations",
+      "onlyCreatorCanDelete": "Only the creator can delete this recommendation",
+      "deleteSuccess": "Recommendation deleted successfully!",
+      "deleteError": "Failed to delete recommendation"
+    },
+    "tags": {
+      "meditation": "Meditation",
+      "morning": "Morning",
+      "stress-relief": "Stress Relief",
+      "beginner-friendly": "Beginner Friendly",
+      "reading": "Reading",
+      "challenge": "Challenge",
+      "productivity": "Productivity",
+      "knowledge": "Knowledge",
+      "hydration": "Hydration",
+      "health": "Health",
+      "energy": "Energy",
+      "wellness": "Wellness",
+      "gratitude": "Gratitude",
+      "journaling": "Journaling",
+      "mental-health": "Mental Health",
+      "positivity": "Positivity"
+    }
   }
 }

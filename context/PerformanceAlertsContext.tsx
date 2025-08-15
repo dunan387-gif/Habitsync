@@ -23,13 +23,13 @@ interface PerformanceAlertsContextType {
 }
 
 const defaultSettings: PerformanceAlertsSettings = {
-  enabled: true,
+  enabled: false, // Disabled by default to reduce noise
   showCriticalAlerts: true,
-  showWarningAlerts: true,
+  showWarningAlerts: false, // Disable warnings by default
   showInfoAlerts: false,
   autoDismiss: true,
-  autoDismissDelay: 10000, // 10 seconds
-  maxAlerts: 5,
+  autoDismissDelay: 5000, // 5 seconds - shorter auto-dismiss
+  maxAlerts: 3, // Fewer max alerts
   soundEnabled: false,
   vibrationEnabled: false,
 };

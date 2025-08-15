@@ -40,7 +40,8 @@ import {
   BarChart3,
   Target,
   FileText,
-  Eye
+  Eye,
+  Clock
 } from 'lucide-react-native';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import { useTheme } from '@/context/ThemeContext';
@@ -63,6 +64,7 @@ import ThemeSelector from '@/components/ThemeSelector';
 import LanguageSelector from '@/components/LanguageSelector';
 import ProfessionalDashboard from '@/components/ProfessionalDashboard';
 import TimezoneSettings from '@/components/TimezoneSettings';
+import PerformanceAlertsSettings from '@/components/PerformanceAlertsSettings';
 
 export default function MoreScreen() {
   const { currentTheme } = useTheme();
@@ -82,6 +84,7 @@ export default function MoreScreen() {
   const [showPerformanceDashboard, setShowPerformanceDashboard] = useState(false);
   const [showPerformanceRecommendations, setShowPerformanceRecommendations] = useState(false);
   const [showErrorHandlingExample, setShowErrorHandlingExample] = useState(false);
+  const [showAlertSettings, setShowAlertSettings] = useState(false);
   const { animationsEnabled, setAnimationsEnabled } = useCelebration();
   const { settings: alertSettings, toggleAlerts, updateSettings } = usePerformanceAlerts();
   
@@ -513,6 +516,7 @@ export default function MoreScreen() {
             {/* App Preferences */}
             <View style={styles.section}>
               <Text style={styles.sectionTitle}>{t('settings.sections.preferences')}</Text>
+              <Text style={styles.sectionDescription}>{t('settings.preferences.description')}</Text>
               <View style={styles.card}>
                 <TouchableOpacity style={styles.menuItem} onPress={() => setShowThemeSelector(true)}>
                   <Palette size={20} color={currentTheme.colors.textSecondary} />
@@ -527,7 +531,7 @@ export default function MoreScreen() {
                 </TouchableOpacity>
                 
                 <TouchableOpacity style={styles.menuItem} onPress={() => setShowTimezoneSettings(true)}>
-                  <Globe size={20} color={currentTheme.colors.textSecondary} />
+                  <Clock size={20} color={currentTheme.colors.textSecondary} />
                   <Text style={styles.menuText}>{t('settings.preferences.timezone')}</Text>
                   <ChevronRight size={20} color={currentTheme.colors.textSecondary} />
                 </TouchableOpacity>
@@ -553,6 +557,26 @@ export default function MoreScreen() {
                     thumbColor={wellnessTrackingEnabled ? currentTheme.colors.success : currentTheme.colors.textSecondary}
                   />
                 </View>
+                
+                <View style={styles.menuItem}>
+                  <AlertCircle size={20} color={currentTheme.colors.textSecondary} />
+                  <View style={styles.menuTextContainer}>
+                    <Text style={styles.menuText}>{t('performance.alerts.settings.enableAlerts')}</Text>
+                    <Text style={styles.menuSubtext}>{t('performance.alerts.settings.enableAlertsDesc')}</Text>
+                  </View>
+                  <Switch
+                    value={alertSettings.enabled}
+                    onValueChange={toggleAlerts}
+                    trackColor={{ false: currentTheme.colors.surface, true: `${currentTheme.colors.primary}50` }}
+                    thumbColor={alertSettings.enabled ? currentTheme.colors.primary : currentTheme.colors.textSecondary}
+                  />
+                </View>
+                
+                <TouchableOpacity style={styles.menuItem} onPress={() => setShowAlertSettings(true)}>
+                  <AlertCircle size={20} color={currentTheme.colors.textSecondary} />
+                  <Text style={styles.menuText}>{t('performance.alerts.settings.title')}</Text>
+                  <ChevronRight size={20} color={currentTheme.colors.textSecondary} />
+                </TouchableOpacity>
               </View>
             </View>
 
@@ -637,6 +661,8 @@ export default function MoreScreen() {
               </View>
             </View>
 
+
+
             {/* Danger Zone */}
             <View style={styles.section}>
               <Text style={styles.sectionTitle}>{t('settings.sections.danger')}</Text>
@@ -672,6 +698,11 @@ export default function MoreScreen() {
           <TimezoneSettings 
             visible={showTimezoneSettings}
             onClose={() => setShowTimezoneSettings(false)}
+          />
+
+          <PerformanceAlertsSettings
+            visible={showAlertSettings}
+            onClose={() => setShowAlertSettings(false)}
           />
 
           {showProfessionalDashboard && (
@@ -829,6 +860,13 @@ const createStyles = (colors: any) => StyleSheet.create({
     marginBottom: 12,
     paddingHorizontal: 4,
   },
+  sectionDescription: {
+    fontSize: 14,
+    color: colors.textSecondary,
+    marginBottom: 12,
+    paddingHorizontal: 4,
+    lineHeight: 18,
+  },
   card: {
     backgroundColor: colors.card,
     borderRadius: 16,
@@ -852,6 +890,15 @@ const createStyles = (colors: any) => StyleSheet.create({
     fontSize: 16,
     color: colors.text,
     marginLeft: 16,
+  },
+  menuTextContainer: {
+    flex: 1,
+    marginLeft: 16,
+  },
+  menuSubtext: {
+    fontSize: 12,
+    color: colors.textSecondary,
+    marginTop: 2,
   },
   premiumBanner: {
     backgroundColor: `${colors.warning}10`,
@@ -973,5 +1020,15 @@ const createStyles = (colors: any) => StyleSheet.create({
   },
   dashboardContainer: {
     flex: 1,
+  },
+  alertStatusContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  alertStatus: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
   },
 });

@@ -131,20 +131,87 @@
   "search_habits": "Buscar hábitos...",
   "my_habits": "Mis Hábitos",
   "suggestions": "Sugerencias",
+  "courses_tab": "Cursos",
+  "study_groups": "Grupos de Estudio",
   "create_new_habit": "Crear nuevo hábito",
   "no_habits_found": "No se encontraron hábitos",
   "create_habit_or_add_suggestion": "Crea un nuevo hábito o añade uno de nuestras sugerencias",
   "all": "Todos",
-  "success": "✅ ¡Éxito!",
+  "success_general": "✅ ¡Éxito!",
   "habit_added_success": "¡Añadido a tus hábitos!",
   "great": "¡Genial!",
   "awesome": "🎉 ¡Increíble!",
   "habit_added_start_building": "¡Añadido a tus hábitos! Empieza a construir este hábito positivo hoy.",
   "lets_go": "¡Vamos!",
+  "add_new_habit": "Añadir Nuevo Hábito",
+  "set_goals": "Establecer Metas",
+  "view_stats": "Ver Estadísticas",
+  "start_building": "Empieza a construir tus rutinas diarias",
+  "keep_going": "💪 ¡Sigue Adelante!",
+  "week_progress": "Progreso semanal",
+  "current_streak": "🔥 Racha Actual",
+  "days": "días",
+  "create_first_habit": "Crear Tu Primer Hábito",
+  "motivation_quote": "El único entrenamiento malo es el que no se hizo. Cada pequeño paso cuenta hacia tus metas más grandes.",
+  "error_general": "Error",
+  "ok_general": "OK",
+  "please_login_enroll": "Por favor, inicia sesión para inscribirte en cursos",
+  "course_enrolled_success": "¡Te has inscrito exitosamente en \"{course}\"!",
+  "locale": "es-ES",
+  "optimal_time_suggestion": "Hora óptima: {time}",
+  "unknown_habit": "Hábito Desconocido",
+  "accuracy": "precisión",
+  "ai": {
+    "collaborative": {
+      "type": "Colaborativo",
+      "description": "Basado en {similarUsers} usuarios similares, {successRate}% tasa de éxito",
+      "reason": "Popular entre usuarios similares en la categoría {category}"
+    },
+    "semantic": {
+      "type": "Semántico",
+      "description": "{relevance}% relevancia con tus hábitos actuales",
+      "reason": "Relacionado con tus hábitos {relatedHabits} en contexto {context}"
+    },
+    "gapAnalysis": {
+      "type": "Análisis de Brechas",
+      "description": "Faltan hábitos de {category} en tu rutina",
+      "reason": "Tienes {currentHabits} hábitos pero ninguno en {category}"
+    },
+    "optimization": {
+      "type": "Optimización",
+      "description": "Versión optimizada de tus hábitos actuales",
+      "reason": "Basado en tus patrones de completado y preferencias"
+    },
+    "contextAware": {
+      "type": "Consciente del Contexto",
+      "description": "Perfecto para tu contexto y tiempo actual",
+      "reason": "Coincide con tu situación y horario actual"
+    },
+    "general": {
+      "type": "General",
+      "description": "Recomendación general basada en tu perfil",
+      "reason": "Basado en tus patrones generales de hábitos"
+    },
+    "mlOptimization": {
+      "title": "Optimizar {habitTitle}",
+      "description": "Basado en tus patrones, este hábito tiene una tasa de éxito del {probability}%. Considera programarlo a las {optimalTime} para mejores resultados.",
+      "reason": "Nuestro análisis de IA muestra que {habitTitle} podría ser más efectivo con estas modificaciones: {modifications}"
+    },
+    "mlComplementaryReason": "Ya que te está yendo bien con {habitTitle} (racha de {streak} días), aquí tienes hábitos complementarios que funcionan bien juntos: {insights}",
+    "mlAlternativeReason": "Si {habitTitle} se siente desafiante, prueba esta alternativa más fácil. El análisis muestra: {analysis}",
+    "mlGapFilling": "Aún no tienes hábitos de {category}. Esto podría ser una gran adición",
+    "complementaryHabit": "Hábito complementario de {category}",
+    "complementaryDescription": "Este hábito complementa tu rutina existente de {habit}",
+    "easierAlternative": "Alternativa más fácil a {habit}",
+    "easierAlternativeDescription": "Una versión más simple que construye el mismo comportamiento positivo",
+    "categorySuggestion": "Añadir un hábito de {category}",
+    "categorySuggestionDescription": "Expande tu rutina con este hábito de {category}",
+    "why_suggested": "Por qué sugerido"
+  },
   "icon": "Ícono",
   "change_icon": "Cambiar ícono",
   "choose_icon": "Elegir ícono",
-  "title": "Título",
+  "title_general": "Título",
   "enter_habit_title": "Introduce el título del hábito",
   "notes_optional": "Notas (opcional)",
   "add_notes_habit": "Añade notas sobre este hábito",
@@ -260,22 +327,6 @@
   "ai_encouraging_3": "🚀 Estás construyendo el futuro que quieres, un hábito a la vez.",
   "ai_encouraging_4": "💎 La consistencia es la madre del dominio. ¡Sigue adelante!",
   "ai_encouraging_5": "🌈 Tu yo futuro te agradecerá el trabajo que estás haciendo hoy.",
-  "ai": {
-    "mlOptimization": {
-      "title": "Optimizar {habitTitle}",
-      "description": "Basado en tus patrones, este hábito tiene una tasa de éxito del {probability}%. Considera programarlo a las {optimalTime} para mejores resultados.",
-      "reason": "Nuestro análisis de IA muestra que {habitTitle} podría ser más efectivo con estas modificaciones: {modifications}"
-    },
-    "mlComplementaryReason": "Ya que te está yendo bien con {habitTitle} (racha de {streak} días), aquí tienes hábitos complementarios que funcionan bien juntos: {insights}",
-    "mlAlternativeReason": "Si {habitTitle} se siente desafiante, prueba esta alternativa más fácil. El análisis muestra: {analysis}",
-    "mlGapFilling": "Te faltan hábitos en la categoría {category}. Basado en tus preferencias ({preferences}), aquí está lo que recomendamos:",
-    "complementaryHabit": "Hábito complementario de {category}",
-    "complementaryDescription": "Este hábito complementa tu rutina existente de {habit}",
-    "easierAlternative": "Alternativa más fácil a {habit}",
-    "easierAlternativeDescription": "Una versión más simple que construye el mismo comportamiento positivo",
-    "categorySuggestion": "Añadir un hábito de {category}",
-    "categorySuggestionDescription": "Expande tu rutina con este hábito de {category}"
-  },
   "ai_complementary_walk": "Caminar 5 minutos",
   "ai_complementary_walk_desc": "Una actividad física ligera para complementar tus hábitos de bienestar",
   "ai_complementary_water": "Beber un vaso de agua",
@@ -295,6 +346,12 @@
   "ai_alternative_one_page_desc": "Lee solo una página de un libro como alternativa de lectura sencilla",
   "ai_alternative_three_breaths": "Tres respiraciones profundas",
   "ai_alternative_three_breaths_desc": "Haz tres respiraciones profundas como alternativa de meditación sencilla",
+  "morning_meditation": "Meditación Matutina",
+  "morning_meditation_desc": "Practica meditación de atención plena por la mañana durante 5 minutos",
+  "morning_meditation_benefits": "Establece un tono positivo para el día, reduce el estrés, mejora la concentración",
+  "evening_reading": "Lectura Nocturna",
+  "evening_reading_desc": "Lee durante 20 minutos antes de dormir",
+  "evening_reading_benefits": "Mejora la calidad del sueño, expande el conocimiento, reduce el tiempo de pantalla",
   "habit_added_message": "¡Añadido a tus hábitos!",
   "habit_added_ai_message": "¡Añadido a tus hábitos! Empieza a construir este hábito positivo.",
   "noDescription": "Sin descripción",
@@ -1932,6 +1989,18 @@
   "stats": {
     "title": "Analíticas",
     "subtitle": "Rastrea tu progreso e insights",
+   
+    "library": {
+      "title": "Análisis de Biblioteca",
+      "subtitle": "Rastrea tu progreso de aprendizaje y uso de la biblioteca",
+      "usageStats": "Estadísticas de Uso",
+      "totalVisits": "Visitas Totales",
+      "timeSpent": "Tiempo Dedicado",
+      "habitsAdded": "Hábitos Agregados",
+      "coursesCompleted": "Cursos Completados",
+      "engagementScore": "Puntuación de Participación",
+      "engagementDescription": "Tu nivel de participación basado en el uso de la biblioteca"
+    },
     "analyticsTabs": {
       "wholeAnalytics": "Analíticas Completas",
       "mood": "Estado de Ánimo",
@@ -2036,7 +2105,9 @@
       "wellness": "Bienestar",
       "wellnessDesc": "Seguimiento de salud",
       "advanced": "Avanzado",
-      "advancedDesc": "Análisis impulsado por IA"
+      "advancedDesc": "Análisis impulsado por IA",
+      "library": "Biblioteca",
+      "libraryDesc": "Rastrea tu progreso de aprendizaje y uso de la biblioteca"
     },
     "quickStats": {
       "today": "Hoy",
@@ -2555,6 +2626,7 @@
       "pro": "Pro"
     },
     "preferences": {
+      "description": "Personaliza tu experiencia de la app y preferencias de notificación",
       "theme": "Tema",
       "language": "Idioma",
       "animations": "Animaciones",
@@ -3101,15 +3173,24 @@
     "beta": {
       "badge": "BETA",
       "description": "Las funciones de comunidad están en beta. ¡Más funciones próximamente!"
-    }
+    },
+    "encouragementSupport": "Apoyo de Aliento"
   },
   "onboarding": {
     "welcome": {
-      "title": "Bienvenido a tu viaje de bienestar",
-      "subtitle": "Comienza a construir mejores hábitos y a registrar tu estado de ánimo con inteligencia artificial y coaching personalizado.",
-      "feature1": "Registra tus estados de ánimo",
-      "feature2": "Crea hábitos saludables",
-      "feature3": "Descubre patrones"
+      "title": "Bienvenido a HabitSync",
+      "subtitle": "Tu rastreador de hábitos y compañero de estado de ánimo con IA. Construye mejores hábitos, rastrea tu bienestar y descubre patrones que llevan al éxito.",
+      "feature1": "Sugerencias de hábitos con IA",
+      "feature2": "Seguimiento avanzado del estado de ánimo",
+      "feature3": "Insights personalizados"
+    },
+    "appOverview": {
+      "title": "Qué hace especial a HabitSync",
+      "subtitle": "Descubre las funciones únicas que distinguen a HabitSync de otros rastreadores de hábitos.",
+      "feature1": "Sugerencias de hábitos y coaching con IA",
+      "feature2": "Seguimiento avanzado del estado de ánimo con correlaciones",
+      "feature3": "Múltiples recordatorios y notificaciones inteligentes",
+      "feature4": "Sistema de gamificación y logros"
     },
     "language": {
       "title": "Elige tu Idioma",
@@ -3120,27 +3201,27 @@
     },
     "freeFeatures": {
       "title": "Funciones Gratuitas",
-      "subtitle": "Todo lo que necesitas para comenzar tu viaje de bienestar.",
-      "feature1": "Rastrea hasta 4 hábitos",
-      "feature2": "Analíticas de 7 días",
-      "feature3": "Seguimiento básico del estado de ánimo",
-      "feature4": "Recordatorios simples"
+      "subtitle": "Comienza tu viaje de bienestar con funciones poderosas diseñadas para ayudarte a tener éxito.",
+      "feature1": "Rastrea hasta 4 hábitos con recordatorios",
+      "feature2": "Analíticas e insights de 7 días",
+      "feature3": "Seguimiento básico del estado de ánimo y patrones",
+      "feature4": "Exportación de datos y alertas de rendimiento"
     },
     "proFeatures": {
       "title": "Funciones Pro",
-      "subtitle": "Desbloquea potencial ilimitado con funciones avanzadas y coaching con IA.",
-      "feature1": "Hábitos ilimitados",
-      "feature2": "Analíticas de 365 días",
-      "feature3": "Coaching impulsado por IA",
-      "feature4": "Insights avanzados del estado de ánimo",
-      "feature5": "Temas premium y personalización"
+      "subtitle": "Desbloquea potencial ilimitado con coaching avanzado con IA y funciones premium.",
+      "feature1": "Hábitos ilimitados y múltiples recordatorios",
+      "feature2": "Analíticas de 365 días e insights de patrones",
+      "feature3": "Sugerencias de hábitos y coaching con IA",
+      "feature4": "Correlaciones avanzadas del estado de ánimo e integración de bienestar",
+      "feature5": "Temas premium, funciones sociales y gestión de equipos"
     },
     "getStartedStep": {
-      "title": "¿Listo para Comenzar?",
-      "subtitle": "Tu viaje de bienestar comienza ahora. ¡Creemos tu primer hábito!",
-      "feature1": "Crea tu primer hábito",
-      "feature2": "Configura el seguimiento del estado de ánimo",
-      "feature3": "Comienza tu viaje"
+      "title": "¿Listo para Transformar tu Vida?",
+      "subtitle": "Únete a miles de usuarios que ya han mejorado sus hábitos y bienestar con HabitSync.",
+      "feature1": "Crea tu primer hábito en segundos",
+      "feature2": "Configura el seguimiento personalizado del estado de ánimo",
+      "feature3": "Comienza tu viaje de bienestar con IA"
     },
     "skip": "Saltar",
     "previous": "Anterior",
@@ -3149,7 +3230,7 @@
     "proFeature": "Función Pro",
     "upgrade": "Actualizar a Pro",
     "upgradeNow": "Actualizar Ahora",
-    "description": "Comienza a construir mejores hábitos y a registrar tu estado de ánimo con inteligencia artificial y coaching personalizado.",
+    "description": "HabitSync es tu rastreador de hábitos y compañero de estado de ánimo con IA. Construye mejores hábitos, rastrea tu viaje de bienestar y descubre patrones que llevan al éxito duradero con insights personalizados y coaching.",
     "features": {
       "trackMoods": "Registra tus estados de ánimo",
       "buildHabits": "Crea hábitos saludables",
@@ -3679,5 +3760,1051 @@
     "sevenDayProgress": "Progreso de 7 Días",
     "completed": "Completado",
     "today": "Hoy"
+  },
+  "courses": {
+    "title": "Cursos de Formación de Hábitos",
+    "subtitle": "Aprende la ciencia detrás de los hábitos y construye cambios duraderos",
+    "loading": "Cargando cursos...",
+    "courseLoading": "Cargando curso...",
+    "courseNotFound": "Curso no encontrado",
+    "goBack": "Volver",
+    "yourProgress": "Tu Progreso",
+    "modulesCompleted": "módulos completados",
+    "minutes": "min",
+    "enrolled": "inscritos",
+    "courseModules": "Módulos del Curso",
+    "currentModule": "Módulo Actual: ",
+    "completeModule": "Completar Módulo",
+    "yourAchievements": "Tus Logros",
+    "guidedSetups": "Configuraciones Guiadas",
+    "guidedSetupsDescription": "Guías rápidas e interactivas para ayudarte a crear tus primeros hábitos",
+    "firstHabitSetup": "Tu Primer Hábito",
+    "firstHabitSetupDescription": "Una guía paso a paso para crear tu primer hábito exitoso",
+    "productivitySetup": "Hábitos de Productividad",
+    "productivitySetupDescription": "Construye hábitos que transformarán tu productividad",
+    "startSetup": "Comenzar Configuración",
+    "recommended": "Recomendado para Ti",
+    "recommendedDescription": "Cursos adaptados a tus preferencias y objetivos",
+    "allCourses": "Todos los Cursos",
+    "allCoursesDescription": "Biblioteca completa de cursos de formación de hábitos",
+    "learningPath": "Ruta de Aprendizaje",
+    "learningPathDescription": "Sigue esta ruta estructurada para dominar la formación de hábitos",
+    "enroll": "Inscribirse",
+    "continue": "Continuar",
+    "review": "Revisar",
+    "enrolledTitle": "¡Inscripción Exitosa!",
+    "enrolledMessage": "¡Ya estás inscrito en el curso. ¡Comienza a aprender!",
+    "enrollError": "Error al inscribirse en el curso. Por favor, inténtalo de nuevo.",
+    "aiRecommended": "Recomendado por IA",
+    "aiRecommendedDescription": "Cursos personalizados para ti basados en tus hábitos y objetivos",
+    "preview": "Vista Previa",
+    "previewError": "Error al cargar la vista previa del curso. Por favor, inténtalo de nuevo.",
+    "startCourse": "Comenzar Curso",
+    "completed": "Completado",
+    "completionError": "Error al completar el curso. Por favor, inténtalo de nuevo.",
+    "celebrationTitle": "🎉 ¡Curso Completado!",
+    "celebrationMessage": "¡Felicitaciones! Has completado \"{courseTitle}\" y ganado {xpEarned} XP!",
+    "shareCompletion": "Compartir Logro",
+    "sharedTitle": "¡Compartido Exitosamente!",
+    "sharedMessage": "¡Tu completación del curso ha sido compartida con la comunidad!",
+    "shareError": "Error al compartir la completación. Por favor, inténtalo de nuevo.",
+    "learningStreak": "Racha de Aprendizaje",
+    "consecutiveDays": "días consecutivos",
+    "weekStreak": "¡Racha Semanal!",
+    "details": "Detalles",
+    "studyGroup": "Grupo de Estudio",
+    "download": "Descargar",
+    "downloading": "Descargando...",
+    "offline": "Sin Conexión",
+    "delete": "Eliminar",
+    "coursePreview": "Vista Previa del Curso",
+    "courseModulesLabel": "Módulos del Curso:",
+    "moreModules": "más módulos",
+    "learningObjectives": "Objetivos de Aprendizaje:",
+    "whatYouWillLearn": "Lo Que Aprenderás:",
+    "sampleContent": "Contenido de Muestra:",
+    "instructor": "Instructor:",
+    "studentReviews": "Reseñas de Estudiantes:",
+    "members": "Miembros",
+    "messages": "Mensajes",
+    "createNewStudyGroup": "Crear Nuevo Grupo de Estudio",
+    "studyGroupName": "Nombre del Grupo de Estudio",
+    "create": "Crear",
+    "cancel": "Cancelar",
+    "yourCourses": "Tus Cursos",
+    "noCoursesAvailable": "No hay cursos disponibles en este momento",
+    "noEnrolledCourses": "Aún no te has inscrito en ningún curso",
+    "browseCourses": "Explorar Cursos",
+    "difficulty": {
+      "beginner": "Principiante",
+      "intermediate": "Intermedio",
+      "advanced": "Avanzado"
+    },
+    "loadingPreview": "Cargando vista previa...",
+    "deleteCourseTitle": "Eliminar Curso",
+    "deleteCourseMessage": "¿Estás seguro de que quieres eliminar \"{courseTitle}\" de tus cursos? Esto eliminará todo tu progreso y no se puede deshacer.",
+    "deleteCourseSuccess": "{courseTitle} ha sido eliminado de tus cursos.",
+    "deleteCourseError": "Error al eliminar el curso. Por favor, inténtalo de nuevo.",
+    "studyGroupTitle": "Grupo de Estudio {courseTitle}",
+    "studyGroupDescription": "¡Únete o crea un grupo de estudio para este curso para aprender juntos!",
+    "existingGroups": "Grupos Existentes",
+    "existingGroupsDescription": "Únete a un grupo existente para colaborar con otros.",
+    "studyGroupForCourse": "Grupo de estudio para el curso {courseTitle} - ¡Únete a nosotros para aprender juntos!",
+    "studyGroupCreated": "¡Grupo de estudio creado para este curso!",
+    "studyGroupJoined": "¡Te has unido al grupo de estudio exitosamente!",
+    "studyGroupError": "Error al manejar el grupo de estudio",
+    "joinStudyGroupError": "Error al unirse al grupo de estudio",
+    "createStudyGroupError": "Error al crear el grupo de estudio",
+    "invalidStudyGroupName": "Por favor, ingresa un nombre válido para el grupo de estudio",
+    "courseDownloaded": "¡{courseTitle} ha sido descargado para uso sin conexión!",
+    "downloadCourseError": "Error al descargar el curso",
+    "loginToEnroll": "Por favor, inicia sesión para inscribirte en cursos",
+    "enrollCourseError": "Error al inscribirse en el curso. Por favor, inténtalo de nuevo.",
+    "learnCourseSpecificSkills": "Aprender habilidades específicas del curso",
+    "applyKnowledgeInPractice": "Aplicar conocimientos en la práctica",
+    "developNewCapabilities": "Desarrollar nuevas capacidades",
+    "achieveLearningGoals": "Lograr objetivos de aprendizaje",
+    "yourCoursesDescription": "Continúa tu viaje de aprendizaje con los cursos en los que te has inscrito"
+  },
+  "courseContent": {
+    "habitFormationFoundations": {
+      "title": "Fundamentos de Formación de Hábitos",
+      "description": "Aprende la ciencia detrás de la formación de hábitos y construye una base sólida para un cambio duradero."
+    },
+    "sleepHabits": {
+      "title": "Hábitos de Optimización del Sueño",
+      "description": "Domina el arte del sueño de calidad a través de la formación efectiva de hábitos."
+    },
+    "creativeThinkingHabits": {
+      "title": "Hábitos de Pensamiento Creativo",
+      "description": "Desbloquea tu potencial creativo a través de la formación sistemática de hábitos."
+    },
+    "productivityHabits": {
+      "title": "Hábitos de Productividad",
+      "description": "Construye hábitos que transformarán tu productividad y eficiencia."
+    },
+    "fitnessHabits": {
+      "title": "Hábitos de Fitness",
+      "description": "Crea hábitos de fitness sostenibles para un estilo de vida más saludable."
+    },
+    "mindfulnessHabits": {
+      "title": "Hábitos de Atención Plena",
+      "description": "Desarrolla hábitos de atención plena para una mejor salud mental y claridad."
+    },
+    "learningHabits": {
+      "title": "Hábitos de Aprendizaje",
+      "description": "Domina hábitos de aprendizaje efectivos para un crecimiento continuo."
+    },
+    "financialHabits": {
+      "title": "Hábitos Financieros",
+      "description": "Construye hábitos financieros saludables para la seguridad a largo plazo."
+    },
+    "communicationHabits": {
+      "title": "Hábitos de Comunicación",
+      "description": "Mejora tus relaciones a través de mejores hábitos de comunicación."
+    },
+    "leadershipHabits": {
+      "title": "Hábitos de Liderazgo",
+      "description": "Desarrolla hábitos de liderazgo para el crecimiento personal y profesional."
+    },
+    "wellnessHabits": {
+      "title": "Hábitos de Bienestar",
+      "description": "Crea hábitos de bienestar integrales para el bienestar general."
+    },
+    "wellness-habits": {
+      "title": "Hábitos de Bienestar",
+      "description": "Crea hábitos de bienestar integrales para el bienestar general."
+    },
+    "holistic-wellness-habits": {
+      "title": "Hábitos de Bienestar Holístico",
+      "description": "Desarrolla hábitos de bienestar integrales para mente, cuerpo y espíritu."
+    },
+    "leadership-development-habits": {
+      "title": "Hábitos de Desarrollo de Liderazgo",
+      "description": "Cultiva hábitos de liderazgo para el crecimiento personal y profesional."
+    },
+    "financial-habits-money-management": {
+      "title": "Hábitos Financieros y Gestión del Dinero",
+      "description": "Construye hábitos financieros saludables para el éxito financiero a largo plazo."
+    },
+    "effective-communication-habits": {
+      "title": "Hábitos de Comunicación Efectiva",
+      "description": "Construye hábitos poderosos de comunicación para el éxito personal y profesional."
+    },
+    "modules": {
+      "whatAreHabits": {
+        "title": "¿Qué Son los Hábitos?",
+        "description": "Entendiendo la psicología detrás de la formación de hábitos"
+      },
+      "habitLoop": {
+        "title": "El Bucle del Hábito",
+        "description": "Entendiendo señal, deseo, respuesta y recompensa"
+      },
+      "buildingHabits": {
+        "title": "Construyendo Nuevos Hábitos",
+        "description": "Estrategias prácticas para crear hábitos duraderos"
+      },
+      "morningScience": {
+        "title": "La Ciencia de las Mañanas",
+        "description": "Por qué las rutinas matutinas son tan poderosas"
+      },
+      "designRoutine": {
+        "title": "Diseñando Tu Rutina",
+        "description": "Guía paso a paso para crear tu rutina matutina perfecta"
+      },
+      "implementation": {
+        "title": "Estrategias de Implementación",
+        "description": "Cómo mantener tu rutina matutina"
+      },
+      "fitnessPsychology": {
+        "title": "La Psicología del Fitness",
+        "description": "Entendiendo la motivación y consistencia en el fitness"
+      },
+      "workoutPlanning": {
+        "title": "Planificación y Programación de Entrenamientos",
+        "description": "Crea una rutina de entrenamiento sostenible que se adapte a tu vida"
+      },
+      "nutritionHabits": {
+        "title": "Hábitos de Nutrición para el Fitness",
+        "description": "Construyendo hábitos alimenticios saludables que apoyen tus objetivos de fitness"
+      },
+      "recoveryHabits": {
+        "title": "Hábitos de Recuperación y Descanso",
+        "description": "Prácticas esenciales de recuperación para fitness sostenible"
+      },
+      "productivityPrinciples": {
+        "title": "Principios Fundamentales de Productividad",
+        "description": "Entendiendo los principios fundamentales de la productividad"
+      },
+      "timeManagement": {
+        "title": "Gestión Avanzada del Tiempo",
+        "description": "Domina el bloqueo de tiempo, priorización y programación"
+      },
+      "focusHabits": {
+        "title": "Construyendo Hábitos de Enfoque",
+        "description": "Desarrolla hábitos de trabajo profundo y concentración"
+      },
+      "productivitySystems": {
+        "title": "Integración de Sistemas de Productividad",
+        "description": "Integra múltiples sistemas de productividad para máxima efectividad"
+      },
+      "mindfulnessBasics": {
+        "title": "Fundamentos de la Atención Plena",
+        "description": "Entendiendo la atención plena y sus beneficios"
+      },
+      "meditationTechniques": {
+        "title": "Técnicas de Meditación",
+        "description": "Aprende varias técnicas y prácticas de meditación"
+      },
+      "stressManagement": {
+        "title": "Gestión del Estrés a Través de la Atención Plena",
+        "description": "Usa técnicas de atención plena para la gestión del estrés"
+      },
+      "learningScience": {
+        "title": "La Ciencia del Aprendizaje",
+        "description": "Entendiendo cómo aprendemos y retenemos información"
+      },
+      "studyTechniques": {
+        "title": "Técnicas de Estudio Efectivas",
+        "description": "Domina técnicas y métodos de estudio probados"
+      },
+      "memoryTechniques": {
+        "title": "Técnicas de Memoria y Retención",
+        "description": "Aprende técnicas para mejorar la memoria y retención"
+      },
+      "sleepScience": {
+        "title": "La Ciencia del Sueño",
+        "description": "Entendiendo los ciclos del sueño y su importancia"
+      },
+      "sleepHygiene": {
+        "title": "Prácticas de Higiene del Sueño",
+        "description": "Aprende hábitos esenciales de higiene del sueño para mejor descanso"
+      },
+      "sleepEnvironment": {
+        "title": "Optimizando Tu Entorno de Sueño",
+        "description": "Crea el entorno de sueño perfecto para descanso de calidad"
+      },
+      "sleepDisorders": {
+        "title": "Manejando Desafíos del Sueño",
+        "description": "Aborda problemas comunes del sueño y trastornos"
+      }
+    }
+  },
+  "achievements": {
+    "first_course": {
+      "title": "Buscador de Conocimiento",
+      "description": "Te inscribiste en tu primer curso"
+    },
+    "course_collector": {
+      "title": "Coleccionista de Cursos", 
+      "description": "Te inscribiste en 5 cursos diferentes"
+    },
+    "knowledge_seeker": {
+      "title": "Buscador de Conocimiento",
+      "description": "Completaste 3 módulos de curso"
+    },
+    "guided_master": {
+      "title": "Maestro Guiado",
+      "description": "Completaste 3 configuraciones guiadas"
+    },
+    "learning_streak": {
+      "title": "Racha de Aprendizaje",
+      "description": "Aprendiste durante 5 días consecutivos"
+    },
+    "knowledge_sharer": {
+      "title": "Compartidor de Conocimiento",
+      "description": "Compartiste conocimiento con la comunidad"
+    },
+    "library_explorer": {
+      "title": "Explorador de Biblioteca",
+      "description": "Exploraste todas las secciones de la biblioteca"
+    },
+    "feedback_contributor": {
+      "title": "Contribuidor de Comentarios",
+      "description": "Proporcionaste comentarios sobre el contenido de la biblioteca"
+    },
+    "study_group_creator": {
+      "title": "Creador de Grupo de Estudio",
+      "description": "Creaste tu primer grupo de estudio"
+    },
+    "study_group_joiner": {
+      "title": "Miembro de Grupo de Estudio",
+      "description": "Te uniste a 3 grupos de estudio diferentes"
+    },
+    "learning_circle_leader": {
+      "title": "Líder del Círculo de Aprendizaje",
+      "description": "Dirigiste 5 sesiones de estudio"
+    },
+    "peer_mentor": {
+      "title": "Mentor de Pares",
+      "description": "Ayudaste a 10 otros estudiantes"
+    }
+  },
+  "contentStrings": {
+    "sleep-science-intro": "Introducción a la Ciencia del Sueño",
+    "sleep-hygiene-guide": "Guía de Higiene del Sueño",
+    "sleep-environment-guide": "Guía del Entorno de Sueño", 
+    "sleep-disorders-quiz": "Cuestionario de Trastornos del Sueño",
+    "habit-formation-intro": "Introducción a la Formación de Hábitos",
+    "habit-loop-explanation": "Explicación del Bucle de Hábitos",
+    "habit-building-strategies": "Estrategias de Construcción de Hábitos",
+    "morning-routine-science": "Ciencia de las Rutinas Matutinas",
+    "routine-design-guide": "Guía de Diseño de Rutinas",
+    "implementation-strategies": "Estrategias de Implementación",
+    "fitness-psychology-intro": "Introducción a la Psicología del Fitness",
+    "workout-planning-guide": "Guía de Planificación de Entrenamientos",
+    "nutrition-habits-guide": "Guía de Hábitos de Nutrición",
+    "recovery-habits-quiz": "Cuestionario de Hábitos de Recuperación",
+    "productivity-principles-intro": "Introducción a los Principios de Productividad",
+    "time-management-systems": "Sistemas de Gestión del Tiempo",
+    "focus-habits-guide": "Guía de Hábitos de Enfoque",
+    "productivity-systems-integration": "Integración de Sistemas de Productividad",
+    "mindfulness-basics-intro": "Introducción a los Fundamentos de la Atención Plena",
+    "meditation-techniques-guide": "Guía de Técnicas de Meditación",
+    "stress-management-mindfulness": "Gestión del Estrés a Través de la Atención Plena",
+    "learning-science-intro": "Introducción a la Ciencia del Aprendizaje",
+    "study-techniques-guide": "Guía de Técnicas de Estudio",
+    "memory-techniques-guide": "Guía de Técnicas de Memoria",
+    "continuous-learning-habits": "Hábitos de Aprendizaje Continuo",
+    "financial-mindset-intro": "Introducción a la Mentalidad Financiera",
+    "budgeting-basics-guide": "Guía Básica de Presupuesto",
+    "saving-investing-guide": "Guía de Ahorro e Inversión",
+    "debt-management-quiz": "Cuestionario de Gestión de Deudas",
+    "communication-fundamentals-intro": "Introducción a los Fundamentos de la Comunicación",
+    "active-listening-guide": "Guía de Escucha Activa",
+    "assertive-communication-guide": "Guía de Comunicación Asertiva",
+    "conflict-resolution-skills": "Habilidades de Resolución de Conflictos",
+    "creativity-basics-intro": "Introducción a los Fundamentos de la Creatividad",
+    "creative-techniques-guide": "Guía de Técnicas Creativas",
+    "creative-routines-guide": "Guía de Rutinas Creativas",
+    "leadership-principles-intro": "Introducción a los Principios de Liderazgo",
+    "emotional-intelligence-leadership": "Inteligencia Emocional en el Liderazgo",
+    "team-building-guide": "Guía de Construcción de Equipos",
+    "leadership-communication-skills": "Habilidades de Comunicación de Liderazgo",
+    "wellness-overview-intro": "Introducción a la Visión General del Bienestar",
+    "physical-wellness-guide": "Guía de Bienestar Físico",
+    "mental-wellness-guide": "Guía de Bienestar Mental",
+    "spiritual-wellness-quiz": "Cuestionario de Bienestar Espiritual"
+  },
+  "guidedSetups": {
+    "first-habit-setup": {
+      "title": "Tu Primer Hábito",
+      "description": "Una guía paso a paso para ayudarte a crear tu primer hábito exitoso"
+    },
+    "productivity-setup": {
+      "title": "Hábitos de Productividad",
+      "description": "Construye hábitos que transformarán tu productividad"
+    },
+    "steps": {
+      "goal-setting": {
+        "title": "Establece Tu Meta",
+        "description": "¿Qué quieres lograr?"
+      },
+      "habit-selection": {
+        "title": "Elige Tu Hábito",
+        "description": "Selecciona un hábito que te ayude a alcanzar tu meta"
+      },
+      "specificity": {
+        "title": "Hazlo Específico",
+        "description": "Define exactamente qué, cuándo y dónde harás este hábito"
+      },
+      "cue-identification": {
+        "title": "Identifica Tu Señal",
+        "description": "¿Qué activará este hábito?"
+      },
+      "reward-planning": {
+        "title": "Planifica Tu Recompensa",
+        "description": "¿Cómo te recompensarás por completar el hábito?"
+      },
+      "confirmation": {
+        "title": "Confirma Tu Plan",
+        "description": "Revisa y confirma tu plan de hábitos"
+      },
+      "productivity-assessment": {
+        "title": "Evalúa Tu Productividad Actual",
+        "description": "Califica tu productividad actual en diferentes áreas"
+      },
+      "productivity-goals": {
+        "title": "Establece Metas de Productividad",
+        "description": "¿Qué mejoras de productividad quieres hacer?"
+      },
+      "implementation-plan": {
+        "title": "Crea Plan de Implementación",
+        "description": "Planifica cómo implementarás estos hábitos"
+      }
+    },
+    "options": {
+      "exercise": "Ejercicio",
+      "reading": "Lectura",
+      "meditation": "Meditación",
+      "journaling": "Diario",
+      "learning": "Aprendizaje",
+      "other": "Otro",
+      "timeBlocking": "Bloqueo de Tiempo",
+      "taskPrioritization": "Priorización de Tareas",
+      "emailManagement": "Gestión de Correo",
+      "deepWork": "Trabajo Profundo",
+      "breakManagement": "Gestión de Descansos"
+    }
+  },
+  "guidedSetup": {
+    "step": "Paso",
+    "of": "de",
+    "minutes": "minutos",
+    "enterYourAnswer": "Ingresa tu respuesta...",
+    "next": "Siguiente",
+    "previous": "Anterior",
+    "complete": "Completar",
+    "successTitle": "¡Configuración Completa!",
+    "successMessage": "¡Tu hábito ha sido creado exitosamente!",
+    "loadError": "Error al cargar la configuración guiada",
+    "createError": "Error al crear el hábito"
+  },
+  "library": {
+    "feedback": {
+      "title": "Comentarios de la Biblioteca",
+      "introTitle": "¡Ayúdanos a mejorar tu experiencia!",
+      "introText": "Tus comentarios nos ayudan a hacer la Biblioteca mejor para todos. Comparte tus pensamientos sobre encontrar y agregar hábitos.",
+      "rateExperience": "Califica tu experiencia en la Biblioteca",
+      "selectRating": "Toca una estrella para calificar",
+      "rating1": "Pobre - Necesita mejoras significativas",
+      "rating2": "Regular - Podría ser mejor",
+      "rating3": "Buena - Experiencia satisfactoria",
+      "rating4": "Muy Buena - Excelente experiencia",
+      "rating5": "Excelente - Experiencia perfecta",
+      "shareThoughts": "Comparte tus pensamientos",
+      "optional": "(Opcional)",
+      "placeholder": "Cuéntanos qué piensas sobre la Biblioteca, qué funciones te gustaría ver, o cualquier problema que hayas encontrado...",
+      "quickFeedback": "Opciones de comentarios rápidos",
+      "easyToUse": "Fácil de usar",
+      "needsImprovement": "Necesita mejoras",
+      "moreHabits": "Necesito más hábitos",
+      "betterSearch": "Mejor búsqueda",
+      "aiSuggestions": "Mejores sugerencias de IA",
+      "educationalContent": "Más contenido educativo",
+      "submit": "Enviar Comentarios",
+      "submitting": "Enviando...",
+      "thankYou": "¡Gracias!",
+      "submittedMessage": "Tus comentarios han sido enviados. ¡Los usaremos para mejorar la experiencia de la Biblioteca!",
+      "ratingRequired": "Calificación Requerida",
+      "pleaseRate": "Por favor selecciona una calificación antes de enviar.",
+      "submitError": "Error al enviar comentarios. Por favor intenta de nuevo."
+    }
+  },
+  "studyGroups": {
+    "title": "Grupos de Estudio",
+    "loading": "Cargando grupos de estudio...",
+    "searchPlaceholder": "Buscar grupos de estudio...",
+    "noGroupsFound": "No se encontraron grupos de estudio",
+    "noGroupsFoundWithFilters": "Intenta ajustar tu búsqueda o filtros",
+    "createFirstGroup": "¡Crea tu primer grupo de estudio para comenzar!",
+    "createStudyGroup": "Crear Grupo de Estudio",
+    "joinGroup": "Unirse al Grupo",
+    "joinGroupById": "Unirse por ID",
+    "joinGroupByIdPrompt": "Ingresa el ID único del grupo para unirte:",
+    "joinGroupByIdError": "Por favor, ingresa un ID de grupo válido",
+    "groupNotFound": "Grupo no encontrado o ya eres miembro",
+    "groupDetails": "Detalles del Grupo",
+    "groupName": "Nombre del Grupo *",
+    "groupNamePlaceholder": "Ingresa el nombre del grupo",
+    "groupNameRequired": "El nombre del grupo es requerido",
+    "groupNameMinLength": "El nombre del grupo debe tener al menos 3 caracteres",
+    "description": "Descripción *",
+    "descriptionPlaceholder": "Describe el propósito y enfoque de tu grupo de estudio",
+    "descriptionRequired": "La descripción es requerida",
+    "descriptionMinLength": "La descripción debe tener al menos 10 caracteres",
+    "category": "Categoría",
+    "selectCategory": "Seleccionar Categoría",
+    "selectCategoryPrompt": "Elige una categoría para tu grupo de estudio",
+    "maxMembers": "Máximo de Miembros",
+    "maxMembersPlaceholder": "15",
+    "maxMembersRange": "El máximo de miembros debe estar entre 2 y 50",
+    "meetingInformation": "Información de Reunión",
+    "meetingFrequency": "Frecuencia de Reunión",
+    "selectFrequency": "Seleccionar Frecuencia",
+    "selectFrequencyPrompt": "¿Con qué frecuencia se reunirá tu grupo?",
+    "meetingTime": "Hora de Reunión",
+    "meetingTimePlaceholder": "10:00",
+    "duration": "Duración (minutos)",
+    "durationPlaceholder": "60",
+    "location": "Ubicación",
+    "meetingType": "Tipo de Reunión",
+    "virtual": "Virtual",
+    "physical": "Presencial",
+    "meetingLink": "Enlace de Reunión *",
+    "meetingLinkPlaceholder": "https://meet.google.com/...",
+    "meetingLinkRequired": "El enlace de reunión es requerido para reuniones virtuales",
+    "address": "Dirección *",
+    "addressPlaceholder": "Ingresa la dirección del lugar de reunión",
+    "addressRequired": "La dirección es requerida para reuniones presenciales",
+    "contactInformation": "Información de Contacto",
+    "email": "Correo Electrónico",
+    "emailPlaceholder": "Ingresa el correo de contacto",
+    "invalidEmail": "Por favor, ingresa un correo electrónico válido",
+    "phone": "Teléfono",
+    "phonePlaceholder": "Ingresa el teléfono de contacto",
+    "groupSettings": "Configuración del Grupo",
+    "level": "Nivel",
+    "beginner": "Principiante",
+    "intermediate": "Intermedio",
+    "advanced": "Avanzado",
+    "commitment": "Compromiso",
+    "casual": "Casual",
+    "moderate": "Moderado",
+    "intensive": "Intensivo",
+    "tags": "Etiquetas",
+    "tagsPlaceholder": "Agrega etiquetas para ayudar a otros a encontrar tu grupo",
+    "rules": "Reglas",
+    "rulesPlaceholder": "Agrega reglas y pautas del grupo",
+    "topics": "Temas",
+    "topicsPlaceholder": "Agrega temas de discusión",
+    "createGroup": "Crear Grupo",
+    "creatingGroup": "Creando...",
+    "groupCreatedSuccess": "¡Grupo de estudio creado exitosamente! 🎉",
+    "groupCreatedError": "Error al crear grupo de estudio",
+    "joinedGroupSuccess": "¡Te has unido al grupo exitosamente! 🎉",
+    "joinedGroupError": "Error al unirse al grupo",
+    "deleteGroup": "Eliminar Grupo",
+    "deleteGroupConfirm": "¿Estás seguro de que quieres eliminar \"{groupName}\"? Esta acción no se puede deshacer y eliminará todos los datos del grupo, sesiones y mensajes de chat.",
+    "groupDeletedSuccess": "Grupo eliminado exitosamente",
+    "groupDeletedError": "Error al eliminar grupo",
+    "onlyLeaderCanDelete": "Solo los líderes del grupo pueden eliminar grupos",
+    "shareGroup": "Compartir Grupo",
+    "shareMessage": "¡Únete a mi grupo de estudio \"{groupName}\" en HabitSync! 📚\\n\\n{description}\\n\\nCategoría: {category}\\nMiembros: {currentMembers}/{maxMembers}\\n\\nID del Grupo: {groupId}\\n\\n¡Descarga HabitSync y usa este ID de Grupo para unirte!",
+    "shareTitle": "Unirse al Grupo de Estudio {groupName}",
+    "inviteMembers": "Invitar Miembros",
+    "inviteMessage": "¡Estás invitado a unirte al grupo de estudio \"{groupName}\" en HabitSync! 📚\\n\\n{description}\\n\\nCategoría: {category}\\nMiembros actuales: {currentMembers}/{maxMembers}\\n\\nID del Grupo: {groupId}\\n\\n¡Descarga HabitSync y usa este ID de Grupo para unirte!",
+    "inviteTitle": "Invitación a {groupName}",
+    "categories": {
+      "all": "Todos los Grupos",
+      "productivity": "Productividad",
+      "health": "Salud y Bienestar",
+      "learning": "Aprendizaje",
+      "motivation": "Motivación"
+    },
+    "frequencies": {
+      "daily": "Diario",
+      "weekly": "Semanal",
+      "biweekly": "Quincenal",
+      "monthly": "Mensual"
+    },
+    "groupCard": {
+      "members": "miembros",
+      "completion": "completado",
+      "upcomingSessions": "Próximas Sesiones",
+      "viewMoreSessions": "Ver {count} sesiones más",
+      "leader": "Líder",
+      "joinGroup": "Unirse al Grupo",
+      "min": " min"
+    },
+    "more": "más",
+    "sampleGroups": {
+      "morningProductivityMasters": {
+        "name": "Maestros de Productividad Matutina",
+        "description": "Únete a nosotros para rutinas matutinas diarias y trucos de productividad. Nos enfocamos en construir hábitos sostenibles que perduren.",
+        "tags": ["mañana", "productividad", "hábitos", "rutina"],
+        "rules": ["Sé respetuoso", "Comparte tu progreso", "Apoya a otros"],
+        "topics": ["Rutinas matutinas", "Gestión del tiempo", "Establecimiento de objetivos"],
+        "sessions": {
+          "weeklyGoalReview": {
+            "title": "Revisión Semanal de Objetivos",
+            "description": "Revisemos nuestros objetivos semanales y establezcamos nuevos para la próxima semana."
+          }
+        },
+        "chatMessages": {
+          "morningGreeting": "¡Buenos días a todos! ¿Listos para otro día productivo? 🌅",
+          "meditationResponse": "¡Buenos días Sarah! Acabo de terminar mi meditación de 5 minutos. ¡Me siento genial! 🧘‍♂️"
+        }
+      },
+      "healthWellnessWarriors": {
+        "name": "Guerreros de Salud y Bienestar",
+        "description": "Una comunidad de apoyo enfocada en el bienestar físico y mental. ¡Comparte tu viaje de fitness y mantente motivado!",
+        "tags": ["fitness", "bienestar", "salud-mental", "nutrición"],
+        "rules": ["Sé solidario", "Comparte progreso", "Sin juicios"],
+        "topics": ["Rutinas de ejercicio", "Consejos de nutrición", "Salud mental"]
+      },
+      "learningEnthusiasts": {
+        "name": "Entusiastas del Aprendizaje",
+        "description": "Expande tu conocimiento con otros aprendices. Exploramos varios temas y compartimos recursos.",
+        "tags": ["aprendizaje", "educación", "conocimiento", "habilidades"],
+        "rules": ["Comparte recursos", "Haz preguntas", "Ayuda a otros a aprender"],
+        "topics": ["Desarrollo de habilidades", "Discusiones de libros", "Cursos en línea"]
+      },
+      "motivationBoosters": {
+        "name": "Impulsores de Motivación",
+        "description": "Mantente motivado e inspirado con aliento diario e historias de éxito.",
+        "tags": ["motivación", "inspiración", "éxito", "mentalidad"],
+        "rules": ["Comparte victorias", "Anima a otros", "Mantén una actitud positiva"],
+        "topics": ["Historias de éxito", "Técnicas de motivación", "Cambios de mentalidad"]
+      }
+    },
+    "chat": {
+      "title": "Chat del Grupo",
+      "placeholder": "Escribe un mensaje...",
+      "sending": "Enviando...",
+      "sendError": "Error al enviar mensaje",
+      "typing": "{user} está escribiendo..."
+    },
+    "sessions": {
+      "title": "Sesiones de Estudio",
+      "createSession": "Crear Sesión",
+      "creatingSession": "Creando...",
+      "sessionCreatedSuccess": "¡Sesión de estudio creada exitosamente! 📅",
+      "sessionCreatedError": "Error al crear sesión de estudio",
+      "joinedSessionSuccess": "¡Te has unido a la sesión exitosamente! 🎉",
+      "joinedSessionError": "Error al unirse a la sesión",
+      "sessionTitle": "Título de la Sesión *",
+      "sessionTitlePlaceholder": "Ingresa el título de la sesión",
+      "sessionDescription": "Descripción de la Sesión *",
+      "sessionDescriptionPlaceholder": "Describe qué se cubrirá en esta sesión",
+      "sessionDate": "Fecha de la Sesión",
+      "sessionTime": "Hora de la Sesión",
+      "sessionDuration": "Duración (minutos)",
+      "maxParticipants": "Máx. Participantes",
+      "sessionTopics": "Temas",
+      "sessionTopicsPlaceholder": "Agrega temas a discutir",
+      "sessionMaterials": "Materiales",
+      "sessionMaterialsPlaceholder": "Agrega materiales necesarios para la sesión",
+      "fillRequiredFields": "Por favor, completa todos los campos requeridos"
+    },
+    "members": {
+      "title": "Miembros del Grupo",
+      "member": "miembro",
+      "members": "miembros",
+      "joined": "se unió",
+      "role": "rol",
+      "contributionScore": "puntuación de contribución"
+    },
+    "analytics": {
+      "title": "Analíticas del Grupo",
+      "completionRate": "Tasa de Completado",
+      "totalSessions": "Total de Sesiones",
+      "activeMembers": "Miembros Activos",
+      "averageAttendance": "Asistencia Promedio",
+      "totalLearningTime": "Tiempo Total de Aprendizaje",
+      "collaborativeProjects": "Proyectos Colaborativos",
+      "knowledgeShared": "Conocimiento Compartido"
+    },
+    "modals": {
+      "contactInformation": "Información de Contacto (Opcional)",
+      "email": "Correo Electrónico",
+      "emailPlaceholder": "tu.email@ejemplo.com",
+      "phone": "Teléfono",
+      "phonePlaceholder": "+1 (555) 123-4567",
+      "groupSettings": "Configuración del Grupo",
+      "difficultyLevel": "Nivel de Dificultad",
+      "selectLevel": "Seleccionar Nivel",
+      "selectLevelPrompt": "Elige el nivel de dificultad para tu grupo",
+      "commitmentLevel": "Nivel de Compromiso",
+      "selectCommitment": "Seleccionar Compromiso",
+      "selectCommitmentPrompt": "Elige el nivel de compromiso para tu grupo",
+      "scheduleStudySession": "Programar Sesión de Estudio",
+      "sessionTitle": "Título de la Sesión",
+      "sessionTitlePlaceholder": "Título de la Sesión",
+      "description": "Descripción",
+      "descriptionPlaceholder": "Descripción",
+      "date": "Fecha",
+      "datePlaceholder": "AAAA-MM-DD",
+      "time": "Hora",
+      "timePlaceholder": "HH:MM",
+      "duration": "Duración (minutos)",
+      "durationPlaceholder": "60",
+      "maxParticipants": "Máximo de Participantes",
+      "maxParticipantsPlaceholder": "10",
+      "scheduleSession": "Programar Sesión",
+      "noMembersYet": "Aún no hay miembros",
+      "beFirstToJoin": "¡Sé el primero en unirte a este grupo de estudio!"
+    }
+  },
+  "peerRecommendations": {
+    "title": "Recomendaciones de Pares",
+    "searchPlaceholder": "Buscar recomendaciones...",
+    "sortBy": "Ordenar por",
+    "sortOptions": {
+      "newest": "Más Recientes",
+      "highestRated": "Mejor Valoradas",
+      "mostPopular": "Más Populares"
+    },
+    "categories": {
+      "all": "Todas",
+      "productivity": "Productividad",
+      "healthFitness": "Salud y Fitness",
+      "learning": "Aprendizaje",
+      "mindfulness": "Atención Plena",
+      "relationships": "Relaciones",
+      "career": "Carrera",
+      "finance": "Finanzas",
+      "creativity": "Creatividad"
+    },
+    "difficultyLevels": {
+      "beginner": "Principiante",
+      "intermediate": "Intermedio",
+      "advanced": "Avanzado"
+    },
+    "featured": "Destacada",
+    "featuredSection": "Recomendaciones Destacadas",
+    "weeklySection": "Recomendaciones de Esta Semana",
+    "emptyState": {
+      "title": "No se encontraron recomendaciones",
+      "searchMessage": "Intenta ajustar tu búsqueda o filtros",
+      "defaultMessage": "¡Sé el primero en compartir una recomendación!"
+    },
+    "loading": "Cargando recomendaciones...",
+    "createButton": "Compartir Tu Recomendación",
+    "form": {
+      "title": "Compartir Tu Recomendación",
+      "titleField": "Título *",
+      "titlePlaceholder": "Dale a tu recomendación un título atractivo",
+      "descriptionField": "Descripción *",
+      "descriptionPlaceholder": "Breve descripción de tu recomendación",
+      "experienceField": "Experiencia Personal *",
+      "experiencePlaceholder": "Comparte tu experiencia personal con este hábito",
+      "categoryField": "Categoría",
+      "difficultyField": "Nivel de Dificultad",
+      "timeField": "Compromiso de Tiempo",
+      "timePlaceholder": "ej., 15 minutos diarios, 1 hora semanal",
+      "tagsField": "Etiquetas",
+      "tagPlaceholder": "Agregar etiquetas (presiona Enter)",
+      "submitButton": "Compartir Recomendación",
+      "requiredFieldsError": "Por favor, completa todos los campos requeridos"
+    },
+    "card": {
+      "personalExperience": "Experiencia Personal:",
+      "comments": "Comentarios",
+      "rate": "Valorar",
+      "anonymous": "Anónimo"
+    },
+    "comments": {
+      "title": "Comentarios",
+      "noComments": "Aún no hay comentarios. ¡Sé el primero en comentar!",
+      "addComment": "Agregar un comentario...",
+      "sendButton": "Enviar",
+      "helpfulVotes": "útil"
+    },
+    "rating": {
+      "title": "Valorar esta Recomendación",
+      "description": "¿Qué tan útil fue esta recomendación?",
+      "selectRating": "Selecciona una valoración",
+      "poor": "Mala",
+      "fair": "Regular",
+      "good": "Buena",
+      "veryGood": "Muy Buena",
+      "excellent": "Excelente",
+      "submitButton": "Enviar Valoración",
+      "selectRatingError": "Por favor, selecciona una valoración"
+    },
+    "deleteRecommendation": "Eliminar Recomendación",
+    "deleteRecommendationConfirm": "¿Estás seguro de que quieres eliminar '{title}'? Esta acción no se puede deshacer.",
+    "alerts": {
+      "createSuccess": "¡Recomendación creada exitosamente!",
+      "createError": "Error al crear recomendación",
+      "ratingSuccess": "¡Valoración enviada exitosamente!",
+      "ratingError": "Error al enviar valoración",
+      "commentError": "Error al agregar comentario",
+      "commentRequired": "Por favor, ingresa un comentario",
+      "loadError": "Error al cargar recomendaciones",
+      "onlyCreatorCanDelete": "Solo el creador puede eliminar esta recomendación",
+      "deleteSuccess": "¡Recomendación eliminada exitosamente!",
+      "deleteError": "Error al eliminar recomendación"
+    },
+    "tags": {
+      "meditation": "Meditación",
+      "morning": "Mañana",
+      "stress-relief": "Alivio del Estrés",
+      "beginner-friendly": "Para Principiantes",
+      "reading": "Lectura",
+      "challenge": "Desafío",
+      "productivity": "Productividad",
+      "knowledge": "Conocimiento",
+      "hydration": "Hidratación",
+      "health": "Salud",
+      "energy": "Energía",
+      "wellness": "Bienestar",
+      "gratitude": "Gratitud",
+      "journaling": "Diario",
+      "mental-health": "Salud Mental",
+      "positivity": "Positividad"
+    }
+  },
+"challenges": {
+    "title": "Desafíos de aprendizaje",
+    "description": "Únete a desafíos de la comunidad y compite con otros",
+    "create": "Crear desafío",
+    "createNew": "Crear nuevo desafío",
+    "join": "Unirse a desafío",
+    "updateProgress": "Actualizar progreso",
+    "completed": "Completado",
+    "progress": "Progreso",
+    "progressUpdated": "Progreso actualizado con éxito",
+    "progressUpdateFailed": "Error al actualizar el progreso",
+    "createdSuccessfully": "Desafío creado con éxito",
+    "creationFailed": "Error al crear el desafío",
+    "joinedSuccessfully": "Te has unido al desafío con éxito",
+    "joinFailed": "Error al unirse al desafío",
+    "fillAllFields": "Por favor, rellena todos los campos obligatorios",
+    "category": "Categoría",
+    "duration": "Duración",
+    "maxParticipants": "Máximo de participantes",
+    "startDate": "Fecha de inicio",
+    "endDate": "Fecha de finalización",
+    "rewards": "Recompensas",
+    "requirements": "Requisitos",
+    "participants": "Participantes",
+    "joinChallenge": "Unirse a desafío",
+    "titlePlaceholder": "Introduce el título del desafío",
+    "descriptionPlaceholder": "Introduce la descripción del desafío",
+    "categoryPlaceholder": "Selecciona la categoría del desafío",
+    "difficultyPlaceholder": "Selecciona la dificultad del desafío",
+    "durationPlaceholder": "Introduce la duración del desafío",
+    "maxParticipantsPlaceholder": "Introduce el número máximo de participantes",
+    "startDatePlaceholder": "Introduce la fecha de inicio",
+    "endDatePlaceholder": "Introduce la fecha de finalización",
+    "categories": {
+      "habit": "Hábito",
+      "wellness": "Salud y bienestar",
+      "productivity": "Productividad",
+      "learning": "Aprendizaje",
+      "social": "Social"
+    },
+    "difficulty": {
+      "beginner": "Principiante",
+      "intermediate": "Intermedio",
+      "advanced": "Avanzado"
+    },
+    "days": "días"
+  },
+  "mentorship": {
+    "title": "Mentoría",
+    "description": "Encuentra tu mentor",
+    "searchPlaceholder": "Buscar mentor...",
+    "sortBy": "Ordenar por",
+    "availableMentors": "Mentores disponibles",
+    "becomeMentor": "Convertirse en mentor",
+    "requestPending": "Solicitud pendiente",
+    "requestAccepted": "Solicitud aceptada",
+    "requestRejected": "Solicitud rechazada",
+    "requestCompleted": "Solicitud completada",
+    "bioPlaceholder": "Introduce tu biografía",
+    "availability": "Disponibilidad",
+    "daysAvailable": "Días disponibles",
+    "timeSlots": "Horas disponibles",
+    "timeSlotsPlaceholder": "Introduce las horas disponibles",
+    "mentees": "Discípulos",
+    "menteesPlaceholder": "Introduce el número de discípulos",
+    "expertise": "Áreas de especialización",
+    "expertisePlaceholder": "Introduce las áreas de especialización",
+    "experience": "Experiencia",
+    "experiencePlaceholder": "Introduce tu experiencia",
+    "rating": "Valoración",
+    "ratingPlaceholder": "Introduce tu valoración",
+    "achievements": "Logros",
+    "experienceYears": "Años de experiencia",
+    "years": "años",
+    "fillAllFields": "Por favor, rellena todos los campos obligatorios",
+    "createMentor": "Crear mentor",
+    "createMentorSuccess": "Mentor creado con éxito",
+    "createMentorError": "Error al crear el mentor",
+    "requestMentorship": "Solicitar mentoría",
+    "requestMentorshipSuccess": "Solicitud de mentoría enviada con éxito",
+    "requestMentorshipError": "Error al solicitar la mentoría",
+    "profileCreatedSuccessfully": "Mentor creado con éxito",
+    "profileCreationFailed": "Error al crear el perfil de mentor",
+    "requestSentSuccessfully": "Solicitud de mentoría enviada con éxito",
+    "requestFailed": "Error al solicitar la mentoría",
+    "sortOptions": {
+      "newest": "Más reciente",
+      "highestRated": "Mejor valorado",
+      "mostPopular": "Más popular"
+    }
+  },
+  "knowledgeSharing": {
+    "title": "Intercambio de conocimientos",
+    "description": "Comparte tus conocimientos",
+    "tags": "Etiquetas",
+    "befirsttoShare": "¡Sé el primero en compartir!",
+    "recentShares": "Compartidos recientemente",
+    "noShares": "Aún no hay publicaciones",
+    "beFirstToShare": "¡Sé el primero en compartir!",
+    "createShare": "Crear publicación",
+    "applyFilters": "Aplicar filtros",
+    "clearFilters": "Borrar filtros",
+    "searchPlaceholder": "Buscar conocimiento...",
+    "sortBy": "Ordenar por",
+    "filterBy": "Filtrar por",
+    "category": "Categoría",
+    "allCategories": "Todas las categorías",
+    "allTypes": "Todos los tipos",
+    "filters": "Filtros",
+    "filtersPlaceholder": "Seleccionar filtros",
+    "categories": {
+      "habits": "Hábitos",
+      "wellness": "Salud y bienestar",
+      "productivity": "Productividad",
+      "learning": "Aprendizaje",
+      "motivation": "Motivación"
+    },
+    "titlePlaceholder": "Introduce el título de la publicación",
+    "contentPlaceholder": "Introduce el contenido de la publicación",
+    "categoryPlaceholder": "Selecciona la categoría de la publicación",
+    "typePlaceholder": "Selecciona el tipo de publicación",
+    "tagsPlaceholder": "Añade etiquetas (pulsa Enter)",
+    "tagPlaceholder": "Añade etiquetas (pulsa Enter)",
+    "type": "Tipo",
+    "types": {
+      "allTypes": "Todos",
+      "article": "Artículo",
+      "tip": "Consejo",
+      "experience": "Experiencia",
+      "tutorial": "Tutorial"
+    },
+    "sortOptions": {
+      "newest": "Más reciente",
+      "highestRated": "Mejor valorado"
+    }
+  },
+  "learningCircles": {
+    "title": "Círculos de aprendizaje",
+    "description": "Únete a círculos de aprendizaje y estudia con otros",
+    "searchPlaceholder": "Buscar círculos de aprendizaje...",
+    "sortBy": "Ordenar por",
+    "availableCircles": "Círculos de aprendizaje disponibles",
+    "createCircle": "Crear círculo de aprendizaje",
+    "joinCircle": "Unirse a círculo de aprendizaje",
+    "createSession": "Crear sesión",
+    "discuss": "Debatir",
+    "comingSoon": "Próximamente",
+    "discussionsComingSoon": "La función de debate estará disponible próximamente",
+    "titlePlaceholder": "Introduce el título del círculo de aprendizaje",
+    "descriptionPlaceholder": "Introduce la descripción del círculo de aprendizaje",
+    "categoryPlaceholder": "Selecciona la categoría del círculo de aprendizaje",
+    "typePlaceholder": "Selecciona el tipo de círculo de aprendizaje",
+    "tagsPlaceholder": "Añade etiquetas (pulsa Enter)",
+    "tagPlaceholder": "Añade etiquetas (pulsa Enter)",
+    "type": "Tipo",
+    "maxMembers": "Número máximo de miembros",
+    "maxMembersPlaceholder": "Introduce el número máximo de miembros",
+    "members": "Miembros",
+    "membersPlaceholder": "Introduce el número de miembros",
+    "membership": "Membresía",
+    "membershipPlaceholder": "Introduce el número de miembros",
+    "createSuccessfully": "Creación exitosa",
+    "createFailed": "Error al crear",
+    "joinSuccessfully": "Unión exitosa",
+    "joinFailed": "Error al unirse",
+    "leader": "Líder",
+    "leaderPlaceholder": "Introduce el líder",
+    "sessions": "Sesiones",
+    "sessionTitle": "Título de la sesión",
+    "sessionTitlePlaceholder": "Introduce el título de la sesión",
+    "sessionDescription": "Descripción de la sesión",
+    "sessionDescriptionPlaceholder": "Introduce la descripción de la sesión",
+    "sessionDuration": "Duración de la sesión",
+    "sessionDurationPlaceholder": "Introduce la duración de la sesión",
+    "duration": "Duración",
+    "minutes": "minutos",
+    "fillAllFields": "Por favor, rellena todos los campos obligatorios",
+    "category": "Categoría",
+    "difficulty": "Dificultad",
+    "sortOptions": {
+      "newest": "Más reciente",
+      "highestRated": "Mejor valorado",
+      "mostPopular": "Más popular"
+    }
+  },
+  "communityAnalytics": {
+    "title": "Análisis de la comunidad",
+    "description": "Seguimiento de la participación y las ideas de la comunidad",
+    "searchPlaceholder": "Buscar comunidad...",
+    "sortBy": "Ordenar por",
+    "filterBy": "Filtrar por",
+    "category": "Categoría",
+    "allCategories": "Todas las categorías",
+    "allTypes": "Todos los tipos",
+    "filters": "Filtros",
+    "filtersPlaceholder": "Seleccionar filtros",
+    "periods": {
+      "week": "Semana",
+      "month": "Mes",
+      "year": "Año"
+    },
+    "lastUpdated": "Última actualización",
+    "noData": "Sin datos",
+    "loadError": "Error al cargar los datos",
+    "engagementRate": "Tasa de participación",
+    "activity": "Actividad",
+    "topContributors": "Principales contribuyentes",
+    "popularTopics": "Temas populares",
+    "topContributorsPlaceholder": "Introduce los principales contribuyentes",
+    "popularTopicsPlaceholder": "Introduce los temas populares",
+    "engagmentRate": "Tasa de participación",
+    "engagementRatePlaceholder": "Introduce la tasa de participación",
+    "needsImprovement": "Necesita mejoras",
+    "needsImprovementPlaceholder": "Introduce las áreas que necesitan mejoras",
+    "totalMembers": "Total de miembros",
+    "totalMembersPlaceholder": "Introduce el total de miembros",
+    "totalActivities": "Total de actividades",
+    "totalActivitiesPlaceholder": "Introduce el total de actividades",
+    "totalEngagements": "Total de participaciones",
+    "totalEngagementsPlaceholder": "Introduce el total de participaciones",
+    "totalNeedsImprovement": "Total de mejoras necesarias",
+    "activeMembers": "Miembros activos",
+    "activeMembersPlaceholder": "Introduce los miembros activos",
+    "mentorshipConnectionsPlaceholder": "Introduce las conexiones de mentoría",
+    "knowledgeShares": "Intercambios de conocimientos",
+    "mentorshipConnections": "Conexiones de mentoría",
+    "challengesCreated": "Desafíos creados",
+    "challengesCompleted": "Desafíos completados",
+    "categories": {
+      "habits": "Hábitos",
+      "wellness": "Salud y bienestar",
+      "productivity": "Productividad",
+      "learning": "Aprendizaje",
+      "motivation": "Motivación"
+    },
+    "sortOptions": {
+      "newest": "Más reciente",
+      "highestRated": "Mejor valorado",
+      "mostPopular": "Más popular"
+    }
   }
 }

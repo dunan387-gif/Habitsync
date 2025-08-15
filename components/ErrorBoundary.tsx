@@ -1,5 +1,5 @@
 import React, { Component, ErrorInfo, ReactNode } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Alert } from 'react-native';
 import { AlertTriangle, RefreshCw, Home, Settings } from 'lucide-react-native';
 import { useTheme } from '@/context/ThemeContext';
 import { useLanguage } from '@/context/LanguageContext';
@@ -78,10 +78,9 @@ export default class ErrorBoundary extends Component<Props, State> {
     };
 
     // In a real app, you would send this to your error reporting service
-    console.log('Error Report:', errorReport);
     
     // For now, we'll just show an alert
-    alert('Error has been reported. Thank you for your feedback!');
+    Alert.alert('Success', 'Error has been reported. Thank you for your feedback!');
   };
 
   render() {

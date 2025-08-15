@@ -1,0 +1,117 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Helper functions
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+    
+    function isValidUserData() {
+      return request.resource.data.keys().hasAll(['email', 'name', 'joinedAt']) &&
+             request.resource.data.email is string &&
+             request.resource.data.name is string &&
+             request.resource.data.joinedAt is string;
+    }
+    
+    function isValidHabitData() {
+      return request.resource.data.keys().hasAll(['title', 'userId', 'createdAt']) &&
+             request.resource.data.title is string &&
+             request.resource.data.userId is string &&
+             request.resource.data.createdAt is string;
+    }
+    
+    function isValidMoodEntry() {
+      return request.resource.data.keys().hasAll(['userId', 'moodState', 'timestamp']) &&
+             request.resource.data.userId is string &&
+             request.resource.data.moodState is string &&
+             request.resource.data.timestamp is string;
+    }
+
+    // Users collection - users can only access their own data
+    match /users/{userId} {
+      allow read, write: if isOwner(userId);
+      allow create: if isAuthenticated() && 
+                       request.auth.uid == userId && 
+                       isValidUserData();
+      allow update: if isOwner(userId);
+      allow delete: if isOwner(userId);
+    }
+    
+    // Habits collection - users can only access their own habits
+    match /habits/{habitId} {
+      allow read, write: if isAuthenticated() && 
+                           request.auth.uid == resource.data.userId;
+      allow create: if isAuthenticated() && 
+                       request.auth.uid == request.resource.data.userId && 
+                       isValidHabitData();
+      allow update: if isAuthenticated() && 
+                       request.auth.uid == resource.data.userId;
+      allow delete: if isAuthenticated() && 
+                       request.auth.uid == resource.data.userId;
+    }
+    
+    // Mood entries collection - users can only access their own mood data
+    match /mood_entries/{entryId} {
+      allow read, write: if isAuthenticated() && 
+                           request.auth.uid == resource.data.userId;
+      allow create: if isAuthenticated() && 
+                       request.auth.uid == request.resource.data.userId && 
+                       isValidMoodEntry();
+      allow update: if isAuthenticated() && 
+                       request.auth.uid == resource.data.userId;
+      allow delete: if isAuthenticated() && 
+                       request.auth.uid == resource.data.userId;
+    }
+    
+    // Analytics collection - users can only access their own analytics
+    match /analytics/{analyticsId} {
+      allow read, write: if isAuthenticated() && 
+                           request.auth.uid == resource.data.userId;
+      allow create: if isAuthenticated() && 
+                       request.auth.uid == request.resource.data.userId;
+      allow update: if isAuthenticated() && 
+                       request.auth.uid == resource.data.userId;
+      allow delete: if isAuthenticated() && 
+                       request.auth.uid == resource.data.userId;
+    }
+    
+    // User preferences collection
+    match /user_preferences/{userId} {
+      allow read, write: if isOwner(userId);
+    }
+    
+    // Habit completions collection
+    match /habit_completions/{completionId} {
+      allow read, write: if isAuthenticated() && 
+                           request.auth.uid == resource.data.userId;
+      allow create: if isAuthenticated() && 
+                       request.auth.uid == request.resource.data.userId;
+    }
+    
+    // Streak milestones collection
+    match /streak_milestones/{milestoneId} {
+      allow read, write: if isAuthenticated() && 
+                           request.auth.uid == resource.data.userId;
+      allow create: if isAuthenticated() && 
+                       request.auth.uid == request.resource.data.userId;
+    }
+    
+    // Community posts (for future use)
+    match /community_posts/{postId} {
+      allow read: if isAuthenticated();
+      allow create: if isAuthenticated() && 
+                       request.auth.uid == request.resource.data.userId;
+      allow update, delete: if isAuthenticated() && 
+                              request.auth.uid == resource.data.userId;
+    }
+    
+    // Deny all other access
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

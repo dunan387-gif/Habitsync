@@ -48,10 +48,8 @@ export default function DetailedMoodTrackingScreen() {
   const styles = createStyles(currentTheme.colors);
 
   const handleMoodSelect = (moodId: MoodState) => {
-    console.log('Mood selected:', moodId);
     setSelectedMood(moodId);
     setCurrentStep('details');
-    console.log('Step changed to details');
   };
 
   const handleBackToMoodSelection = () => {
@@ -136,7 +134,6 @@ export default function DetailedMoodTrackingScreen() {
                     { borderColor: mood.color + '40' }
                   ]}
                   onPress={() => {
-                    console.log('TouchableOpacity pressed for:', mood.id);
                     handleMoodSelect(mood.id as MoodState);
                   }}
                   activeOpacity={0.7}

@@ -1,7 +1,7 @@
 // Performance Alerts Settings Modal Component
 
 import React from 'react';
-import { View, Text, StyleSheet, Modal, TouchableOpacity, ScrollView, Switch } from 'react-native';
+import { View, Text, StyleSheet, Modal, TouchableOpacity, ScrollView, Switch, Alert } from 'react-native';
 import { X, Bell, AlertTriangle, Info, Settings } from 'lucide-react-native';
 import { usePerformanceAlerts } from '@/context/PerformanceAlertsContext';
 import { useTheme } from '@/context/ThemeContext';
@@ -165,6 +165,25 @@ export default function PerformanceAlertsSettings({ visible, onClose }: Performa
               />
             </View>
           </View>
+
+          {/* Test Section */}
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>{t('performance.alerts.settings.testAlerts')}</Text>
+            
+            <TouchableOpacity 
+              style={styles.testButton}
+              onPress={() => {
+                // This would trigger a test alert in a real implementation
+                Alert.alert(
+                  t('performance.alerts.settings.testAlertTitle'),
+                  t('performance.alerts.settings.testAlertMessage'),
+                  [{ text: t('common.ok') }]
+                );
+              }}
+            >
+              <Text style={styles.testButtonText}>{t('performance.alerts.settings.testAlert')}</Text>
+            </TouchableOpacity>
+          </View>
         </ScrollView>
       </View>
     </Modal>
@@ -239,5 +258,17 @@ const createStyles = (colors: any) => StyleSheet.create({
     fontSize: 14,
     color: colors.textSecondary,
     lineHeight: 18,
+  },
+  testButton: {
+    backgroundColor: colors.primary,
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    borderRadius: 8,
+    alignItems: 'center',
+  },
+  testButtonText: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: colors.background,
   },
 }); 

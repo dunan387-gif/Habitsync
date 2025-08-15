@@ -1,6 +1,6 @@
 import { MoodEntry, HabitMoodEntry, Habit } from '@/types';
 import { AdvancedAnalyticsService } from './AdvancedAnalyticsService';
-import { PredictiveAnalyticsService } from './PredictiveAnalyticsService';
+import PredictiveAnalyticsService from './PredictiveAnalyticsService';
 
 export interface AICoachingSession {
   id: string;

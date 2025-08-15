@@ -2,9 +2,88 @@ import React, { createContext, useContext, useState, useEffect, ReactNode, useRe
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Achievement, UserLevel, MoodEntry, StreakMilestone, GamificationData, Habit, HabitMoodEntry } from '@/types';
 import { useCelebration } from '@/context/CelebrationContext';
-import { useLanguage } from '@/context/LanguageContext';
 import { useAuth } from '@/context/AuthContext';
 import { getLocalDateString } from '@/utils/timezone';
+
+// Helper function to get translated achievement content
+const getTranslatedAchievementContent = (achievementId: string, language: string = 'en') => {
+  const achievementContentMap: { [key: string]: { [key: string]: { title: string; description: string } } } = {
+    'first_course': {
+      en: { title: 'Knowledge Seeker', description: 'Enrolled in your first course' },
+      es: { title: 'Buscador de Conocimiento', description: 'Te inscribiste en tu primer curso' },
+      fr: { title: 'Chercheur de Connaissances', description: 'Inscrit à votre premier cours' },
+      zh: { title: '知识探索者', description: '注册了您的第一个课程' }
+    },
+    'course_collector': {
+      en: { title: 'Course Collector', description: 'Enrolled in 5 different courses' },
+      es: { title: 'Coleccionista de Cursos', description: 'Te inscribiste en 5 cursos diferentes' },
+      fr: { title: 'Collectionneur de Cours', description: 'Inscrit à 5 cours différents' },
+      zh: { title: '课程收集者', description: '注册了5个不同的课程' }
+    },
+    'knowledge_seeker': {
+      en: { title: 'Knowledge Seeker', description: 'Completed 3 course modules' },
+      es: { title: 'Buscador de Conocimiento', description: 'Completaste 3 módulos de curso' },
+      fr: { title: 'Chercheur de Connaissances', description: 'Terminé 3 modules de cours' },
+      zh: { title: '知识探索者', description: '完成了3个课程模块' }
+    },
+    'guided_master': {
+      en: { title: 'Guided Master', description: 'Completed 3 guided setups' },
+      es: { title: 'Maestro Guiado', description: 'Completaste 3 configuraciones guiadas' },
+      fr: { title: 'Maître Guidé', description: 'Terminé 3 configurations guidées' },
+      zh: { title: '引导大师', description: '完成了3个引导设置' }
+    },
+    'learning_streak': {
+      en: { title: 'Learning Streak', description: 'Learned for 5 consecutive days' },
+      es: { title: 'Racha de Aprendizaje', description: 'Aprendiste durante 5 días consecutivos' },
+      fr: { title: 'Série d\'Apprentissage', description: 'Appris pendant 5 jours consécutifs' },
+      zh: { title: '学习连胜', description: '连续学习5天' }
+    },
+    'knowledge_sharer': {
+      en: { title: 'Knowledge Sharer', description: 'Shared knowledge with the community' },
+      es: { title: 'Compartidor de Conocimiento', description: 'Compartiste conocimiento con la comunidad' },
+      fr: { title: 'Partageur de Connaissances', description: 'Partagé des connaissances avec la communauté' },
+      zh: { title: '知识分享者', description: '与社区分享知识' }
+    },
+    'library_explorer': {
+      en: { title: 'Library Explorer', description: 'Explored all library sections' },
+      es: { title: 'Explorador de Biblioteca', description: 'Exploraste todas las secciones de la biblioteca' },
+      fr: { title: 'Explorateur de Bibliothèque', description: 'Exploré toutes les sections de la bibliothèque' },
+      zh: { title: '图书馆探索者', description: '探索了所有图书馆部分' }
+    },
+    'feedback_contributor': {
+      en: { title: 'Feedback Contributor', description: 'Provided feedback on library content' },
+      es: { title: 'Contribuidor de Comentarios', description: 'Proporcionaste comentarios sobre el contenido de la biblioteca' },
+      fr: { title: 'Contributeur de Retours', description: 'Fourni des retours sur le contenu de la bibliothèque' },
+      zh: { title: '反馈贡献者', description: '为图书馆内容提供反馈' }
+    },
+    'study_group_creator': {
+      en: { title: 'Study Group Creator', description: 'Created your first study group' },
+      es: { title: 'Creador de Grupo de Estudio', description: 'Creaste tu primer grupo de estudio' },
+      fr: { title: 'Créateur de Groupe d\'Étude', description: 'Créé votre premier groupe d\'étude' },
+      zh: { title: '学习小组创建者', description: '创建了您的第一个学习小组' }
+    },
+    'study_group_joiner': {
+      en: { title: 'Study Group Joiner', description: 'Joined 3 different study groups' },
+      es: { title: 'Miembro de Grupo de Estudio', description: 'Te uniste a 3 grupos de estudio diferentes' },
+      fr: { title: 'Membre de Groupe d\'Étude', description: 'Rejoint 3 groupes d\'étude différents' },
+      zh: { title: '学习小组成员', description: '加入了3个不同的学习小组' }
+    },
+    'learning_circle_leader': {
+      en: { title: 'Learning Circle Leader', description: 'Led 5 study sessions' },
+      es: { title: 'Líder del Círculo de Aprendizaje', description: 'Dirigiste 5 sesiones de estudio' },
+      fr: { title: 'Leader du Cercle d\'Apprentissage', description: 'Dirigé 5 sessions d\'étude' },
+      zh: { title: '学习圈领导者', description: '领导了5次学习会议' }
+    },
+    'peer_mentor': {
+      en: { title: 'Peer Mentor', description: 'Helped 10 other learners' },
+      es: { title: 'Mentor de Pares', description: 'Ayudaste a 10 otros estudiantes' },
+      fr: { title: 'Mentor de Pairs', description: 'Aidé 10 autres apprenants' },
+      zh: { title: '同伴导师', description: '帮助了10位其他学习者' }
+    }
+  };
+
+  return achievementContentMap[achievementId]?.[language] || achievementContentMap[achievementId]?.['en'] || { title: '', description: '' };
+};
 
 // Add AdaptiveChallenge interface
 interface AdaptiveChallenge {
@@ -39,40 +118,65 @@ interface GamificationContextType {
       getLevelPerks: (level: number) => string[];
   // Clear gamification data method
   clearGamificationData: () => Promise<void>;
+  // Library & Learning Integration Methods
+  trackCourseEnrollment: (courseId: string, courseTitle: string) => Promise<void>;
+  trackCourseCompletion: (courseId: string, courseTitle: string) => Promise<void>;
+  trackModuleCompletion: (courseId: string, moduleId: string, moduleTitle: string) => Promise<void>;
+  trackGuidedSetupCompletion: (setupId: string, setupTitle: string) => Promise<void>;
+  trackLibraryFeedback: (rating: number, feedbackText?: string) => Promise<void>;
+  trackLearningStreak: (days: number) => Promise<void>;
+  trackKnowledgeSharing: (type: 'course_insight' | 'community_post' | 'feedback') => Promise<void>;
+  getLearningStats: () => {
+    coursesCompleted: number;
+    modulesCompleted: number;
+    guidedSetupsCompleted: number;
+    learningStreak: number;
+    totalLearningTime: number;
+    knowledgeShared: number;
+  };
+  // Phase 3B methods
+  trackStudyGroupCreation: (groupId: string, groupName: string) => Promise<void>;
+  trackStudyGroupJoin: (groupId: string, groupName: string) => Promise<void>;
+  trackStudySessionCompletion: (sessionId: string, duration: number, participants: number) => Promise<void>;
+  trackPeerRecommendation: (recommendationType: 'given' | 'received', courseId: string) => Promise<void>;
+  trackLearningCircleContribution: (circleId: string, contributionType: string) => Promise<void>;
+  getSocialLearningStats: () => Promise<{
+    studyGroupsCreated: number;
+    studyGroupsJoined: number;
+    studySessionsCompleted: number;
+    peerRecommendationsGiven: number;
+    peerRecommendationsReceived: number;
+    learningCircleContributions: number;
+  }>;
 }
 
 const GamificationContext = createContext<GamificationContextType | undefined>(undefined);
 
-const INITIAL_GAMIFICATION_DATA: GamificationData = {
-  userLevel: {
-    level: 1,
-    currentXP: 0,
-    xpToNextLevel: 100,
-    totalXP: 0,
-    title: '', // Will be set dynamically using translation keys
-    perks: [] // Will be set dynamically using translation keys
-  },
-  achievements: [],
-  unlockedAchievements: [],
-  streakMilestones: [],
-  moodEntries: [],
-  habitMoodEntries: [], // Add missing property
-  dailyXPEarned: 0,
-  xp: 0 // Add missing xp property
-};
-
+// XP Rewards for different actions
 const XP_REWARDS = {
-  habit_completion: 10,
-  streak_milestone: 25,
-  mood_checkin: 5,
-  perfect_day: 50,
-  weekly_goal: 100,
-  mood_pattern_discovery: 30,
-  resilient_completion: 20,
-  mood_improvement: 15,
-  emotional_consistency: 25,
-  adaptive_challenge: 40
-};
+  habit_completed: 10,
+  streak_milestone: 50,
+  mood_check: 5,
+  community_post: 15,
+  achievement_unlocked: 100,
+  level_up: 200,
+  social_interaction: 10,
+  course_enrollment: 25,
+  course_completion: 100,
+  module_completion: 30,
+  guided_setup_completion: 50,
+  library_feedback: 15,
+  course_recommendation: 20,
+  learning_streak: 40,
+  knowledge_sharing: 25,
+  study_group_created: 75,
+  study_group_joined: 30,
+  study_session_completed: 45,
+  peer_recommendation_given: 35,
+  peer_recommendation_received: 25,
+  learning_circle_contribution: 40,
+  adaptive_challenge: 60,
+} as const;
 
 const LEVEL_TITLE_KEYS = [
   'gamification.levelTitles.habitBeginner',
@@ -85,183 +189,219 @@ const LEVEL_TITLE_KEYS = [
   'gamification.levelTitles.habitLegend'
 ];
 
-const ACHIEVEMENTS: Achievement[] = [
-  {
+const ACHIEVEMENTS = {
+  // Existing achievements
+  first_habit: {
     id: 'first_habit',
-    titleKey: 'gamification.achievements.firstSteps.title',
-    descriptionKey: 'gamification.achievements.firstSteps.description',
-    icon: '🌱',
-    condition: 'Complete 1 habit total',
-    category: 'milestone',
-    xpReward: 25,
-    rarity: 'common'
-  },
-  {
-    id: 'week_warrior',
-    titleKey: 'gamification.achievements.weekWarrior.title',
-    descriptionKey: 'gamification.achievements.weekWarrior.description',
-    icon: '⚡',
-    condition: 'Maintain a 7-day streak',
-    category: 'streak',
-    xpReward: 100,
-    rarity: 'rare'
-  },
-  {
-    id: 'month_master',
-    titleKey: 'gamification.achievements.monthMaster.title',
-    descriptionKey: 'gamification.achievements.monthMaster.description',
-    icon: '🏆',
-    condition: 'Maintain a 30-day streak',
-    category: 'streak',
-    xpReward: 500,
-    rarity: 'epic'
-  },
-  {
-    id: 'century_club',
-    titleKey: 'gamification.achievements.centuryClub.title',
-    descriptionKey: 'gamification.achievements.centuryClub.description',
-    icon: '💎',
-    condition: 'Maintain a 100-day streak',
-    category: 'streak',
-    xpReward: 1000,
-    rarity: 'legendary'
-  },
-  {
-    id: 'mood_tracker',
-    titleKey: 'gamification.achievements.moodTracker.title',
-    descriptionKey: 'gamification.achievements.moodTracker.description',
-    icon: '😊',
-    condition: 'Check mood for 7 consecutive days',
-    category: 'mood',
-    xpReward: 75,
-    rarity: 'common'
-  },
-  {
-    id: 'habit_collector',
-    titleKey: 'gamification.achievements.habitCollector.title',
-    descriptionKey: 'gamification.achievements.habitCollector.description',
-    icon: '📚',
-    condition: 'Create 10 different habits',
-    category: 'milestone',
-    xpReward: 200,
-    rarity: 'rare'
-  },
-  {
-    id: 'perfect_week',
-    titleKey: 'gamification.achievements.perfectWeek.title',
-    descriptionKey: 'gamification.achievements.perfectWeek.description',
-    icon: '⭐',
-    condition: 'Complete all habits for 7 consecutive days',
-    category: 'habit',
-    xpReward: 300,
-    rarity: 'epic'
-  },
-  // New Mood-Based Achievements
-  {
-    id: 'mood_warrior',
-    titleKey: 'gamification.achievements.moodWarrior.title',
-    descriptionKey: 'gamification.achievements.moodWarrior.description',
-    icon: '🛡️',
-    condition: 'Track mood for 30 consecutive days',
-    category: 'mood',
-    xpReward: 200,
-    rarity: 'rare'
-  },
-  {
-    id: 'pattern_finder',
-    titleKey: 'gamification.achievements.patternFinder.title',
-    descriptionKey: 'gamification.achievements.patternFinder.description',
-    icon: '🔍',
-    condition: 'Identify 5 mood-habit patterns',
-    category: 'mood',
-    xpReward: 150,
-    rarity: 'rare'
-  },
-  {
-    id: 'resilience_builder',
-    titleKey: 'gamification.achievements.resilienceBuilder.title',
-    descriptionKey: 'gamification.achievements.resilienceBuilder.description',
-    icon: '💪',
-    condition: 'Complete habits during sad/anxious/stressed moods 20 times',
-    category: 'mood',
-    xpReward: 250,
-    rarity: 'epic'
-  },
-  {
-    id: 'mood_booster',
-    titleKey: 'gamification.achievements.moodBooster.title',
-    descriptionKey: 'gamification.achievements.moodBooster.description',
-    icon: '🌈',
-    condition: 'Show mood improvement after habit completion 15 times',
-    category: 'mood',
-    xpReward: 180,
-    rarity: 'rare'
-  },
-  {
-    id: 'emotional_intelligence',
-    titleKey: 'gamification.achievements.emotionalIntelligence.title',
-    descriptionKey: 'gamification.achievements.emotionalIntelligence.description',
-    icon: '🧠',
-    condition: 'Complete habits in all mood states (happy, sad, anxious, energetic, tired, stressed, calm)',
-    category: 'mood',
-    xpReward: 300,
-    rarity: 'epic'
-  },
-  // Adaptive Challenge Achievements
-  {
-    id: 'adaptive_champion',
-    titleKey: 'gamification.achievements.adaptiveChampion.title',
-    descriptionKey: 'gamification.achievements.adaptiveChampion.description',
+    title: 'First Steps',
+    description: 'Created your first habit',
+    category: 'habit' as const,
+    xpReward: 50,
     icon: '🎯',
-    condition: 'Complete 10 adaptive challenges',
-    category: 'mood',
-    xpReward: 200,
-    rarity: 'rare'
   },
-  {
-    id: 'resilience_master',
-    titleKey: 'gamification.achievements.resilienceMaster.title',
-    descriptionKey: 'gamification.achievements.resilienceMaster.description',
-    icon: '🏔️',
-    condition: 'Complete 5 resilience challenges',
-    category: 'mood',
-    xpReward: 250,
-    rarity: 'epic'
-  },
-  {
-    id: 'mood_streak_legend',
-    titleKey: 'gamification.achievements.moodStreakLegend.title',
-    descriptionKey: 'gamification.achievements.moodStreakLegend.description',
+  streak_7: {
+    id: 'streak_7',
+    title: 'Week Warrior',
+    description: 'Maintained a 7-day streak',
+    category: 'streak' as const,
+    xpReward: 100,
     icon: '🔥',
-    condition: 'Maintain mood improvement for 14 consecutive days',
-    category: 'mood',
-    xpReward: 400,
-    rarity: 'legendary'
   },
-  {
-    id: 'difficult_mood_master',
-    titleKey: 'gamification.achievements.difficultMoodMaster.title',
-    descriptionKey: 'gamification.achievements.difficultMoodMaster.description',
-    icon: '⚔️',
-    condition: 'Complete habits during difficult moods (sad, anxious, stressed, tired) 30 times',
-    category: 'mood',
-    xpReward: 350,
-    rarity: 'epic'
-  },
-  {
-    id: 'balance_keeper',
-    titleKey: 'gamification.achievements.balanceKeeper.title',
-    descriptionKey: 'gamification.achievements.balanceKeeper.description',
-    icon: '⚖️',
-    condition: 'Achieve balanced mood-habit completion for 21 days',
-    category: 'mood',
+  streak_30: {
+    id: 'streak_30',
+    title: 'Monthly Master',
+    description: 'Maintained a 30-day streak',
+    category: 'streak' as const,
     xpReward: 300,
-    rarity: 'epic'
-  }
-];
+    icon: '👑',
+  },
+  mood_tracker: {
+    id: 'mood_tracker',
+    title: 'Mood Master',
+    description: 'Tracked mood for 7 consecutive days',
+    category: 'mood' as const,
+    xpReward: 75,
+    icon: '😊',
+  },
+  social_butterfly: {
+    id: 'social_butterfly',
+    title: 'Social Butterfly',
+    description: 'Interacted with 5 community posts',
+    category: 'social' as const,
+    xpReward: 80,
+    icon: '🦋',
+  },
+  habit_collector: {
+    id: 'habit_collector',
+    title: 'Habit Collector',
+    description: 'Created 10 different habits',
+    category: 'habit' as const,
+    xpReward: 150,
+    icon: '📚',
+  },
+  // Learning achievements (Phase 3A)
+  first_course: {
+    id: 'first_course',
+    title: getTranslatedAchievementContent('first_course', 'en').title,
+    description: getTranslatedAchievementContent('first_course', 'en').description,
+    category: 'learning' as const,
+    xpReward: 75,
+    icon: '🎓',
+  },
+  course_collector: {
+    id: 'course_collector',
+    title: 'Course Collector',
+    description: 'Enrolled in 5 different courses',
+    category: 'learning' as const,
+    xpReward: 200,
+    icon: '📖',
+  },
+  knowledge_seeker: {
+    id: 'knowledge_seeker',
+    title: 'Knowledge Seeker',
+    description: 'Completed 3 course modules',
+    category: 'learning' as const,
+    xpReward: 150,
+    icon: '🔍',
+  },
+  guided_master: {
+    id: 'guided_master',
+    title: 'Guided Master',
+    description: 'Completed 3 guided setups',
+    category: 'learning' as const,
+    xpReward: 180,
+    icon: '🎯',
+  },
+  learning_streak: {
+    id: 'learning_streak',
+    title: 'Learning Streak',
+    description: 'Learned for 5 consecutive days',
+    category: 'learning' as const,
+    xpReward: 120,
+    icon: '📈',
+  },
+  knowledge_sharer: {
+    id: 'knowledge_sharer',
+    title: 'Knowledge Sharer',
+    description: 'Shared knowledge with the community',
+    category: 'learning' as const,
+    xpReward: 100,
+    icon: '🤝',
+  },
+  library_explorer: {
+    id: 'library_explorer',
+    title: 'Library Explorer',
+    description: 'Explored all library sections',
+    category: 'learning' as const,
+    xpReward: 90,
+    icon: '🔍',
+  },
+  feedback_contributor: {
+    id: 'feedback_contributor',
+    title: 'Feedback Contributor',
+    description: 'Provided feedback on library content',
+    category: 'learning' as const,
+    xpReward: 60,
+    icon: '💬',
+  },
+  // Phase 3B: Social Learning achievements
+  study_group_creator: {
+    id: 'study_group_creator',
+    title: 'Study Group Creator',
+    description: 'Created your first study group',
+    category: 'learning' as const,
+    xpReward: 150,
+    icon: '👥',
+  },
+  study_group_joiner: {
+    id: 'study_group_joiner',
+    title: 'Study Group Joiner',
+    description: 'Joined 3 different study groups',
+    category: 'learning' as const,
+    xpReward: 120,
+    icon: '🤝',
+  },
+  learning_circle_leader: {
+    id: 'learning_circle_leader',
+    title: 'Learning Circle Leader',
+    description: 'Led 5 study sessions',
+    category: 'learning' as const,
+    xpReward: 250,
+    icon: '👑',
+  },
+  peer_mentor: {
+    id: 'peer_mentor',
+    title: 'Peer Mentor',
+    description: 'Helped 10 other learners',
+    category: 'learning' as const,
+    xpReward: 200,
+    icon: '🎓',
+  },
+  recommendation_expert: {
+    id: 'recommendation_expert',
+    title: 'Recommendation Expert',
+    description: 'Made 20 helpful course recommendations',
+    category: 'learning' as const,
+    xpReward: 180,
+    icon: '⭐',
+  },
+  community_educator: {
+    id: 'community_educator',
+    title: 'Community Educator',
+    description: 'Shared educational content 15 times',
+    category: 'learning' as const,
+    xpReward: 220,
+    icon: '📚',
+  },
+  collaborative_learner: {
+    id: 'collaborative_learner',
+    title: 'Collaborative Learner',
+    description: 'Participated in 10 collaborative learning sessions',
+    category: 'learning' as const,
+    xpReward: 160,
+    icon: '🤲',
+  },
+  knowledge_networker: {
+    id: 'knowledge_networker',
+    title: 'Knowledge Networker',
+    description: 'Connected with 25 other learners',
+    category: 'learning' as const,
+    xpReward: 140,
+    icon: '🌐',
+  },
+} as const;
+
+// Convert ACHIEVEMENTS object to array for INITIAL_GAMIFICATION_DATA
+const ACHIEVEMENTS_ARRAY: Achievement[] = Object.values(ACHIEVEMENTS).map(a => ({
+  id: a.id,
+  title: a.title,
+  description: a.description,
+  icon: a.icon,
+  condition: a.description,
+  category: a.category,
+  xpReward: a.xpReward,
+  rarity: 'common' as const
+}));
+
+const INITIAL_GAMIFICATION_DATA: GamificationData = {
+  userLevel: {
+    level: 1,
+    currentXP: 0,
+    xpToNextLevel: 100,
+    totalXP: 0,
+    title: '', // Will be set dynamically using translation keys
+    perks: [] // Will be set dynamically using translation keys
+  },
+  achievements: ACHIEVEMENTS_ARRAY,
+  unlockedAchievements: [],
+  streakMilestones: [],
+  moodEntries: [],
+  habitMoodEntries: [], // Add missing property
+  dailyXPEarned: 0,
+  xp: 0 // Add missing xp property
+};
 
 export function GamificationProvider({ children }: { children: ReactNode }) {
-  const { t } = useLanguage();
   const [gamificationData, setGamificationData] = useState<GamificationData | null>(null);
   const [adaptiveChallenges, setAdaptiveChallenges] = useState<AdaptiveChallenge[]>([]);
   const { showCelebration } = useCelebration();
@@ -269,6 +409,32 @@ export function GamificationProvider({ children }: { children: ReactNode }) {
   
   const unlockedAchievementsRef = useRef<string[]>([]);
   const [isCheckingAchievements, setIsCheckingAchievements] = useState(false);
+
+  // Helper function to safely get translations
+  const getTranslation = (key: string, params?: Record<string, any>): string => {
+    // For level titles and perks, return the key so they can be translated by the UI components
+    if (key.startsWith('gamification.levelTitles.') || key.startsWith('gamification.perks.')) {
+      return key;
+    }
+    
+    // Fallback translations for messages
+    const fallbackTranslations: Record<string, string> = {
+      'gamification.messages.levelUp': 'Level Up! You reached level {level}!',
+      'gamification.messages.achievementUnlocked': 'Achievement Unlocked: {title}!',
+    };
+    
+    let translation = fallbackTranslations[key] || key;
+    
+    // Replace parameters
+    if (params) {
+      Object.keys(params).forEach(paramKey => {
+        const placeholder = `{${paramKey}}`;
+        translation = translation.replace(new RegExp(placeholder, 'g'), String(params[paramKey]));
+      });
+    }
+    
+    return translation;
+  };
 
   // ✅ Update ref whenever gamificationData changes
   useEffect(() => {
@@ -299,27 +465,27 @@ export function GamificationProvider({ children }: { children: ReactNode }) {
 
   // Define getLevelPerks function before it's used in useMemo
   const getLevelPerks = (level: number): string[] => {
-    const perks = [t('gamification.perks.dailyHabitTracking')];
-    if (level >= 3) perks.push(t('gamification.perks.advancedStatistics'));
-    if (level >= 5) perks.push(t('gamification.perks.customThemes'));
-    if (level >= 10) perks.push(t('gamification.perks.aiHabitSuggestions'));
-    if (level >= 15) perks.push(t('gamification.perks.premiumFeatures'));
+    const perks = [getTranslation('gamification.perks.dailyHabitTracking')];
+    if (level >= 3) perks.push(getTranslation('gamification.perks.advancedStatistics'));
+    if (level >= 5) perks.push(getTranslation('gamification.perks.customThemes'));
+    if (level >= 10) perks.push(getTranslation('gamification.perks.aiHabitSuggestions'));
+    if (level >= 15) perks.push(getTranslation('gamification.perks.premiumFeatures'));
     return perks;
   };
 
   // Compute translated title and perks using useMemo to avoid infinite loops
   const translatedGamificationData = useMemo(() => {
-    if (!gamificationData || !t) return gamificationData;
+    if (!gamificationData) return gamificationData;
     
     return {
       ...gamificationData,
       userLevel: {
         ...gamificationData.userLevel,
-        title: t(LEVEL_TITLE_KEYS[Math.min(gamificationData.userLevel.level - 1, LEVEL_TITLE_KEYS.length - 1)]),
+        title: getTranslation(LEVEL_TITLE_KEYS[Math.min(gamificationData.userLevel.level - 1, LEVEL_TITLE_KEYS.length - 1)]),
         perks: getLevelPerks(gamificationData.userLevel.level)
       }
     };
-  }, [gamificationData, t]);
+  }, [gamificationData]);
 
 
   const loadGamificationData = async () => {
@@ -329,10 +495,10 @@ export function GamificationProvider({ children }: { children: ReactNode }) {
         const stored = await AsyncStorage.getItem('gamificationData');
         if (stored) {
           const data = JSON.parse(stored);
-          const loadedData = { ...INITIAL_GAMIFICATION_DATA, ...data, achievements: ACHIEVEMENTS };
+          const loadedData = { ...INITIAL_GAMIFICATION_DATA, ...data, achievements: ACHIEVEMENTS_ARRAY };
           setGamificationData(loadedData);
         } else {
-          const initialData = { ...INITIAL_GAMIFICATION_DATA, achievements: ACHIEVEMENTS };
+          const initialData = { ...INITIAL_GAMIFICATION_DATA, achievements: ACHIEVEMENTS_ARRAY };
           setGamificationData(initialData);
         }
       } else {
@@ -341,16 +507,16 @@ export function GamificationProvider({ children }: { children: ReactNode }) {
         const stored = await AsyncStorage.getItem(userGamificationKey);
         if (stored) {
           const data = JSON.parse(stored);
-          const loadedData = { ...INITIAL_GAMIFICATION_DATA, ...data, achievements: ACHIEVEMENTS };
+          const loadedData = { ...INITIAL_GAMIFICATION_DATA, ...data, achievements: ACHIEVEMENTS_ARRAY };
           setGamificationData(loadedData);
         } else {
-          const initialData = { ...INITIAL_GAMIFICATION_DATA, achievements: ACHIEVEMENTS };
+          const initialData = { ...INITIAL_GAMIFICATION_DATA, achievements: ACHIEVEMENTS_ARRAY };
           setGamificationData(initialData);
         }
       }
     } catch (error) {
       console.error('Failed to load gamification data:', error);
-      const fallbackData = { ...INITIAL_GAMIFICATION_DATA, achievements: ACHIEVEMENTS };
+      const fallbackData = { ...INITIAL_GAMIFICATION_DATA, achievements: ACHIEVEMENTS_ARRAY };
       setGamificationData(fallbackData);
     }
   };
@@ -377,15 +543,15 @@ export function GamificationProvider({ children }: { children: ReactNode }) {
 
   const addXP = async (amount: number, source: string) => {
     if (!gamificationData) {
+      console.error('❌ No gamification data available');
       return;
     }
 
+    // ✅ Calculate all updates in one go to prevent race conditions
     const newTotalXP = gamificationData.userLevel.totalXP + amount;
     const newCurrentXP = gamificationData.userLevel.currentXP + amount;
     let newLevel = gamificationData.userLevel.level;
     let xpToNextLevel = gamificationData.userLevel.xpToNextLevel;
-
-
 
     // Check for level up
     while (newCurrentXP >= xpToNextLevel) {
@@ -393,10 +559,8 @@ export function GamificationProvider({ children }: { children: ReactNode }) {
       const remainingXP = newCurrentXP - xpToNextLevel;
       xpToNextLevel = calculateXPToNextLevel(newLevel);
       
-
-      
       // Show level up celebration
-      showCelebration('level_up', t('gamification.messages.levelUp', { level: newLevel }));
+      showCelebration('level_up', getTranslation('gamification.messages.levelUp', { level: newLevel }));
     }
 
     const updatedData = {
@@ -406,7 +570,7 @@ export function GamificationProvider({ children }: { children: ReactNode }) {
         currentXP: newCurrentXP >= xpToNextLevel ? newCurrentXP - xpToNextLevel : newCurrentXP,
         xpToNextLevel,
         totalXP: newTotalXP,
-        title: t(LEVEL_TITLE_KEYS[Math.min(newLevel - 1, LEVEL_TITLE_KEYS.length - 1)]),
+        title: getTranslation(LEVEL_TITLE_KEYS[Math.min(newLevel - 1, LEVEL_TITLE_KEYS.length - 1)]),
         perks: getLevelPerks(newLevel)
       },
       dailyXPEarned: gamificationData.dailyXPEarned + amount
@@ -428,8 +592,9 @@ export function GamificationProvider({ children }: { children: ReactNode }) {
       return;
     }
   
-    const achievement = ACHIEVEMENTS.find(a => a.id === achievementId);
+    const achievement = ACHIEVEMENTS[achievementId as keyof typeof ACHIEVEMENTS];
     if (!achievement) {
+      console.warn(`Achievement ${achievementId} not found`);
       return;
     }
   
@@ -449,7 +614,7 @@ export function GamificationProvider({ children }: { children: ReactNode }) {
       xpToNextLevel = calculateXPToNextLevel(newLevel);
       
       // Show level up celebration
-      showCelebration('level_up', t('gamification.messages.levelUp', { level: newLevel }));
+      showCelebration('level_up', getTranslation('gamification.messages.levelUp', { level: newLevel }));
     }
 
     // ✅ Update state with both achievement and XP in single update
@@ -461,7 +626,7 @@ export function GamificationProvider({ children }: { children: ReactNode }) {
         currentXP: newCurrentXP >= xpToNextLevel ? newCurrentXP - xpToNextLevel : newCurrentXP,
         xpToNextLevel,
         totalXP: newTotalXP,
-        title: t(LEVEL_TITLE_KEYS[Math.min(newLevel - 1, LEVEL_TITLE_KEYS.length - 1)]),
+        title: getTranslation(LEVEL_TITLE_KEYS[Math.min(newLevel - 1, LEVEL_TITLE_KEYS.length - 1)]),
         perks: getLevelPerks(newLevel)
       },
       dailyXPEarned: gamificationData.dailyXPEarned + achievement.xpReward
@@ -476,24 +641,24 @@ export function GamificationProvider({ children }: { children: ReactNode }) {
     }
     
     // ✅ Show celebration after state update
-    showCelebration('achievement', t('gamification.messages.achievementUnlocked', { title: t(achievement.titleKey || '') }));
+    showCelebration('achievement', getTranslation('gamification.messages.achievementUnlocked', { title: achievement.title }));
   };
 
   const checkAchievements = async (habits: Habit[]) => {
     if (!gamificationData || isCheckingAchievements) return;
-    
-    setIsCheckingAchievements(true);
-    
+
     try {
-      for (const achievement of ACHIEVEMENTS) {
+      setIsCheckingAchievements(true);
+
+      for (const achievement of Object.values(ACHIEVEMENTS)) {
         if (unlockedAchievementsRef.current.includes(achievement.id)) {
           continue;
         }
         
         let shouldUnlock = false;
-  
+
         switch (achievement.category) {
-          case 'milestone':
+          case 'habit':
             if (achievement.id === 'first_habit') {
               const totalCompletions = habits.reduce((sum, habit) => sum + habit.completedDates.length, 0);
               shouldUnlock = totalCompletions >= 1;
@@ -501,18 +666,16 @@ export function GamificationProvider({ children }: { children: ReactNode }) {
               shouldUnlock = habits.length >= 10;
             }
             break;
-  
+
           case 'streak':
             const maxStreak = Math.max(...habits.map(h => h.streak), 0);
-            if (achievement.id === 'week_warrior') {
+            if (achievement.id === 'streak_7') {
               shouldUnlock = maxStreak >= 7;
-            } else if (achievement.id === 'month_master') {
+            } else if (achievement.id === 'streak_30') {
               shouldUnlock = maxStreak >= 30;
-            } else if (achievement.id === 'century_club') {
-              shouldUnlock = maxStreak >= 100;
             }
             break;
-  
+
           case 'mood':
             if (achievement.id === 'mood_tracker') {
               const last7Days = Array.from({ length: 7 }, (_, i) => {
@@ -526,57 +689,7 @@ export function GamificationProvider({ children }: { children: ReactNode }) {
                 gamificationData.moodEntries.some(entry => entry.date === date)
               );
               shouldUnlock = moodEntries;
-            } else if (achievement.id === 'mood_warrior') {
-              // Check for 30 consecutive days of mood tracking
-              const last30Days = Array.from({ length: 30 }, (_, i) => {
-                const date = new Date();
-                date.setDate(date.getDate() - i);
-                const offset = date.getTimezoneOffset();
-                const localDate = new Date(date.getTime() - (offset * 60 * 1000));
-                return localDate.toISOString().split('T')[0];
-              });
-              shouldUnlock = last30Days.every(date => 
-                gamificationData.moodEntries.some(entry => entry.date === date)
-              );
-            } else if (achievement.id === 'pattern_finder') {
-              // Count discovered mood-habit correlations
-              const correlations = analyzeHabitMoodCorrelations();
-              shouldUnlock = correlations.length >= 5;
-            } else if (achievement.id === 'resilience_builder') {
-              // Count habits completed during low moods
-              const lowMoodCompletions = gamificationData.habitMoodEntries.filter(entry => 
-                entry.action === 'completed' && 
-                entry.preMood && 
-                ['sad', 'anxious', 'stressed'].includes(entry.preMood.moodState)
-              ).length;
-              shouldUnlock = lowMoodCompletions >= 20;
-            } else if (achievement.id === 'mood_booster') {
-              // Count mood improvements after habit completion
-              const moodImprovements = gamificationData.habitMoodEntries.filter(entry => 
-                entry.action === 'completed' && 
-                entry.preMood && entry.postMood &&
-                entry.postMood.intensity > entry.preMood.intensity
-              ).length;
-              shouldUnlock = moodImprovements >= 15;
-            } else if (achievement.id === 'emotional_intelligence') {
-              // Check if habits completed in all mood states
-              const allMoodStates = ['happy', 'sad', 'anxious', 'energetic', 'tired', 'stressed', 'calm'] as const;
-              const completedMoodStates = new Set(
-                gamificationData.habitMoodEntries
-                  .filter(entry => entry.action === 'completed' && entry.preMood)
-                  .map(entry => entry.preMood!.moodState)
-              );
-              shouldUnlock = allMoodStates.every(mood => completedMoodStates.has(mood));
-            } else if (achievement.id === 'difficult_mood_master') {
-              // Count habits completed during difficult moods
-              const difficultMoodCompletions = gamificationData.habitMoodEntries.filter(entry => 
-                entry.action === 'completed' && 
-                entry.preMood && 
-                ['sad', 'anxious', 'stressed', 'tired'].includes(entry.preMood.moodState)
-              ).length;
-              shouldUnlock = difficultMoodCompletions >= 30;
             }
-            // Add more mood-based achievement checks here
             break;
         }
 
@@ -690,7 +803,7 @@ export function GamificationProvider({ children }: { children: ReactNode }) {
       // Add XP for mood check-in with a small delay to avoid race conditions
       setTimeout(async () => {
         try {
-          await addXP(XP_REWARDS.mood_checkin, 'mood_checkin');
+          await addXP(XP_REWARDS.mood_check, 'mood_checkin');
         } catch (error) {
           console.error('❌ Error adding XP:', error);
         }
@@ -735,7 +848,19 @@ export function GamificationProvider({ children }: { children: ReactNode }) {
   };
 
   const getAvailableAchievements = (): Achievement[] => {
-    return ACHIEVEMENTS;
+    return Object.values(ACHIEVEMENTS).map(a => {
+      const translatedContent = getTranslatedAchievementContent(a.id, 'en'); // Default to English for now
+      return {
+        id: a.id,
+        titleKey: translatedContent.title || a.title,
+        descriptionKey: translatedContent.description || a.description,
+        icon: a.icon,
+        condition: translatedContent.description || a.description, // Use description as condition for now
+        category: a.category,
+        xpReward: a.xpReward,
+        rarity: 'common' // Default rarity
+      };
+    });
   };
 
   const getTodaysMoodEntry = (): MoodEntry | null => {
@@ -799,7 +924,7 @@ export function GamificationProvider({ children }: { children: ReactNode }) {
   const clearGamificationData = async (): Promise<void> => {
     try {
       // Reset to initial state
-      const initialData = { ...INITIAL_GAMIFICATION_DATA, achievements: ACHIEVEMENTS };
+      const initialData = { ...INITIAL_GAMIFICATION_DATA, achievements: ACHIEVEMENTS_ARRAY };
       setGamificationData(initialData);
       
       // Clear from storage
@@ -811,6 +936,319 @@ export function GamificationProvider({ children }: { children: ReactNode }) {
       }
     } catch (error) {
       console.error('Failed to clear gamification data:', error);
+    }
+  };
+
+  // Library & Learning Integration Methods
+  const trackCourseEnrollment = async (courseId: string, courseTitle: string): Promise<void> => {
+    try {
+      await addXP(XP_REWARDS.course_enrollment, 'course_enrollment');
+      
+      // Check for first course achievement
+      const completedCourses = gamificationData?.unlockedAchievements.filter(id => 
+        id === 'first_course' || id === 'course_collector'
+      ).length || 0;
+      
+      if (completedCourses === 0) {
+        await unlockAchievement('first_course');
+      }
+    } catch (error) {
+      console.error('❌ Error tracking course enrollment:', error);
+    }
+  };
+
+  const trackCourseCompletion = async (courseId: string, courseTitle: string): Promise<void> => {
+    try {
+      await addXP(XP_REWARDS.course_completion, 'course_completion');
+      
+      // Check for course collector achievement
+      const completedCourses = gamificationData?.unlockedAchievements.filter(id => 
+        id === 'first_course' || id === 'course_collector'
+      ).length || 0;
+      
+      if (completedCourses >= 4) { // 5th course completion
+        await unlockAchievement('course_collector');
+      }
+    } catch (error) {
+      console.error('❌ Error tracking course completion:', error);
+    }
+  };
+
+  const trackModuleCompletion = async (courseId: string, moduleId: string, moduleTitle: string): Promise<void> => {
+    try {
+      await addXP(XP_REWARDS.module_completion, 'module_completion');
+    } catch (error) {
+      console.error('❌ Error tracking module completion:', error);
+    }
+  };
+
+  const trackGuidedSetupCompletion = async (setupId: string, setupTitle: string): Promise<void> => {
+    try {
+      await addXP(XP_REWARDS.guided_setup_completion, 'guided_setup_completion');
+      
+      // Check for guided master achievement
+      const completedSetups = gamificationData?.unlockedAchievements.filter(id => 
+        id === 'guided_master'
+      ).length || 0;
+      
+      if (completedSetups >= 9) { // 10th setup completion
+        await unlockAchievement('guided_master');
+      }
+    } catch (error) {
+      console.error('❌ Error tracking guided setup completion:', error);
+    }
+  };
+
+  const trackLibraryFeedback = async (rating: number, feedbackText?: string): Promise<void> => {
+    try {
+      await addXP(XP_REWARDS.library_feedback, 'library_feedback');
+      
+      // Check for feedback contributor achievement
+      const feedbackCount = gamificationData?.unlockedAchievements.filter(id => 
+        id === 'feedback_contributor'
+      ).length || 0;
+      
+      if (feedbackCount >= 2) { // 3rd feedback submission
+        await unlockAchievement('feedback_contributor');
+      }
+    } catch (error) {
+      console.error('❌ Error tracking library feedback:', error);
+    }
+  };
+
+  const trackLearningStreak = async (days: number): Promise<void> => {
+    try {
+      if (days >= 7) {
+        await addXP(XP_REWARDS.learning_streak, 'learning_streak');
+        await unlockAchievement('learning_streak');
+      }
+    } catch (error) {
+      console.error('❌ Error tracking learning streak:', error);
+    }
+  };
+
+  const trackKnowledgeSharing = async (type: 'course_insight' | 'community_post' | 'feedback'): Promise<void> => {
+    try {
+      await addXP(XP_REWARDS.knowledge_sharing, 'knowledge_sharing');
+      
+      // Check for knowledge sharer achievement
+      const sharingCount = gamificationData?.unlockedAchievements.filter(id => 
+        id === 'knowledge_sharer'
+      ).length || 0;
+      
+      if (sharingCount >= 4) { // 5th knowledge sharing
+        await unlockAchievement('knowledge_sharer');
+      }
+    } catch (error) {
+      console.error('❌ Error tracking knowledge sharing:', error);
+    }
+  };
+
+  const getLearningStats = () => {
+    if (!gamificationData) {
+      return {
+        coursesCompleted: 0,
+        modulesCompleted: 0,
+        guidedSetupsCompleted: 0,
+        learningStreak: 0,
+        totalLearningTime: 0,
+        knowledgeShared: 0
+      };
+    }
+
+    const completedCourses = gamificationData.unlockedAchievements.filter(id => 
+      id === 'first_course' || id === 'course_collector'
+    ).length;
+    
+    const completedSetups = gamificationData.unlockedAchievements.filter(id => 
+      id === 'guided_master'
+    ).length;
+    
+    const knowledgeShared = gamificationData.unlockedAchievements.filter(id => 
+      id === 'knowledge_sharer'
+    ).length;
+
+    return {
+      coursesCompleted: completedCourses,
+      modulesCompleted: 0, // TODO: Track this separately
+      guidedSetupsCompleted: completedSetups,
+      learningStreak: 0, // TODO: Track this separately
+      totalLearningTime: 0, // TODO: Track this separately
+      knowledgeShared: knowledgeShared
+    };
+  };
+
+  // Phase 3B: Social Learning tracking methods
+  const trackStudyGroupCreation = async (groupId: string, groupName: string) => {
+    try {
+      await addXP(XP_REWARDS.study_group_created, 'study_group_created');
+      
+      // Check for study group creator achievement
+      const currentData = gamificationData;
+      if (currentData) {
+        const studyGroupsCreated = currentData.studyGroupsCreated || 0;
+        if (studyGroupsCreated === 0) {
+          await unlockAchievement('study_group_creator');
+        }
+      }
+      
+      // Update study groups created count
+      if (gamificationData) {
+        const updatedData = {
+          ...gamificationData,
+          studyGroupsCreated: (gamificationData.studyGroupsCreated || 0) + 1,
+        };
+        setGamificationData(updatedData);
+        await AsyncStorage.setItem('gamificationData', JSON.stringify(updatedData));
+      }
+    } catch (error) {
+      console.error('Error tracking study group creation:', error);
+    }
+  };
+
+  const trackStudyGroupJoin = async (groupId: string, groupName: string) => {
+    try {
+      await addXP(XP_REWARDS.study_group_joined, 'study_group_joined');
+      
+      // Check for study group joiner achievement
+      const currentData = gamificationData;
+      if (currentData) {
+        const studyGroupsJoined = currentData.studyGroupsJoined || 0;
+        if (studyGroupsJoined === 2) { // After joining 3rd group
+          await unlockAchievement('study_group_joiner');
+        }
+      }
+      
+      // Update study groups joined count
+      if (gamificationData) {
+        const updatedData = {
+          ...gamificationData,
+          studyGroupsJoined: (gamificationData.studyGroupsJoined || 0) + 1,
+        };
+        setGamificationData(updatedData);
+        await AsyncStorage.setItem('gamificationData', JSON.stringify(updatedData));
+      }
+    } catch (error) {
+      console.error('Error tracking study group join:', error);
+    }
+  };
+
+  const trackStudySessionCompletion = async (sessionId: string, duration: number, participants: number) => {
+    try {
+      await addXP(XP_REWARDS.study_session_completed, 'study_session_completed');
+      
+      // Check for learning circle leader achievement
+      const currentData = gamificationData;
+      if (currentData) {
+        const studySessionsLed = currentData.studySessionsLed || 0;
+        if (studySessionsLed === 4) { // After leading 5th session
+          await unlockAchievement('learning_circle_leader');
+        }
+      }
+      
+      // Update study sessions completed count
+      if (gamificationData) {
+        const updatedData = {
+          ...gamificationData,
+          studySessionsCompleted: (gamificationData.studySessionsCompleted || 0) + 1,
+        };
+        setGamificationData(updatedData);
+        await AsyncStorage.setItem('gamificationData', JSON.stringify(updatedData));
+      }
+    } catch (error) {
+      console.error('Error tracking study session completion:', error);
+    }
+  };
+
+  const trackPeerRecommendation = async (recommendationType: 'given' | 'received', courseId: string) => {
+    try {
+      if (recommendationType === 'given') {
+        await addXP(XP_REWARDS.peer_recommendation_given, 'peer_recommendation_given');
+        
+        // Check for recommendation expert achievement
+        const currentData = gamificationData;
+        if (currentData) {
+          const recommendationsGiven = currentData.peerRecommendationsGiven || 0;
+          if (recommendationsGiven === 19) { // After giving 20th recommendation
+            await unlockAchievement('recommendation_expert');
+          }
+        }
+        
+        // Update recommendations given count
+        if (gamificationData) {
+          const updatedData = {
+            ...gamificationData,
+            peerRecommendationsGiven: (gamificationData.peerRecommendationsGiven || 0) + 1,
+          };
+          setGamificationData(updatedData);
+          await AsyncStorage.setItem('gamificationData', JSON.stringify(updatedData));
+        }
+      } else {
+        await addXP(XP_REWARDS.peer_recommendation_received, 'peer_recommendation_received');
+        
+        // Update recommendations received count
+        if (gamificationData) {
+          const updatedData = {
+            ...gamificationData,
+            peerRecommendationsReceived: (gamificationData.peerRecommendationsReceived || 0) + 1,
+          };
+          setGamificationData(updatedData);
+          await AsyncStorage.setItem('gamificationData', JSON.stringify(updatedData));
+        }
+      }
+    } catch (error) {
+      console.error('Error tracking peer recommendation:', error);
+    }
+  };
+
+  const trackLearningCircleContribution = async (circleId: string, contributionType: string) => {
+    try {
+      await addXP(XP_REWARDS.learning_circle_contribution, 'learning_circle_contribution');
+      
+      // Check for collaborative learner achievement
+      const currentData = gamificationData;
+      if (currentData) {
+        const collaborativeSessions = currentData.collaborativeSessions || 0;
+        if (collaborativeSessions === 9) { // After 10th session
+          await unlockAchievement('collaborative_learner');
+        }
+      }
+      
+      // Update learning circle contributions count
+      if (gamificationData) {
+        const updatedData = {
+          ...gamificationData,
+          learningCircleContributions: (gamificationData.learningCircleContributions || 0) + 1,
+        };
+        setGamificationData(updatedData);
+        await AsyncStorage.setItem('gamificationData', JSON.stringify(updatedData));
+      }
+    } catch (error) {
+      console.error('Error tracking learning circle contribution:', error);
+    }
+  };
+
+  const getSocialLearningStats = async () => {
+    try {
+      const data = gamificationData;
+      return {
+        studyGroupsCreated: data?.studyGroupsCreated || 0,
+        studyGroupsJoined: data?.studyGroupsJoined || 0,
+        studySessionsCompleted: data?.studySessionsCompleted || 0,
+        peerRecommendationsGiven: data?.peerRecommendationsGiven || 0,
+        peerRecommendationsReceived: data?.peerRecommendationsReceived || 0,
+        learningCircleContributions: data?.learningCircleContributions || 0,
+      };
+    } catch (error) {
+      console.error('Error getting social learning stats:', error);
+      return {
+        studyGroupsCreated: 0,
+        studyGroupsJoined: 0,
+        studySessionsCompleted: 0,
+        peerRecommendationsGiven: 0,
+        peerRecommendationsReceived: 0,
+        learningCircleContributions: 0,
+      };
     }
   };
 
@@ -836,7 +1274,23 @@ export function GamificationProvider({ children }: { children: ReactNode }) {
       // Level perks method
       getLevelPerks,
       // Clear gamification data method
-      clearGamificationData
+      clearGamificationData,
+      // Library & Learning Integration Methods
+      trackCourseEnrollment,
+      trackCourseCompletion,
+      trackModuleCompletion,
+      trackGuidedSetupCompletion,
+      trackLibraryFeedback,
+      trackLearningStreak,
+      trackKnowledgeSharing,
+      getLearningStats,
+      // Phase 3B methods
+      trackStudyGroupCreation,
+      trackStudyGroupJoin,
+      trackStudySessionCompletion,
+      trackPeerRecommendation,
+      trackLearningCircleContribution,
+      getSocialLearningStats
     }}>      {children}
     </GamificationContext.Provider>
   );

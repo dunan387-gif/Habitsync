@@ -158,7 +158,6 @@ export default function EnhancedCoachingDashboard({ moodData, habitMoodData }: E
       };
       
       // Save to AsyncStorage or send to backend
-      console.log('Session completed:', sessionData);
       
       // Show completion message
       Alert.alert(
@@ -199,7 +198,6 @@ export default function EnhancedCoachingDashboard({ moodData, habitMoodData }: E
         savedAt: new Date().toISOString()
       };
       
-      console.log('Session saved:', sessionData);
       Alert.alert('Session Saved', 'Your progress has been saved successfully!');
     } catch (error) {
       console.error('Error saving session:', error);

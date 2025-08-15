@@ -1,51 +1,52 @@
-# Firebase Setup Instructions
+# Firebase Setup Guide
 
-## 1. Create a Firebase Project
+## Environment Variables
 
-1. Go to [Firebase Console](https://console.firebase.google.com/)
-2. Click "Create a project" or "Add project"
-3. Enter a project name (e.g., "habit-tracker-app")
-4. Choose whether to enable Google Analytics (optional)
-5. Click "Create project"
-
-## 2. Add Web App to Firebase Project
-
-1. In your Firebase project dashboard, click the web icon (</>) to add a web app
-2. Enter an app nickname (e.g., "habit-tracker-web")
-3. Check "Also set up Firebase Hosting" if you want hosting
-4. Click "Register app"
-5. Copy the Firebase configuration object
-
-## 3. Update Environment Variables
-
-Create or update your `.env` file with the Firebase configuration:
+Create a `.env` file in your project root with the following Firebase configuration:
 
 ```env
-EXPO_PUBLIC_FIREBASE_API_KEY=your-api-key
-EXPO_PUBLIC_FIREBASE_AUTH_DOMAIN=your-project.firebaseapp.com
-EXPO_PUBLIC_FIREBASE_PROJECT_ID=your-project-id
-EXPO_PUBLIC_FIREBASE_STORAGE_BUCKET=your-project.appspot.com
-EXPO_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=123456789
-EXPO_PUBLIC_FIREBASE_APP_ID=your-app-id
+# Firebase Configuration
+EXPO_PUBLIC_FIREBASE_API_KEY=your_api_key_here
+EXPO_PUBLIC_FIREBASE_AUTH_DOMAIN=your_project_id.firebaseapp.com
+EXPO_PUBLIC_FIREBASE_PROJECT_ID=your_project_id
+EXPO_PUBLIC_FIREBASE_STORAGE_BUCKET=your_project_id.appspot.com
+EXPO_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=your_sender_id
+EXPO_PUBLIC_FIREBASE_APP_ID=your_app_id
+EXPO_PUBLIC_FIREBASE_MEASUREMENT_ID=your_measurement_id
+
+# Set offline mode to false to enable Firebase
+EXPO_PUBLIC_OFFLINE_MODE=false
 ```
 
-## 4. Enable Authentication
+## Steps to Get Firebase Configuration:
 
-1. In Firebase Console, go to "Authentication" → "Sign-in method"
-2. Enable "Email/Password" authentication
-3. Optionally enable "Google" and "Apple" for social login
+1. **Go to Firebase Console**: https://console.firebase.google.com/
+2. **Create/Select Project**: Choose your project
+3. **Add Android App**: 
+   - Package name: `com.sabbir404.habitsyncproductivity`
+   - App nickname: `HabitSync Android`
+4. **Download google-services.json**: Place in project root
+5. **Get Web Config**: 
+   - Go to Project Settings → General → Your Apps
+   - Click on the web app (</>) icon
+   - Copy the config values to your `.env` file
 
-## 5. Set up Firestore Database
+## Firebase Services to Enable:
 
-1. In Firebase Console, go to "Firestore Database"
-2. Click "Create database"
-3. Choose "Start in test mode" for development
-4. Select a location close to your users
-5. Click "Done"
+1. **Authentication**:
+   - Email/Password
+   - Google Sign-In
+   - Apple Sign-In (for iOS)
 
-## 6. Set up Firestore Security Rules
+2. **Firestore Database**:
+   - Create database in test mode
+   - Set up security rules
 
-In the Firestore Database → Rules tab, add these rules:
+3. **Analytics**:
+   - Enable Google Analytics
+   - Configure events
+
+## Security Rules for Firestore:
 
 ```javascript
 rules_version = '2';
@@ -56,44 +57,16 @@ service cloud.firestore {
       allow read, write: if request.auth != null && request.auth.uid == userId;
     }
     
-    // Habits can only be accessed by their owner
-    match /habits/{habitId} {
-      allow read, write: if request.auth != null && request.auth.uid == resource.data.userId;
+    // Habits are user-specific
+    match /habits/{userId}/habits/{habitId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
     }
     
-    // Habit completions can only be accessed by their owner
-    match /habit_completions/{completionId} {
-      allow read, write: if request.auth != null && request.auth.uid == resource.data.userId;
+    // Public community posts
+    match /community/posts/{postId} {
+      allow read: if true;
+      allow write: if request.auth != null;
     }
   }
 }
 ```
-
-## 7. Test the Setup
-
-1. Start your app
-2. Try to register a new user
-3. Try to log in with the registered user
-4. Check that user data is created in Firestore
-
-## 8. Optional: Enable Google Sign-In
-
-If you want to enable Google Sign-In:
-
-1. In Authentication → Sign-in method, enable Google
-2. Add your app's SHA-1 fingerprint for Android
-3. Update the AuthContext to include Google sign-in methods
-
-## 9. Optional: Enable Apple Sign-In
-
-If you want to enable Apple Sign-In:
-
-1. In Authentication → Sign-in method, enable Apple
-2. Configure Apple Developer account settings
-3. Update the AuthContext to include Apple sign-in methods
-
-## Troubleshooting
-
-- **"Firebase App named '[DEFAULT]' already exists"**: This usually means Firebase is being initialized multiple times. Check that you're only calling `initializeApp` once.
-- **"Permission denied"**: Check your Firestore security rules
-- **"User not found"**: Make sure authentication is properly enabled in Firebase Console 

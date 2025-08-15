@@ -2,20 +2,10 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as SecureStore from 'expo-secure-store';
 import { User, ProfileUpdateData } from '@/types';
-import { OFFLINE_MODE } from '@/constants/api';
+import { FIREBASE_MODE } from '@/constants/api';
 import { PrivacyService, PrivacySettings } from '@/services/PrivacyService';
+import { FirebaseService } from '@/services/FirebaseService';
 import { useCallback } from 'react';
-import { auth, db } from '@/lib/firebase';
-import { 
-  createUserWithEmailAndPassword, 
-  signInWithEmailAndPassword, 
-  signOut as firebaseSignOut,
-  onAuthStateChanged,
-  User as FirebaseUser
-} from 'firebase/auth';
-import { doc, setDoc, getDoc } from 'firebase/firestore';
-
-
 
 interface AuthContextType {
   user: User | null;
@@ -31,69 +21,258 @@ interface AuthContextType {
   uploadAvatar: (imageUri: string) => Promise<void>;
   deleteAccount: () => Promise<void>;
   clearGuestUser: () => Promise<void>;
+  markOnboardingCompleted: () => Promise<void>;
   privacySettings: PrivacySettings | null;
   updatePrivacySetting: (key: keyof PrivacySettings, value: boolean) => Promise<void>;
   canShowProfileData: () => Promise<boolean>;
   canCollectAnalytics: () => Promise<boolean>;
+  checkAndRestoreAuth: () => Promise<boolean>;
+  forceAuthRestore: () => Promise<boolean>;
+  reAuthenticateWithSupabase: () => Promise<boolean>;
+  restoreAuthWithToken: () => Promise<boolean>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-// Helper function to convert Firebase user to app user
-const convertFirebaseUserToAppUser = async (firebaseUser: FirebaseUser): Promise<User> => {
-  // Get user profile from Firestore
-  const userDoc = await getDoc(doc(db, 'users', firebaseUser.uid));
-  const userData = userDoc.data();
-  
-  return {
-    id: firebaseUser.uid,
-    email: firebaseUser.email || '',
-    name: userData?.name || firebaseUser.displayName || firebaseUser.email?.split('@')[0] || 'User',
-    avatar: userData?.avatar || firebaseUser.photoURL || undefined,
-    joinedAt: firebaseUser.metadata.creationTime || new Date().toISOString(),
-    preferences: userData?.preferences || {
-      notifications: true,
-      emailUpdates: true,
-      publicProfile: false,
-    },
-    stats: userData?.stats || {
-      totalHabits: 0,
-      completedHabits: 0,
-      currentStreak: 0,
-      longestStreak: 0,
-    },
-  };
+// Storage keys
+const keys = {
+  user: 'user_data',
+  guestUser: 'guest_user_data',
+  lastAuthenticatedUser: 'last_authenticated_user',
+  privacySettings: 'privacy_settings',
+  subscription: 'subscription_status',
+};
+
+// Function to clean up corrupted AsyncStorage data
+const cleanupCorruptedData = async () => {
+  try {
+    console.log('🧹 Cleaning up corrupted AsyncStorage data...');
+    const allKeys = await AsyncStorage.getAllKeys();
+    
+    for (const key of allKeys) {
+      const value = await AsyncStorage.getItem(key);
+      if (value) {
+        try {
+          JSON.parse(value); // Test if it's valid JSON
+        } catch (parseError) {
+          console.log(`🗑️ Removing corrupted data from key: ${key}`);
+          await AsyncStorage.removeItem(key);
+        }
+      }
+    }
+    console.log('✅ Cleanup complete');
+  } catch (error) {
+    console.error('❌ Error during cleanup:', error);
+  }
+};
+
+// Debug function to check AsyncStorage contents
+const debugAsyncStorage = async () => {
+  try {
+    console.log('🔍 Debugging AsyncStorage contents...');
+    const allKeys = await AsyncStorage.getAllKeys();
+    console.log('📋 All AsyncStorage keys:', allKeys);
+    
+    for (const key of allKeys) {
+      const value = await AsyncStorage.getItem(key);
+      if (value) {
+        try {
+          const parsed = JSON.parse(value);
+          console.log(`📦 ${key}:`, parsed);
+        } catch (parseError) {
+          console.log(`📦 ${key}: [INVALID JSON]`, value.substring(0, 100) + '...');
+        }
+      } else {
+        console.log(`📦 ${key}: null`);
+      }
+    }
+  } catch (error) {
+    console.error('❌ Error debugging AsyncStorage:', error);
+  }
+};
+
+// Helper function to clear corrupted auth data
+const clearCorruptedAuthData = async () => {
+  try {
+    const userData = await AsyncStorage.getItem(keys.user);
+    if (userData) {
+      const parsed = JSON.parse(userData);
+      console.log('🔍 Checking user data validity:', { 
+        hasId: !!parsed.id, 
+        hasEmail: !!parsed.email, 
+        id: parsed.id,
+        email: parsed.email 
+      });
+      if (!parsed.id || !parsed.email) {
+        console.log('🧹 Clearing corrupted user data');
+        await AsyncStorage.removeItem(keys.user);
+      } else {
+        console.log('✅ User data is valid, keeping it');
+      }
+    } else {
+      console.log('📭 No user data found in storage');
+    }
+  } catch (error) {
+    console.log('🧹 Clearing corrupted user data due to parse error:', error);
+    await AsyncStorage.removeItem(keys.user);
+  }
+};
+
+// Helper function to migrate guest data to user
+const migrateGuestDataToUser = async (userId: string) => {
+  try {
+    const guestData = await AsyncStorage.getItem(keys.guestUser);
+    if (guestData) {
+      // Here you would migrate guest data to the authenticated user
+      // This could include habits, preferences, etc.
+      console.log('🔄 Migrating guest data to user:', userId);
+      await AsyncStorage.removeItem(keys.guestUser);
+    }
+  } catch (error) {
+    console.error('Failed to migrate guest data:', error);
+  }
 };
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  
+  // Debug user state changes
+  useEffect(() => {
+    console.log('👤 User state changed:', { 
+      hasUser: !!user, 
+      userEmail: user?.email, 
+      userId: user?.id 
+    });
+  }, [user]);
+
+  // Add development flag for debugging
+  const isDevelopment = __DEV__;
   const [privacySettings, setPrivacySettings] = useState<PrivacySettings | null>(null);
   const [preventGuestCreation, setPreventGuestCreation] = useState(false);
+  const [isRestoringAuth, setIsRestoringAuth] = useState(false);
 
-  useEffect(() => {
-    let unsubscribe: (() => void) | undefined;
-    
-    const setupAuth = async () => {
-      setPreventGuestCreation(false); // Reset flag on app startup
-      if (!OFFLINE_MODE) {
-        unsubscribe = await checkAuthState();
+  // Helper function to save last authenticated user
+  const saveLastAuthenticatedUser = async (user: User) => {
+    try {
+      await AsyncStorage.setItem(keys.lastAuthenticatedUser, JSON.stringify(user));
+      
+      // In development, also save to a development-specific key for hot reload persistence
+      if (isDevelopment) {
+        await AsyncStorage.setItem('dev_last_user', JSON.stringify({
+          ...user,
+          timestamp: Date.now()
+        }));
+      }
+    } catch (error) {
+      console.error('Failed to save last authenticated user:', error);
+    }
+  };
+
+  // Check existing auth session
+  const checkExistingAuthSession = async (): Promise<boolean> => {
+    try {
+      if (!FIREBASE_MODE) {
+        const storedUser = await AsyncStorage.getItem(keys.user);
+        if (storedUser) {
+          const userData = JSON.parse(storedUser);
+          setUser(userData);
+          return true;
+        }
+        return false;
+      }
+
+      // First try to restore from cached user data (faster for hot reloads)
+      const cachedUser = await AsyncStorage.getItem(keys.lastAuthenticatedUser);
+      if (cachedUser) {
+        try {
+          const userData = JSON.parse(cachedUser);
+          setUser(userData);
+          console.log('✅ User restored from cache during hot reload:', userData.email);
+          return true;
+        } catch (error) {
+          console.log('❌ Cached user data corrupted, trying Firebase...');
+        }
+      }
+
+      // Check Firebase session
+      const firebaseUser = await FirebaseService.getCurrentUser();
+      if (firebaseUser) {
+        await migrateGuestDataToUser(firebaseUser.id);
+        await saveLastAuthenticatedUser(firebaseUser);
+        setUser(firebaseUser);
+        console.log('✅ User authenticated from Firebase:', firebaseUser.email);
+        return true;
+      }
+      return false;
+    } catch (error) {
+      console.error('Failed to check existing auth session:', error);
+      return false;
+    }
+  };
+
+  // Check auth state
+  const checkAuthState = async () => {
+    try {
+      if (!FIREBASE_MODE) {
+        console.log('🔍 Checking auth state in OFFLINE_MODE...');
+        const storedUser = await AsyncStorage.getItem(keys.user);
+        if (storedUser) {
+          console.log('✅ Found stored user, restoring...');
+          const userData = JSON.parse(storedUser);
+          setUser(userData);
+          console.log('✅ User restored:', userData.email);
+        } else {
+          console.log('📭 No stored user found, creating guest user...');
+          // Create a guest user automatically in offline mode
+          const guestUser: User = {
+            id: 'guest-user', // Use a stable ID instead of timestamp
+            email: 'guest@example.com',
+            name: 'Guest User',
+            joinedAt: new Date().toISOString(),
+            onboardingCompleted: true, // Skip onboarding for guest
+            preferences: {
+              notifications: true,
+              emailUpdates: false,
+              publicProfile: false,
+            },
+            stats: {
+              totalHabits: 0,
+              completedHabits: 0,
+              currentStreak: 0,
+              longestStreak: 0,
+            },
+          };
+          await AsyncStorage.setItem(keys.user, JSON.stringify(guestUser));
+          setUser(guestUser);
+          console.log('✅ Guest user created automatically');
+        }
       } else {
-        await checkAuthState();
+        // Try to restore from last authenticated user if Firebase user is not available
+        const lastUser = await AsyncStorage.getItem(keys.lastAuthenticatedUser);
+        if (lastUser) {
+          try {
+            const userData = JSON.parse(lastUser);
+            setUser(userData);
+            console.log('✅ User restored from last authenticated session:', userData.email);
+          } catch (error) {
+            console.log('❌ Last authenticated user data corrupted, clearing...');
+            await AsyncStorage.removeItem(keys.lastAuthenticatedUser);
+            setUser(null);
+          }
+        } else {
+          // Set user to null to trigger auth flow
+          setUser(null);
+        }
       }
-      await loadPrivacySettings();
-    };
-    
-    setupAuth();
-    
-    // Cleanup function
-    return () => {
-      if (unsubscribe) {
-        unsubscribe();
-      }
-    };
-  }, []);
+    } catch (error) {
+      console.error('Failed to check auth state:', error);
+      // Set user to null on error to trigger auth flow
+      setUser(null);
+    }
+  };
 
+  // Load privacy settings
   const loadPrivacySettings = async () => {
     try {
       const settings = await PrivacyService.getPrivacySettings();
@@ -103,244 +282,139 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
-  const checkAuthState = async () => {
-    try {
-      if (OFFLINE_MODE) {
-        const userData = await AsyncStorage.getItem('userData');
-        if (userData) {
-          setUser(JSON.parse(userData));
-        }
-        setIsLoading(false);
-      } else {
-        // First, check if we have a current Firebase user (for immediate restoration)
-        const currentUser = auth.currentUser;
+  useEffect(() => {
+    let unsubscribe: (() => void) | undefined;
+    
+    const setupAuth = async () => {
+      console.log('🚀 Setting up authentication...');
+      setPreventGuestCreation(false);
+      
+      // Remove debug calls that might interfere with auth restoration
+      // await debugAsyncStorage();
+      
+      if (FIREBASE_MODE) {
+        const immediateRestored = await checkExistingAuthSession();
         
-        if (currentUser) {
-          try {
-            const user = await convertFirebaseUserToAppUser(currentUser);
-            await migrateGuestDataToUser(user.id);
-            await saveLastAuthenticatedUser(user);
-            setUser(user);
-            setIsLoading(false);
-          } catch (error) {
-            console.error('❌ Error converting current Firebase user:', error);
-            // Fall through to guest user creation
-          }
-        } else {
-          // No current Firebase user, try to restore last authenticated user
-          const lastUser = await restoreLastAuthenticatedUser();
-          if (lastUser) {
-            setUser(lastUser);
-            setIsLoading(false);
-          }
-        }
-
-        // Set up Firebase auth state listener for future changes
-        const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
-          // Skip if we already have a user set from currentUser check
-          if (user && !user.id.startsWith('guest-')) {
+        // Set up Firebase auth state listener
+        unsubscribe = FirebaseService.onAuthStateChanged(async (firebaseUser: User | null) => {
+          if (isRestoringAuth) {
+            console.log('🔄 Skipping Firebase auth state change during restoration');
             return;
           }
           
           if (firebaseUser) {
             try {
-              const user = await convertFirebaseUserToAppUser(firebaseUser);
-              await migrateGuestDataToUser(user.id);
-              setUser(user);
+              await migrateGuestDataToUser(firebaseUser.id);
+              await saveLastAuthenticatedUser(firebaseUser);
+              setUser(firebaseUser);
+              console.log('✅ Firebase auth state updated:', firebaseUser.email);
             } catch (error) {
-              console.error('❌ Error converting Firebase user:', error);
-              // If Firebase user conversion fails, create a guest user
-              await createGuestUser();
+              console.error('❌ Error processing Firebase user:', error);
             }
           } else {
-            // No Firebase user, check if we have a guest user
-            await createGuestUser();
+            // Only set user to null if we're not in the middle of restoration
+            // and if we don't have a cached user
+            if (!isRestoringAuth) {
+              const cachedUser = await AsyncStorage.getItem(keys.lastAuthenticatedUser);
+              if (!cachedUser) {
+                console.log('🚪 User signed out');
+                setUser(null);
+              } else {
+                console.log('🔄 Restoring cached user during hot reload');
+                try {
+                  const userData = JSON.parse(cachedUser);
+                  setUser(userData);
+                } catch (error) {
+                  console.log('🚪 Cached user data corrupted, signing out');
+                  setUser(null);
+                }
+              }
+            } else {
+              console.log('🔄 Ignoring Firebase sign-out during restoration');
+            }
           }
-          setIsLoading(false);
         });
         
-        // Store the unsubscribe function for cleanup
-        return unsubscribe;
-      }
-    } catch (error) {
-      console.error('Auth check failed:', error);
-      // If auth check fails, create a guest user
-      await createGuestUser();
-      setIsLoading(false);
-    }
-  };
-
-  const createGuestUser = async () => {
-    try {
-      // Check if guest creation is prevented (e.g., after logout)
-      if (preventGuestCreation) {
-        return;
-      }
-
-      // Check if we already have a guest user
-      const existingGuestUser = await AsyncStorage.getItem('guestUserData');
-      if (existingGuestUser) {
-        const guestUser = JSON.parse(existingGuestUser);
-        setUser(guestUser);
-        return;
-      }
-
-      // Create a new guest user
-      const guestUser: User = {
-        id: 'guest-' + Date.now(),
-        email: 'guest@example.com',
-        name: 'Guest User',
-        avatar: undefined,
-        joinedAt: new Date().toISOString(),
-        preferences: {
-          notifications: true,
-          emailUpdates: false,
-          publicProfile: false,
-        },
-        stats: {
-          totalHabits: 0,
-          completedHabits: 0,
-          currentStreak: 0,
-          longestStreak: 0,
-        },
-      };
-
-      // Save guest user data
-      await AsyncStorage.setItem('guestUserData', JSON.stringify(guestUser));
-      setUser(guestUser);
-    } catch (error) {
-      console.error('❌ Error creating guest user:', error);
-      setUser(null);
-    }
-  };
-
-  const migrateGuestDataToUser = async (newUserId: string) => {
-    try {
-      // Get guest user data
-      const guestUserData = await AsyncStorage.getItem('guestUserData');
-      if (!guestUserData) {
-        return;
-      }
-
-      const guestUser = JSON.parse(guestUserData);
-
-      // Get guest habits data
-      const guestHabitsKey = `habits_${guestUser.id}`;
-      const guestHabits = await AsyncStorage.getItem(guestHabitsKey);
-      
-      // Get guest gamification data
-      const guestGamificationKey = `gamification_${guestUser.id}`;
-      const guestGamification = await AsyncStorage.getItem(guestGamificationKey);
-
-      // Migrate habits data
-      if (guestHabits) {
-        const newHabitsKey = `habits_${newUserId}`;
-        await AsyncStorage.setItem(newHabitsKey, guestHabits);
-      }
-
-      // Migrate gamification data
-      if (guestGamification) {
-        const newGamificationKey = `gamification_${newUserId}`;
-        await AsyncStorage.setItem(newGamificationKey, guestGamification);
-      }
-
-      // Clear guest user data after migration
-      await AsyncStorage.multiRemove([
-        'guestUserData',
-        guestHabitsKey,
-        guestGamificationKey
-      ]);
-    } catch (error) {
-      console.error('❌ Error migrating guest data:', error);
-    }
-  };
-
-  const saveLastAuthenticatedUser = async (user: User) => {
-    try {
-      if (!user.id.startsWith('guest-')) {
-        await AsyncStorage.setItem('lastAuthenticatedUser', JSON.stringify(user));
-      }
-    } catch (error) {
-      console.error('❌ Error saving last authenticated user:', error);
-    }
-  };
-
-  const restoreLastAuthenticatedUser = async (): Promise<User | null> => {
-    try {
-      const lastUserData = await AsyncStorage.getItem('lastAuthenticatedUser');
-      if (lastUserData) {
-        const lastUser = JSON.parse(lastUserData);
-        return lastUser;
-      }
-      return null;
-    } catch (error) {
-      console.error('❌ Error restoring last authenticated user:', error);
-      return null;
-    }
-  };
-
-  const login = async (email: string, password: string) => {
-    setIsLoading(true);
-    try {
-      if (OFFLINE_MODE) {
-        const existingAccounts = await AsyncStorage.getItem('registeredAccounts');
-        const accounts = existingAccounts ? JSON.parse(existingAccounts) : [];
-        
-        const existingUser = accounts.find((acc: any) => 
-          acc.email === email && acc.password === password
-        );
-        
-        if (!existingUser) {
-          throw new Error('Invalid email or password');
-        }
-        
-        const userData = await AsyncStorage.getItem(`userData_${existingUser.id}`);
-        if (userData) {
-          const user = JSON.parse(userData);
-          await AsyncStorage.setItem('userData', userData);
-          await SecureStore.setItemAsync('authToken', 'offline-token-' + Date.now());
-          setUser(user);
-        } else {
-          throw new Error('User data not found');
+        if (!immediateRestored) {
+          await checkAuthState();
         }
       } else {
-        // Use Firebase authentication
-        const userCredential = await signInWithEmailAndPassword(auth, email, password);
-        const user = await convertFirebaseUserToAppUser(userCredential.user);
-        
-        // Migrate guest data to real user account
-        await migrateGuestDataToUser(user.id);
-        
-        // Save the authenticated user for future restoration
-        await saveLastAuthenticatedUser(user);
-        
-        setUser(user);
-        setPreventGuestCreation(false); // Reset flag on successful login
+        console.log('🔄 Running in OFFLINE_MODE, checking auth state...');
+        await checkAuthState();
       }
-    } catch (error) {
-      throw error;
+      await loadPrivacySettings();
+      
+      // Ensure loading is set to false after all setup is complete
+      console.log('✅ Authentication setup complete');
+      setIsLoading(false);
+    };
+    
+    setupAuth();
+    
+    return () => {
+      if (unsubscribe) {
+        unsubscribe();
+      }
+    };
+  }, []);
+
+  const login = useCallback(async (email: string, password: string) => {
+    try {
+    setIsLoading(true);
+      
+      if (!FIREBASE_MODE) {
+        // Simulate login for offline mode
+        const mockUser: User = {
+          id: 'offline-user-' + Date.now(),
+          email,
+          name: email.split('@')[0],
+          joinedAt: new Date().toISOString(),
+          onboardingCompleted: false,
+          preferences: {
+            notifications: true,
+            emailUpdates: true,
+            publicProfile: false,
+          },
+          stats: {
+            totalHabits: 0,
+            completedHabits: 0,
+            currentStreak: 0,
+            longestStreak: 0,
+          },
+        };
+        
+        await AsyncStorage.setItem(keys.user, JSON.stringify(mockUser));
+        setUser(mockUser);
+        return;
+      }
+
+      const firebaseUser = await FirebaseService.signInWithEmail(email, password);
+      if (firebaseUser) {
+        await migrateGuestDataToUser(firebaseUser.id);
+        await saveLastAuthenticatedUser(firebaseUser);
+        setUser(firebaseUser);
+        console.log('✅ User logged in:', firebaseUser.email);
+      }
+    } catch (error: any) {
+      console.error('Login failed:', error);
+      throw new Error(error.message || 'Login failed');
     } finally {
       setIsLoading(false);
     }
-  };
+  }, []);
 
-  const register = async (email: string, password: string, name: string) => {
-    setIsLoading(true);
+  const register = useCallback(async (email: string, password: string, name: string) => {
     try {
-      if (OFFLINE_MODE) {
-        const existingAccounts = await AsyncStorage.getItem('registeredAccounts');
-        const accounts = existingAccounts ? JSON.parse(existingAccounts) : [];
-        
-        if (accounts.find((acc: any) => acc.email === email)) {
-          throw new Error('Email already registered');
-        }
-        
-        const newUser: User = {
-          id: Date.now().toString(),
+      setIsLoading(true);
+      
+      if (!FIREBASE_MODE) {
+        // Simulate registration for offline mode
+        const mockUser: User = {
+          id: 'offline-user-' + Date.now(),
           email,
           name,
-          avatar: undefined,
-          joinedAt: new Date().toISOString(), // Remove createdAt, use joinedAt instead
+          joinedAt: new Date().toISOString(),
+          onboardingCompleted: false,
           preferences: {
             notifications: true,
             emailUpdates: true,
@@ -354,324 +428,223 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           },
         };
         
-        accounts.push({ id: newUser.id, email, password });
-        await AsyncStorage.setItem('registeredAccounts', JSON.stringify(accounts));
-        await AsyncStorage.setItem(`userData_${newUser.id}`, JSON.stringify(newUser));
-        await AsyncStorage.setItem('userData', JSON.stringify(newUser));
-        
-        // Clear global gamification data to prevent data from previous sessions
-        await AsyncStorage.removeItem('gamificationData');
-        
-        await SecureStore.setItemAsync('authToken', 'offline-token-' + Date.now());
-        setUser(newUser);
-      } else {
-        // Use Firebase authentication
-        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-        const firebaseUser = userCredential.user;
-        
-        // Create user profile in Firestore
-        await setDoc(doc(db, 'users', firebaseUser.uid), {
-          name: name,
-          email: email,
-          avatar: null,
-          preferences: {
-            notifications: true,
-            emailUpdates: true,
-            publicProfile: false,
-          },
-          stats: {
-            totalHabits: 0,
-            completedHabits: 0,
-            currentStreak: 0,
-            longestStreak: 0,
-          },
-          createdAt: new Date().toISOString(),
-          updatedAt: new Date().toISOString(),
-        });
-        
-        const user = await convertFirebaseUserToAppUser(firebaseUser);
-        
-        // Migrate guest data to real user account
-        await migrateGuestDataToUser(user.id);
-        
-        // Clear global gamification data to prevent data from previous sessions
-        await AsyncStorage.removeItem('gamificationData');
-        
-        // Save the authenticated user for future restoration
-        await saveLastAuthenticatedUser(user);
-        
-        setUser(user);
-        setPreventGuestCreation(false); // Reset flag on successful registration
+        await AsyncStorage.setItem(keys.user, JSON.stringify(mockUser));
+        setUser(mockUser);
+        return;
       }
-    } catch (error) {
-      throw error;
+
+      const firebaseUser = await FirebaseService.signUpWithEmail(email, password, name);
+      if (firebaseUser) {
+        await migrateGuestDataToUser(firebaseUser.id);
+        await saveLastAuthenticatedUser(firebaseUser);
+        setUser(firebaseUser);
+        console.log('✅ User registered:', firebaseUser.email);
+      }
+    } catch (error: any) {
+      console.error('Registration failed:', error);
+      throw new Error(error.message || 'Registration failed');
     } finally {
       setIsLoading(false);
     }
-  };
+  }, []);
 
-  const logout = async () => {
+  const logout = useCallback(async () => {
     try {
-      if (OFFLINE_MODE) {
-        await SecureStore.deleteItemAsync('authToken');
-        await AsyncStorage.removeItem('userData');
+      setIsLoading(true);
+      
+      if (!FIREBASE_MODE) {
+        await AsyncStorage.removeItem(keys.user);
         setUser(null);
-      } else {
-        // Check if current user is a guest user
-        if (user && user.id.startsWith('guest-')) {
-          // For guest users, clear the guest data and redirect to login
-          setPreventGuestCreation(true); // Prevent immediate guest user creation
-          await AsyncStorage.removeItem('guestUserData');
-          // Also clear any guest-specific data to prevent recreation
-          const guestHabitsKey = `habits_${user.id}`;
-          const guestGamificationKey = `gamification_${user.id}`;
-          await AsyncStorage.multiRemove([guestHabitsKey, guestGamificationKey]);
-          setUser(null);
-        } else {
-          // Use Firebase logout for authenticated users
-          await firebaseSignOut(auth);
-          // Clear last authenticated user data
-          await AsyncStorage.removeItem('lastAuthenticatedUser');
-          setUser(null);
-        }
+        return;
       }
-    } catch (error) {
+
+      await FirebaseService.signOut();
+      setUser(null);
+      console.log('✅ User logged out');
+    } catch (error: any) {
       console.error('Logout failed:', error);
-      throw error;
+      throw new Error(error.message || 'Logout failed');
+    } finally {
+      setIsLoading(false);
     }
-  };
+  }, []);
 
-  const loginWithGoogle = async () => {
-    try {
-      if (OFFLINE_MODE) {
-        // Simulate Google login for offline mode
-        const mockUser: User = {
-          id: 'google-user-' + Date.now(),
-          email: 'user@gmail.com',
-          name: 'Google User',
-          avatar: 'https://via.placeholder.com/150',
-          joinedAt: new Date().toISOString(),
-          preferences: {
-            notifications: true,
-            emailUpdates: true,
-            publicProfile: false,
-          },
-          stats: {
-            totalHabits: 0,
-            completedHabits: 0,
-            currentStreak: 0,
-            longestStreak: 0,
-          },
-        };
-        
-        await AsyncStorage.setItem('userData', JSON.stringify(mockUser));
-        await SecureStore.setItemAsync('authToken', 'google-token-' + Date.now());
-        setUser(mockUser);
-        return;
-      }
+  const loginWithGoogle = useCallback(async () => {
+    // TODO: Implement Google OAuth with Supabase
+    throw new Error('Google login not implemented yet');
+  }, []);
 
-      // Use Firebase Google authentication
-      const { GoogleSignin } = require('@react-native-google-signin/google-signin');
-      
-      // Configure Google Sign-In
-      GoogleSignin.configure({
-        webClientId: 'YOUR_WEB_CLIENT_ID', // Replace with your actual web client ID
-      });
+  const loginWithApple = useCallback(async () => {
+    // TODO: Implement Apple OAuth with Supabase
+    throw new Error('Apple login not implemented yet');
+  }, []);
 
-      // Check if user is already signed in
-      await GoogleSignin.hasPlayServices();
-      const userInfo = await GoogleSignin.signIn();
-      
-      // Convert to app user format
-      const appUser: User = {
-        id: userInfo.user.id,
-        email: userInfo.user.email,
-        name: userInfo.user.name || userInfo.user.email?.split('@')[0] || 'User',
-        avatar: userInfo.user.photo,
-        joinedAt: new Date().toISOString(),
-        preferences: {
-          notifications: true,
-          emailUpdates: true,
-          publicProfile: false,
-        },
-        stats: {
-          totalHabits: 0,
-          completedHabits: 0,
-          currentStreak: 0,
-          longestStreak: 0,
-        },
-      };
-
-      // Migrate guest data to real user account
-      await migrateGuestDataToUser(appUser.id);
-      
-      // Save user data
-      await AsyncStorage.setItem('userData', JSON.stringify(appUser));
-      await SecureStore.setItemAsync('authToken', userInfo.idToken);
-      setUser(appUser);
-    } catch (error: any) {
-      console.error('Google login failed:', error);
-      throw new Error('Google login failed: ' + error.message);
-    }
-  };
-
-  const loginWithApple = async () => {
-    try {
-      if (OFFLINE_MODE) {
-        // Simulate Apple login for offline mode
-        const mockUser: User = {
-          id: 'apple-user-' + Date.now(),
-          email: 'user@icloud.com',
-          name: 'Apple User',
-          avatar: undefined,
-          joinedAt: new Date().toISOString(),
-          preferences: {
-            notifications: true,
-            emailUpdates: true,
-            publicProfile: false,
-          },
-          stats: {
-            totalHabits: 0,
-            completedHabits: 0,
-            currentStreak: 0,
-            longestStreak: 0,
-          },
-        };
-        
-        await AsyncStorage.setItem('userData', JSON.stringify(mockUser));
-        await SecureStore.setItemAsync('authToken', 'apple-token-' + Date.now());
-        setUser(mockUser);
-        return;
-      }
-
-      // Use Expo Apple authentication
-      const { AppleAuthentication } = require('expo-apple-authentication');
-      
-      const credential = await AppleAuthentication.signInAsync({
-        requestedScopes: [
-          AppleAuthentication.AppleAuthenticationScope.FULL_NAME,
-          AppleAuthentication.AppleAuthenticationScope.EMAIL,
-        ],
-      });
-
-      // Convert to app user format
-      const appUser: User = {
-        id: credential.user,
-        email: credential.email || 'apple-user@icloud.com',
-        name: credential.fullName?.givenName + ' ' + credential.fullName?.familyName || 'Apple User',
-        avatar: undefined,
-        joinedAt: new Date().toISOString(),
-        preferences: {
-          notifications: true,
-          emailUpdates: true,
-          publicProfile: false,
-        },
-        stats: {
-          totalHabits: 0,
-          completedHabits: 0,
-          currentStreak: 0,
-          longestStreak: 0,
-        },
-      };
-
-      // Migrate guest data to real user account
-      await migrateGuestDataToUser(appUser.id);
-      
-      // Save user data
-      await AsyncStorage.setItem('userData', JSON.stringify(appUser));
-      await SecureStore.setItemAsync('authToken', credential.identityToken);
-      setUser(appUser);
-    } catch (error: any) {
-      console.error('Apple login failed:', error);
-      throw new Error('Apple login failed: ' + error.message);
-    }
-  };
-
-  const updateProfile = async (data: ProfileUpdateData) => {
+  const updateProfile = useCallback(async (data: ProfileUpdateData) => {
     if (!user) throw new Error('No user logged in');
     
     try {
-      const updatedUser = { 
+      if (!FIREBASE_MODE) {
+        const updatedUser: User = { 
+          ...user, 
+          ...data,
+          preferences: {
+            ...user.preferences,
+            ...(data.preferences || {})
+          }
+        };
+        await AsyncStorage.setItem(keys.user, JSON.stringify(updatedUser));
+        setUser(updatedUser);
+        return;
+      }
+
+      await FirebaseService.updateUserProfile(user.id, data);
+      const updatedUser: User = { 
         ...user, 
         ...data,
         preferences: {
           ...user.preferences,
-          ...data.preferences
+          ...(data.preferences || {})
         }
       };
-      await AsyncStorage.setItem('userData', JSON.stringify(updatedUser));
-      await AsyncStorage.setItem(`userData_${user.id}`, JSON.stringify(updatedUser));
       setUser(updatedUser);
-    } catch (error) {
+    } catch (error: any) {
       console.error('Profile update failed:', error);
-      throw error;
+      throw new Error(error.message || 'Profile update failed');
     }
-  };
+  }, [user]);
 
-  const uploadAvatar = async (imageUri: string) => {
-    setIsLoading(true);
-    try {
-      const avatarUrl = imageUri;
-      await updateProfile({ 
-        avatar: avatarUrl,
-        preferences: {}
-      });
-    } catch (error) {
-      console.error('Avatar upload failed:', error);
-      throw error;
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  const uploadAvatar = useCallback(async (imageUri: string) => {
+    // TODO: Implement avatar upload with Supabase Storage
+    throw new Error('Avatar upload not implemented yet');
+  }, []);
 
-  const deleteAccount = async () => {
+  const deleteAccount = useCallback(async () => {
     if (!user) throw new Error('No user logged in');
     
     try {
-      await SecureStore.deleteItemAsync('authToken');
-      await AsyncStorage.multiRemove(['userData', 'habitData']);
-      setUser(null);
-    } catch (error) {
+      if (!FIREBASE_MODE) {
+        await AsyncStorage.removeItem(keys.user);
+        setUser(null);
+        return;
+      }
+
+      // TODO: Implement account deletion with Supabase
+      throw new Error('Account deletion not implemented yet');
+    } catch (error: any) {
       console.error('Account deletion failed:', error);
-      throw error;
+      throw new Error(error.message || 'Account deletion failed');
     }
-  };
+  }, [user]);
 
-  const clearGuestUser = async () => {
+  const clearGuestUser = useCallback(async () => {
     try {
-      await AsyncStorage.removeItem('guestUserData');
-      setUser(null);
+      await AsyncStorage.removeItem(keys.guestUser);
+      setPreventGuestCreation(false);
     } catch (error) {
-      console.error('❌ Error clearing guest user data:', error);
-      throw error;
+      console.error('Failed to clear guest user:', error);
     }
-  };
+  }, []);
 
-  const updatePrivacySetting = async (key: keyof PrivacySettings, value: boolean) => {
+  const markOnboardingCompleted = useCallback(async () => {
+    if (!user) throw new Error('No user logged in');
+    
+    try {
+      if (!FIREBASE_MODE) {
+        const updatedUser = { ...user, onboardingCompleted: true };
+        await AsyncStorage.setItem(keys.user, JSON.stringify(updatedUser));
+        setUser(updatedUser);
+        return;
+      }
+
+      await FirebaseService.updateUserProfile(user.id, { name: user.name, preferences: user.preferences });
+      const updatedUser = { ...user, onboardingCompleted: true };
+      setUser(updatedUser);
+    } catch (error: any) {
+      console.error('Failed to mark onboarding completed:', error);
+      throw new Error(error.message || 'Failed to mark onboarding completed');
+    }
+  }, [user]);
+
+  const updatePrivacySetting = useCallback(async (key: keyof PrivacySettings, value: boolean) => {
     try {
       await PrivacyService.updatePrivacySetting(key, value);
       const updatedSettings = await PrivacyService.getPrivacySettings();
       setPrivacySettings(updatedSettings);
-    } catch (error) {
+    } catch (error: any) {
       console.error('Failed to update privacy setting:', error);
-      throw error;
+      throw new Error(error.message || 'Failed to update privacy setting');
     }
-  };
+  }, []);
 
-  // Fix line 219 - use correct method name
-  const canShowProfileData = useCallback(async (): Promise<boolean> => {
-    return await PrivacyService.shouldShowProfileData(); // Changed from canShowProfileData
+  const canShowProfileData = useCallback(async () => {
+    return await PrivacyService.shouldShowProfileData();
   }, []);
   
-  const canCollectAnalytics = useCallback(async (): Promise<boolean> => {
+  const canCollectAnalytics = useCallback(async () => {
     return await PrivacyService.canCollectAnalytics();
   }, []);
 
-  const value = {
+  const checkAndRestoreAuth = useCallback(async () => {
+    try {
+      setIsRestoringAuth(true);
+      
+      // In development, try to restore from cache first for faster hot reloads
+      if (isDevelopment) {
+        const cachedUser = await AsyncStorage.getItem(keys.lastAuthenticatedUser);
+        if (cachedUser) {
+          try {
+            const userData = JSON.parse(cachedUser);
+            setUser(userData);
+            console.log('✅ User restored from cache (dev mode):', userData.email);
+            return true;
+          } catch (error) {
+            console.log('❌ Cached user data corrupted, trying Firebase...');
+          }
+        }
+      }
+      
+      const restored = await checkExistingAuthSession();
+      return restored;
+    } finally {
+      setIsRestoringAuth(false);
+    }
+  }, [isDevelopment]);
+
+  const forceAuthRestore = useCallback(async () => {
+    try {
+      setIsRestoringAuth(true);
+      const restored = await checkExistingAuthSession();
+      if (!restored) {
+        await checkAuthState();
+      }
+      return restored;
+        } finally {
+          setIsRestoringAuth(false);
+        }
+  }, []);
+
+  const reAuthenticateWithSupabase = useCallback(async () => {
+    try {
+      setIsRestoringAuth(true);
+      const restored = await checkExistingAuthSession();
+      return restored;
+    } finally {
+      setIsRestoringAuth(false);
+    }
+  }, []);
+
+  const restoreAuthWithToken = useCallback(async () => {
+    // TODO: Implement token-based auth restoration
+    return false;
+  }, []);
+
+
+
+  const value: AuthContextType = {
     user,
     isLoading,
     isAuthenticated: !!user,
-    isGuestUser: user ? user.id.startsWith('guest-') : false,
+    isGuestUser: false, // Simplified for now
     login,
     register,
     logout,
@@ -681,38 +654,28 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     uploadAvatar,
     deleteAccount,
     clearGuestUser,
+    markOnboardingCompleted,
     privacySettings,
     updatePrivacySetting,
     canShowProfileData,
     canCollectAnalytics,
+    checkAndRestoreAuth,
+    forceAuthRestore,
+    reAuthenticateWithSupabase,
+    restoreAuthWithToken,
   };
 
-  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+  return (
+    <AuthContext.Provider value={value}>
+      {children}
+    </AuthContext.Provider>
+  );
 }
 
-export const useAuth = () => {
+export function useAuth() {
   const context = useContext(AuthContext);
   if (context === undefined) {
-    // Return a default context instead of throwing an error
-      return {
-    user: null,
-    isLoading: true,
-    isAuthenticated: false,
-    isGuestUser: false,
-    login: async () => { throw new Error('Auth not initialized'); },
-    register: async () => { throw new Error('Auth not initialized'); },
-    logout: async () => { throw new Error('Auth not initialized'); },
-    loginWithGoogle: async () => { throw new Error('Auth not initialized'); },
-    loginWithApple: async () => { throw new Error('Auth not initialized'); },
-    updateProfile: async () => { throw new Error('Auth not initialized'); },
-    uploadAvatar: async () => { throw new Error('Auth not initialized'); },
-    deleteAccount: async () => { throw new Error('Auth not initialized'); },
-    clearGuestUser: async () => { throw new Error('Auth not initialized'); },
-    privacySettings: null,
-    updatePrivacySetting: async () => { throw new Error('Auth not initialized'); },
-    canShowProfileData: async () => false,
-    canCollectAnalytics: async () => false,
-  };
+    throw new Error('useAuth must be used within an AuthProvider');
   }
   return context;
-};
+}

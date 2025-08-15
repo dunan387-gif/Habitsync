@@ -88,6 +88,18 @@ const OnboardingFlow: React.FC<OnboardingFlowProps> = ({ onComplete }) => {
       ],
     },
     {
+      id: 'app-overview',
+      title: t('onboarding.appOverview.title'),
+      subtitle: t('onboarding.appOverview.subtitle'),
+      icon: <Sparkles size={48} color={currentTheme.colors.accent} />,
+      features: [
+        t('onboarding.appOverview.feature1'),
+        t('onboarding.appOverview.feature2'),
+        t('onboarding.appOverview.feature3'),
+        t('onboarding.appOverview.feature4'),
+      ],
+    },
+    {
       id: 'language',
       title: t('onboarding.language.title'),
       subtitle: t('onboarding.language.subtitle'),

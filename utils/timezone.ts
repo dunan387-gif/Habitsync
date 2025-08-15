@@ -21,6 +21,7 @@ const DEFAULT_TIMEZONES: Record<string, TimezoneInfo> = {
   'Asia/Tokyo': { timezone: 'Asia/Tokyo', offset: 9, region: 'JP', city: 'Tokyo' },
   'Asia/Shanghai': { timezone: 'Asia/Shanghai', offset: 8, region: 'CN', city: 'Shanghai' },
   'Asia/Kolkata': { timezone: 'Asia/Kolkata', offset: 5.5, region: 'IN', city: 'Mumbai' },
+  'Asia/Dhaka': { timezone: 'Asia/Dhaka', offset: 6, region: 'BD', city: 'Dhaka' },
   'Australia/Sydney': { timezone: 'Australia/Sydney', offset: 10, region: 'AU', city: 'Sydney' },
   'Pacific/Auckland': { timezone: 'Pacific/Auckland', offset: 12, region: 'NZ', city: 'Auckland' },
 };
@@ -52,7 +53,6 @@ class TimezoneManager {
       }
 
       this.isInitialized = true;
-      console.log('🌍 Timezone initialized:', this.userTimezone);
     } catch (error) {
       console.error('❌ Error initializing timezone:', error);
       // Fallback to device timezone
@@ -69,9 +69,6 @@ class TimezoneManager {
       // Get device locale and timezone
       const deviceLocale = (Localization as any).locale || 'en-US';
       const deviceTimezone = (Localization as any).timezone || Intl.DateTimeFormat().resolvedOptions().timeZone;
-      
-      console.log('🌍 Device locale:', deviceLocale);
-      console.log('🌍 Device timezone:', deviceTimezone);
 
       // Try to match with known timezones
       if (deviceTimezone && DEFAULT_TIMEZONES[deviceTimezone]) {
@@ -107,6 +104,7 @@ class TimezoneManager {
       'JP': 'Asia/Tokyo',
       'CN': 'Asia/Shanghai',
       'IN': 'Asia/Kolkata',
+      'BD': 'Asia/Dhaka',
       'AU': 'Australia/Sydney',
       'NZ': 'Pacific/Auckland',
     };
@@ -164,7 +162,7 @@ class TimezoneManager {
   async setTimezone(timezone: TimezoneInfo): Promise<void> {
     this.userTimezone = timezone;
     await this.saveTimezone(timezone);
-    console.log('🌍 Timezone updated:', timezone);
+
   }
 
   /**
@@ -191,7 +189,7 @@ class TimezoneManager {
       
       // This returns YYYY-MM-DD format directly
       const result = formatter.format(date);
-      console.log('🌍 toLocalDateString:', { input: date, timezone: timezone.timezone, result });
+      // console.log('🌍 toLocalDateString:', { input: date, timezone: timezone.timezone, result });
       return result;
     } catch (error) {
       console.error('❌ Error converting to local date:', error);
@@ -200,7 +198,7 @@ class TimezoneManager {
       const offset = now.getTimezoneOffset();
       const localDate = new Date(now.getTime() - (offset * 60 * 1000));
       const fallback = localDate.toISOString().split('T')[0];
-      console.log('🌍 toLocalDateString fallback:', fallback);
+      // console.log('🌍 toLocalDateString fallback:', fallback);
       return fallback;
     }
   }
@@ -246,7 +244,7 @@ class TimezoneManager {
   isToday(date: Date): boolean {
     const today = this.toLocalDateString();
     const dateStr = this.toLocalDateString(date);
-    console.log('🔍 isToday check:', { today, dateStr, isToday: today === dateStr });
+    // console.log('🔍 isToday check:', { today, dateStr, isToday: today === dateStr });
     return today === dateStr;
   }
 

@@ -6,6 +6,7 @@ import { useHabits } from '@/context/HabitContext';
 import { useTheme } from '@/context/ThemeContext';
 import { useLanguage } from '@/context/LanguageContext';
 import { useSubscription } from '@/context/SubscriptionContext';
+
 import HabitList from '@/components/HabitList';
 import EmptyState from '@/components/EmptyState';
 import DateHeader from '@/components/DateHeader';
@@ -13,12 +14,14 @@ import AnalyticsCoachingHub from '@/components/AnalyticsCoachingHub';
 import HabitForm from '@/components/HabitForm';
 import { MoodEntry, HabitMoodEntry, Habit } from '@/types';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { router } from 'expo-router';
 
 export default function HomeScreen() {
   const { habits, isLoading, addHabit } = useHabits();
   const { currentTheme } = useTheme();
   const { t } = useLanguage();
   const { canAddHabit, showUpgradePrompt, showUpgradeAlert } = useSubscription();
+
   const [completedCount, setCompletedCount] = useState(0);
   const [showHabitForm, setShowHabitForm] = useState(false);
 
@@ -131,4 +134,5 @@ const createStyles = (colors: any) => StyleSheet.create({
     fontSize: 16,
     marginTop: 40,
   },
+
 });

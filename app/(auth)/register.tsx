@@ -47,7 +47,7 @@ export default function RegisterScreen() {
     setIsLoading(true);
     try {
       await register(email, password, name);
-      router.replace('/(tabs)');
+      router.replace('/(tabs)' as any);
     } catch (error: any) {
       Alert.alert(t('auth.registrationFailed'), error?.message || t('auth.errorOccurred'));
     } finally {

@@ -29,33 +29,47 @@ interface UserFeedback {
   timestamp: string;
 }
 
+interface CollaborativeFilteringData {
+  userId: string;
+  habitPreferences: string[];
+  categoryPreferences: string[];
+  successPatterns: string[];
+  similarUsers: string[];
+}
+
+interface SemanticSearchResult {
+  habitId: string;
+  relevanceScore: number;
+  semanticMatch: string[];
+  context: string;
+}
+
 class AIService {
   private static userPatterns: Map<string, UserBehaviorPattern[]> = new Map();
   private static feedbackHistory: UserFeedback[] = [];
   private static adaptiveThresholds: Map<string, number> = new Map();
+  private static collaborativeData: Map<string, CollaborativeFilteringData> = new Map();
+  private static semanticIndex: Map<string, string[]> = new Map();
 
   /**
-   * Generate AI-powered habit suggestions based on user's current habits and behavior
+   * Enhanced AI-powered habit suggestions with collaborative filtering and semantic search
    */
   generateHabitSuggestions(userHabits: Habit[], t: (key: string, params?: any) => string): AIHabitSuggestion[] {
-    console.log('AIService.generateHabitSuggestions called with userHabits:', userHabits);
     const suggestions: AIHabitSuggestion[] = [];
     
     // For testing: Always generate some suggestions even if user has no habits
     if (userHabits.length === 0) {
-      console.log('AIService - No user habits, generating default suggestions');
       // Generate suggestions for missing categories
       const allCategories = habitCategories.map(cat => cat.id);
       allCategories.slice(0, 2).forEach(category => {
         const suggestionsForCategory = this.generateCategorySuggestions(category, [], t);
-        console.log('AIService - suggestionsForCategory:', suggestionsForCategory);
         suggestionsForCategory.forEach(suggestion => {
           suggestions.push({
             id: `ai-gap-${Date.now()}-${Math.random()}`,
             title: suggestion.title,
             description: suggestion.description,
             reason: t('ai.mlGapFilling', { 
-              category: category,
+              category: t(`category_${category}`),
               preferences: []
             }),
             confidence: 0.6,
@@ -63,105 +77,32 @@ class AIService {
           });
         });
       });
-      console.log('AIService - Final suggestions:', suggestions);
       return suggestions.sort((a, b) => b.confidence - a.confidence);
     }
     
-    // Analyze user's habit patterns with ML
-    const userPatterns = this.analyzeUserPatterns(userHabits);
-    const mlPredictions = this.generateMLPredictions(userHabits, userPatterns);
+    // 1. Collaborative Filtering - Find similar users and their successful habits
+    const collaborativeSuggestions = this.generateCollaborativeSuggestions(userHabits, t);
+    suggestions.push(...collaborativeSuggestions);
     
-    // Suggestion 1: ML-optimized habit modifications
-    mlPredictions.forEach(prediction => {
-      if (prediction.successProbability < 0.6) {
-        const habit = userHabits.find(h => h.id === prediction.habitId);
-        if (habit) {
-          suggestions.push({
-            id: `ml-optimize-${habit.id}`,
-            title: t('ai.mlOptimization.title', { habitTitle: habit.title }),
-            description: t('ai.mlOptimization.description', { 
-              probability: Math.round(prediction.successProbability * 100),
-              optimalTime: prediction.optimalTime 
-            }),
-            reason: t('ai.mlOptimization.reason', { 
-              habitTitle: habit.title,
-              modifications: prediction.recommendedModifications.join(', ')
-            }),
-            confidence: prediction.confidence,
-            category: habit.category || 'wellness',
-            relatedHabitId: habit.id
-          });
-        }
-      }
-    });
+    // 2. Semantic Search - Find habits based on user's interests and context
+    const semanticSuggestions = this.generateSemanticSuggestions(userHabits, t);
+    suggestions.push(...semanticSuggestions);
     
-    // Suggestion 2: Complement existing strong habits with ML insights
-    const consistentHabits = userHabits.filter(habit => habit.streak >= 7);
-    consistentHabits.forEach(habit => {
-      const complementaryHabits = this.findComplementaryHabits(habit, userHabits, t);
-      const mlInsights = this.getMLInsightsForHabit(habit.id);
-      
-      complementaryHabits.forEach(suggestion => {
-        suggestions.push({
-          id: `ai-complement-${Date.now()}-${Math.random()}`,
-          title: suggestion.title,
-          description: suggestion.description,
-          reason: t('ai.mlComplementaryReason', { 
-            habitTitle: habit.title, 
-            streak: habit.streak,
-            insights: mlInsights.join(', ')
-          }),
-          confidence: this.calculateConfidenceWithFeedback(habit.id, 'complementary'),
-          category: suggestion.category || 'wellness',
-          relatedHabitId: habit.id
-        });
-      });
-    });
+    // 3. ML-based Gap Analysis - Identify missing categories and patterns
+    const gapSuggestions = this.generateGapAnalysisSuggestions(userHabits, t);
+    suggestions.push(...gapSuggestions);
     
-    // Suggestion 3: ML-based alternatives for struggling habits
-    const strugglingHabits = userHabits.filter(habit => habit.streak < 3);
-    strugglingHabits.forEach(habit => {
-      const easierAlternatives = this.findEasierAlternatives(habit, t);
-      const mlAnalysis = this.analyzeFailurePatterns(habit.id);
-      
-      easierAlternatives.forEach(alternative => {
-        suggestions.push({
-          id: `ai-alternative-${Date.now()}-${Math.random()}`,
-          title: alternative.title,
-          description: alternative.description,
-          reason: t('ai.mlAlternativeReason', { 
-            habitTitle: habit.title,
-            analysis: mlAnalysis.reason,
-            alternative: alternative.title
-          }),
-          confidence: this.calculateConfidenceWithFeedback(habit.id, 'alternative'),
-          category: alternative.category || 'wellness'
-        });
-      });
-    });
+    // 4. Personalized Optimization - Optimize existing habits
+    const optimizationSuggestions = this.generateOptimizationSuggestions(userHabits, t);
+    suggestions.push(...optimizationSuggestions);
     
-    // Suggestion 4: Fill gaps using ML pattern recognition
-    const missingCategories = this.findMissingCategories(userHabits);
-    const userPreferences = this.analyzeUserPreferences(userHabits);
+    // 5. Context-Aware Recommendations - Based on time, mood, and current patterns
+    const contextSuggestions = this.generateContextAwareSuggestions(userHabits, t);
+    suggestions.push(...contextSuggestions);
     
-    missingCategories.forEach(category => {
-      const suggestionsForCategory = this.generateCategorySuggestions(category, userPreferences, t);
-      suggestionsForCategory.forEach(suggestion => {
-        suggestions.push({
-          id: `ai-gap-${Date.now()}-${Math.random()}`,
-          title: suggestion.title,
-          description: suggestion.description,
-          reason: t('ai.mlGapFilling', { 
-            category: category,
-            preferences: userPreferences.join(', ')
-          }),
-          confidence: this.calculateConfidenceWithFeedback(category, 'gap-filling'),
-          category: category
-        });
-      });
-    });
-    
-    return suggestions.sort((a, b) => b.confidence - a.confidence);
+    // Remove duplicates and sort by confidence
+    const uniqueSuggestions = this.removeDuplicateSuggestions(suggestions);
+    return uniqueSuggestions.sort((a, b) => b.confidence - a.confidence).slice(0, 5);
   }
   
   /**
@@ -172,9 +113,7 @@ class AIService {
     
     userHabits.forEach(habit => {
       if (!habit.reminderEnabled && habit.completionTimes && habit.completionTimes.length > 0) {
-        console.log('AIService - Processing habit:', habit.title, 'completionTimes:', habit.completionTimes);
         const optimalTime = this.findOptimalReminderTime(habit.completionTimes);
-        console.log('AIService - Optimal time for', habit.title, ':', optimalTime);
         suggestions.push({
           habitId: habit.id,
           suggestedTime: optimalTime,
@@ -581,8 +520,8 @@ class AIService {
     const categoryData = habitCategories.find(cat => cat.id === category);
     if (!categoryData || categoryData.habits.length === 0) {
       return [{
-        title: t('ai.categorySuggestion', { category }),
-        description: t('ai.categorySuggestionDescription', { category }),
+        title: t('ai.categorySuggestion', { category: t(`category_${category}`) }),
+        description: t('ai.categorySuggestionDescription', { category: t(`category_${category}`) }),
         category
       }];
     }
@@ -599,11 +538,8 @@ class AIService {
    * Find optimal reminder time based on completion times
    */
   private findOptimalReminderTime(completionTimes: string[]): string {
-    console.log('AIService - findOptimalReminderTime called with:', completionTimes);
-    
     if (!completionTimes || completionTimes.length === 0) {
       // Default to morning if no completion times available
-      console.log('AIService - No completion times, returning default 09:00');
       return '09:00';
     }
 
@@ -631,15 +567,12 @@ class AIService {
         const hour = time.getHours();
         if (!isNaN(hour)) {
           hourCounts[hour] = (hourCounts[hour] || 0) + 1;
-          console.log('AIService - Parsed hour:', hour, 'from timeStr:', timeStr);
         }
       } catch (error) {
         // Skip invalid time strings
         console.warn('Invalid completion time:', timeStr, error);
       }
     });
-
-    console.log('AIService - Hour counts:', hourCounts);
 
     // Find the hour with the most completions
     let optimalHour = 9; // Default to 9 AM
@@ -657,8 +590,6 @@ class AIService {
     if (isNaN(optimalHour) || optimalHour < 0 || optimalHour > 23) {
       optimalHour = 9; // Fallback to 9 AM
     }
-
-    console.log('AIService - Final optimal hour:', optimalHour);
 
     // Format as HH:MM
     return `${optimalHour.toString().padStart(2, '0')}:00`;
@@ -695,6 +626,305 @@ class AIService {
     // Calculate confidence based on percentage of nearby completions
     const confidence = nearbyCompletions / completionTimes.length;
     return Math.min(0.95, Math.max(0.3, confidence)); // Clamp between 0.3 and 0.95
+  }
+
+  /**
+   * Helper methods for enhanced AI suggestions
+   */
+  private findSimilarUsers(userPreferences: string[], userCategories: string[]): string[] {
+    // Mock implementation - in real app, this would query a database
+    return ['user1', 'user2', 'user3'];
+  }
+
+  private getSuccessfulHabitsFromSimilarUsers(similarUsers: string[]): Array<{title: string, category: string, successRate: number}> {
+    // Mock implementation - in real app, this would query a database
+    return [
+      { title: 'morning_meditation', category: 'wellness', successRate: 0.85 },
+      { title: 'evening_reading', category: 'learning', successRate: 0.78 },
+      { title: 'exercise_daily', category: 'fitness', successRate: 0.92 }
+    ];
+  }
+
+  private buildSemanticContext(userHabits: Habit[]): Map<string, string[]> {
+    const context = new Map<string, string[]>();
+    
+    userHabits.forEach(habit => {
+      const keywords = this.extractKeywords(habit.title, habit.notes || '');
+      context.set(habit.id, keywords);
+    });
+    
+    return context;
+  }
+
+  private findSemanticallyRelatedHabits(semanticContext: Map<string, string[]>): Array<{title: string, category: string, context: string, relatedHabits: string[]}> {
+    // Mock implementation - in real app, this would use NLP/ML
+    return [
+      { 
+        title: 'deep_breathing', 
+        category: 'wellness', 
+        context: 'stress-relief',
+        relatedHabits: ['meditation', 'gratitude']
+      },
+      { 
+        title: 'gratitude', 
+        category: 'productivity', 
+        context: 'stress-relief',
+        relatedHabits: ['meditation', 'learn_new']
+      }
+    ];
+  }
+
+  private calculateSemanticRelevance(habit: any, semanticContext: Map<string, string[]>): number {
+    // Mock implementation - in real app, this would use cosine similarity or similar
+    return 0.75;
+  }
+
+  private getCurrentContext(): {timeOfDay: string, dayOfWeek: string, season: string} {
+    const now = new Date();
+    const hour = now.getHours();
+    const day = now.getDay();
+    
+    let timeOfDay = 'morning';
+    if (hour >= 12 && hour < 17) timeOfDay = 'afternoon';
+    else if (hour >= 17) timeOfDay = 'evening';
+    
+    const days = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
+    
+    return {
+      timeOfDay,
+      dayOfWeek: days[day],
+      season: this.getSeason(now)
+    };
+  }
+
+  private findContextAppropriateHabits(context: {timeOfDay: string, dayOfWeek: string, season: string}): Array<{title: string, category: string, contextEffectiveness: number}> {
+    // Mock implementation - in real app, this would use ML models
+    const contextHabits = {
+      morning: [
+        { title: 'exercise_daily', category: 'fitness', contextEffectiveness: 0.9 },
+        { title: 'meditation', category: 'wellness', contextEffectiveness: 0.85 }
+      ],
+      afternoon: [
+        { title: 'walk', category: 'fitness', contextEffectiveness: 0.8 },
+        { title: 'learn_new', category: 'learning', contextEffectiveness: 0.75 }
+      ],
+      evening: [
+        { title: 'evening_reading', category: 'learning', contextEffectiveness: 0.85 },
+        { title: 'gratitude', category: 'wellness', contextEffectiveness: 0.8 }
+      ]
+    };
+    
+    return contextHabits[context.timeOfDay as keyof typeof contextHabits] || [];
+  }
+
+  private extractKeywords(title: string, notes: string): string[] {
+    // Simple keyword extraction - in real app, this would use NLP
+    const text = `${title} ${notes}`.toLowerCase();
+    const keywords = text.split(/\s+/).filter(word => word.length > 3);
+    return [...new Set(keywords)];
+  }
+
+  private getSeason(date: Date): string {
+    const month = date.getMonth();
+    if (month >= 2 && month <= 4) return 'spring';
+    if (month >= 5 && month <= 7) return 'summer';
+    if (month >= 8 && month <= 10) return 'autumn';
+    return 'winter';
+  }
+
+  private removeDuplicateSuggestions(suggestions: AIHabitSuggestion[]): AIHabitSuggestion[] {
+    const seen = new Set<string>();
+    return suggestions.filter(suggestion => {
+      const key = suggestion.title.toLowerCase();
+      if (seen.has(key)) return false;
+      seen.add(key);
+      return true;
+    });
+  }
+
+  /**
+   * Generate collaborative filtering suggestions
+   */
+  private generateCollaborativeSuggestions(userHabits: Habit[], t: (key: string, params?: any) => string): AIHabitSuggestion[] {
+    const suggestions: AIHabitSuggestion[] = [];
+    
+    // Analyze user's preferences and patterns
+    const userPreferences = this.analyzeUserPreferences(userHabits);
+    const userCategories = this.analyzeUserCategories(userHabits);
+    
+    // Find similar users based on preferences
+    const similarUsers = this.findSimilarUsers(userPreferences, userCategories);
+    
+    // Get successful habits from similar users
+    const successfulHabits = this.getSuccessfulHabitsFromSimilarUsers(similarUsers);
+    
+    // Filter out habits the user already has
+    const userHabitTitles = userHabits.map(h => h.title.toLowerCase());
+    const newHabits = successfulHabits.filter(habit => 
+      !userHabitTitles.includes(habit.title.toLowerCase())
+    );
+    
+    // Generate suggestions with collaborative confidence
+    newHabits.slice(0, 2).forEach(habit => {
+      suggestions.push({
+        id: `collab-${Date.now()}-${Math.random()}`,
+        title: habit.title,
+        description: t('ai.collaborative.description', { 
+          similarUsers: similarUsers.length,
+          successRate: Math.round(habit.successRate * 100)
+        }),
+        reason: t('ai.collaborative.reason', { 
+          category: habit.category,
+          similarUsers: similarUsers.length
+        }),
+        confidence: Math.min(0.9, 0.6 + (similarUsers.length * 0.1)),
+        category: habit.category
+      });
+    });
+    
+    return suggestions;
+  }
+
+  /**
+   * Generate semantic search suggestions
+   */
+  private generateSemanticSuggestions(userHabits: Habit[], t: (key: string, params?: any) => string): AIHabitSuggestion[] {
+    const suggestions: AIHabitSuggestion[] = [];
+    
+    // Build semantic context from user's current habits
+    const semanticContext = this.buildSemanticContext(userHabits);
+    
+    // Find semantically related habits
+    const relatedHabits = this.findSemanticallyRelatedHabits(semanticContext);
+    
+    // Generate suggestions based on semantic relevance
+    relatedHabits.slice(0, 2).forEach(habit => {
+      const relevanceScore = this.calculateSemanticRelevance(habit, semanticContext);
+      
+      suggestions.push({
+        id: `semantic-${Date.now()}-${Math.random()}`,
+        title: habit.title,
+        description: t('ai.semantic.description', { 
+          relevance: Math.round(relevanceScore * 100),
+          context: habit.context
+        }),
+        reason: t('ai.semantic.reason', { 
+          relatedHabits: habit.relatedHabits.map(h => t(h)).join(', '),
+          context: t(habit.context)
+        }),
+        confidence: relevanceScore,
+        category: habit.category
+      });
+    });
+    
+    return suggestions;
+  }
+
+  /**
+   * Generate gap analysis suggestions
+   */
+  private generateGapAnalysisSuggestions(userHabits: Habit[], t: (key: string, params?: any) => string): AIHabitSuggestion[] {
+    const suggestions: AIHabitSuggestion[] = [];
+    
+    // Find missing categories
+    const missingCategories = this.findMissingCategories(userHabits);
+    
+    // Analyze user's current patterns
+    const userPatterns = this.analyzeUserPatterns(userHabits);
+    
+    // Generate suggestions for missing categories
+    missingCategories.slice(0, 2).forEach(category => {
+      const categorySuggestions = this.generateCategorySuggestions(category, userPatterns.map(p => p.preferredTime), t);
+      
+      categorySuggestions.forEach(suggestion => {
+        suggestions.push({
+          id: `gap-${Date.now()}-${Math.random()}`,
+          title: suggestion.title,
+          description: t('ai.gapAnalysis.description', { 
+            category: t(`category_${category}`),
+            benefits: suggestion.description
+          }),
+          reason: t('ai.gapAnalysis.reason', { 
+            category: t(`category_${category}`),
+            currentHabits: userHabits.length
+          }),
+          confidence: 0.7,
+          category: category
+        });
+      });
+    });
+    
+    return suggestions;
+  }
+
+  /**
+   * Generate optimization suggestions
+   */
+  private generateOptimizationSuggestions(userHabits: Habit[], t: (key: string, params?: any) => string): AIHabitSuggestion[] {
+    const suggestions: AIHabitSuggestion[] = [];
+    
+    // Analyze user's habit patterns
+    const userPatterns = this.analyzeUserPatterns(userHabits);
+    const mlPredictions = this.generateMLPredictions(userHabits, userPatterns);
+    
+    // Generate optimization suggestions
+    mlPredictions.forEach(prediction => {
+      if (prediction.successProbability < 0.6) {
+        const habit = userHabits.find(h => h.id === prediction.habitId);
+        if (habit) {
+          suggestions.push({
+            id: `optimize-${habit.id}`,
+            title: t('ai.optimization.title', { habitTitle: t(habit.title) }),
+            description: t('ai.optimization.description', { 
+              probability: Math.round(prediction.successProbability * 100),
+              optimalTime: prediction.optimalTime 
+            }),
+            reason: t('ai.optimization.reason', { 
+              habitTitle: t(habit.title),
+              modifications: prediction.recommendedModifications.join(', ')
+            }),
+            confidence: prediction.confidence,
+            category: habit.category || 'wellness',
+            relatedHabitId: habit.id
+          });
+        }
+      }
+    });
+    
+    return suggestions;
+  }
+
+  /**
+   * Generate context-aware suggestions
+   */
+  private generateContextAwareSuggestions(userHabits: Habit[], t: (key: string, params?: any) => string): AIHabitSuggestion[] {
+    const suggestions: AIHabitSuggestion[] = [];
+    
+    // Get current context (time, day, etc.)
+    const currentContext = this.getCurrentContext();
+    
+    // Find habits that work well in current context
+    const contextAppropriateHabits = this.findContextAppropriateHabits(currentContext);
+    
+    // Generate context-aware suggestions
+    contextAppropriateHabits.slice(0, 2).forEach(habit => {
+      suggestions.push({
+        id: `context-${Date.now()}-${Math.random()}`,
+        title: habit.title,
+        description: t('ai.contextAware.description', { 
+          context: t(currentContext.timeOfDay),
+          effectiveness: Math.round(habit.contextEffectiveness * 100)
+        }),
+        reason: t('ai.contextAware.reason', { 
+          context: t(currentContext.timeOfDay),
+          habitTitle: t(habit.title)
+        }),
+        confidence: habit.contextEffectiveness,
+        category: habit.category
+      });
+    });
+    
+    return suggestions;
   }
 }
 

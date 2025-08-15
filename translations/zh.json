@@ -134,20 +134,87 @@
   "search_habits": "搜索习惯...",
   "my_habits": "我的习惯",
   "suggestions": "建议",
+  "courses_tab": "课程",
+  "study_groups": "学习小组",
   "create_new_habit": "创建新习惯",
   "no_habits_found": "未找到习惯",
   "create_habit_or_add_suggestion": "创建新习惯或从我们的建议中添加",
   "all": "全部",
-  "success": "✅ 成功！",
+  "success_general": "✅ 成功！",
   "habit_added_success": "已添加到你的习惯中！",
   "great": "太好了！",
   "awesome": "🎉 太棒了！",
   "habit_added_start_building": "已添加到你的习惯中！今天就开始建立这个积极习惯吧。",
   "lets_go": "开始吧！",
+  "add_new_habit": "添加新习惯",
+  "set_goals": "设定目标",
+  "view_stats": "查看统计",
+  "start_building": "开始建立你的日常习惯",
+  "keep_going": "💪 继续加油！",
+  "week_progress": "周进度",
+  "current_streak": "🔥 当前连续",
+  "days": "天",
+  "create_first_habit": "创建你的第一个习惯",
+  "motivation_quote": "唯一糟糕的锻炼是没有发生的锻炼。每一个小步骤都朝着你的更大目标迈进。",
+  "error_general": "错误",
+  "ok_general": "确定",
+  "please_login_enroll": "请登录以注册课程",
+  "course_enrolled_success": "您已成功注册\"{course}\"课程！",
+  "locale": "zh-CN",
+  "optimal_time_suggestion": "最佳时间：{time}",
+  "unknown_habit": "未知习惯",
+  "accuracy": "准确度",
+  "ai": {
+    "collaborative": {
+      "type": "协作",
+      "description": "基于{similarUsers}个相似用户，{successRate}%成功率",
+      "reason": "在{category}类别中受相似用户欢迎"
+    },
+    "semantic": {
+      "type": "语义",
+      "description": "与你当前习惯{relevance}%相关",
+      "reason": "与你的{relatedHabits}习惯在{context}环境中相关"
+    },
+    "gapAnalysis": {
+      "type": "差距分析",
+      "description": "您的日常习惯中缺少{category}类别",
+      "reason": "您有{currentHabits}个习惯，但在{category}类别中没有"
+    },
+    "optimization": {
+      "type": "优化",
+      "description": "您当前习惯的优化版本",
+      "reason": "基于您的完成模式和偏好"
+    },
+    "contextAware": {
+      "type": "上下文感知",
+      "description": "完美适合您当前的上下文和时间",
+      "reason": "匹配您当前的情况和日程安排"
+    },
+    "general": {
+      "type": "通用",
+      "description": "基于您个人资料的一般建议",
+      "reason": "基于您的整体习惯模式"
+    },
+    "mlOptimization": {
+      "title": "优化{habitTitle}",
+      "description": "根据你的模式，这个习惯的成功率为{probability}%。考虑在{optimalTime}安排它以获得更好的结果。",
+      "reason": "我们的AI分析显示{habitTitle}可以通过这些修改更有效：{modifications}"
+    },
+    "mlComplementaryReason": "既然你在{habitTitle}方面做得很好（{streak}天连续），这里有一些配合良好的互补习惯：{insights}",
+    "mlAlternativeReason": "如果{habitTitle}感觉有挑战性，试试这个更简单的替代方案。分析显示：{analysis}",
+    "mlGapFilling": "你还没有任何{category}习惯。这可能是一个很好的补充",
+    "complementaryHabit": "互补{category}习惯",
+    "complementaryDescription": "这个习惯补充你现有的{habit}习惯",
+    "easierAlternative": "{habit}的简单替代",
+    "easierAlternativeDescription": "建立相同积极行为的更简单版本",
+    "categorySuggestion": "添加{category}习惯",
+    "categorySuggestionDescription": "用这个{category}习惯扩展你的习惯",
+    "why_suggested": "为什么建议"
+  },
   "icon": "图标",
   "change_icon": "更改图标",
   "choose_icon": "选择图标",
-  "title": "标题",
+  "title_general": "标题",
   "enter_habit_title": "输入习惯标题",
   "notes_optional": "备注（可选）",
   "add_notes_habit": "添加关于此习惯的备注",
@@ -263,22 +330,6 @@
   "ai_encouraging_3": "🚀 你正在一次一个习惯地建立你想要的未来。",
   "ai_encouraging_4": "💎 坚持是精通之母。继续前进！",
   "ai_encouraging_5": "🌈 你未来的自己会感谢你今天所做的工作。",
-  "ai": {
-    "mlOptimization": {
-      "title": "优化{habitTitle}",
-      "description": "根据你的模式，这个习惯的成功率为{probability}%。考虑在{optimalTime}安排它以获得更好的结果。",
-      "reason": "我们的AI分析显示{habitTitle}可以通过这些修改更有效：{modifications}"
-    },
-    "mlComplementaryReason": "既然你在{habitTitle}方面做得很好（{streak}天连续），这里有一些配合良好的互补习惯：{insights}",
-    "mlAlternativeReason": "如果{habitTitle}感觉有挑战性，试试这个更简单的替代方案。分析显示：{analysis}",
-    "mlGapFilling": "你在{category}类别中缺少习惯。根据你的偏好（{preferences}），这是我们推荐的：",
-    "complementaryHabit": "互补{category}习惯",
-    "complementaryDescription": "这个习惯补充你现有的{habit}习惯",
-    "easierAlternative": "{habit}的简单替代",
-    "easierAlternativeDescription": "建立相同积极行为的更简单版本",
-    "categorySuggestion": "添加{category}习惯",
-    "categorySuggestionDescription": "用这个{category}习惯扩展你的习惯"
-  },
   "ai_complementary_walk": "散步5分钟",
   "ai_complementary_walk_desc": "轻度运动来补充你的健康习惯",
   "ai_complementary_water": "喝一杯水",
@@ -298,6 +349,12 @@
   "ai_alternative_one_page_desc": "只读一页书作为简单的阅读替代",
   "ai_alternative_three_breaths": "三次深呼吸",
   "ai_alternative_three_breaths_desc": "做三次深呼吸作为简单的冥想替代",
+  "morning_meditation": "晨间冥想",
+  "morning_meditation_desc": "早上练习正念冥想5分钟",
+  "morning_meditation_benefits": "为一天定下积极基调，减轻压力，提高专注力",
+  "evening_reading": "晚间阅读",
+  "evening_reading_desc": "睡前阅读20分钟",
+  "evening_reading_benefits": "改善睡眠质量，扩展知识，减少屏幕时间",
   "habit_added_message": "已添加到你的习惯中！",
   "habit_added_ai_message": "已添加到你的习惯中！开始建立这个积极习惯吧。",
   "noDescription": "无描述",
@@ -1936,6 +1993,18 @@
   "stats": {
     "title": "分析",
     "subtitle": "跟踪您的进度和洞察",
+    
+    "library": {
+      "title": "图书馆分析",
+      "subtitle": "跟踪您的学习进度和图书馆使用情况",
+      "usageStats": "使用统计",
+      "totalVisits": "总访问次数",
+      "timeSpent": "花费时间",
+      "habitsAdded": "添加的习惯",
+      "coursesCompleted": "完成的课程",
+      "engagementScore": "参与度评分",
+      "engagementDescription": "基于图书馆使用的参与度水平"
+    },
     "analyticsTabs": {
       "wholeAnalytics": "完整分析",
       "mood": "情绪",
@@ -2044,7 +2113,9 @@
       "activity": "活动",
       "activityDesc": "详细活动日志",
       "advanced": "高级",
-      "advancedDesc": "AI驱动的分析"
+      "advancedDesc": "AI驱动的分析",
+      "library": "图书馆",
+      "libraryDesc": "跟踪您的学习进度和图书馆使用情况" 
     },
     "quickStats": {
       "today": "今天",
@@ -2566,6 +2637,7 @@
       "pro": "专业版"
     },
     "preferences": {
+      "description": "自定义您的应用体验和通知偏好",
       "theme": "主题",
       "language": "语言",
       "animations": "动画效果",
@@ -3032,15 +3104,24 @@
     "beta": {
       "badge": "BETA",
       "description": "社区功能正在测试中。更多功能即将推出！"
-    }
+    },
+    "encouragementSupport": "鼓励支持"
   },
   "onboarding": {
     "welcome": {
-      "title": "欢迎开启您的健康之旅",
-      "subtitle": "通过人工智能和个性化指导，开始养成更好的习惯并记录您的心情。",
-      "feature1": "记录您的心情",
-      "feature2": "养成健康习惯",
-      "feature3": "发现规律"
+      "title": "欢迎使用 HabitSync",
+      "subtitle": "您的AI驱动习惯追踪器和心情伴侣。养成更好的习惯，追踪您的健康之旅，发现通往成功的规律。",
+      "feature1": "AI驱动习惯建议",
+      "feature2": "高级心情追踪",
+      "feature3": "个性化洞察"
+    },
+    "appOverview": {
+      "title": "HabitSync 的独特之处",
+      "subtitle": "发现让 HabitSync 区别于其他习惯追踪器的独特功能。",
+      "feature1": "AI驱动习惯建议和指导",
+      "feature2": "带相关性的高级心情追踪",
+      "feature3": "多重提醒和智能通知",
+      "feature4": "游戏化和成就系统"
     },
     "language": {
       "title": "选择您的语言",
@@ -3051,27 +3132,27 @@
     },
     "freeFeatures": {
       "title": "免费功能",
-      "subtitle": "开始您的健康之旅所需的一切。",
-      "feature1": "追踪最多4个习惯",
-      "feature2": "7天分析",
-      "feature3": "基础心情追踪",
-      "feature4": "简单提醒"
+      "subtitle": "开始您的健康之旅，使用专为帮助您成功而设计的强大功能。",
+      "feature1": "追踪最多4个习惯并带提醒",
+      "feature2": "7天分析和洞察",
+      "feature3": "基础心情追踪和规律发现",
+      "feature4": "数据导出和性能提醒"
     },
     "proFeatures": {
       "title": "专业功能",
-      "subtitle": "通过高级功能和AI指导解锁无限潜力。",
-      "feature1": "无限习惯",
-      "feature2": "365天分析",
-      "feature3": "AI驱动指导",
-      "feature4": "高级心情洞察",
-      "feature5": "高级主题和个性化"
+      "subtitle": "通过高级AI指导和专业功能解锁无限潜力。",
+      "feature1": "无限习惯和多重提醒",
+      "feature2": "365天分析和规律洞察",
+      "feature3": "AI驱动习惯建议和指导",
+      "feature4": "高级心情相关性和健康集成",
+      "feature5": "专业主题、社交功能和团队管理"
     },
     "getStartedStep": {
-      "title": "准备开始了吗？",
-      "subtitle": "您的健康之旅现在开始。让我们创建您的第一个习惯！",
-      "feature1": "创建您的第一个习惯",
-      "feature2": "设置心情追踪",
-      "feature3": "开始您的旅程"
+      "title": "准备改变您的生活了吗？",
+      "subtitle": "加入已经通过 HabitSync 改善习惯和幸福感的数千名用户。",
+      "feature1": "几秒钟内创建您的第一个习惯",
+      "feature2": "设置个性化心情追踪",
+      "feature3": "开始您的AI驱动健康之旅"
     },
     "skip": "跳过",
     "previous": "上一步",
@@ -3080,7 +3161,7 @@
     "proFeature": "专业功能",
     "upgrade": "升级到专业版",
     "upgradeNow": "立即升级",
-    "description": "通过人工智能和个性化指导，开始养成更好的习惯并记录您的心情。",
+    "description": "HabitSync 是您的AI驱动习惯追踪器和心情伴侣。养成更好的习惯，追踪您的健康之旅，通过个性化洞察和指导发现通往持久成功的规律。",
     "features": {
       "trackMoods": "记录您的心情",
       "buildHabits": "养成健康习惯",
@@ -3693,5 +3774,1047 @@
     "sevenDayProgress": "7天进度",
     "completed": "已完成",
     "today": "今天"
+  },
+  "courses": {
+    "title": "习惯养成课程",
+    "subtitle": "学习习惯背后的科学，建立持久的改变",
+    "loading": "正在加载课程...",
+    "courseLoading": "正在加载课程...",
+    "courseNotFound": "课程未找到",
+    "goBack": "返回",
+    "yourProgress": "您的进度",
+    "modulesCompleted": "个模块已完成",
+    "minutes": "分钟",
+    "enrolled": "已注册",
+    "courseModules": "课程模块",
+    "currentModule": "当前模块：",
+    "completeModule": "完成模块",
+    "yourAchievements": "您的成就",
+    "guidedSetups": "引导设置",
+    "guidedSetupsDescription": "快速、互动的指南，帮助您创建第一个习惯",
+    "firstHabitSetup": "您的第一个习惯",
+    "firstHabitSetupDescription": "创建您第一个成功习惯的分步指南",
+    "productivitySetup": "生产力习惯",
+    "productivitySetupDescription": "建立将改变您生产力的习惯",
+    "startSetup": "开始设置",
+    "recommended": "为您推荐",
+    "recommendedDescription": "根据您的偏好和目标量身定制的课程",
+    "allCourses": "所有课程",
+    "allCoursesDescription": "习惯养成课程的完整库",
+    "learningPath": "学习路径",
+    "learningPathDescription": "遵循这个结构化路径来掌握习惯养成",
+    "enroll": "注册",
+    "continue": "继续",
+    "review": "复习",
+    "enrolledTitle": "注册成功！",
+    "enrolledMessage": "您已成功注册课程。开始学习吧！",
+    "enrollError": "注册课程失败。请重试。",
+    "aiRecommended": "AI推荐",
+    "aiRecommendedDescription": "根据您的习惯和目标为您个性化的课程",
+    "preview": "预览",
+    "previewError": "加载课程预览失败。请重试。",
+    "startCourse": "开始课程",
+    "completed": "已完成",
+    "completionError": "完成课程失败。请重试。",
+    "celebrationTitle": "🎉 课程完成！",
+    "celebrationMessage": "恭喜！您已完成\"{courseTitle}\"并获得{xpEarned}经验值！",
+    "shareCompletion": "分享成就",
+    "sharedTitle": "分享成功！",
+    "sharedMessage": "您的课程完成已与社区分享！",
+    "shareError": "分享完成失败。请重试。",
+    "learningStreak": "学习连续记录",
+    "consecutiveDays": "连续天数",
+    "weekStreak": "周连续记录！",
+    "details": "详情",
+    "studyGroup": "学习小组",
+    "download": "下载",
+    "downloading": "下载中...",
+    "offline": "离线",
+    "delete": "删除",
+    "coursePreview": "课程预览",
+    "courseModulesLabel": "课程模块：",
+    "moreModules": "更多模块",
+    "learningObjectives": "学习目标：",
+    "whatYouWillLearn": "您将学到：",
+    "sampleContent": "示例内容：",
+    "instructor": "讲师：",
+    "studentReviews": "学生评价：",
+    "members": "成员",
+    "messages": "消息",
+    "createNewStudyGroup": "创建新学习小组",
+    "studyGroupName": "学习小组名称",
+    "create": "创建",
+    "cancel": "取消",
+    "yourCourses": "您的课程",
+    "noCoursesAvailable": "目前没有可用课程",
+    "noEnrolledCourses": "您还没有注册任何课程",
+    "browseCourses": "浏览课程",
+    "difficulty": {
+      "beginner": "初级",
+      "intermediate": "中级",
+      "advanced": "高级"
+    },
+    "loadingPreview": "正在加载预览...",
+    "deleteCourseTitle": "删除课程",
+    "deleteCourseMessage": "您确定要删除课程\"{courseTitle}\"吗？这将删除您的所有进度且无法撤销。",
+    "deleteCourseSuccess": "课程\"{courseTitle}\"已从您的课程中删除。",
+    "deleteCourseError": "删除课程失败。请重试。",
+    "studyGroupTitle": "{courseTitle}学习小组",
+    "studyGroupDescription": "加入或创建此课程的学习小组，一起学习！",
+    "existingGroups": "现有小组",
+    "existingGroupsDescription": "加入现有小组与他人协作。",
+    "studyGroupForCourse": "{courseTitle}课程学习小组 - 加入我们一起学习！",
+    "studyGroupCreated": "已为此课程创建学习小组！",
+    "studyGroupJoined": "成功加入学习小组！",
+    "studyGroupError": "处理学习小组失败",
+    "joinStudyGroupError": "加入学习小组失败",
+    "createStudyGroupError": "创建学习小组失败",
+    "invalidStudyGroupName": "请输入有效的学习小组名称",
+    "courseDownloaded": "课程\"{courseTitle}\"已下载供离线使用！",
+    "downloadCourseError": "下载课程失败",
+    "loginToEnroll": "请登录以注册课程",
+    "enrollCourseError": "注册课程失败。请重试。",
+    "learnCourseSpecificSkills": "学习课程特定技能",
+    "applyKnowledgeInPractice": "在实践中应用知识",
+    "developNewCapabilities": "发展新能力",
+    "achieveLearningGoals": "实现学习目标",
+    "yourCoursesDescription": "继续您的学习之旅，使用已注册的课程"
+  },
+  "courseContent": {
+    "habitFormationFoundations": {
+      "title": "习惯养成基础",
+      "description": "学习习惯养成背后的科学，为持久改变建立坚实基础。"
+    },
+    "sleepHabits": {
+      "title": "睡眠优化习惯",
+      "description": "通过有效的习惯养成掌握优质睡眠的艺术。"
+    },
+    "creativeThinkingHabits": {
+      "title": "创造性思维习惯",
+      "description": "通过系统性的习惯养成释放您的创造潜力。"
+    },
+    "productivityHabits": {
+      "title": "生产力习惯",
+      "description": "建立将改变您生产力和效率的习惯。"
+    },
+    "fitnessHabits": {
+      "title": "健身习惯",
+      "description": "为更健康的生活方式创造可持续的健身习惯。"
+    },
+    "mindfulnessHabits": {
+      "title": "正念习惯",
+      "description": "培养正念习惯，获得更好的心理健康和清晰度。"
+    },
+    "learningHabits": {
+      "title": "学习习惯",
+      "description": "掌握有效的学习习惯，实现持续成长。"
+    },
+    "financialHabits": {
+      "title": "财务习惯",
+      "description": "建立健康的财务习惯，实现长期安全。"
+    },
+    "communicationHabits": {
+      "title": "沟通习惯",
+      "description": "通过更好的沟通习惯改善您的人际关系。"
+    },
+    "leadershipHabits": {
+      "title": "领导力习惯",
+      "description": "培养领导力习惯，实现个人和职业成长。"
+    },
+    "wellnessHabits": {
+      "title": "健康习惯",
+      "description": "创造全面的健康习惯，实现整体福祉。"
+    },
+    "holistic-wellness-habits": {
+      "title": "整体健康习惯",
+      "description": "培养全面的健康习惯，促进身心灵的和谐发展。"
+    },
+    "leadership-development-habits": {
+      "title": "领导力发展习惯",
+      "description": "培养领导力习惯，实现个人和职业成长。"
+    },
+    "financial-habits-money-management": {
+      "title": "财务习惯与金钱管理",
+      "description": "建立健康的财务习惯，实现长期财务成功。"
+    },
+    "effective-communication-habits": {
+      "title": "有效沟通习惯",
+      "description": "建立强大的沟通习惯，实现个人和职业成功。"
+    },
+    "modules": {
+      "whatAreHabits": {
+        "title": "什么是习惯？",
+        "description": "理解习惯养成背后的心理学"
+      },
+      "habitLoop": {
+        "title": "习惯循环",
+        "description": "理解线索、渴望、反应和奖励"
+      },
+      "buildingHabits": {
+        "title": "建立新习惯",
+        "description": "创建持久习惯的实用策略"
+      },
+      "morningScience": {
+        "title": "晨间科学",
+        "description": "为什么晨间习惯如此强大"
+      },
+      "designRoutine": {
+        "title": "设计您的习惯",
+        "description": "创建完美晨间习惯的分步指南"
+      },
+      "implementation": {
+        "title": "实施策略",
+        "description": "如何坚持您的晨间习惯"
+      },
+      "fitnessPsychology": {
+        "title": "健身心理学",
+        "description": "理解健身中的动机和一致性"
+      },
+      "workoutPlanning": {
+        "title": "锻炼计划与安排",
+        "description": "创建适合您生活的可持续锻炼习惯"
+      },
+      "nutritionHabits": {
+        "title": "健身营养习惯",
+        "description": "建立支持健身目标的健康饮食习惯"
+      },
+      "recoveryHabits": {
+        "title": "恢复与休息习惯",
+        "description": "可持续健身的基本恢复实践"
+      },
+      "productivityPrinciples": {
+        "title": "生产力核心原则",
+        "description": "理解生产力的基本原则"
+      },
+      "timeManagement": {
+        "title": "高级时间管理",
+        "description": "掌握时间块、优先级排序和安排"
+      },
+      "focusHabits": {
+        "title": "建立专注习惯",
+        "description": "发展深度工作和专注习惯"
+      },
+      "productivitySystems": {
+        "title": "生产力系统集成",
+        "description": "集成多个生产力系统以实现最大效果"
+      },
+      "mindfulnessBasics": {
+        "title": "正念基础",
+        "description": "理解正念及其好处"
+      },
+      "meditationTechniques": {
+        "title": "冥想技巧",
+        "description": "学习各种冥想技巧和实践"
+      },
+      "stressManagement": {
+        "title": "通过正念管理压力",
+        "description": "使用正念技巧进行压力管理"
+      },
+      "learningScience": {
+        "title": "学习科学",
+        "description": "理解我们如何学习和保留信息"
+      },
+      "studyTechniques": {
+        "title": "有效学习技巧",
+        "description": "掌握经过验证的学习技巧和方法"
+      },
+      "memoryTechniques": {
+        "title": "记忆与保留技巧",
+        "description": "学习改善记忆和保留的技巧"
+      },
+      "sleepScience": {
+        "title": "睡眠科学",
+        "description": "理解睡眠周期及其重要性"
+      },
+      "sleepHygiene": {
+        "title": "睡眠卫生实践",
+        "description": "学习更好的休息的基本睡眠卫生习惯"
+      },
+      "sleepEnvironment": {
+        "title": "优化您的睡眠环境",
+        "description": "为优质休息创建完美的睡眠环境"
+      },
+      "sleepDisorders": {
+        "title": "管理睡眠挑战",
+        "description": "解决常见的睡眠问题和障碍"
+      }
+    }
+  },
+  "guidedSetups": {
+    "first-habit-setup": {
+      "title": "您的第一个习惯",
+      "description": "一个分步指南，帮助您创建第一个成功的习惯"
+    },
+    "productivity-setup": {
+      "title": "生产力习惯",
+      "description": "建立将改变您生产力的习惯"
+    },
+    "steps": {
+      "goal-setting": {
+        "title": "设定您的目标",
+        "description": "您想要实现什么？"
+      },
+      "habit-selection": {
+        "title": "选择您的习惯",
+        "description": "选择一个能帮助您达到目标的习惯"
+      },
+      "specificity": {
+        "title": "使其具体化",
+        "description": "明确定义您将在何时何地做什么"
+      },
+      "cue-identification": {
+        "title": "识别您的触发因素",
+        "description": "什么会触发这个习惯？"
+      },
+      "reward-planning": {
+        "title": "计划您的奖励",
+        "description": "您将如何奖励自己完成习惯？"
+      },
+      "confirmation": {
+        "title": "确认您的计划",
+        "description": "审查并确认您的习惯计划"
+      },
+      "productivity-assessment": {
+        "title": "评估您当前的生产力",
+        "description": "评估您在不同领域的当前生产力"
+      },
+      "productivity-goals": {
+        "title": "设定生产力目标",
+        "description": "您想要做出哪些生产力改进？"
+      },
+      "implementation-plan": {
+        "title": "创建实施计划",
+        "description": "计划如何实施这些习惯"
+      }
+    },
+    "options": {
+      "exercise": "锻炼",
+      "reading": "阅读",
+      "meditation": "冥想",
+      "journaling": "日记",
+      "learning": "学习",
+      "other": "其他",
+      "timeBlocking": "时间块",
+      "taskPrioritization": "任务优先级",
+      "emailManagement": "邮件管理",
+      "deepWork": "深度工作",
+      "breakManagement": "休息管理"
+    }
+  },
+  "guidedSetup": {
+    "step": "步骤",
+    "of": "共",
+    "minutes": "分钟",
+    "enterYourAnswer": "请输入您的答案...",
+    "next": "下一步",
+    "previous": "上一步",
+    "complete": "完成",
+    "successTitle": "设置完成！",
+    "successMessage": "您的习惯已成功创建！",
+    "loadError": "加载引导设置失败",
+    "createError": "创建习惯失败"
+  },
+  "library": {
+    "feedback": {
+      "title": "图书馆反馈",
+      "introTitle": "帮助我们改善您的体验！",
+      "introText": "您的反馈帮助我们为每个人改善图书馆。分享您对查找和添加习惯的想法。",
+      "rateExperience": "评价您的图书馆体验",
+      "selectRating": "点击星星进行评价",
+      "rating1": "差 - 需要重大改进",
+      "rating2": "一般 - 可以更好",
+      "rating3": "好 - 令人满意的体验",
+      "rating4": "很好 - 出色的体验",
+      "rating5": "优秀 - 完美的体验",
+      "shareThoughts": "分享您的想法",
+      "optional": "（可选）",
+      "placeholder": "告诉我们您对图书馆的看法，您希望看到哪些功能，或者您遇到的任何问题...",
+      "quickFeedback": "快速反馈选项",
+      "easyToUse": "易于使用",
+      "needsImprovement": "需要改进",
+      "moreHabits": "需要更多习惯",
+      "betterSearch": "更好的搜索",
+      "aiSuggestions": "更好的AI建议",
+      "educationalContent": "更多教育内容",
+      "submit": "提交反馈",
+      "submitting": "提交中...",
+      "thankYou": "谢谢！",
+      "submittedMessage": "您的反馈已提交。我们将用它来改善图书馆体验！",
+      "ratingRequired": "需要评价",
+      "pleaseRate": "请在提交前选择评价。",
+      "submitError": "提交反馈失败。请重试。"
+    }
+  },
+  "achievements": {
+    "first_course": {
+      "title": "知识探索者",
+      "description": "注册了您的第一个课程"
+    },
+    "course_collector": {
+      "title": "课程收集者", 
+      "description": "注册了5个不同的课程"
+    },
+    "knowledge_seeker": {
+      "title": "知识探索者",
+      "description": "完成了3个课程模块"
+    },
+    "guided_master": {
+      "title": "引导大师",
+      "description": "完成了3个引导设置"
+    },
+    "learning_streak": {
+      "title": "学习连胜",
+      "description": "连续学习5天"
+    },
+    "knowledge_sharer": {
+      "title": "知识分享者",
+      "description": "与社区分享知识"
+    },
+    "library_explorer": {
+      "title": "图书馆探索者",
+      "description": "探索了所有图书馆部分"
+    },
+    "feedback_contributor": {
+      "title": "反馈贡献者",
+      "description": "为图书馆内容提供反馈"
+    },
+    "study_group_creator": {
+      "title": "学习小组创建者",
+      "description": "创建了您的第一个学习小组"
+    },
+    "study_group_joiner": {
+      "title": "学习小组成员",
+      "description": "加入了3个不同的学习小组"
+    },
+    "learning_circle_leader": {
+      "title": "学习圈领导者",
+      "description": "领导了5次学习会议"
+    },
+    "peer_mentor": {
+      "title": "同伴导师",
+      "description": "帮助了10位其他学习者"
+    }
+  },
+  "contentStrings": {
+    "sleep-science-intro": "睡眠科学导论",
+    "sleep-hygiene-guide": "睡眠卫生指南",
+    "sleep-environment-guide": "睡眠环境指南", 
+    "sleep-disorders-quiz": "睡眠障碍测验",
+    "habit-formation-intro": "习惯养成导论",
+    "habit-loop-explanation": "习惯循环解释",
+    "habit-building-strategies": "习惯建立策略",
+    "morning-routine-science": "晨间习惯科学",
+    "routine-design-guide": "习惯设计指南",
+    "implementation-strategies": "实施策略",
+    "fitness-psychology-intro": "健身心理学导论",
+    "workout-planning-guide": "锻炼计划指南",
+    "nutrition-habits-guide": "营养习惯指南",
+    "recovery-habits-quiz": "恢复习惯测验",
+    "productivity-principles-intro": "生产力原则导论",
+    "time-management-systems": "时间管理系统",
+    "focus-habits-guide": "专注习惯指南",
+    "productivity-systems-integration": "生产力系统集成",
+    "mindfulness-basics-intro": "正念基础导论",
+    "meditation-techniques-guide": "冥想技巧指南",
+    "stress-management-mindfulness": "通过正念管理压力",
+    "learning-science-intro": "学习科学导论",
+    "study-techniques-guide": "学习技巧指南",
+    "memory-techniques-guide": "记忆技巧指南",
+    "continuous-learning-habits": "持续学习习惯",
+    "financial-mindset-intro": "财务思维导论",
+    "budgeting-basics-guide": "预算基础指南",
+    "saving-investing-guide": "储蓄投资指南",
+    "debt-management-quiz": "债务管理测验",
+    "communication-fundamentals-intro": "沟通基础导论",
+    "active-listening-guide": "积极倾听指南",
+    "assertive-communication-guide": "自信沟通指南",
+    "conflict-resolution-skills": "冲突解决技能",
+    "creativity-basics-intro": "创造力基础导论",
+    "creative-techniques-guide": "创意技巧指南",
+    "creative-routines-guide": "创意习惯指南",
+    "leadership-principles-intro": "领导力原则导论",
+    "emotional-intelligence-leadership": "领导力中的情商",
+    "team-building-guide": "团队建设指南",
+    "leadership-communication-skills": "领导力沟通技能",
+    "wellness-overview-intro": "健康概览导论",
+    "physical-wellness-guide": "身体健康指南",
+    "mental-wellness-guide": "心理健康指南",
+    "spiritual-wellness-quiz": "精神健康测验"
+  },
+  "studyGroups": {
+    "title": "学习小组",
+    "loading": "正在加载学习小组...",
+    "searchPlaceholder": "搜索学习小组...",
+    "noGroupsFound": "未找到学习小组",
+    "noGroupsFoundWithFilters": "请尝试调整搜索或筛选条件",
+    "createFirstGroup": "创建您的第一个学习小组开始吧！",
+    "createStudyGroup": "创建学习小组",
+    "joinGroup": "加入小组",
+    "joinGroupById": "通过ID加入",
+    "joinGroupByIdPrompt": "输入要加入的小组的唯一ID：",
+    "joinGroupByIdError": "请输入有效的小组ID",
+    "groupNotFound": "未找到小组或您已经是成员",
+    "groupDetails": "小组详情",
+    "groupName": "小组名称 *",
+    "groupNamePlaceholder": "输入小组名称",
+    "groupNameRequired": "小组名称是必需的",
+    "groupNameMinLength": "小组名称至少需要3个字符",
+    "description": "描述 *",
+    "descriptionPlaceholder": "描述您学习小组的目的和重点",
+    "descriptionRequired": "描述是必需的",
+    "descriptionMinLength": "描述至少需要10个字符",
+    "category": "类别",
+    "selectCategory": "选择类别",
+    "selectCategoryPrompt": "为您的学习小组选择一个类别",
+    "maxMembers": "最大成员数",
+    "maxMembersPlaceholder": "15",
+    "maxMembersRange": "最大成员数必须在2到50之间",
+    "meetingInformation": "会议信息",
+    "meetingFrequency": "会议频率",
+    "selectFrequency": "选择频率",
+    "selectFrequencyPrompt": "您的小组多久聚会一次？",
+    "meetingTime": "会议时间",
+    "meetingTimePlaceholder": "10:00",
+    "duration": "时长（分钟）",
+    "durationPlaceholder": "60",
+    "location": "地点",
+    "meetingType": "会议类型",
+    "virtual": "虚拟",
+    "physical": "实体",
+    "meetingLink": "会议链接 *",
+    "meetingLinkPlaceholder": "https://meet.google.com/...",
+    "meetingLinkRequired": "虚拟会议需要会议链接",
+    "address": "地址 *",
+    "addressPlaceholder": "输入会议地点地址",
+    "addressRequired": "实体会议需要地址",
+    "contactInformation": "联系信息",
+    "email": "电子邮件",
+    "emailPlaceholder": "输入联系邮箱",
+    "invalidEmail": "请输入有效的电子邮件地址",
+    "phone": "电话",
+    "phonePlaceholder": "输入联系电话",
+    "groupSettings": "小组设置",
+    "level": "级别",
+    "beginner": "初级",
+    "intermediate": "中级",
+    "advanced": "高级",
+    "commitment": "承诺",
+    "casual": "随意",
+    "moderate": "适中",
+    "intensive": "密集",
+    "tags": "标签",
+    "tagsPlaceholder": "添加标签帮助他人找到您的小组",
+    "rules": "规则",
+    "rulesPlaceholder": "添加小组规则和指导原则",
+    "topics": "主题",
+    "topicsPlaceholder": "添加讨论主题",
+    "createGroup": "创建小组",
+    "creatingGroup": "创建中...",
+    "groupCreatedSuccess": "学习小组创建成功！🎉",
+    "groupCreatedError": "创建学习小组失败",
+    "joinedGroupSuccess": "成功加入小组！🎉",
+    "joinedGroupError": "加入小组失败",
+    "deleteGroup": "删除小组",
+    "deleteGroupConfirm": "您确定要删除\"{groupName}\"吗？此操作无法撤销，将删除所有小组数据、会话和聊天消息。",
+    "groupDeletedSuccess": "小组删除成功",
+    "groupDeletedError": "删除小组失败",
+    "onlyLeaderCanDelete": "只有小组组长可以删除小组",
+    "shareGroup": "分享小组",
+    "shareMessage": "加入我在HabitSync上的学习小组\"{groupName}\"！📚\\n\\n{description}\\n\\n类别：{category}\\n成员：{currentMembers}/{maxMembers}\\n\\n小组ID：{groupId}\\n\\n下载HabitSync并使用此小组ID加入！",
+    "shareTitle": "加入{groupName}学习小组",
+    "inviteMembers": "邀请成员",
+    "inviteMessage": "您被邀请加入HabitSync上的学习小组\"{groupName}\"！📚\\n\\n{description}\\n\\n类别：{category}\\n当前成员：{currentMembers}/{maxMembers}\\n\\n小组ID：{groupId}\\n\\n下载HabitSync并使用此小组ID加入！",
+    "inviteTitle": "邀请加入{groupName}",
+    "categories": {
+      "all": "所有小组",
+      "productivity": "生产力",
+      "health": "健康与福祉",
+      "learning": "学习",
+      "motivation": "动机"
+    },
+    "frequencies": {
+      "daily": "每日",
+      "weekly": "每周",
+      "biweekly": "每两周",
+      "monthly": "每月"
+    },
+    "groupCard": {
+      "members": "成员",
+      "completion": "完成",
+      "upcomingSessions": "即将举行的会议",
+      "viewMoreSessions": "查看更多{count}个会议",
+      "leader": "组长",
+      "joinGroup": "加入小组",
+      "min": " 分钟"
+    },
+    "more": "更多",
+    "sampleGroups": {
+      "morningProductivityMasters": {
+        "name": "晨间生产力大师",
+        "description": "加入我们的每日晨间例行公事和生产力技巧。我们专注于建立持久的可持续习惯。",
+        "tags": ["晨间", "生产力", "习惯", "例行公事"],
+        "rules": ["保持尊重", "分享你的进步", "支持他人"],
+        "topics": ["晨间例行公事", "时间管理", "目标设定"],
+        "sessions": {
+          "weeklyGoalReview": {
+            "title": "每周目标回顾",
+            "description": "让我们回顾我们的每周目标并为下周设定新的目标。"
+          }
+        },
+        "chatMessages": {
+          "morningGreeting": "大家早上好！准备好迎接另一个富有成效的一天了吗？🌅",
+          "meditationResponse": "早上好Sarah！我刚完成了5分钟的冥想。感觉很好！🧘‍♂️"
+        }
+      },
+      "healthWellnessWarriors": {
+        "name": "健康与福祉战士",
+        "description": "一个专注于身心健康支持的社区。分享你的健身之旅并获得动力！",
+        "tags": ["健身", "福祉", "心理健康", "营养"],
+        "rules": ["保持支持", "分享进步", "不评判"],
+        "topics": ["锻炼例行公事", "营养技巧", "心理健康"]
+      },
+      "learningEnthusiasts": {
+        "name": "学习爱好者",
+        "description": "与其他学习者一起扩展你的知识。我们探索各种主题并分享资源。",
+        "tags": ["学习", "教育", "知识", "技能"],
+        "rules": ["分享资源", "提出问题", "帮助他人学习"],
+        "topics": ["技能发展", "书籍讨论", "在线课程"]
+      },
+      "motivationBoosters": {
+        "name": "动力助推器",
+        "description": "通过每日鼓励和成功故事保持动力和灵感。",
+        "tags": ["动力", "灵感", "成功", "心态"],
+        "rules": ["分享胜利", "鼓励他人", "保持积极"],
+        "topics": ["成功故事", "动力技巧", "心态转变"]
+      }
+    },
+    "chat": {
+      "title": "小组聊天",
+      "placeholder": "输入消息...",
+      "sending": "发送中...",
+      "sendError": "发送消息失败",
+      "typing": "{user}正在输入..."
+    },
+    "sessions": {
+      "title": "学习会议",
+      "createSession": "创建会议",
+      "creatingSession": "创建中...",
+      "sessionCreatedSuccess": "学习会议创建成功！📅",
+      "sessionCreatedError": "创建学习会议失败",
+      "joinedSessionSuccess": "成功加入会议！🎉",
+      "joinedSessionError": "加入会议失败",
+      "sessionTitle": "会议标题 *",
+      "sessionTitlePlaceholder": "输入会议标题",
+      "sessionDescription": "会议描述 *",
+      "sessionDescriptionPlaceholder": "描述本次会议将涵盖的内容",
+      "sessionDate": "会议日期",
+      "sessionTime": "会议时间",
+      "sessionDuration": "时长（分钟）",
+      "maxParticipants": "最大参与者",
+      "sessionTopics": "主题",
+      "sessionTopicsPlaceholder": "添加要讨论的主题",
+      "sessionMaterials": "材料",
+      "sessionMaterialsPlaceholder": "添加会议所需的材料",
+      "fillRequiredFields": "请填写所有必填字段"
+    },
+    "members": {
+      "title": "小组成员",
+      "member": "成员",
+      "members": "成员",
+      "joined": "加入",
+      "role": "角色",
+      "contributionScore": "贡献分数"
+    },
+    "analytics": {
+      "title": "小组分析",
+      "completionRate": "完成率",
+      "totalSessions": "总会话数",
+      "activeMembers": "活跃成员",
+      "averageAttendance": "平均出勤率",
+      "totalLearningTime": "总学习时间",
+      "collaborativeProjects": "协作项目",
+      "knowledgeShared": "知识共享"
+    },
+    "modals": {
+      "contactInformation": "联系信息（可选）",
+      "email": "电子邮件",
+      "emailPlaceholder": "your.email@example.com",
+      "phone": "电话",
+      "phonePlaceholder": "+1 (555) 123-4567",
+      "groupSettings": "小组设置",
+      "difficultyLevel": "难度级别",
+      "selectLevel": "选择级别",
+      "selectLevelPrompt": "为您的学习小组选择难度级别",
+      "commitmentLevel": "承诺级别",
+      "selectCommitment": "选择承诺",
+      "selectCommitmentPrompt": "为您的学习小组选择承诺级别",
+      "scheduleStudySession": "安排学习会话",
+      "sessionTitle": "会话标题",
+      "sessionTitlePlaceholder": "会话标题",
+      "description": "描述",
+      "descriptionPlaceholder": "描述",
+      "date": "日期",
+      "datePlaceholder": "YYYY-MM-DD",
+      "time": "时间",
+      "timePlaceholder": "HH:MM",
+      "duration": "持续时间（分钟）",
+      "durationPlaceholder": "60",
+      "maxParticipants": "最大参与者",
+      "maxParticipantsPlaceholder": "10",
+      "scheduleSession": "安排会话",
+      "noMembersYet": "还没有成员",
+      "beFirstToJoin": "成为第一个加入这个学习小组的人！"
+    }
+  },
+  "peerRecommendations": {
+    "title": "同行推荐",
+    "searchPlaceholder": "搜索推荐...",
+    "sortBy": "排序方式",
+    "sortOptions": {
+      "newest": "最新",
+      "highestRated": "评分最高",
+      "mostPopular": "最受欢迎"
+    },
+    "categories": {
+      "all": "全部",
+      "productivity": "生产力",
+      "healthFitness": "健康与健身",
+      "learning": "学习",
+      "mindfulness": "正念",
+      "relationships": "人际关系",
+      "career": "职业",
+      "finance": "财务",
+      "creativity": "创造力"
+    },
+    "difficultyLevels": {
+      "beginner": "初学者",
+      "intermediate": "中级",
+      "advanced": "高级"
+    },
+    "featured": "精选",
+    "featuredSection": "精选推荐",
+    "weeklySection": "本周推荐",
+    "emptyState": {
+      "title": "未找到推荐",
+      "searchMessage": "尝试调整搜索或筛选条件",
+      "defaultMessage": "成为第一个分享推荐的人！"
+    },
+    "loading": "正在加载推荐...",
+    "createButton": "分享您的推荐",
+    "form": {
+      "title": "分享您的推荐",
+      "titleField": "标题 *",
+      "titlePlaceholder": "为您的推荐起一个吸引人的标题",
+      "descriptionField": "描述 *",
+      "descriptionPlaceholder": "简要描述您的推荐",
+      "experienceField": "个人经历 *",
+      "experiencePlaceholder": "分享您对这个习惯的个人经历",
+      "categoryField": "类别",
+      "difficultyField": "难度级别",
+      "timeField": "时间投入",
+      "timePlaceholder": "例如：每天15分钟，每周1小时",
+      "tagsField": "标签",
+      "tagPlaceholder": "添加标签（按回车键）",
+      "submitButton": "分享推荐",
+      "requiredFieldsError": "请填写所有必填字段"
+    },
+    "card": {
+      "personalExperience": "个人经历：",
+      "comments": "评论",
+      "rate": "评分",
+      "anonymous": "匿名"
+    },
+    "comments": {
+      "title": "评论",
+      "noComments": "还没有评论。成为第一个评论的人！",
+      "addComment": "添加评论...",
+      "sendButton": "发送",
+      "helpfulVotes": "有用"
+    },
+    "rating": {
+      "title": "为这个推荐评分",
+      "description": "这个推荐对您有多大帮助？",
+      "selectRating": "选择评分",
+      "poor": "差",
+      "fair": "一般",
+      "good": "好",
+      "veryGood": "很好",
+      "excellent": "优秀",
+      "submitButton": "提交评分",
+      "selectRatingError": "请选择评分"
+    },
+    "deleteRecommendation": "删除推荐",
+    "deleteRecommendationConfirm": "您确定要删除'{title}'吗？此操作无法撤销。",
+    "alerts": {
+      "createSuccess": "推荐创建成功！",
+      "createError": "创建推荐失败",
+      "ratingSuccess": "评分提交成功！",
+      "ratingError": "提交评分失败",
+      "commentError": "添加评论失败",
+      "commentRequired": "请输入评论",
+      "loadError": "加载推荐失败",
+      "onlyCreatorCanDelete": "只有创建者可以删除此推荐",
+      "deleteSuccess": "推荐删除成功！",
+      "deleteError": "删除推荐失败"
+    },
+    "tags": {
+      "meditation": "冥想",
+      "morning": "早晨",
+      "stress-relief": "减压",
+      "beginner-friendly": "适合初学者",
+      "reading": "阅读",
+      "challenge": "挑战",
+      "productivity": "生产力",
+      "knowledge": "知识",
+      "hydration": "补水",
+      "health": "健康",
+      "energy": "能量",
+      "wellness": "健康",
+      "gratitude": "感恩",
+      "journaling": "日记",
+      "mental-health": "心理健康",
+      "positivity": "积极"
+    }
+  },
+  "challenges": {
+    "title": "学习挑战",
+    "description": "加入社区挑战，与他人竞争",
+    "create": "创建挑战",
+    "createNew": "创建新挑战",
+    "join": "加入挑战",
+    "updateProgress": "更新进度",
+    "completed": "已完成",
+    "progress": "进度",
+    "progressUpdated": "进度更新成功",
+    "progressUpdateFailed": "进度更新失败",
+    "createdSuccessfully": "挑战创建成功",
+    "creationFailed": "挑战创建失败",
+    "joinedSuccessfully": "加入挑战成功",
+    "joinFailed": "加入挑战失败",
+    "fillAllFields": "请填写所有必填字段",
+    "category": "类别",
+    "duration": "持续时间",
+    "maxParticipants": "最大参与者",
+    "startDate": "开始日期",
+    "endDate": "结束日期",
+    "rewards": "奖励",
+    "requirements": "要求",
+    "participants": "参与者",
+    "joinChallenge": "加入挑战",
+    "titlePlaceholder": "输入挑战标题",
+    "descriptionPlaceholder": "输入挑战描述",
+    "categoryPlaceholder": "选择挑战类别",
+    "difficultyPlaceholder": "选择挑战难度",
+    "durationPlaceholder": "输入挑战持续时间",
+    "maxParticipantsPlaceholder": "输入最大参与者数量",
+    "startDatePlaceholder": "输入开始日期",
+    "endDatePlaceholder": "输入结束日期",
+    "categories": {
+      "habit": "习惯",
+      "wellness": "健康与福祉",
+      "productivity": "生产力",
+      "learning": "学习",
+      "social": "社交"
+    },
+    "difficulty": {
+      "beginner": "初学者",
+      "intermediate": "中级",
+      "advanced": "高级"
+    },
+    "days": "天"
+  },
+  "mentorship": {
+    "title": "导师",
+    "description": "找到你的导师",
+    "searchPlaceholder": "搜索导师...",
+    "sortBy": "排序方式",
+    "availableMentors": "可用的导师",
+    "becomeMentor": "成为导师",
+    "requestPending": "请求待处理",
+    "requestAccepted": "请求已接受",
+    "requestRejected": "请求已拒绝",
+    "requestCompleted": "请求已完成",
+    "bioPlaceholder": "输入你的简介",
+    "availability": "可用性",
+    "daysAvailable": "可用天数",
+    "timeSlots": "可用时间",
+    "timeSlotsPlaceholder": "输入可用时间",
+    "mentees": "徒弟",
+    "menteesPlaceholder": "输入徒弟数量",
+    "expertise": "专业领域",
+    "expertisePlaceholder": "输入专业领域",
+    "experience": "经验",
+    "experiencePlaceholder": "输入经验",
+    "rating": "评分",
+    "ratingPlaceholder": "输入评分",
+    "achievements": "成就",
+    "experienceYears": "经验（年）",
+    "years": "年",
+    "fillAllFields": "请填写所有必填字段",
+    "createMentor": "创建导师",
+    "createMentorSuccess": "导师创建成功",
+    "createMentorError": "导师创建失败",
+    "requestMentorship": "请求导师",
+    "requestMentorshipSuccess": "请求导师成功",
+    "requestMentorshipError": "请求导师失败",
+    "profileCreatedSuccessfully": "导师创建成功",
+    "profileCreationFailed": "导师创建失败",
+    "requestSentSuccessfully": "请求导师成功",
+    "requestFailed": "请求导师失败",
+    "sortOptions": {
+      "newest": "最新",
+      "highestRated": "评分最高",
+      "mostPopular": "最受欢迎"
+    }
+  },
+  "knowledgeSharing": {
+    "title": "知识分享",
+    "description": "分享你的知识",
+    "tags": "标签",
+    "befirsttoShare": "成为第一个分享的人！",
+    "recentShares": "最近分享",
+    "noShares": "还没有分享",
+    "beFirstToShare": "成为第一个分享的人！",
+    "createShare": "创建分享",
+    "applyFilters": "应用过滤器",
+    "clearFilters": "清除过滤器",
+    "searchPlaceholder": "搜索知识...",
+    "sortBy": "排序方式",
+    "filterBy": "过滤方式",
+    "category": "类别",
+    "allCategories": "全部类别",
+    "allTypes": "全部类型",
+    "filters": "过滤器",
+    "filtersPlaceholder": "选择过滤器",
+    "categories": {
+      "habits": "习惯",
+      "wellness": "健康与福祉",
+      "productivity": "生产力",
+      "learning": "学习",
+      "motivation": "动力"
+    },
+    "titlePlaceholder": "输入分享标题",
+    "contentPlaceholder": "输入分享内容",
+    "categoryPlaceholder": "选择分享类别",
+    "typePlaceholder": "选择分享类型",
+    "tagsPlaceholder": "添加标签（按回车键）",
+    "tagPlaceholder": "添加标签（按回车键）",
+    "type": "类型",
+    "types": {
+      "allTypes": "全部",
+      "article": "文章",
+      "tip": "提示",
+      "experience": "经验",
+      "tutorial": "教程"
+    },
+    "sortOptions": {
+      "newest": "最新",
+      "highestRated": "评分最高"
+}
+  },
+"learningCircles": {
+  "title": "学习小组",
+  "description": "加入学习小组，与他人一起学习",
+  "searchPlaceholder": "搜索学习小组...",
+  "sortBy": "排序方式",
+  "availableCircles": "可用的学习小组",
+  "createCircle": "创建学习小组",
+  "joinCircle": "加入学习小组",
+  "createSession": "创建会话",
+  "discuss": "讨论",
+  "comingSoon": "敬请期待",
+  "discussionsComingSoon": "讨论功能敬请期待",
+  "titlePlaceholder": "输入学习小组标题",
+  "descriptionPlaceholder": "输入学习小组描述",
+  "categoryPlaceholder": "选择学习小组类别",
+  "typePlaceholder": "选择学习小组类型",
+  "tagsPlaceholder": "添加标签（按回车键）",
+  "tagPlaceholder": "添加标签（按回车键）",
+  "type": "类型",
+  "maxMembers": "最大成员数",
+  "maxMembersPlaceholder": "输入最大成员数",
+  "members": "成员",
+  "membersPlaceholder": "输入成员数量",
+  "membership": "成员",
+  "membershipPlaceholder": "输入成员数量",
+  "createSuccessfully": "创建成功",
+  "createFailed": "创建失败",
+  "joinSuccessfully": "加入成功",
+  "joinFailed": "加入失败",
+  "leader": "领导者",
+  "leaderPlaceholder": "输入领导者",
+  "sessions": "会话",
+  "sessionTitle": "会话标题",
+  "sessionTitlePlaceholder": "输入会话标题",
+  "sessionDescription": "会话描述",
+  "sessionDescriptionPlaceholder": "输入会话描述",
+  "sessionDuration": "会话持续时间",
+  "sessionDurationPlaceholder": "输入会话持续时间",
+  "duration": "持续时间",
+  "minutes": "分钟",
+  "fillAllFields": "请填写所有必填字段",
+  "category": "类别",
+  "difficulty": "难度",
+  "sortOptions": {
+    "newest": "最新",
+    "highestRated": "评分最高",
+    "mostPopular": "最受欢迎"
   }
+},
+"communityAnalytics": {
+  "title": "社区分析",
+  "description": "跟踪社区参与和洞察",
+  "searchPlaceholder": "搜索社区...",
+  "sortBy": "排序方式",
+  "filterBy": "过滤方式",
+  "category": "类别",
+  "allCategories": "全部类别",
+  "allTypes": "全部类型",
+  "filters": "过滤器",
+  "filtersPlaceholder": "选择过滤器",
+  "periods": {
+    "week": "周",
+    "month": "月",
+    "year": "年"
+  },
+  "lastUpdated": "最后更新",
+  "noData": "没有数据",
+  "loadError": "加载数据失败",
+  "engagementRate": "参与度",
+  "activity": "活动",
+  "topContributors": "顶级贡献者",
+  "popularTopics": "热门话题",
+  "topContributorsPlaceholder": "输入顶级贡献者",
+  "popularTopicsPlaceholder": "输入热门话题",
+  "engagmentRate": "参与度",
+  "engagementRatePlaceholder": "输入参与度",
+  "needsImprovement": "需要改进",
+  "needsImprovementPlaceholder": "输入需要改进",
+  "totalMembers": "总成员数",
+  "totalMembersPlaceholder": "输入总成员数",
+  "totalActivities": "总活动数",
+  "totalActivitiesPlaceholder": "输入总活动数",
+  "totalEngagements": "总参与度",
+  "totalEngagementsPlaceholder": "输入总参与度",
+  "totalNeedsImprovement": "总需要改进",
+  "activeMembers": "活跃成员",
+  "activeMembersPlaceholder": "输入活跃成员",
+  "mentorshipConnectionsPlaceholder": "输入导师连接",
+  "knowledgeShares": "知识分享",
+  "mentorshipConnections": "导师连接",
+  "challengesCreated": "挑战创建",
+  "challengesCompleted": "挑战完成",
+  "categories": {
+    "habits": "习惯",
+    "wellness": "健康与福祉",
+    "productivity": "生产力",
+    "learning": "学习",
+    "motivation": "动力"
+  },
+  "sortOptions": {
+    "newest": "最新",
+    "highestRated": "评分最高",
+    "mostPopular": "最受欢迎"
+  }
+}
 }

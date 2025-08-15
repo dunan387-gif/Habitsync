@@ -32,10 +32,8 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
 
   // Load theme preference on app start or when user changes
   useEffect(() => {
-    // Only load data if auth is not loading
-    if (!user || user.id) {
-      loadThemePreference();
-    }
+    // Load theme preference regardless of user state
+    loadThemePreference();
   }, [user?.id]);
 
   const loadThemePreference = async () => {

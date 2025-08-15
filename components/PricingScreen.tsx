@@ -263,13 +263,13 @@ const PricingScreen: React.FC<PricingScreenProps> = ({
     const features = [
       { key: 'unlimitedHabits', free: '4', pro: t('pricing.unlimited') },
       { key: 'advancedAnalytics', free: '❌', pro: '✅' },
-      { key: 'aiSuggestions', free: '5', pro: t('pricing.unlimited') },
+      { key: 'aiSuggestions', free: '2', pro: t('pricing.unlimited') },
       { key: 'premiumThemes', free: '3', pro: t('pricing.unlimited') },
       { key: 'unlimitedReminders', free: '1', pro: t('pricing.unlimited') },
       { key: 'socialFeatures', free: '❌', pro: '✅' },
-      { key: 'dataExport', free: '❌', pro: '✅' },
+      { key: 'dataExport', free: '✅', pro: '✅' },
       { key: 'wellnessIntegration', free: '❌', pro: '✅' },
-      { key: 'performanceAlerts', free: '❌', pro: '✅' },
+      { key: 'performanceAlerts', free: '✅', pro: '✅' },
       { key: 'patternInsights', free: '❌', pro: '✅' },
     ];
 

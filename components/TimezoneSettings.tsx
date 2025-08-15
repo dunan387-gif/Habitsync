@@ -134,7 +134,7 @@ export default function TimezoneSettings({ visible, onClose }: TimezoneSettingsP
                       {getTimezoneDisplayName(timezone)}
                     </Text>
                     <Text style={styles.timezoneRegion}>
-                      {timezone.region} {timezone.city && `• ${timezone.city}`}
+                      {t(`settings.timezone.countries.${timezone.region}`, { defaultValue: timezone.region })} {timezone.city && `• ${timezone.city}`}
                     </Text>
                   </View>
                   {currentTimezone?.timezone === timezone.timezone && (

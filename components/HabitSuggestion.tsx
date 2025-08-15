@@ -55,7 +55,7 @@ export default function HabitSuggestion({
     // Show success popup with properly translated title
     const habitTitle = habit.title.includes('_') ? t(habit.title) : habit.title;
     Alert.alert(
-      t('success'),
+              t('success_general'),
       `"${habitTitle}" ${t('habit_added_message')}`,
       [{ text: t('great'), style: 'default' }],
       { cancelable: true }

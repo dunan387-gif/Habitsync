@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -12,12 +12,15 @@ import {
   KeyboardAvoidingView,
   StyleSheet,
 } from 'react-native';
-import { X, Save, Trash2, Clock, Calendar } from 'lucide-react-native';
+import { X, Save, Trash2, Clock, Calendar, Crown } from 'lucide-react-native';
 import { useHabits } from '@/context/HabitContext';
 import { useLanguage } from '@/context/LanguageContext';
+import { useSubscription } from '@/context/SubscriptionContext';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { useTheme } from '@/context/ThemeContext';
+import { HabitReminder } from '@/types';
+import MultipleReminders from '@/components/MultipleReminders';
 
 export default function HabitDetailScreen() {
   const { id } = useLocalSearchParams();
@@ -25,6 +28,7 @@ export default function HabitDetailScreen() {
   const { getHabitById, updateHabit, deleteHabit } = useHabits();
   const { t, currentLanguage } = useLanguage();
   const { currentTheme } = useTheme();
+  const { currentTier, showUpgradePrompt } = useSubscription();
   
   const habit = getHabitById(id as string);
   
@@ -38,6 +42,10 @@ export default function HabitDetailScreen() {
       : new Date(new Date().setHours(9, 0, 0, 0))
   );
   const [showTimePicker, setShowTimePicker] = useState(false);
+  
+  // Multiple reminders state
+  const [reminders, setReminders] = useState<HabitReminder[]>(habit?.reminders || []);
+  const [useMultipleReminders, setUseMultipleReminders] = useState(false);
 
   const daysOfWeek = [
     { id: 0, name: t('sunday'), short: t('sun') },
@@ -48,17 +56,36 @@ export default function HabitDetailScreen() {
     { id: 5, name: t('friday'), short: t('fri') },
     { id: 6, name: t('saturday'), short: t('sat') },
   ];
+
+  // Initialize multiple reminders state when habit loads
+  useEffect(() => {
+    if (habit) {
+      if (habit.reminders && habit.reminders.length > 0) {
+        setReminders(habit.reminders);
+        setUseMultipleReminders(true);
+      } else {
+        setReminders([]);
+        setUseMultipleReminders(false);
+      }
+    }
+  }, [habit]);
   
   const handleSave = () => {
     if (!habit) return;
     
     if (!title.trim()) {
-      Alert.alert(t('error'), t('please_enter_habit_title'));
+      Alert.alert(t('error_general'), t('please_enter_habit_title'));
       return;
     }
 
-    if (reminderEnabled && reminderDays.length === 0) {
-      Alert.alert(t('error'), t('please_select_reminder_days'));
+    // Validate reminders
+    if (useMultipleReminders && reminders.length === 0) {
+      Alert.alert(t('error_general'), t('please_add_at_least_one_reminder'));
+      return;
+    }
+
+    if (reminderEnabled && !useMultipleReminders && reminderDays.length === 0) {
+      Alert.alert(t('error_general'), t('please_select_reminder_days'));
       return;
     }
     
@@ -66,11 +93,11 @@ export default function HabitDetailScreen() {
       ...habit,
       title: title.trim(),
       notes: notes.trim(),
-      reminderEnabled,
-      reminderDays: reminderEnabled ? reminderDays : [],
-      reminderTime: reminderEnabled ? 
-        `${reminderTime.getHours().toString().padStart(2, '0')}:${reminderTime.getMinutes().toString().padStart(2, '0')}` : 
-        undefined,
+      reminderEnabled: useMultipleReminders ? reminders.some(r => r.enabled) : reminderEnabled,
+      reminderTime: useMultipleReminders ? '' : 
+        (reminderEnabled ? `${reminderTime.getHours().toString().padStart(2, '0')}:${reminderTime.getMinutes().toString().padStart(2, '0')}` : undefined),
+      reminderDays: useMultipleReminders ? [] : (reminderEnabled ? reminderDays : []),
+      reminders: useMultipleReminders ? reminders : [],
     });
     
     router.back();
@@ -99,7 +126,9 @@ export default function HabitDetailScreen() {
   };
   
   const handleTimeChange = (event: any, selectedTime?: Date) => {
-    setShowTimePicker(Platform.OS === 'ios');
+    if (Platform.OS === 'android') {
+      setShowTimePicker(false);
+    }
     if (selectedTime) {
       setReminderTime(selectedTime);
     }
@@ -231,68 +260,139 @@ export default function HabitDetailScreen() {
                 {t('custom_reminder')}
               </Text>
               <Switch
-                value={reminderEnabled}
-                onValueChange={setReminderEnabled}
+                value={reminderEnabled || useMultipleReminders}
+                onValueChange={(value) => {
+                  if (value) {
+                    setReminderEnabled(true);
+                    setUseMultipleReminders(false);
+                  } else {
+                    setReminderEnabled(false);
+                    setUseMultipleReminders(false);
+                  }
+                }}
                 trackColor={{ false: currentTheme.colors.border, true: currentTheme.colors.primaryLight }}
-                thumbColor={reminderEnabled ? currentTheme.colors.primary : currentTheme.colors.textMuted}
+                thumbColor={(reminderEnabled || useMultipleReminders) ? currentTheme.colors.primary : currentTheme.colors.textMuted}
               />
             </View>
             
-            {reminderEnabled && (
+            {(reminderEnabled || useMultipleReminders) && (
               <>
-                <TouchableOpacity 
-                  style={styles.timeSelector}
-                  onPress={() => setShowTimePicker(true)}
-                >
-                  <Clock size={20} color={currentTheme.colors.textSecondary} style={styles.timeIcon} />
-                  <Text style={styles.timeText}>{formatTime(reminderTime)}</Text>
-                </TouchableOpacity>
-
-                <View style={styles.daysSection}>
-                  <View style={styles.daysSectionHeader}>
-                    <Calendar size={16} color={currentTheme.colors.textSecondary} />
-                    <Text style={styles.daysLabel}>{t('reminder_days')}</Text>
-                  </View>
-                  
-                  <View style={styles.quickSelectContainer}>
-                    <TouchableOpacity style={styles.quickSelectButton} onPress={selectAllDays}>
-                      <Text style={styles.quickSelectText}>{t('all_days')}</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity style={styles.quickSelectButton} onPress={selectWeekdays}>
-                      <Text style={styles.quickSelectText}>{t('weekdays')}</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity style={styles.quickSelectButton} onPress={selectWeekends}>
-                      <Text style={styles.quickSelectText}>{t('weekends')}</Text>
-                    </TouchableOpacity>
-                  </View>
-
-                  <View style={styles.daysContainer}>
-                    {daysOfWeek.map((day) => (
-                      <TouchableOpacity
-                        key={day.id}
-                        style={[
-                          styles.dayButton,
-                          reminderDays.includes(day.id) && styles.dayButtonSelected
-                        ]}
-                        onPress={() => toggleReminderDay(day.id)}
-                      >
-                        <Text style={[
-                          styles.dayButtonText,
-                          reminderDays.includes(day.id) && styles.dayButtonTextSelected
-                        ]}>
-                          {day.short}
-                        </Text>
-                      </TouchableOpacity>
-                    ))}
-                  </View>
-                  
-                  <Text style={styles.selectedDaysText}>
-                    {reminderDays.length === 0 
-                      ? t('no_days_selected')
-                      : `${t('reminders_on')} ${reminderDays.map(id => daysOfWeek[id].name).join(', ')}`
-                    }
-                  </Text>
+                {/* Multiple Reminders Toggle */}
+                <View style={styles.reminderTypeToggle}>
+                  <TouchableOpacity
+                    style={[
+                      styles.reminderTypeButton,
+                      !useMultipleReminders && styles.reminderTypeButtonActive
+                    ]}
+                    onPress={() => {
+                      setUseMultipleReminders(false);
+                      setReminders([]);
+                    }}
+                  >
+                    <Text style={[
+                      styles.reminderTypeText,
+                      !useMultipleReminders && styles.reminderTypeTextActive
+                    ]}>
+                      {t('single_reminder')}
+                    </Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    style={[
+                      styles.reminderTypeButton,
+                      useMultipleReminders && styles.reminderTypeButtonActive,
+                      currentTier === 'free' && styles.reminderTypeButtonDisabled
+                    ]}
+                    onPress={() => {
+                      if (currentTier === 'free') {
+                        showUpgradePrompt('reminder_limit');
+                        return;
+                      }
+                      setUseMultipleReminders(true);
+                      setReminderEnabled(false);
+                    }}
+                  >
+                    <View style={styles.reminderTypeButtonContent}>
+                      <Text style={[
+                        styles.reminderTypeText,
+                        useMultipleReminders && styles.reminderTypeTextActive,
+                        currentTier === 'free' && styles.reminderTypeTextDisabled
+                      ]}>
+                        {t('multiple_reminders')}
+                      </Text>
+                      {currentTier === 'free' && (
+                        <Crown size={12} color={currentTheme.colors.primary} style={styles.premiumIcon} />
+                      )}
+                    </View>
+                  </TouchableOpacity>
                 </View>
+
+                {/* Single Reminder */}
+                {!useMultipleReminders && (
+                  <>
+                    <TouchableOpacity 
+                      style={styles.timeSelector}
+                      onPress={() => setShowTimePicker(true)}
+                    >
+                      <Clock size={20} color={currentTheme.colors.textSecondary} style={styles.timeIcon} />
+                      <Text style={styles.timeText}>{formatTime(reminderTime)}</Text>
+                    </TouchableOpacity>
+
+                    <View style={styles.daysSection}>
+                      <View style={styles.daysSectionHeader}>
+                        <Calendar size={16} color={currentTheme.colors.textSecondary} />
+                        <Text style={styles.daysLabel}>{t('reminder_days')}</Text>
+                      </View>
+                      
+                      <View style={styles.quickSelectContainer}>
+                        <TouchableOpacity style={styles.quickSelectButton} onPress={selectAllDays}>
+                          <Text style={styles.quickSelectText}>{t('all_days')}</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity style={styles.quickSelectButton} onPress={selectWeekdays}>
+                          <Text style={styles.quickSelectText}>{t('weekdays')}</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity style={styles.quickSelectButton} onPress={selectWeekends}>
+                          <Text style={styles.quickSelectText}>{t('weekends')}</Text>
+                        </TouchableOpacity>
+                      </View>
+
+                      <View style={styles.daysContainer}>
+                        {daysOfWeek.map((day) => (
+                          <TouchableOpacity
+                            key={day.id}
+                            style={[
+                              styles.dayButton,
+                              reminderDays.includes(day.id) && styles.dayButtonSelected
+                            ]}
+                            onPress={() => toggleReminderDay(day.id)}
+                          >
+                            <Text style={[
+                              styles.dayButtonText,
+                              reminderDays.includes(day.id) && styles.dayButtonTextSelected
+                            ]}>
+                              {day.short}
+                            </Text>
+                          </TouchableOpacity>
+                        ))}
+                      </View>
+                      
+                      <Text style={styles.selectedDaysText}>
+                        {reminderDays.length === 0 
+                          ? t('no_days_selected')
+                          : `${t('reminders_on')} ${reminderDays.map(id => daysOfWeek[id].name).join(', ')}`
+                        }
+                      </Text>
+                    </View>
+                  </>
+                )}
+
+                {/* Multiple Reminders */}
+                {useMultipleReminders && (
+                  <MultipleReminders
+                    reminders={reminders}
+                    onRemindersChange={setReminders}
+                    maxReminders={3}
+                  />
+                )}
               </>
             )}
           </View>
@@ -315,7 +415,7 @@ export default function HabitDetailScreen() {
             value={reminderTime}
             mode="time"
             is24Hour={currentLanguage.code === 'zh'}
-            display="default"
+            display={Platform.OS === 'ios' ? 'spinner' : 'default'}
             onChange={handleTimeChange}
           />
         )}
@@ -486,6 +586,47 @@ const createStyles = (colors: any) => StyleSheet.create({
     color: colors.textMuted,
     textAlign: 'center',
     marginTop: 8,
+  },
+  reminderTypeToggle: {
+    flexDirection: 'row',
+    backgroundColor: colors.background,
+    borderRadius: 8,
+    padding: 4,
+    marginBottom: 16,
+    borderWidth: 1,
+    borderColor: colors.border,
+  },
+  reminderTypeButton: {
+    flex: 1,
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    borderRadius: 6,
+    alignItems: 'center',
+  },
+  reminderTypeButtonActive: {
+    backgroundColor: colors.primary,
+  },
+  reminderTypeText: {
+    fontSize: 14,
+    fontWeight: '500',
+    color: colors.textSecondary,
+  },
+  reminderTypeTextActive: {
+    color: colors.background,
+  },
+  reminderTypeButtonDisabled: {
+    opacity: 0.6,
+  },
+  reminderTypeButtonContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  reminderTypeTextDisabled: {
+    color: colors.textMuted,
+  },
+  premiumIcon: {
+    marginLeft: 4,
   },
   deleteButton: {
     backgroundColor: '#FF6B6B',

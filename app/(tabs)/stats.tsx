@@ -5,7 +5,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { 
   BarChart2, LineChart, TrendingUp, Calendar, Clock, Target, Award, Activity, 
   BarChart3, PieChart, Filter, Flame, Trophy, Zap, Star, ChevronDown,
-  Download, Share2, Users, Sparkles, Heart, Smile, Brain, Crown
+  Download, Share2, Users, Sparkles, Heart, Smile, Brain, Crown, BookOpen
 } from 'lucide-react-native';
 import { useHabits } from '@/context/HabitContext';
 import { useTheme } from '@/context/ThemeContext';
@@ -22,8 +22,10 @@ import HabitHeatmap from '@/components/HabitHeatmap';
 import AdvancedAnalyticsDashboard from '@/components/AdvancedAnalyticsDashboard';
 import EnhancedCoachingDashboard from '@/components/EnhancedCoachingDashboard';
 import PatternInsights from '@/components/PatternInsights';
-import { PredictiveAnalyticsService } from '@/services/PredictiveAnalyticsService';
+import PredictiveAnalyticsService from '@/services/PredictiveAnalyticsService';
 import { WellnessIntegrationService } from '@/services/WellnessIntegrationService';
+import LibraryAnalyticsService from '@/services/LibraryAnalyticsService';
+import LibraryAnalyticsDisplay from '@/components/LibraryAnalyticsDisplay';
 import MoodHabitDashboard from '@/components/MoodHabitDashboard';
 import SleepTrackingForm from '@/components/SleepTrackingForm';
 import ExerciseTrackingForm from '@/components/ExerciseTrackingForm';
@@ -32,7 +34,7 @@ import MeditationTrackingForm from '@/components/MeditationTrackingForm';
 import SocialActivityTrackingForm from '@/components/SocialActivityTrackingForm';
 
 
-type AnalyticsTab = 'overview' | 'mood' | 'wellness' | 'advanced';
+type AnalyticsTab = 'overview' | 'mood' | 'wellness' | 'advanced' | 'library';
 
 export default function StatsScreen() {
   const { habits, getCompletionRate, getDailyCompletionData, getTotalCompletions, getOverallCompletionRate } = useHabits();
@@ -549,36 +551,32 @@ export default function StatsScreen() {
       {
         key: 'overview',
         icon: BarChart3,
-        label: t('stats.tabs.overview'),
-        description: t('stats.tabs.overviewDesc'),
         color: currentTheme.colors.primary
       },
       {
         key: 'mood',
         icon: Heart,
-        label: t('stats.tabs.mood'),
-        description: t('stats.tabs.moodDesc'),
         color: currentTheme.colors.warning
       },
       {
         key: 'wellness',
         icon: Activity,
-        label: t('stats.tabs.wellness'),
-        description: t('stats.tabs.wellnessDesc'),
         color: currentTheme.colors.success
       },
       {
         key: 'advanced',
         icon: Sparkles,
-        label: t('stats.tabs.advanced'),
-        description: t('stats.tabs.advancedDesc'),
+        color: currentTheme.colors.accent
+      },
+      {
+        key: 'library',
+        icon: BookOpen,
         color: currentTheme.colors.accent
       }
     ];
 
     return (
       <View style={styles.analyticsTabsContainer}>
-        <Text style={styles.analyticsTabsTitle}>{t('stats.analytics.title')}</Text>
         <View style={styles.analyticsTabs}>
           {tabs.map((tab) => {
             const IconComponent = tab.icon;
@@ -599,23 +597,10 @@ export default function StatsScreen() {
                   { backgroundColor: isActive ? `${tab.color}15` : `${currentTheme.colors.textMuted}10` }
                 ]}>
                   <IconComponent 
-                    size={20} 
+                    size={24} 
                     color={isActive ? tab.color : currentTheme.colors.textMuted} 
                   />
                 </View>
-                <Text style={[
-                  styles.analyticsTabText,
-                  isActive && styles.activeAnalyticsTabText,
-                  { color: isActive ? tab.color : currentTheme.colors.textMuted }
-                ]}>
-                  {tab.label}
-                </Text>
-                <Text style={[
-                  styles.analyticsTabDescription,
-                  isActive && styles.activeAnalyticsTabDescription
-                ]}>
-                  {tab.description}
-                </Text>
                 {isActive && (
                   <View style={[styles.analyticsTabIndicator, { backgroundColor: tab.color }]} />
                 )}
@@ -1002,7 +987,7 @@ export default function StatsScreen() {
                  data={generateHeatmapData(habits || [])}
                  onDayPress={(date, count) => {
                    // Handle day press - could show tooltip or details
-                   console.log(`Date: ${date}, Habits completed: ${count}`);
+                   // console.log(`Date: ${date}, Habits completed: ${count}`);
                  }}
                />
                <View style={styles.heatmapStats}>
@@ -1397,6 +1382,20 @@ export default function StatsScreen() {
           </View>
         );
 
+      case 'library':
+        return (
+          <View style={styles.analyticsContainer}>
+            <View style={styles.analyticsHeader}>
+              <Text style={styles.sectionTitle}>
+                📚 {t('stats.library.title')}{'\n'}
+                <Text style={styles.sectionSubtitle}>{t('stats.library.subtitle')}</Text>
+              </Text>
+            </View>
+            
+            <LibraryAnalyticsDisplay />
+          </View>
+        );
+
       default:
         return null;
     }
@@ -1648,6 +1647,7 @@ const createStyles = (colors: any) => StyleSheet.create({
     fontWeight: '600',
     color: colors.text,
     marginBottom: 16,
+    lineHeight: 24,
   },
   statsGrid: {
     flexDirection: 'row',

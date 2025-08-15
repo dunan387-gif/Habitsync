@@ -110,7 +110,6 @@ export const usePerformanceMonitoring = (options: UsePerformanceMonitoringOption
     // Send to analytics service if it's a significant event
     if (duration > 1000) { // Events longer than 1 second
       // AnalyticsBackendService.trackEvent is not available in this context
-      console.log('Performance event:', { type, duration, metadata });
     }
   }, [enableTracking]);
 
@@ -303,11 +302,6 @@ export const usePerformanceMonitoring = (options: UsePerformanceMonitoringOption
       const avgMetrics = getAverageMetrics();
       
       // AnalyticsBackendService.trackEvent is not available in this context
-      console.log('Performance metrics flush:', {
-        averageMetrics: avgMetrics,
-        totalEvents: performanceEvents.length,
-        timestamp: Date.now()
-      });
 
       // Clear old events (keep last 1000)
       if (performanceEvents.length > 1000) {
@@ -402,7 +396,6 @@ export const useComponentPerformance = (componentName: string) => {
 export const initializePerformanceMonitoring = () => {
   if (!(global as any).appStartTime) {
     (global as any).appStartTime = Date.now();
-    console.log('Performance monitoring initialized');
   }
 };
 

@@ -28,11 +28,7 @@ export default function AIHabitSuggestions({ onAddSuggestion, onEditHabit }: AIH
   const usageStats = getUsageStats();
   const currentAIUsage = usageStats.aiSuggestionsThisWeek || 0;
 
-  console.log('AIHabitSuggestions - habitSuggestions:', habitSuggestions);
-  console.log('AIHabitSuggestions - reminderSuggestions:', reminderSuggestions);
-
   if (habitSuggestions.length === 0 && reminderSuggestions.length === 0) {
-    console.log('AIHabitSuggestions - No suggestions found, returning null');
     return null;
   }
 
@@ -55,7 +51,7 @@ export default function AIHabitSuggestions({ onAddSuggestion, onEditHabit }: AIH
     onAddSuggestion(suggestion);
     
     // Show success popup with properly translated title
-    const habitTitle = suggestion.title;
+    const habitTitle = t(suggestion.title);
     Alert.alert(
       `🎉 ${t('awesome')}`,
       `"${habitTitle}" ${t('habit_added_ai_message')}`,
@@ -77,7 +73,7 @@ export default function AIHabitSuggestions({ onAddSuggestion, onEditHabit }: AIH
     try {
       const habit = getHabitById(suggestion.habitId);
       if (!habit) {
-        Alert.alert(t('error'), t('habit_not_found'));
+        Alert.alert(t('error_general'), t('habit_not_found'));
         return;
       }
 
@@ -108,23 +104,23 @@ export default function AIHabitSuggestions({ onAddSuggestion, onEditHabit }: AIH
         Alert.alert(
           `⏰ ${t('reminder_set')}`,
           `${t('reminder_set_for')} "${habit.title}" ${t('at')} ${suggestion.suggestedTime}`,
-          [{ text: t('ok'), style: 'default' }],
+          [{ text: t('ok_general'), style: 'default' }],
           { cancelable: true }
         );
       }
     } catch (error) {
       console.error('Failed to set reminder:', error);
-      Alert.alert(t('error'), t('failed_to_set_reminder'));
+              Alert.alert(t('error_general'), t('failed_to_set_reminder'));
     }
   };
 
   const getSuggestionIcon = (suggestion: AIHabitSuggestion) => {
-    if (suggestion.id.startsWith('collab')) return <Users size={16} color={currentTheme.colors.primary} />;
-    if (suggestion.id.startsWith('semantic')) return <Brain size={16} color={currentTheme.colors.success} />;
-    if (suggestion.id.startsWith('gap')) return <Target size={16} color={currentTheme.colors.warning} />;
-    if (suggestion.id.startsWith('optimize')) return <TrendingUp size={16} color={currentTheme.colors.primary} />;
-    if (suggestion.id.startsWith('context')) return <Zap size={16} color={currentTheme.colors.primary} />;
-    return <Sparkles size={16} color={currentTheme.colors.primary} />;
+    if (suggestion.id.startsWith('collab')) return <Users size={14} color={currentTheme.colors.primary} />;
+    if (suggestion.id.startsWith('semantic')) return <Brain size={14} color={currentTheme.colors.success} />;
+    if (suggestion.id.startsWith('gap')) return <Target size={14} color={currentTheme.colors.warning} />;
+    if (suggestion.id.startsWith('optimize')) return <TrendingUp size={14} color={currentTheme.colors.primary} />;
+    if (suggestion.id.startsWith('context')) return <Zap size={14} color={currentTheme.colors.primary} />;
+    return <Sparkles size={14} color={currentTheme.colors.primary} />;
   };
 
   const getSuggestionType = (suggestion: AIHabitSuggestion) => {
@@ -181,7 +177,7 @@ export default function AIHabitSuggestions({ onAddSuggestion, onEditHabit }: AIH
           disabled={isAdded}
         >
           {isAdded ? (
-            <Check size={16} color={currentTheme.colors.background} />
+            <Check size={14} color={currentTheme.colors.background} />
           ) : (
             children
           )}
@@ -197,7 +193,7 @@ export default function AIHabitSuggestions({ onAddSuggestion, onEditHabit }: AIH
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <Sparkles size={20} color={currentTheme.colors.primary} />
+        <Sparkles size={18} color={currentTheme.colors.primary} />
         <Text style={styles.title}>{t('ai_suggestions')}</Text>
         {/* Show usage indicator for free users */}
         {currentAIUsage > 0 && (
@@ -226,7 +222,7 @@ export default function AIHabitSuggestions({ onAddSuggestion, onEditHabit }: AIH
             onPress={() => setSelectedCategory(category)}
           >
             <Text style={[styles.categoryChipText, selectedCategory === category && styles.activeCategoryChipText]}>
-              {t(category)}
+              {t(`category_${category}`)}
             </Text>
           </TouchableOpacity>
         ))}
@@ -241,8 +237,8 @@ export default function AIHabitSuggestions({ onAddSuggestion, onEditHabit }: AIH
               <Text style={styles.cardTitle}>{getSuggestionType(suggestion)}</Text>
             </View>
             
-            <Text style={styles.habitTitle}>{suggestion.title}</Text>
-            <Text style={styles.reason}>{suggestion.description}</Text>
+                                          <Text style={styles.habitTitle}>{t(suggestion.title)}</Text>
+              <Text style={styles.reason}>{t(suggestion.description)}</Text>
             
             <View style={styles.confidenceContainer}>
               <View style={[styles.confidenceBar, { 
@@ -262,7 +258,7 @@ export default function AIHabitSuggestions({ onAddSuggestion, onEditHabit }: AIH
             )}
             
             <AnimatedAddButton suggestion={suggestion}>
-              <Plus size={16} color={currentTheme.colors.background} />
+              <Plus size={14} color={currentTheme.colors.background} />
               <Text style={styles.addButtonText}>{t('add_habit_button')}</Text>
             </AnimatedAddButton>
           </View>
@@ -272,7 +268,7 @@ export default function AIHabitSuggestions({ onAddSuggestion, onEditHabit }: AIH
         {reminderSuggestions.map((suggestion) => (
           <View key={`reminder-${suggestion.habitId}`} style={styles.suggestionCard}>
             <View style={styles.cardHeader}>
-              <Clock size={16} color={currentTheme.colors.warning} />
+              <Clock size={14} color={currentTheme.colors.warning} />
               <Text style={styles.cardTitle}>{t('smart_reminder')}</Text>
             </View>
             
@@ -297,7 +293,7 @@ export default function AIHabitSuggestions({ onAddSuggestion, onEditHabit }: AIH
               style={styles.reminderButton}
               onPress={() => handleSetReminder(suggestion)}
             >
-              <Clock size={16} color={currentTheme.colors.background} />
+              <Clock size={14} color={currentTheme.colors.background} />
               <Text style={styles.reminderButtonText}>{t('set_reminder')}</Text>
             </TouchableOpacity>
           </View>
@@ -309,8 +305,9 @@ export default function AIHabitSuggestions({ onAddSuggestion, onEditHabit }: AIH
 
 const createStyles = (colors: any) => StyleSheet.create({
   container: {
-    marginTop: 10,
-    marginBottom: 8,
+    marginTop: 12,
+    marginBottom: 10,
+    flex: 1,
   },
   header: {
     flexDirection: 'row',
@@ -320,35 +317,37 @@ const createStyles = (colors: any) => StyleSheet.create({
   },
   title: {
     fontSize: 16,
-    fontWeight: '600',
+    fontWeight: '700',
     marginLeft: 8,
-    color: colors.textMuted,
+    color: colors.text,
   },
   usageIndicator: {
     backgroundColor: colors.warning,
-    borderRadius: 8,
-    paddingVertical: 4,
-    paddingHorizontal: 8,
-    marginLeft: 10,
+    borderRadius: 6,
+    paddingVertical: 2,
+    paddingHorizontal: 6,
+    marginLeft: 8,
   },
   usageText: {
     color: colors.background,
-    fontSize: 12,
+    fontSize: 11,
     fontWeight: '500',
   },
   categoryFilter: {
     flexDirection: 'row',
-    marginBottom: 8,
+    marginBottom: 16,
     paddingHorizontal: 16,
   },
   categoryChip: {
-    backgroundColor: colors.card,
-    borderRadius: 20,
-    paddingVertical: 6,
-    paddingHorizontal: 12,
-    marginRight: 8,
+    backgroundColor: colors.surface,
+    borderRadius: 10,
+    paddingVertical: 4,
+    paddingHorizontal: 10,
+    marginRight: 6,
     borderWidth: 1,
     borderColor: colors.border,
+    minHeight: 24,
+    justifyContent: 'center',
   },
   activeCategoryChip: {
     backgroundColor: colors.primary,
@@ -356,8 +355,8 @@ const createStyles = (colors: any) => StyleSheet.create({
   },
   categoryChipText: {
     color: colors.textSecondary,
-    fontSize: 12,
-    fontWeight: '500',
+    fontSize: 11,
+    fontWeight: '600',
   },
   activeCategoryChipText: {
     color: colors.background,
@@ -365,32 +364,33 @@ const createStyles = (colors: any) => StyleSheet.create({
   suggestionCard: {
     backgroundColor: colors.card,
     borderRadius: 12,
-    padding: 20,
-    marginHorizontal: 12,
-    marginBottom: 5,
-    marginTop: 5,
-    width: 220,
+    padding: 12,
+    marginHorizontal: 6,
+    marginBottom: 6,
+    marginTop: 2,
+    width: 260,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.08,
+    shadowRadius: 3,
+    elevation: 2,
   },
   cardHeader: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 4,
+    marginBottom: 6,
   },
   cardTitle: {
     fontSize: 10,
-    fontWeight: '500',
+    fontWeight: '600',
     marginLeft: 4,
     color: colors.textSecondary,
     textTransform: 'uppercase',
+    letterSpacing: 0.5,
   },
   habitTitle: {
     fontSize: 14,
-    fontWeight: '600',
+    fontWeight: '700',
     color: colors.text,
     marginBottom: 4,
   },
@@ -410,7 +410,8 @@ const createStyles = (colors: any) => StyleSheet.create({
     marginBottom: 4,
   },
   confidenceText: {
-    fontSize: 10,
+    fontSize: 11,
+    fontWeight: '600',
     color: colors.textSecondary,
   },
   reasonContainer: {
@@ -419,7 +420,7 @@ const createStyles = (colors: any) => StyleSheet.create({
   },
   reasonLabel: {
     fontSize: 11,
-    fontWeight: '500',
+    fontWeight: '600',
     color: colors.textSecondary,
     marginBottom: 2,
   },
@@ -433,8 +434,8 @@ const createStyles = (colors: any) => StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    paddingVertical: 6,
-    paddingHorizontal: 10,
+    paddingVertical: 8,
+    paddingHorizontal: 12,
     borderRadius: 8,
   },
   addedButton: {
@@ -442,7 +443,7 @@ const createStyles = (colors: any) => StyleSheet.create({
   },
   addButtonText: {
     color: colors.background,
-    fontWeight: '500',
+    fontWeight: '600',
     fontSize: 12,
     marginLeft: 4,
   },
@@ -451,13 +452,13 @@ const createStyles = (colors: any) => StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    paddingVertical: 6,
-    paddingHorizontal: 10,
+    paddingVertical: 8,
+    paddingHorizontal: 12,
     borderRadius: 8,
   },
   reminderButtonText: {
     color: colors.background,
-    fontWeight: '500',
+    fontWeight: '600',
     fontSize: 12,
     marginLeft: 4,
   },

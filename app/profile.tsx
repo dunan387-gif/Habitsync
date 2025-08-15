@@ -131,14 +131,11 @@ export default function ProfileScreen() {
   };
 
   const handleEditToggle = () => {
-    console.log('Edit toggle pressed, isEditing:', isEditing, 'isSubmitting:', isSubmitting);
     if (isSubmitting) return;
     
     if (isEditing) {
-      console.log('Saving profile...');
       handleSave();
     } else {
-      console.log('Entering edit mode...');
       setIsEditing(true);
     }
   };

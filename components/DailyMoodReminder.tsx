@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, Modal, TouchableOpacity, Alert } from 'react-native';
+import { View, Text, StyleSheet, Modal, TouchableOpacity } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useTheme } from '@/context/ThemeContext';
 import { useLanguage } from '@/context/LanguageContext';
 import { useGamification } from '@/context/GamificationContext';
 import { Heart, X, Calendar } from 'lucide-react-native';
-import QuickMoodSelector from './QuickMoodSelector';
+import { useRouter } from 'expo-router';
 
 interface DailyMoodReminderProps {
   children: React.ReactNode;
@@ -15,8 +15,8 @@ export default function DailyMoodReminder({ children }: DailyMoodReminderProps) 
   const { currentTheme } = useTheme();
   const { t } = useLanguage();
   const { getTodaysMoodEntry } = useGamification();
+  const router = useRouter();
   const [showMoodReminder, setShowMoodReminder] = useState(false);
-  const [showMoodSelector, setShowMoodSelector] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   
   const styles = createStyles(currentTheme.colors);
@@ -54,7 +54,7 @@ export default function DailyMoodReminder({ children }: DailyMoodReminderProps) 
     setShowMoodReminder(false);
     
     if (action === 'checkin') {
-      setShowMoodSelector(true);
+      router.push('/(tabs)/gamification');
     } else if (action === 'later') {
       // Set a reminder to show again in a few hours
       setTimeout(() => {
@@ -63,14 +63,7 @@ export default function DailyMoodReminder({ children }: DailyMoodReminderProps) 
     }
   };
   
-  const handleMoodComplete = () => {
-    setShowMoodSelector(false);
-    Alert.alert(
-      t('dailyMoodReminder.successTitle'),
-      t('dailyMoodReminder.successMessage'),
-      [{ text: t('common.continue'), style: 'default' }]
-    );
-  };
+
   
   if (isLoading) {
     return <View style={styles.loadingContainer} />;
@@ -140,30 +133,7 @@ export default function DailyMoodReminder({ children }: DailyMoodReminderProps) 
         </View>
       </Modal>
       
-      {/* Mood Selector Modal */}
-      <Modal
-        visible={showMoodSelector}
-        transparent
-        animationType="slide"
-        onRequestClose={() => setShowMoodSelector(false)}
-      >
-        <View style={styles.modalOverlay}>
-          <View style={styles.moodSelectorContainer}>
-            <View style={styles.moodSelectorHeader}>
-              <Text style={styles.moodSelectorTitle}>{t('dailyMoodReminder.howFeeling')}</Text>
-              <TouchableOpacity onPress={() => setShowMoodSelector(false)}>
-                <X size={24} color={currentTheme.colors.textSecondary} />
-              </TouchableOpacity>
-            </View>
-            
-            <QuickMoodSelector 
-              onMoodSelect={handleMoodComplete}
-              showIntensitySlider={true}
-              showContextTags={true}
-            />
-          </View>
-        </View>
-      </Modal>
+
     </>
   );
 }
@@ -265,23 +235,5 @@ const createStyles = (colors: any) => StyleSheet.create({
     fontSize: 16,
     fontWeight: '500',
   },
-  moodSelectorContainer: {
-    backgroundColor: colors.card,
-    borderRadius: 16,
-    padding: 20,
-    width: '100%',
-    maxWidth: 400,
-    maxHeight: '80%',
-  },
-  moodSelectorHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 20,
-  },
-  moodSelectorTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: colors.text,
-  },
+
 });
