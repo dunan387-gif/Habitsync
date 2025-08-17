@@ -20,14 +20,17 @@ export default function Index() {
     // Add immediate logging for debugging
     console.log('📍 Index component rendered with:', { isLoading, user: !!user });
     
+    let navigationTimer: ReturnType<typeof setTimeout>;
+    let timeoutTimer: ReturnType<typeof setTimeout>;
+    
     if (!isLoading) {
       // Add a small delay to ensure auth state is fully loaded
-      const timer = setTimeout(() => {
+      navigationTimer = setTimeout(() => {
         if (user && user.id && !user.id.startsWith('guest-') && user.id !== 'anonymous') {
           // User is authenticated, navigate to main app
           console.log('✅ User authenticated, navigating to main app');
           router.replace('/(tabs)');
-        } else if (user && (user.id.startsWith('guest-') || user.id === 'anonymous')) {
+        } else if (user && (user.id.startsWith('guest-') || user.id === 'guest-user' || user.id === 'anonymous')) {
           // Guest user, navigate to main app (they can use the app without onboarding)
           console.log('👻 Guest user, navigating to main app');
           router.replace('/(tabs)');
@@ -36,20 +39,21 @@ export default function Index() {
           console.log('🚪 User not authenticated, navigating to login');
           router.replace('/(auth)/login');
         }
-      }, 1000); // Increased delay to 1 second for better stability
-      
-      return () => clearTimeout(timer);
+      }, 500); // Reduced delay for better responsiveness
     } else {
       console.log('⏳ Still loading auth state...');
     }
     
     // Add a timeout to prevent infinite loading
-    const timeout = setTimeout(() => {
+    timeoutTimer = setTimeout(() => {
       console.warn('⚠️ Auth loading timeout reached, forcing navigation to login');
       router.replace('/(auth)/login');
-    }, 15000); // 15 second timeout
+    }, 10000); // Reduced timeout to 10 seconds
     
-    return () => clearTimeout(timeout);
+    return () => {
+      if (navigationTimer) clearTimeout(navigationTimer);
+      if (timeoutTimer) clearTimeout(timeoutTimer);
+    };
   }, [user, isLoading]);
 
   // Show loading screen while checking authentication

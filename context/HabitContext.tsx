@@ -152,7 +152,7 @@ export function HabitProvider({ children }: { children: ReactNode }) {
   // Load habits from storage on mount and when user changes
   useEffect(() => {
     // Only load data if auth is not loading
-    if (!user || user.id) {
+    if (user?.id) {
       loadHabits();
     }
   }, [user?.id]); // Reload habits when user ID changes
@@ -161,15 +161,19 @@ export function HabitProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     if (habits === null) return; // Don't run until habits are loaded
     
+    let isMounted = true;
+    
     // Reset completedToday flag at midnight
     const checkDate = async () => {
+      if (!isMounted) return; // Prevent state updates if component unmounted
+      
       try {
         const now = new Date();
         const today = getLocalDateString(now);
         
         const dateKey = user ? `lastCheckDate_${user.id}` : 'lastCheckDate_anonymous';
         const lastDate = await AsyncStorage.getItem(dateKey);
-        if (lastDate !== today) {
+        if (lastDate !== today && isMounted) {
           await resetCompletedToday();
           await AsyncStorage.setItem(dateKey, today);
         }
@@ -181,8 +185,11 @@ export function HabitProvider({ children }: { children: ReactNode }) {
     checkDate();
     const interval = setInterval(checkDate, 60000);
     
-    return () => clearInterval(interval);
-  }, [habits]); // Run this effect when habits change (including when first loaded)
+    return () => {
+      isMounted = false;
+      clearInterval(interval);
+    };
+  }, [habits, user?.id]); // Add proper dependencies
 
   const loadHabits = async () => {
     try {

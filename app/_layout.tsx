@@ -20,6 +20,10 @@ import { LanguageProvider, useLanguage } from '@/context/LanguageContext';
 import { AuthProvider, useAuth } from '@/context/AuthContext';
 import { requestNotificationPermissions } from '@/services/NotificationService';
 import MoodHabitOnboarding from '@/components/MoodHabitOnboarding';
+import { useAndroidLifecycle } from '@/hooks/useAndroidLifecycle';
+import AdvancedCacheService from '@/services/AdvancedCacheService';
+import NetworkPerformanceService from '@/services/NetworkPerformanceService';
+import BackgroundTaskService from '@/services/BackgroundTaskService';
 
 // Add gesture handler import at the top level
 import 'react-native-gesture-handler';
@@ -46,6 +50,40 @@ function RootLayoutContent() {
   const { currentCelebration, hideCelebration } = useCelebration();
   const [isAppReady, setIsAppReady] = useState(false);
   const [hasError, setHasError] = useState(false);
+
+  // Android lifecycle management
+  const androidLifecycle = useAndroidLifecycle({
+    enableMemoryOptimization: true,
+    enablePerformanceTracking: true,
+    enableBackgroundCleanup: true,
+    onAppStateChange: (status) => {
+      console.log('📱 Android App State Changed:', status);
+    }
+  });
+
+  // Initialize advanced performance services
+  useEffect(() => {
+    const initializePerformanceServices = async () => {
+      try {
+        // Initialize advanced cache service
+        const cacheService = AdvancedCacheService.getInstance();
+        cacheService.optimizeForPlatform();
+
+        // Initialize network performance service
+        const networkService = NetworkPerformanceService.getInstance();
+        networkService.optimizeForPlatform();
+
+        // Initialize background task service
+        const backgroundService = BackgroundTaskService.getInstance();
+
+        console.log('🚀 Advanced performance services initialized');
+      } catch (error) {
+        console.error('Failed to initialize performance services:', error);
+      }
+    };
+
+    initializePerformanceServices();
+  }, []);
 
   // CRITICAL: Wait for everything to be loaded before rendering ANYTHING
   useEffect(() => {

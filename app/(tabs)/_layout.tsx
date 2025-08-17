@@ -1,8 +1,9 @@
 import { Tabs } from 'expo-router';
 import { Home, BookOpen, BarChart3, Trophy, MoreHorizontal, Users } from 'lucide-react-native';
-import { View, ActivityIndicator } from 'react-native';
+import { View, ActivityIndicator, Platform } from 'react-native';
 import { useTheme } from '@/context/ThemeContext';
 import { useLanguage } from '@/context/LanguageContext';
+import { useMemo } from 'react';
 
 export default function TabLayout() {
   const { currentTheme } = useTheme();
@@ -18,6 +19,46 @@ export default function TabLayout() {
       return key;
     }
   };
+
+  // Memoized screen options for better performance
+  const screenOptions = useMemo(() => ({
+    tabBarActiveTintColor: currentTheme.colors.primary,
+    tabBarInactiveTintColor: currentTheme.colors.textMuted,
+    tabBarStyle: {
+      backgroundColor: currentTheme.colors.card,
+      borderTopColor: currentTheme.colors.border,
+      // Android-specific optimizations
+      ...(Platform.OS === 'android' && {
+        elevation: 8,
+        shadowOpacity: 0.1,
+        height: 60,
+      }),
+      // iOS-specific optimizations
+      ...(Platform.OS === 'ios' && {
+        shadowColor: currentTheme.colors.shadow || '#000',
+        shadowOffset: { width: 0, height: -2 },
+        shadowOpacity: 0.1,
+        shadowRadius: 3,
+      }),
+    },
+    headerShown: false,
+    headerStyle: {
+      backgroundColor: currentTheme.colors.background,
+    },
+    headerTintColor: currentTheme.colors.text,
+    // Performance optimizations
+    lazy: true,
+    lazyPlaceholder: () => (
+      <View style={{ 
+        flex: 1, 
+        justifyContent: 'center', 
+        alignItems: 'center', 
+        backgroundColor: currentTheme.colors.background
+      }}>
+        <ActivityIndicator size="large" color={currentTheme.colors.primary} />
+      </View>
+    ),
+  }), [currentTheme.colors]);
 
   // Don't render tabs until translations are loaded
   if (isLoading) {
@@ -35,19 +76,7 @@ export default function TabLayout() {
 
   return (
     <Tabs
-      screenOptions={{
-        tabBarActiveTintColor: currentTheme.colors.primary,
-        tabBarInactiveTintColor: currentTheme.colors.textMuted,
-        tabBarStyle: {
-          backgroundColor: currentTheme.colors.card,
-          borderTopColor: currentTheme.colors.border,
-        },
-        headerShown: false,
-        headerStyle: {
-          backgroundColor: currentTheme.colors.background,
-        },
-        headerTintColor: currentTheme.colors.text,
-      }}
+      screenOptions={screenOptions}
     >
       <Tabs.Screen 
         name="index"

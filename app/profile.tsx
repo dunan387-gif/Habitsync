@@ -20,6 +20,7 @@ import { useAuth } from '@/context/AuthContext';
 import { useTheme } from '@/context/ThemeContext';
 import { useLanguage } from '@/context/LanguageContext';
 import { ProfileUpdateData } from '@/types';
+import OptimizedImage from '@/components/OptimizedImage';
 
 const { width: screenWidth } = Dimensions.get('window');
 
@@ -207,9 +208,11 @@ export default function ProfileScreen() {
         {/* Cover Image Section */}
         <View style={styles.coverSection}>
           {formData.coverImage || user.coverImage ? (
-            <Image 
-              source={{ uri: formData.coverImage || user.coverImage }} 
-              style={styles.coverImage} 
+            <OptimizedImage 
+              source={{ uri: (formData.coverImage || user.coverImage) || '' }} 
+              style={styles.coverImage}
+              cachePolicy="disk"
+              priority="high"
             />
           ) : (
             <View style={styles.coverPlaceholder}>
@@ -233,7 +236,12 @@ export default function ProfileScreen() {
         <View style={styles.avatarSection}>
           <View style={styles.avatarContainer}>
             {user.avatar ? (
-              <Image source={{ uri: user.avatar }} style={styles.avatar} />
+              <OptimizedImage 
+                source={{ uri: user.avatar }} 
+                style={styles.avatar}
+                cachePolicy="disk"
+                priority="high"
+              />
             ) : (
               <View style={styles.avatarPlaceholder}>
                 <User size={50} color={currentTheme.colors.textMuted} />

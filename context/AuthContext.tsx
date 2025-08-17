@@ -48,6 +48,7 @@ const cleanupCorruptedData = async () => {
   try {
     console.log('🧹 Cleaning up corrupted AsyncStorage data...');
     const allKeys = await AsyncStorage.getAllKeys();
+    let cleanedCount = 0;
     
     for (const key of allKeys) {
       const value = await AsyncStorage.getItem(key);
@@ -57,12 +58,37 @@ const cleanupCorruptedData = async () => {
         } catch (parseError) {
           console.log(`🗑️ Removing corrupted data from key: ${key}`);
           await AsyncStorage.removeItem(key);
+          cleanedCount++;
         }
       }
     }
-    console.log('✅ Cleanup complete');
+    console.log(`✅ Cleanup complete - removed ${cleanedCount} corrupted entries`);
+    
+    // Additional cleanup for specific auth-related keys
+    const authKeys = [keys.user, keys.guestUser, keys.lastAuthenticatedUser];
+    for (const authKey of authKeys) {
+      const authValue = await AsyncStorage.getItem(authKey);
+      if (authValue) {
+        try {
+          const parsed = JSON.parse(authValue);
+          // Validate required fields for user data
+          if (authKey === keys.user && (!parsed.id || !parsed.email)) {
+            console.log(`🗑️ Removing invalid user data from ${authKey}`);
+            await AsyncStorage.removeItem(authKey);
+            cleanedCount++;
+          }
+        } catch (parseError) {
+          console.log(`🗑️ Removing corrupted auth data from ${authKey}`);
+          await AsyncStorage.removeItem(authKey);
+          cleanedCount++;
+        }
+      }
+    }
+    
+    return cleanedCount;
   } catch (error) {
     console.error('❌ Error during cleanup:', error);
+    return 0;
   }
 };
 
@@ -284,10 +310,17 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     let unsubscribe: (() => void) | undefined;
+    let isMounted = true;
     
     const setupAuth = async () => {
       console.log('🚀 Setting up authentication...');
       setPreventGuestCreation(false);
+      
+      // Clean up corrupted data first
+      const cleanedCount = await cleanupCorruptedData();
+      if (cleanedCount > 0) {
+        console.log(`🧹 Cleaned up ${cleanedCount} corrupted entries`);
+      }
       
       // Remove debug calls that might interfere with auth restoration
       // await debugAsyncStorage();
@@ -297,6 +330,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         
         // Set up Firebase auth state listener
         unsubscribe = FirebaseService.onAuthStateChanged(async (firebaseUser: User | null) => {
+          if (!isMounted) return; // Prevent state updates on unmounted component
+          
           if (isRestoringAuth) {
             console.log('🔄 Skipping Firebase auth state change during restoration');
             return;
@@ -352,11 +387,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setupAuth();
     
     return () => {
+      isMounted = false;
       if (unsubscribe) {
         unsubscribe();
       }
     };
-  }, []);
+  }, [isRestoringAuth]); // Add missing dependency
 
   const login = useCallback(async (email: string, password: string) => {
     try {
@@ -668,7 +704,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     user,
     isLoading,
     isAuthenticated: !!user,
-    isGuestUser: false, // Simplified for now
+    isGuestUser: user?.id?.startsWith('guest-') || user?.id === 'guest-user' || false,
     login,
     register,
     logout,

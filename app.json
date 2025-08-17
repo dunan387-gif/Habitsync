@@ -37,10 +37,18 @@
         "SCHEDULE_EXACT_ALARM",
         "USE_EXACT_ALARM",
         "VIBRATE",
-        "WAKE_LOCK"
+        "WAKE_LOCK",
+        "ACCESS_NETWORK_STATE",
+        "INTERNET"
       ],
       "softwareKeyboardLayoutMode": "pan",
-      "allowBackup": true
+      "allowBackup": true,
+      "enableProguardInReleaseBuilds": true,
+      "enableShrinkResourcesInReleaseBuilds": true,
+      "largeHeap": true,
+      "hardwareAccelerated": true,
+      "usesCleartextTraffic": false,
+      "backupAgent": "com.sabbir404.habitsyncproductivity.BackupAgent"
     },
     "web": {
       "bundler": "metro",

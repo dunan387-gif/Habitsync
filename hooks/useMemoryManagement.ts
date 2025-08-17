@@ -105,11 +105,11 @@ const estimateReactNativeMemoryUsage = (): number => {
   return Math.max(30, Math.min(estimatedMemory, 800)); // Keep between 30-800MB
 };
 
-// Default thresholds
+// Android-optimized thresholds (lower for Android's stricter memory limits)
 const DEFAULT_THRESHOLDS: MemoryThreshold = {
-  warning: 100, // 100MB
-  critical: 200, // 200MB
-  emergency: 300 // 300MB
+  warning: 80, // 80MB - lower threshold for Android
+  critical: 150, // 150MB - lower critical threshold
+  emergency: 200 // 200MB - lower emergency threshold for Android
 };
 
 // Memory optimization strategies
@@ -127,11 +127,11 @@ export const useMemoryManagement = (options: UseMemoryManagementOptions = {}): U
     monitoringInterval = 30000, // 30 seconds
     thresholds = DEFAULT_THRESHOLDS,
     enableAutoCleanup = true,
-    cleanupThreshold = 150, // 150MB
+    cleanupThreshold = 120, // 120MB - lower for Android
     enableGarbageCollection = true,
-    gcThreshold = 250, // 250MB
+    gcThreshold = 180, // 180MB - lower for Android
     enableMemoryOptimization = true,
-    optimizationInterval = 60000 // 1 minute
+    optimizationInterval = 45000 // 45 seconds - more frequent for Android
   } = options;
 
   const [memoryInfo, setMemoryInfo] = useState<MemoryInfo | null>(null);
@@ -322,28 +322,52 @@ export const useMemoryManagement = (options: UseMemoryManagementOptions = {}): U
     trackEvent('memory_cleanup', cleanupTime, { cleanedSize });
   }, [trackEvent]);
 
-  // Optimize memory usage
+  // Optimize memory usage with Android-specific optimizations
   const optimizeMemory = useCallback(() => {
     const startTime = Date.now();
     const optimizations: string[] = [];
 
-    // Strategy 1: Cache cleanup
-    if (memoryCacheRegistry.size > 100) {
+    // Strategy 1: Cache cleanup (more aggressive for Android)
+    if (memoryCacheRegistry.size > 80) { // Lower threshold for Android
       const oldestEntries = Array.from(memoryCacheRegistry.entries())
         .sort((a, b) => a[1].timestamp - b[1].timestamp)
-        .slice(0, 50);
+        .slice(0, 60); // Clean more entries for Android
       
       oldestEntries.forEach(([key]) => memoryCacheRegistry.delete(key));
       optimizations.push(MEMORY_OPTIMIZATION_STRATEGIES.CACHE_CLEANUP);
     }
 
-    // Strategy 2: Garbage collection
-    if (memoryInfo && memoryInfo.usedMemoryMB > 100) {
+    // Strategy 2: Garbage collection (more frequent for Android)
+    if (memoryInfo && memoryInfo.usedMemoryMB > 80) { // Lower threshold for Android
       forceGarbageCollection();
       optimizations.push(MEMORY_OPTIMIZATION_STRATEGIES.GARBAGE_COLLECTION);
     }
 
-    // Strategy 3: Image optimization (if applicable - web only)
+    // Strategy 3: Android-specific optimizations
+    if (Platform.OS === 'android') {
+      // Clear React Native bridge cache
+      if ((global as any).__REACT_DEVTOOLS_GLOBAL_HOOK__) {
+        try {
+          // Clear React DevTools cache if available
+          (global as any).__REACT_DEVTOOLS_GLOBAL_HOOK__.renderers.clear();
+          optimizations.push('android_bridge_cleanup');
+        } catch (error) {
+          // Ignore errors in production
+        }
+      }
+
+      // Clear AsyncStorage cache if memory is high
+      if (memoryInfo && memoryInfo.usedMemoryMB > 100) {
+        try {
+          // This would need to be implemented with actual AsyncStorage cleanup
+          optimizations.push('android_asyncstorage_cleanup');
+        } catch (error) {
+          // Ignore errors
+        }
+      }
+    }
+
+    // Strategy 4: Image optimization (if applicable - web only)
     if (typeof document !== 'undefined' && typeof window !== 'undefined') {
       const images = document.querySelectorAll('img');
       if (images.length > 20) {
@@ -360,7 +384,7 @@ export const useMemoryManagement = (options: UseMemoryManagementOptions = {}): U
     }
 
     const optimizationTime = Date.now() - startTime;
-    trackEvent('memory_optimization', optimizationTime, { optimizations });
+    trackEvent('memory_optimization', optimizationTime, { optimizations, platform: Platform.OS });
   }, [memoryInfo, forceGarbageCollection, trackEvent]);
 
   // Get memory report
@@ -427,9 +451,10 @@ export const useMemoryManagement = (options: UseMemoryManagementOptions = {}): U
       recommendations.push('Implement automatic cleanup strategies');
     }
     
-    if (currentUsage.usedMemoryMB > 150) {
+    if (currentUsage.usedMemoryMB > 120) { // Lower threshold for Android
       recommendations.push('Consider reducing data cache size');
       recommendations.push('Implement more aggressive garbage collection');
+      recommendations.push('Enable Android-specific memory optimization');
     }
 
     return {

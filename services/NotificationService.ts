@@ -16,22 +16,85 @@ if (Platform.OS !== 'web') {
   });
 }
 
-export async function createNotificationChannel() {
+export async function createNotificationChannels() {
   if (Platform.OS !== 'android') {
     return;
   }
-  const channelId = 'habit-reminders'; // A unique ID for your channel
-  const existingChannel = await Notifications.getNotificationChannelAsync(channelId);
-  
-  if (!existingChannel) {
-    await Notifications.setNotificationChannelAsync(channelId, {
-      name: 'Habit Reminders', // User-facing name for the channel
-      importance: Notifications.AndroidImportance.HIGH, // High importance ensures prominent display
-      sound: 'default', // Use default system sound
-      showBadge: true, // Optional: show badge count on app icon
-    });
 
+  // Create multiple notification channels for different types of notifications
+  const channels = [
+    {
+      id: 'habit-reminders',
+      name: 'Habit Reminders',
+      description: 'Reminders for daily habits and routines',
+      importance: Notifications.AndroidImportance.HIGH,
+      sound: 'default',
+      showBadge: true,
+      enableVibration: true,
+      vibrationPattern: [0, 250, 250, 250]
+    },
+    {
+      id: 'mood-check-ins',
+      name: 'Mood Check-ins',
+      description: 'Gentle reminders to track your mood',
+      importance: Notifications.AndroidImportance.DEFAULT,
+      sound: 'default',
+      showBadge: false,
+      enableVibration: false
+    },
+    {
+      id: 'achievements',
+      name: 'Achievements & Milestones',
+      description: 'Celebrations for your progress and achievements',
+      importance: Notifications.AndroidImportance.DEFAULT,
+      sound: 'default',
+      showBadge: true,
+      enableVibration: true,
+      vibrationPattern: [0, 500, 200, 500]
+    },
+    {
+      id: 'motivational',
+      name: 'Motivational Messages',
+      description: 'Encouraging messages to keep you motivated',
+      importance: Notifications.AndroidImportance.LOW,
+      sound: null, // No sound for motivational messages
+      showBadge: false,
+      enableVibration: false
+    },
+    {
+      id: 'analytics',
+      name: 'Analytics & Insights',
+      description: 'Weekly summaries and insights about your progress',
+      importance: Notifications.AndroidImportance.LOW,
+      sound: null,
+      showBadge: false,
+      enableVibration: false
+    }
+  ];
+
+  // Create each channel
+  for (const channel of channels) {
+    const existingChannel = await Notifications.getNotificationChannelAsync(channel.id);
+    
+    if (!existingChannel) {
+      await Notifications.setNotificationChannelAsync(channel.id, {
+        name: channel.name,
+        description: channel.description,
+        importance: channel.importance,
+        sound: channel.sound,
+        showBadge: channel.showBadge,
+        enableVibrate: channel.enableVibration,
+        vibrationPattern: channel.vibrationPattern
+      });
+      
+      console.log(`✅ Created Android notification channel: ${channel.name}`);
+    }
   }
+}
+
+export async function createNotificationChannel() {
+  // Legacy function for backward compatibility
+  return createNotificationChannels();
 }
 
 export async function requestNotificationPermissions(): Promise<boolean> {
@@ -40,7 +103,7 @@ export async function requestNotificationPermissions(): Promise<boolean> {
   }
   // On Android 13+, creating a channel can trigger the permission prompt.
   // Ensure channel is created before requesting permissions.
-  await createNotificationChannel();
+  await createNotificationChannels();
   
   const { status: existingStatus } = await Notifications.getPermissionsAsync();
   let finalStatus = existingStatus;
@@ -105,6 +168,12 @@ export async function scheduleHabitReminder(habit: Habit) {
           hour,
           minute,
         },
+        // Android-specific channel configuration
+        ...(Platform.OS === 'android' && {
+          android: {
+            channelId: 'habit-reminders'
+          }
+        })
       });
       
       identifiers.push(identifier);
