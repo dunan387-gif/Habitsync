@@ -123,7 +123,7 @@ export default function QuickMoodSelector({
     if (onMoodSelect) {
       onMoodSelect(moodData);
     } else {
-      await addMoodEntry(mapToValidMoodState(mood.state), 7);
+      await addMoodEntry(mapToValidMoodState(mood.state), 7, undefined, undefined, true); // Skip automatic XP
       setSubmittedMood(moodData);
       Alert.alert(
         t('dailyMoodReminder.successTitle'), 
@@ -148,7 +148,7 @@ export default function QuickMoodSelector({
     if (onMoodSelect) {
       onMoodSelect(moodData);
     } else {
-      await addMoodEntry(mapToValidMoodState(selectedMood.state), intensity, note || undefined, filterValidTags(selectedTags));
+      await addMoodEntry(mapToValidMoodState(selectedMood.state), intensity, note || undefined, filterValidTags(selectedTags), true); // Skip automatic XP
       setSubmittedMood(moodData);
       
       let confirmationMessage = `${selectedMood.emoji} ${t(selectedMood.labelKey)}\n${t('quickMoodSelector.intensityLabel')}: ${intensity}/10`;
@@ -254,7 +254,8 @@ export default function QuickMoodSelector({
         mapToValidMoodState(selectedMood.state), 
         intensity || 5, 
         note || undefined, 
-        filterValidTags(selectedTags)
+        filterValidTags(selectedTags),
+        true // Skip automatic XP
       );
       setSubmittedMood(moodData);
       

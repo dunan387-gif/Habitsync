@@ -829,7 +829,7 @@
       "provideFeedback": "Provide Feedback",
       "expectedImpact": "Expected Impact"
     },
-    "feedback": {
+    "recommendationFeedback": {
       "howHelpful": "How helpful was this recommendation?"
     },
     "priorities": {
@@ -2888,6 +2888,7 @@
       "deleteAccount": "Delete Account"
     },
     "support": {
+      "feedback": "Send Feedback",
       "termsOfService": "Terms of Service",
       "privacyPolicy": "Privacy Policy",
       "errorHandling": "Error Handling Examples"
@@ -5036,6 +5037,50 @@
       "journaling": "Journaling",
       "mental-health": "Mental Health",
       "positivity": "Positivity"
+    }
+  },
+  "feedback": {
+    "title": "Send Feedback",
+    "typeSelection": "What type of feedback?",
+    "subject": "Subject",
+    "subjectPlaceholder": "Brief description of your feedback",
+    "message": "Message",
+    "submit": "Send Feedback",
+    "submitting": "Sending...",
+    "types": {
+      "general": "General",
+      "bug": "Bug Report",
+      "feature": "Feature Request",
+      "praise": "Praise"
+    },
+    "placeholders": {
+      "general": "Tell us what's on your mind...",
+      "bug": "Describe the issue you encountered, steps to reproduce, and what you expected to happen...",
+      "feature": "Describe the feature you'd like to see, why it would be helpful, and how you'd use it...",
+      "praise": "Share what you love about the app and how it's helping you..."
+    },
+    "validation": {
+      "subjectRequired": "Subject Required",
+      "pleaseEnterSubject": "Please enter a subject for your feedback",
+      "messageRequired": "Message Required",
+      "pleaseEnterMessage": "Please enter a message for your feedback"
+    },
+    "success": {
+      "title": "Feedback Sent!",
+      "message": "Thank you for your feedback! We'll review it and get back to you if needed."
+    },
+    "error": {
+      "title": "Error",
+      "message": "Failed to send feedback. Please try again."
+    },
+    "discard": {
+      "title": "Discard Feedback?",
+      "message": "You have unsaved changes. Are you sure you want to discard them?",
+      "confirm": "Discard"
+    },
+    "footer": {
+      "info": "Your feedback helps us improve the app for everyone.",
+      "response": "We typically respond to feedback within 24-48 hours."
     }
   }
 }

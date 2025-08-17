@@ -6,6 +6,7 @@ import { FIREBASE_MODE } from '@/constants/api';
 import { PrivacyService, PrivacySettings } from '@/services/PrivacyService';
 import { FirebaseService } from '@/services/FirebaseService';
 import { useCallback } from 'react';
+import { AuthService } from '@/services/AuthService'; // Added import for AuthService
 
 interface AuthContextType {
   user: User | null;
@@ -30,6 +31,7 @@ interface AuthContextType {
   forceAuthRestore: () => Promise<boolean>;
   reAuthenticateWithSupabase: () => Promise<boolean>;
   restoreAuthWithToken: () => Promise<boolean>;
+  restoreAuthFromToken: (token: string) => Promise<User>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -506,13 +508,75 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const loginWithGoogle = useCallback(async () => {
-    // TODO: Implement Google OAuth with Supabase
-    throw new Error('Google login not implemented yet');
+    try {
+      if (!FIREBASE_MODE) {
+        // Simulate Google login for offline mode
+        const mockUser: User = {
+          id: 'google-user-' + Date.now(),
+          email: 'user@gmail.com',
+          name: 'Google User',
+          joinedAt: new Date().toISOString(),
+          onboardingCompleted: false,
+          preferences: {
+            notifications: true,
+            emailUpdates: true,
+            publicProfile: false,
+          },
+          stats: {
+            totalHabits: 0,
+            completedHabits: 0,
+            currentStreak: 0,
+            longestStreak: 0,
+          },
+        };
+        await AsyncStorage.setItem(keys.user, JSON.stringify(mockUser));
+        setUser(mockUser);
+        return;
+      }
+
+      // TODO: Implement Google OAuth with Firebase
+      // This requires additional setup with @react-native-google-signin/google-signin
+      throw new Error('Google OAuth requires additional setup. Please implement with @react-native-google-signin/google-signin');
+    } catch (error: any) {
+      console.error('Google login failed:', error);
+      throw new Error(error.message || 'Google login failed');
+    }
   }, []);
 
   const loginWithApple = useCallback(async () => {
-    // TODO: Implement Apple OAuth with Supabase
-    throw new Error('Apple login not implemented yet');
+    try {
+      if (!FIREBASE_MODE) {
+        // Simulate Apple login for offline mode
+        const mockUser: User = {
+          id: 'apple-user-' + Date.now(),
+          email: 'user@icloud.com',
+          name: 'Apple User',
+          joinedAt: new Date().toISOString(),
+          onboardingCompleted: false,
+          preferences: {
+            notifications: true,
+            emailUpdates: true,
+            publicProfile: false,
+          },
+          stats: {
+            totalHabits: 0,
+            completedHabits: 0,
+            currentStreak: 0,
+            longestStreak: 0,
+          },
+        };
+        await AsyncStorage.setItem(keys.user, JSON.stringify(mockUser));
+        setUser(mockUser);
+        return;
+      }
+
+      // TODO: Implement Apple OAuth with Firebase
+      // This requires additional setup with expo-apple-authentication
+      throw new Error('Apple OAuth requires additional setup. Please implement with expo-apple-authentication');
+    } catch (error: any) {
+      console.error('Apple login failed:', error);
+      throw new Error(error.message || 'Apple login failed');
+    }
   }, []);
 
   const updateProfile = useCallback(async (data: ProfileUpdateData) => {
@@ -550,9 +614,27 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, [user]);
 
   const uploadAvatar = useCallback(async (imageUri: string) => {
-    // TODO: Implement avatar upload with Supabase Storage
-    throw new Error('Avatar upload not implemented yet');
-  }, []);
+    try {
+      if (!user) {
+        throw new Error('No user logged in');
+      }
+
+      if (!FIREBASE_MODE) {
+        // Simulate avatar upload for offline mode
+        const updatedUser = { ...user, avatar: imageUri };
+        await AsyncStorage.setItem(keys.user, JSON.stringify(updatedUser));
+        setUser(updatedUser);
+        return;
+      }
+
+      // TODO: Implement avatar upload with Firebase Storage
+      // This requires additional setup with Firebase Storage
+      throw new Error('Avatar upload requires Firebase Storage setup. Please implement with Firebase Storage');
+    } catch (error: any) {
+      console.error('Avatar upload failed:', error);
+      throw new Error(error.message || 'Avatar upload failed');
+    }
+  }, [user]);
 
   const deleteAccount = useCallback(async () => {
     if (!user) throw new Error('No user logged in');
@@ -564,8 +646,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         return;
       }
 
-      // TODO: Implement account deletion with Supabase
-      throw new Error('Account deletion not implemented yet');
+      // Use the AuthService for account deletion
+      await AuthService.deleteAccount(''); // Password will be prompted in UI
+      setUser(null);
     } catch (error: any) {
       console.error('Account deletion failed:', error);
       throw new Error(error.message || 'Account deletion failed');
@@ -693,6 +776,32 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   }, []);
 
+  // Token-based auth restoration
+  const restoreAuthFromToken = useCallback(async (token: string) => {
+    try {
+      if (!FIREBASE_MODE) {
+        // For offline mode, try to restore from stored token
+        const storedToken = await SecureStore.getItemAsync('auth_token');
+        if (storedToken === token) {
+          const userData = await AsyncStorage.getItem(keys.user);
+          if (userData) {
+            const user = JSON.parse(userData);
+            setUser(user);
+            return user;
+          }
+        }
+        throw new Error('Invalid or expired token');
+      }
+
+      // TODO: Implement token-based auth restoration with Firebase
+      // This would typically involve verifying the token with Firebase Auth
+      throw new Error('Token-based auth restoration requires Firebase Auth setup');
+    } catch (error: any) {
+      console.error('Token-based auth restoration failed:', error);
+      throw new Error(error.message || 'Auth restoration failed');
+    }
+  }, []);
+
   const restoreAuthWithToken = useCallback(async () => {
     // TODO: Implement token-based auth restoration
     return false;
@@ -723,6 +832,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     forceAuthRestore,
     reAuthenticateWithSupabase,
     restoreAuthWithToken,
+    restoreAuthFromToken,
   };
 
   return (

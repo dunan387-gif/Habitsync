@@ -26,7 +26,7 @@ export default function LibraryFeedbackModal({ visible, onClose }: LibraryFeedba
 
   const handleSubmit = async () => {
     if (rating === 0) {
-      Alert.alert(t('library.feedback.ratingRequired'), t('library.feedback.pleaseRate'));
+      Alert.alert(t('library.libraryFeedback.ratingRequired'), t('library.libraryFeedback.pleaseRate'));
       return;
     }
 
@@ -37,35 +37,72 @@ export default function LibraryFeedbackModal({ visible, onClose }: LibraryFeedba
       await LibraryAnalyticsService.trackFeedback(userId, rating, feedback);
       await trackLibraryFeedback(rating, feedback);
       
-      // Send email to your address
-      const subject = encodeURIComponent('Library Feedback - Habit Tracker App');
-      const ratingText = rating === 1 ? t('library.feedback.rating1').split(' - ')[0] : 
-                        rating === 2 ? t('library.feedback.rating2').split(' - ')[0] : 
-                        rating === 3 ? t('library.feedback.rating3').split(' - ')[0] : 
-                        rating === 4 ? t('library.feedback.rating4').split(' - ')[0] : 
-                        t('library.feedback.rating5').split(' - ')[0];
-      const emailBody = encodeURIComponent(`Hello,\n\nI would like to share feedback about the Library section:\n\nRating: ${ratingText} (${rating}/5)\n\nFeedback:\n${feedback || 'No additional feedback provided'}\n\nUser ID: ${userId}\nSubmitted: ${new Date().toLocaleString()}\n\nThank you!`);
-      
-      const mailtoUrl = `mailto:sabbirhossainsm505@gmail.com?subject=${subject}&body=${emailBody}`;
-      
-      const canOpen = await Linking.canOpenURL(mailtoUrl);
-      if (canOpen) {
-        await Linking.openURL(mailtoUrl);
-        Alert.alert(
-          t('library.feedback.thankYou'),
-          'Feedback submitted! Email app opened to send feedback to the development team.',
-          [{ text: t('common.ok'), onPress: handleClose }]
-        );
-      } else {
-        Alert.alert(
-          t('library.feedback.thankYou'),
-          'Feedback submitted! Please send feedback to: sabbirhossainsm505@gmail.com',
-          [{ text: t('common.ok'), onPress: handleClose }]
-        );
+      // Send feedback directly to backend API
+      const feedbackData = {
+        type: 'library_feedback',
+        rating,
+        feedback: feedback.trim() || 'No additional feedback provided',
+        userId,
+        userEmail: user?.email || 'anonymous',
+        timestamp: new Date().toISOString(),
+        appVersion: '1.0.0',
+        platform: 'mobile',
+        deviceInfo: {
+          platform: 'react-native',
+          version: '1.0.0'
+        }
+      };
+
+      const response = await fetch('https://your-backend-api.com/api/feedback', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(feedbackData)
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to send feedback');
       }
+
+      console.log('Library feedback submitted successfully:', feedbackData);
+
+      Alert.alert(
+        t('library.libraryFeedback.thankYou'),
+        t('library.libraryFeedback.submittedMessage'),
+        [
+          {
+            text: t('common.great'),
+            onPress: handleClose
+          }
+        ]
+      );
+
     } catch (error) {
       console.error('Error submitting feedback:', error);
-      Alert.alert(t('common.error'), t('library.feedback.submitError'));
+      
+      // Fallback: Try to send via email if API fails
+      try {
+        const subject = encodeURIComponent('Library Feedback - Habit Tracker App');
+        const ratingText = rating === 1 ? t('library.libraryFeedback.rating1').split(' - ')[0] :
+          rating === 2 ? t('library.libraryFeedback.rating2').split(' - ')[0] :
+          rating === 3 ? t('library.libraryFeedback.rating3').split(' - ')[0] :
+          rating === 4 ? t('library.libraryFeedback.rating4').split(' - ')[0] :
+          t('library.libraryFeedback.rating5').split(' - ')[0];
+        
+        const emailBody = encodeURIComponent(`Hello,\n\nI would like to share feedback about the Library section:\n\nRating: ${ratingText} (${rating}/5)\n\nFeedback:\n${feedback || 'No additional feedback provided'}\n\nUser ID: ${user?.id || 'anonymous'}\nSubmitted: ${new Date().toLocaleString()}\n\nThank you!`);
+        
+        const mailtoUrl = `mailto:your-email@domain.com?subject=${subject}&body=${emailBody}`;
+        await Linking.openURL(mailtoUrl);
+        
+        Alert.alert(
+          t('library.libraryFeedback.thankYou'),
+          'Feedback sent via email as fallback. Thank you!',
+          [{ text: t('common.ok'), onPress: handleClose }]
+        );
+      } catch (emailError) {
+        Alert.alert(t('common.error'), t('library.libraryFeedback.submitError'));
+      }
     } finally {
       setIsSubmitting(false);
     }
@@ -110,7 +147,7 @@ export default function LibraryFeedbackModal({ visible, onClose }: LibraryFeedba
         <View style={styles.header}>
           <View style={styles.headerLeft}>
             <MessageSquare size={24} color={currentTheme.colors.primary} />
-            <Text style={styles.headerTitle}>{t('library.feedback.title')}</Text>
+            <Text style={styles.headerTitle}>{t('library.libraryFeedback.title')}</Text>
           </View>
           <TouchableOpacity style={styles.closeButton} onPress={handleClose}>
             <X size={24} color={currentTheme.colors.textSecondary} />
@@ -120,32 +157,32 @@ export default function LibraryFeedbackModal({ visible, onClose }: LibraryFeedba
         <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
           {/* Introduction */}
           <View style={styles.introSection}>
-            <Text style={styles.introTitle}>{t('library.feedback.introTitle')}</Text>
-            <Text style={styles.introText}>{t('library.feedback.introText')}</Text>
+            <Text style={styles.introTitle}>{t('library.libraryFeedback.introTitle')}</Text>
+            <Text style={styles.introText}>{t('library.libraryFeedback.introText')}</Text>
           </View>
 
           {/* Rating Section */}
           <View style={styles.section}>
-            <Text style={styles.sectionTitle}>{t('library.feedback.rateExperience')}</Text>
+            <Text style={styles.sectionTitle}>{t('library.libraryFeedback.rateExperience')}</Text>
             {renderStars()}
             <Text style={styles.ratingLabel}>
-              {rating === 0 && t('library.feedback.selectRating')}
-              {rating === 1 && t('library.feedback.rating1')}
-              {rating === 2 && t('library.feedback.rating2')}
-              {rating === 3 && t('library.feedback.rating3')}
-              {rating === 4 && t('library.feedback.rating4')}
-              {rating === 5 && t('library.feedback.rating5')}
+              {rating === 0 && t('library.libraryFeedback.selectRating')}
+              {rating === 1 && t('library.libraryFeedback.rating1')}
+              {rating === 2 && t('library.libraryFeedback.rating2')}
+              {rating === 3 && t('library.libraryFeedback.rating3')}
+              {rating === 4 && t('library.libraryFeedback.rating4')}
+              {rating === 5 && t('library.libraryFeedback.rating5')}
             </Text>
           </View>
 
           {/* Feedback Section */}
           <View style={styles.section}>
-            <Text style={styles.sectionTitle}>{t('library.feedback.shareThoughts')}</Text>
-            <Text style={styles.sectionSubtitle}>{t('library.feedback.optional')}</Text>
+            <Text style={styles.sectionTitle}>{t('library.libraryFeedback.shareThoughts')}</Text>
+            <Text style={styles.sectionSubtitle}>{t('library.libraryFeedback.optional')}</Text>
             
             <TextInput
               style={styles.feedbackInput}
-              placeholder={t('library.feedback.placeholder')}
+              placeholder={t('library.libraryFeedback.placeholder')}
               placeholderTextColor={currentTheme.colors.textMuted}
               value={feedback}
               onChangeText={setFeedback}
@@ -157,15 +194,15 @@ export default function LibraryFeedbackModal({ visible, onClose }: LibraryFeedba
 
           {/* Quick Feedback Options */}
           <View style={styles.section}>
-            <Text style={styles.sectionTitle}>{t('library.feedback.quickFeedback')}</Text>
+            <Text style={styles.sectionTitle}>{t('library.libraryFeedback.quickFeedback')}</Text>
             <View style={styles.quickFeedbackContainer}>
               {[
-                { key: 'easy_to_use', label: t('library.feedback.easyToUse') },
-                { key: 'needs_improvement', label: t('library.feedback.needsImprovement') },
-                { key: 'more_habits', label: t('library.feedback.moreHabits') },
-                { key: 'better_search', label: t('library.feedback.betterSearch') },
-                { key: 'ai_suggestions', label: t('library.feedback.aiSuggestions') },
-                { key: 'educational_content', label: t('library.feedback.educationalContent') },
+                { key: 'easy_to_use', label: t('library.libraryFeedback.easyToUse') },
+                { key: 'needs_improvement', label: t('library.libraryFeedback.needsImprovement') },
+                { key: 'more_habits', label: t('library.libraryFeedback.moreHabits') },
+                { key: 'better_search', label: t('library.libraryFeedback.betterSearch') },
+                { key: 'ai_suggestions', label: t('library.libraryFeedback.aiSuggestions') },
+                { key: 'educational_content', label: t('library.libraryFeedback.educationalContent') },
               ].map((option) => (
                 <TouchableOpacity
                   key={option.key}
@@ -194,7 +231,7 @@ export default function LibraryFeedbackModal({ visible, onClose }: LibraryFeedba
             >
               <Send size={20} color={currentTheme.colors.background} />
               <Text style={styles.submitButtonText}>
-                {isSubmitting ? t('library.feedback.submitting') : t('library.feedback.submit')}
+                {isSubmitting ? t('library.libraryFeedback.submitting') : t('library.libraryFeedback.submit')}
               </Text>
             </TouchableOpacity>
           </View>

@@ -2603,6 +2603,7 @@
       }
     },
     "support": {
+      "feedback": "Envoyer un commentaire",
       "termsOfService": "Conditions d'utilisation",
       "privacyPolicy": "Politique de confidentialité",
       "errorHandling": "Exemples de gestion d'erreurs"
@@ -3371,7 +3372,7 @@
     "creatingAccount": "Création du compte...",
     "alreadyHaveAccount": "Vous avez déjà un compte ? Connectez-vous"
   },
-  "feedback": {
+  "recommendationFeedback": {
     "title": "Commentaires de Recommandation",
     "rating": {
       "title": "Quelle était l'utilité de cette recommandation ?",
@@ -3411,7 +3412,9 @@
       "title": "Erreur",
       "message": "Échec de la soumission des commentaires. Veuillez réessayer."
     },
-    "howHelpful": "Quelle était l'utilité de cette recommandation ?"
+    "recommendationFeedback": {
+      "howHelpful": "Quelle était l'utilité de cette recommandation ?"
+    }
   },
   "error": {
     "boundary": {
@@ -4089,7 +4092,7 @@
     "createError": "Échec de la création de l'habitude"
   },
   "library": {
-    "feedback": {
+    "libraryFeedback": {
       "title": "Retours de la Bibliothèque",
       "introTitle": "Aidez-nous à améliorer votre expérience !",
       "introText": "Vos retours nous aident à rendre la Bibliothèque meilleure pour tous. Partagez vos réflexions sur la recherche et l'ajout d'habitudes.",
@@ -4693,6 +4696,50 @@
       "newest": "Les plus récents",
       "highestRated": "Les mieux notés",
       "mostPopular": "Les plus populaires"
+    }
+  },
+  "feedback": {
+    "title": "Envoyer un commentaire",
+    "typeSelection": "Quel type de commentaire ?",
+    "subject": "Sujet",
+    "subjectPlaceholder": "Brève description de votre commentaire",
+    "message": "Message",
+    "submit": "Envoyer le commentaire",
+    "submitting": "Envoi...",
+    "types": {
+      "general": "Général",
+      "bug": "Signalement de bug",
+      "feature": "Demande de fonctionnalité",
+      "praise": "Éloge"
+    },
+    "placeholders": {
+      "general": "Dites-nous ce qui vous préoccupe...",
+      "bug": "Décrivez le problème rencontré, les étapes pour le reproduire et ce que vous attendiez...",
+      "feature": "Décrivez la fonctionnalité que vous aimeriez voir, pourquoi elle serait utile et comment vous l'utiliseriez...",
+      "praise": "Partagez ce que vous aimez dans l'application et comment elle vous aide..."
+    },
+    "validation": {
+      "subjectRequired": "Sujet requis",
+      "pleaseEnterSubject": "Veuillez entrer un sujet pour votre commentaire",
+      "messageRequired": "Message requis",
+      "pleaseEnterMessage": "Veuillez entrer un message pour votre commentaire"
+    },
+    "success": {
+      "title": "Commentaire envoyé !",
+      "message": "Merci pour votre commentaire. Nous l'examinerons et vous répondrons dans les plus brefs délais."
+    },
+    "error": {
+      "title": "Erreur d'envoi",
+      "message": "Impossible d'envoyer votre commentaire. Veuillez réessayer plus tard."
+    },
+    "discard": {
+      "title": "Annuler les modifications",
+      "message": "Vous avez des modifications non sauvegardées. Êtes-vous sûr de vouloir les annuler ?",
+      "confirm": "Annuler"
+    },
+    "footer": {
+      "info": "Votre commentaire nous aide à améliorer l'application",
+      "response": "Nous répondons généralement dans les 24-48 heures"
     }
   }
 }

@@ -100,7 +100,7 @@ interface GamificationContextType {
   gamificationData: GamificationData | null;
   addXP: (amount: number, source: string) => Promise<void>;
   unlockAchievement: (achievementId: string) => Promise<void>;
-  addMoodEntry: (moodState: 'happy' | 'sad' | 'anxious' | 'energetic' | 'tired' | 'stressed' | 'calm', intensity: number, note?: string, triggers?: ('work' | 'relationships' | 'health' | 'weather' | 'sleep' | 'exercise' | 'social')[]) => Promise<void>;
+  addMoodEntry: (moodState: 'happy' | 'sad' | 'anxious' | 'energetic' | 'tired' | 'stressed' | 'calm', intensity: number, note?: string, triggers?: ('work' | 'relationships' | 'health' | 'weather' | 'sleep' | 'exercise' | 'social')[], skipXP?: boolean) => Promise<void>;
   checkAchievements: (habits: Habit[]) => Promise<void>;
   getAvailableAchievements: () => Achievement[];
   getTodaysMoodEntry: () => MoodEntry | null;
@@ -743,7 +743,8 @@ export function GamificationProvider({ children }: { children: ReactNode }) {
     moodState: 'happy' | 'sad' | 'anxious' | 'energetic' | 'tired' | 'stressed' | 'calm', 
     intensity: number, 
     note?: string, 
-    triggers?: ('work' | 'relationships' | 'health' | 'weather' | 'sleep' | 'exercise' | 'social')[]
+    triggers?: ('work' | 'relationships' | 'health' | 'weather' | 'sleep' | 'exercise' | 'social')[],
+    skipXP?: boolean // Add parameter to skip automatic XP addition
   ): Promise<void> => {
 
     
@@ -752,6 +753,8 @@ export function GamificationProvider({ children }: { children: ReactNode }) {
         console.error('❌ No gamification data available');
         throw new Error('No gamification data available');
       }
+
+      console.log('Adding mood entry:', { moodState, intensity, note, triggers, skipXP });
 
       const today = getLocalDateString();
       const existingEntryIndex = gamificationData.moodEntries.findIndex(entry => entry.date === today);
@@ -795,19 +798,22 @@ export function GamificationProvider({ children }: { children: ReactNode }) {
       
       try {
         setGamificationData(updatedData);
+        console.log('✅ Mood entry saved successfully');
       } catch (error) {
         console.error('❌ Error setting gamification data:', error);
         throw error;
       }
       
-      // Add XP for mood check-in with a small delay to avoid race conditions
-      setTimeout(async () => {
-        try {
-          await addXP(XP_REWARDS.mood_check, 'mood_checkin');
-        } catch (error) {
-          console.error('❌ Error adding XP:', error);
-        }
-      }, 50);
+      // Add XP for mood check-in only if not skipped (for quick mood check-ins)
+      if (!skipXP) {
+        setTimeout(async () => {
+          try {
+            await addXP(XP_REWARDS.mood_check, 'mood_checkin');
+          } catch (error) {
+            console.error('❌ Error adding XP:', error);
+          }
+        }, 50);
+      }
       
     } catch (error) {
       console.error('❌ Error in addMoodEntry:', error);

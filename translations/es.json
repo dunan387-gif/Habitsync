@@ -2709,6 +2709,7 @@
       }
     },
     "support": {
+      "feedback": "Enviar Comentarios",
       "termsOfService": "Términos de servicio",
       "privacyPolicy": "Política de privacidad",
       "errorHandling": "Ejemplos de manejo de errores"
@@ -3477,7 +3478,7 @@
     "creatingAccount": "Creando cuenta...",
     "alreadyHaveAccount": "¿Ya tienes cuenta? Inicia sesión"
   },
-  "feedback": {
+  "recommendationFeedback": {
     "title": "Comentarios de Recomendación",
     "rating": {
       "title": "¿Qué tan útil fue esta recomendación?",
@@ -3517,7 +3518,7 @@
       "title": "Error",
       "message": "Error al enviar comentarios. Por favor intenta de nuevo."
     },
-    "feedback": {
+    "recommendationFeedback": {
       "howHelpful": "¿Qué tan útil fue esta recomendación?"
     }
   },
@@ -4201,7 +4202,7 @@
     "createError": "Error al crear el hábito"
   },
   "library": {
-    "feedback": {
+    "libraryFeedback": {
       "title": "Comentarios de la Biblioteca",
       "introTitle": "¡Ayúdanos a mejorar tu experiencia!",
       "introText": "Tus comentarios nos ayudan a hacer la Biblioteca mejor para todos. Comparte tus pensamientos sobre encontrar y agregar hábitos.",
@@ -4805,6 +4806,50 @@
       "newest": "Más reciente",
       "highestRated": "Mejor valorado",
       "mostPopular": "Más popular"
+    }
+  },
+  "feedback": {
+    "title": "Enviar Comentarios",
+    "typeSelection": "¿Qué tipo de comentario?",
+    "subject": "Asunto",
+    "subjectPlaceholder": "Breve descripción de tu comentario",
+    "message": "Mensaje",
+    "submit": "Enviar Comentarios",
+    "submitting": "Enviando...",
+    "types": {
+      "general": "General",
+      "bug": "Reporte de Error",
+      "feature": "Solicitud de Función",
+      "praise": "Elogio"
+    },
+    "placeholders": {
+      "general": "Dinos qué tienes en mente...",
+      "bug": "Describe el problema que encontraste, pasos para reproducirlo y qué esperabas que sucediera...",
+      "feature": "Describe la función que te gustaría ver, por qué sería útil y cómo la usarías...",
+      "praise": "Comparte lo que te encanta de la aplicación y cómo te está ayudando..."
+    },
+    "validation": {
+      "subjectRequired": "Asunto Requerido",
+      "pleaseEnterSubject": "Por favor ingresa un asunto para tu comentario",
+      "messageRequired": "Mensaje Requerido",
+      "pleaseEnterMessage": "Por favor ingresa un mensaje para tu comentario"
+    },
+    "success": {
+      "title": "¡Comentario Enviado!",
+      "message": "¡Gracias por tu comentario! Lo revisaremos y te responderemos si es necesario."
+    },
+    "error": {
+      "title": "Error",
+      "message": "No se pudo enviar el comentario. Por favor inténtalo de nuevo."
+    },
+    "discard": {
+      "title": "¿Descartar Comentario?",
+      "message": "Tienes cambios sin guardar. ¿Estás seguro de que quieres descartarlos?",
+      "confirm": "Descartar"
+    },
+    "footer": {
+      "info": "Tu comentario nos ayuda a mejorar la aplicación para todos.",
+      "response": "Normalmente respondemos a los comentarios en 24-48 horas."
     }
   }
 }

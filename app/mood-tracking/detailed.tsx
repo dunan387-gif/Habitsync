@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, TextInput, Alert, ScrollView } from 'react-native';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import { useGamification } from '@/context/GamificationContext';
@@ -47,12 +47,21 @@ export default function DetailedMoodTrackingScreen() {
 
   const styles = createStyles(currentTheme.colors);
 
+  // Debug logging
+  useEffect(() => {
+    console.log('🎭 DetailedMoodTrackingScreen mounted');
+    console.log('Current theme:', currentTheme.colors);
+    console.log('Available moods:', MOOD_STATES.length);
+  }, []);
+
   const handleMoodSelect = (moodId: MoodState) => {
+    console.log('Mood selected:', moodId);
     setSelectedMood(moodId);
     setCurrentStep('details');
   };
 
   const handleBackToMoodSelection = () => {
+    console.log('Going back to mood selection');
     setCurrentStep('mood');
     setSelectedMood(null);
     setIntensity(5);
@@ -61,6 +70,7 @@ export default function DetailedMoodTrackingScreen() {
   };
 
   const handleTriggerToggle = (triggerId: TriggerType) => {
+    console.log('Trigger toggled:', triggerId);
     setSelectedTriggers(prev => 
       prev.includes(triggerId) 
         ? prev.filter(id => id !== triggerId)
@@ -69,25 +79,41 @@ export default function DetailedMoodTrackingScreen() {
   };
 
   const handleSubmit = async () => {
-    if (!selectedMood) return;
+    if (!selectedMood) {
+      Alert.alert(t('common.error'), 'Please select a mood first');
+      return;
+    }
 
     setIsSubmitting(true);
     try {
+      console.log('Submitting mood entry:', {
+        moodState: selectedMood,
+        intensity,
+        note: note.trim() || undefined,
+        triggers: selectedTriggers.length > 0 ? selectedTriggers : undefined
+      });
+
       await addMoodEntry(
         selectedMood,
         intensity,
         note.trim() || undefined,
-        selectedTriggers.length > 0 ? selectedTriggers : undefined
+        selectedTriggers.length > 0 ? selectedTriggers : undefined,
+        true // Skip automatic XP addition since we're adding it manually
       );
       
-      await addXP(10, t('moodCheckIn.alerts.detailedTrackingComplete'));
+      console.log('Mood entry added successfully, adding XP...');
+      await addXP(10, 'detailed_mood_tracking');
+
+      const moodLabel = t(MOOD_STATES.find(m => m.id === selectedMood)?.labelKey || '');
+      const message = t('moodCheckIn.alerts.detailedTrackingMessage').replace('{mood}', moodLabel);
 
       Alert.alert(
         t('moodCheckIn.alerts.moodRecorded'),
-        t('moodCheckIn.alerts.detailedTrackingMessage').replace('{mood}', t(MOOD_STATES.find(m => m.id === selectedMood)?.labelKey || '')),
+        message,
         [{ text: t('common.great'), onPress: () => router.back() }]
       );
     } catch (error) {
+      console.error('Error in handleSubmit:', error);
       Alert.alert(t('common.error'), t('moodCheckIn.alerts.saveFailed'));
     } finally {
       setIsSubmitting(false);
@@ -159,7 +185,7 @@ export default function DetailedMoodTrackingScreen() {
                 style={styles.backToMoodButton}
                 onPress={handleBackToMoodSelection}
               >
-                <Text style={styles.backButtonText}>{t('moodCheckIn.quickMoodSelector.backToQuickSelect')}</Text>
+                <Text style={styles.backButtonText}>← Back to Selection</Text>
               </TouchableOpacity>
               <View style={styles.selectedMoodDisplay}>
                 <Text style={styles.selectedMoodEmoji}>

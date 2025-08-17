@@ -28,7 +28,7 @@ export default function RecommendationFeedback({
 
   const handleSubmitFeedback = async () => {
     if (rating === 0) {
-      Alert.alert(t('feedback.validation.title'), t('feedback.validation.ratingRequired'));
+      Alert.alert(t('recommendationFeedback.validation.title'), t('recommendationFeedback.validation.ratingRequired'));
       return;
     }
 
@@ -51,12 +51,12 @@ export default function RecommendationFeedback({
       onFeedbackSubmitted(feedback);
 
       Alert.alert(
-        t('feedback.success.title'),
-        t('feedback.success.message'),
+        t('recommendationFeedback.success.title'),
+        t('recommendationFeedback.success.message'),
         [{ text: t('common.ok'), onPress: onClose }]
       );
     } catch (error) {
-      Alert.alert(t('feedback.error.title'), t('feedback.error.message'));
+      Alert.alert(t('recommendationFeedback.error.title'), t('recommendationFeedback.error.message'));
     } finally {
       setIsSubmitting(false);
     }
@@ -67,13 +67,13 @@ export default function RecommendationFeedback({
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <Text style={styles.title}>{t('feedback.title')}</Text>
+        <Text style={styles.title}>{t('recommendationFeedback.title')}</Text>
         <Text style={styles.subtitle}>{suggestionTitle}</Text>
       </View>
 
       {/* Rating Section */}
       <View style={styles.section}>
-        <Text style={styles.sectionTitle}>{t('feedback.rating.title')}</Text>
+        <Text style={styles.sectionTitle}>{t('recommendationFeedback.rating.title')}</Text>
         <View style={styles.starsContainer}>
           {[1, 2, 3, 4, 5].map((star) => (
             <TouchableOpacity
@@ -90,13 +90,13 @@ export default function RecommendationFeedback({
           ))}
         </View>
         <Text style={styles.ratingLabel}>
-          {rating > 0 ? t(`feedback.rating.labels.${rating}`) : t('feedback.rating.select')}
+          {rating > 0 ? t(`recommendationFeedback.rating.labels.${rating}`) : t('recommendationFeedback.rating.select')}
         </Text>
       </View>
 
       {/* Implementation Status */}
       <View style={styles.section}>
-        <Text style={styles.sectionTitle}>{t('feedback.implementation.title')}</Text>
+        <Text style={styles.sectionTitle}>{t('recommendationFeedback.implementation.title')}</Text>
         <View style={styles.implementationButtons}>
           <TouchableOpacity
             style={[
@@ -113,7 +113,7 @@ export default function RecommendationFeedback({
               styles.implementationButtonText,
               implemented && styles.implementationButtonTextActive
             ]}>
-              {t('feedback.implementation.implemented')}
+              {t('recommendationFeedback.implementation.implemented')}
             </Text>
           </TouchableOpacity>
           
@@ -132,7 +132,7 @@ export default function RecommendationFeedback({
               styles.implementationButtonText,
               !implemented && styles.implementationButtonTextActive
             ]}>
-              {t('feedback.implementation.notImplemented')}
+              {t('recommendationFeedback.implementation.notImplemented')}
             </Text>
           </TouchableOpacity>
         </View>
@@ -141,10 +141,10 @@ export default function RecommendationFeedback({
       {/* Effectiveness Rating */}
       {implemented && (
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>{t('feedback.effectiveness.title')}</Text>
+          <Text style={styles.sectionTitle}>{t('recommendationFeedback.effectiveness.title')}</Text>
           <View style={styles.effectivenessContainer}>
             <Text style={styles.effectivenessLabel}>
-              {t('feedback.effectiveness.label')}
+                              {t('recommendationFeedback.effectiveness.label')}
             </Text>
             <View style={styles.effectivenessSlider}>
               <TouchableOpacity
@@ -169,12 +169,12 @@ export default function RecommendationFeedback({
 
       {/* Comments */}
       <View style={styles.section}>
-        <Text style={styles.sectionTitle}>{t('feedback.comments.title')}</Text>
+        <Text style={styles.sectionTitle}>{t('recommendationFeedback.comments.title')}</Text>
         <View style={styles.commentsContainer}>
           <MessageSquare size={20} color={currentTheme.colors.text} />
           <TextInput
             style={styles.commentsInput}
-            placeholder={t('feedback.comments.placeholder')}
+            placeholder={t('recommendationFeedback.comments.placeholder')}
             placeholderTextColor={currentTheme.colors.textSecondary}
             value={comments}
             onChangeText={setComments}
@@ -202,7 +202,7 @@ export default function RecommendationFeedback({
         >
           <Send size={16} color={currentTheme.colors.background} />
           <Text style={styles.submitButtonText}>
-            {isSubmitting ? t('feedback.submitting') : t('feedback.submit')}
+            {isSubmitting ? t('recommendationFeedback.submitting') : t('recommendationFeedback.submit')}
           </Text>
         </TouchableOpacity>
       </View>

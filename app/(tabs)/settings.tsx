@@ -41,7 +41,8 @@ import {
   Target,
   FileText,
   Eye,
-  Clock
+  Clock,
+  MessageCircle
 } from 'lucide-react-native';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import { useTheme } from '@/context/ThemeContext';
@@ -65,6 +66,7 @@ import LanguageSelector from '@/components/LanguageSelector';
 import ProfessionalDashboard from '@/components/ProfessionalDashboard';
 import TimezoneSettings from '@/components/TimezoneSettings';
 import PerformanceAlertsSettings from '@/components/PerformanceAlertsSettings';
+import FeedbackModal from '@/components/FeedbackModal';
 
 export default function MoreScreen() {
   const { currentTheme } = useTheme();
@@ -85,6 +87,7 @@ export default function MoreScreen() {
   const [showPerformanceRecommendations, setShowPerformanceRecommendations] = useState(false);
   const [showErrorHandlingExample, setShowErrorHandlingExample] = useState(false);
   const [showAlertSettings, setShowAlertSettings] = useState(false);
+  const [showFeedbackModal, setShowFeedbackModal] = useState(false);
   const { animationsEnabled, setAnimationsEnabled } = useCelebration();
   const { settings: alertSettings, toggleAlerts, updateSettings } = usePerformanceAlerts();
   
@@ -451,7 +454,7 @@ export default function MoreScreen() {
                 <User size={28} color={currentTheme.colors.primary} />
               </View>
               <View style={styles.userInfo}>
-                <Text style={styles.userName}>{user?.email || t('settings.user.guest')}</Text>
+                <Text style={styles.userName}>{user?.name || user?.email || t('settings.user.guest')}</Text>
                 <Text style={styles.userStatus}>{t('settings.user.status')}</Text>
               </View>
               {currentTier === 'pro' && (
@@ -641,6 +644,12 @@ export default function MoreScreen() {
             <View style={styles.section}>
               <Text style={styles.sectionTitle}>{t('settings.sections.support')}</Text>
               <View style={styles.card}>
+                <TouchableOpacity style={styles.menuItem} onPress={() => setShowFeedbackModal(true)}>
+                  <MessageCircle size={20} color={currentTheme.colors.textSecondary} />
+                  <Text style={styles.menuText}>{t('settings.support.feedback')}</Text>
+                  <ChevronRight size={20} color={currentTheme.colors.textSecondary} />
+                </TouchableOpacity>
+                
                 <TouchableOpacity style={styles.menuItem} onPress={() => router.push('/settings/terms-of-service')}>
                   <FileText size={20} color={currentTheme.colors.textSecondary} />
                   <Text style={styles.menuText}>{t('settings.support.termsOfService')}</Text>
@@ -786,6 +795,12 @@ export default function MoreScreen() {
               </View>
             </View>
           )}
+
+          {/* Feedback Modal */}
+          <FeedbackModal
+            visible={showFeedbackModal}
+            onClose={() => setShowFeedbackModal(false)}
+          />
         </SafeAreaView>
       )}
     </>

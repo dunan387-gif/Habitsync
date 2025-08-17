@@ -56,9 +56,11 @@ export default function MoodCheckIn({ onMoodSubmit }: MoodCheckInProps) {
 
   const handleDetailedModePress = () => {
     try {
+      console.log('Navigating to detailed mood tracking...');
       router.navigate('/mood-tracking/detailed');
     } catch (error) {
       console.error('Navigation error:', error);
+      Alert.alert('Navigation Error', 'Unable to open detailed mood tracking. Please try again.');
     }
   };
 
@@ -69,7 +71,7 @@ export default function MoodCheckIn({ onMoodSubmit }: MoodCheckInProps) {
     setIsSubmitting(true);
     
     try {
-      await addMoodEntry(moodState, 5, undefined, []);
+      await addMoodEntry(moodState, 5, undefined, [], true); // Skip automatic XP
       
       const moodData = {
         moodState,

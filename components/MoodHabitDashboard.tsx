@@ -3015,7 +3015,7 @@ const dayName = dayNames[new Date(day.date).getDay()];
             
             <View style={styles.feedbackForm}>
               <Text style={styles.feedbackLabel}>
-                {t('moodAnalytics.feedback.howHelpful')}
+                {t('moodAnalytics.recommendationFeedback.howHelpful')}
               </Text>
               <View style={styles.feedbackRatingContainer}>
                 {[1, 2, 3, 4, 5].map((rating) => (

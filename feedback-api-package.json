@@ -1,0 +1,27 @@
+{
+  "name": "habit-tracker-feedback-api",
+  "version": "1.0.0",
+  "description": "Feedback API server for Habit Tracker app",
+  "main": "feedback-api-example.js",
+  "scripts": {
+    "start": "node feedback-api-example.js",
+    "dev": "nodemon feedback-api-example.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "cors": "^2.8.5",
+    "body-parser": "^1.20.2",
+    "nodemailer": "^6.9.4"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
+  },
+  "keywords": [
+    "feedback",
+    "api",
+    "express",
+    "habit-tracker"
+  ],
+  "author": "Your Name",
+  "license": "MIT"
+}

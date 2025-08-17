@@ -101,8 +101,8 @@ export default function PerformanceDashboard() {
           actions: [
             {
               label: t('performance.memory.optimize') || 'Optimize Memory',
-              onPress: () => {
-                optimizeMemory();
+          onPress: () => {
+            optimizeMemory();
                 trackEvent('memory_optimization_manual', 0);
               },
               type: 'primary',
@@ -110,7 +110,7 @@ export default function PerformanceDashboard() {
             {
               label: t('performance.memory.cleanup') || 'Cleanup',
               onPress: () => {
-                cleanupMemory();
+            cleanupMemory();
                 trackEvent('memory_cleanup_manual', 0);
               },
               type: 'secondary',
@@ -190,7 +190,7 @@ export default function PerformanceDashboard() {
           actions: [
             {
               label: t('performance.network.clearCache') || 'Clear Cache',
-              onPress: () => {
+          onPress: () => {
                 networkService.clearCache();
                 trackEvent('network_cache_cleared', 0);
               },
@@ -227,7 +227,7 @@ export default function PerformanceDashboard() {
           actions: [
             {
               label: t('performance.cache.clear') || 'Clear Cache',
-              onPress: () => {
+          onPress: () => {
                 cacheService.clear();
                 trackEvent('cache_cleared', 0);
               },
@@ -377,27 +377,27 @@ export default function PerformanceDashboard() {
         </Text>
         <Text style={[styles.subtitle, { color: currentTheme.colors.textMuted }]}>
           {t('performance.subtitle') || 'Monitor and optimize app performance'}
-        </Text>
-      </View>
+                  </Text>
+                </View>
 
       {sections.map((section, sectionIndex) => (
         <View key={sectionIndex} style={[styles.section, { backgroundColor: currentTheme.colors.card }]}>
           <Text style={[styles.sectionTitle, { color: currentTheme.colors.text }]}>
             {section.title}
-          </Text>
+                </Text>
 
           {section.metrics.map((metric, metricIndex) => (
             <View key={metricIndex} style={styles.metricRow}>
               <View style={styles.metricInfo}>
                 <Text style={[styles.metricLabel, { color: currentTheme.colors.text }]}>
                   {metric.label}
-                </Text>
+                  </Text>
                 {metric.description && (
                   <Text style={[styles.metricDescription, { color: currentTheme.colors.textMuted }]}>
                     {metric.description}
-                  </Text>
-                )}
-              </View>
+                </Text>
+            )}
+          </View>
               <View style={styles.metricValue}>
                 <Text style={[styles.metricValueText, { color: getStatusColor(metric.status) }]}>
                   {getStatusIcon(metric.status)} {metric.value}
@@ -406,9 +406,9 @@ export default function PerformanceDashboard() {
                       {metric.unit}
                     </Text>
                   )}
-                </Text>
-              </View>
-            </View>
+        </Text>
+      </View>
+    </View>
           ))}
 
           {section.actions && (
@@ -416,7 +416,7 @@ export default function PerformanceDashboard() {
               {section.actions.map((action, actionIndex) => (
                 <TouchableOpacity
                   key={actionIndex}
-                  style={[
+                style={[
                     styles.actionButton,
                     {
                       backgroundColor: action.type === 'primary' 
@@ -440,8 +440,8 @@ export default function PerformanceDashboard() {
                   </Text>
                 </TouchableOpacity>
               ))}
-            </View>
-          )}
+        </View>
+      )}
         </View>
       ))}
     </ScrollView>
