@@ -49,7 +49,7 @@ import { useGamification } from './GamificationContext';
 import { useSubscription } from './SubscriptionContext';
 import { useError } from './ErrorContext';
 import { ErrorType } from '@/utils/errorHandler';
-import { getLocalDateString, isToday } from '@/utils/timezone';
+import { getLocalDateString, isToday, timezoneManager } from '@/utils/timezone';
 
 
 type HabitContextType = {
@@ -153,7 +153,13 @@ export function HabitProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     // Only load data if auth is not loading
     if (user?.id) {
-      loadHabits();
+      // Initialize timezone manager first
+      timezoneManager.initialize().then(() => {
+        loadHabits();
+      }).catch(error => {
+        console.error('Failed to initialize timezone manager:', error);
+        loadHabits(); // Still load habits even if timezone fails
+      });
     }
   }, [user?.id]); // Reload habits when user ID changes
 
@@ -168,12 +174,19 @@ export function HabitProvider({ children }: { children: ReactNode }) {
       if (!isMounted) return; // Prevent state updates if component unmounted
       
       try {
+        // Ensure timezone manager is initialized
+        await timezoneManager.initialize();
+        
         const now = new Date();
         const today = getLocalDateString(now);
         
         const dateKey = user ? `lastCheckDate_${user.id}` : 'lastCheckDate_anonymous';
         const lastDate = await AsyncStorage.getItem(dateKey);
+        
+        console.log('🔍 Date check:', { today, lastDate, shouldReset: lastDate !== today });
+        
         if (lastDate !== today && isMounted) {
+          console.log('🔄 Resetting completedToday flags for new date');
           await resetCompletedToday();
           await AsyncStorage.setItem(dateKey, today);
         }
@@ -183,7 +196,7 @@ export function HabitProvider({ children }: { children: ReactNode }) {
     };
     
     checkDate();
-    const interval = setInterval(checkDate, 60000);
+    const interval = setInterval(checkDate, 60000); // Check every minute
     
     return () => {
       isMounted = false;
@@ -196,6 +209,9 @@ export function HabitProvider({ children }: { children: ReactNode }) {
       // Use user-specific storage key
       const storageKey = user ? `habits_${user.id}` : 'habits_anonymous';
       const storedHabits = await AsyncStorage.getItem(storageKey);
+      
+      console.log('📂 Loading habits from storage:', { storageKey, hasData: !!storedHabits });
+      
       if (storedHabits) {
         const parsedHabits = JSON.parse(storedHabits);
         
@@ -205,8 +221,14 @@ export function HabitProvider({ children }: { children: ReactNode }) {
           order: habit.order !== undefined ? habit.order : index
         }));
         
+        console.log('📋 Loaded habits:', { 
+          count: habitsWithOrder.length,
+          completedTodayCount: habitsWithOrder.filter((h: any) => h.completedToday).length
+        });
+        
         setHabits(habitsWithOrder);
       } else {
+        console.log('📭 No habits found in storage');
         setHabits([]);
       }
     } catch (error) {
@@ -224,7 +246,14 @@ export function HabitProvider({ children }: { children: ReactNode }) {
     try {
       // Use user-specific storage key
       const storageKey = user ? `habits_${user.id}` : 'habits_anonymous';
-      await AsyncStorage.setItem(storageKey, JSON.stringify(updatedHabits));
+      const habitsData = JSON.stringify(updatedHabits);
+      await AsyncStorage.setItem(storageKey, habitsData);
+      
+      console.log('💾 Habits saved successfully:', { 
+        storageKey, 
+        habitCount: updatedHabits.length,
+        completedTodayCount: updatedHabits.filter(h => h.completedToday).length
+      });
     } catch (error) {
       console.error('Failed to save habits:', error);
       showError(error as Error, {
@@ -391,9 +420,14 @@ export function HabitProvider({ children }: { children: ReactNode }) {
     if (!habits) return;
     
     try {
+      // Ensure timezone manager is initialized
+      await timezoneManager.initialize();
+      
       const now = new Date();
       const today = getLocalDateString(now);
       const currentTime = `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}`;
+      
+      console.log('🔄 Toggling habit completion:', { id, today, currentTime });
       
       // Add post-mood tracking function
       const schedulePostMoodCheck = (habitId: string, completionTime: string) => {
@@ -480,6 +514,15 @@ export function HabitProvider({ children }: { children: ReactNode }) {
       
       setHabits(updatedHabits);
       await saveHabits(updatedHabits);
+      
+      // Debug logging in development
+      if (__DEV__) {
+        console.log('🔄 Habit completion toggled:', {
+          habitId: id,
+          isCompleted: updatedHabits.find(h => h.id === id)?.completedToday,
+          totalCompleted: updatedHabits.filter(h => h.completedToday).length
+        });
+      }
       
       // Schedule post-mood check if habit was completed
       const completedHabit = updatedHabits.find(h => h.id === id);
@@ -2275,6 +2318,55 @@ export function HabitProvider({ children }: { children: ReactNode }) {
         getPersonalizedCoachingData,
         triggerSmartNotifications
       };
+
+      // Debug function to check habit state
+      const debugHabitState = async () => {
+        try {
+          const storageKey = user ? `habits_${user.id}` : 'habits_anonymous';
+          const storedHabits = await AsyncStorage.getItem(storageKey);
+          const now = new Date();
+          const today = getLocalDateString(now);
+          
+          console.log('🔍 DEBUG - Current habit state:', {
+            storageKey,
+            today,
+            currentTime: now.toISOString(),
+            hasStoredData: !!storedHabits,
+            currentHabitsCount: habits?.length || 0,
+            currentCompletedCount: habits?.filter(h => h.completedToday).length || 0
+          });
+          
+          if (storedHabits) {
+            const parsedHabits = JSON.parse(storedHabits);
+            console.log('🔍 DEBUG - Stored habits:', {
+              storedCount: parsedHabits.length,
+              storedCompletedCount: parsedHabits.filter((h: any) => h.completedToday).length,
+              storedHabits: parsedHabits.map((h: any) => ({
+                id: h.id,
+                title: h.title,
+                completedToday: h.completedToday,
+                completedDates: h.completedDates
+              }))
+            });
+          }
+        } catch (error) {
+          console.error('Debug error:', error);
+        }
+      };
+
+      // Force reload habits from storage (for debugging)
+      const forceReloadHabits = async () => {
+        console.log('🔄 Force reloading habits from storage...');
+        await loadHabits();
+      };
+
+      // Export debug functions for development
+      useEffect(() => {
+        if (__DEV__) {
+          (global as any).debugHabitState = debugHabitState;
+          (global as any).forceReloadHabits = forceReloadHabits;
+        }
+      }, [habits, user?.id]);
 
       return (
         <HabitContext.Provider value={value}>
