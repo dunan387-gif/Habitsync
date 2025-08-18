@@ -4,6 +4,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useTheme } from '@/context/ThemeContext';
 import { useLanguage } from '@/context/LanguageContext';
 import { useGamification } from '@/context/GamificationContext';
+import { useAuth } from '@/context/AuthContext';
 import { Heart, X, Calendar } from 'lucide-react-native';
 import { useRouter } from 'expo-router';
 
@@ -15,6 +16,7 @@ export default function DailyMoodReminder({ children }: DailyMoodReminderProps) 
   const { currentTheme } = useTheme();
   const { t } = useLanguage();
   const { getTodaysMoodEntry } = useGamification();
+  const { user } = useAuth();
   const router = useRouter();
   const [showMoodReminder, setShowMoodReminder] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
@@ -24,12 +26,31 @@ export default function DailyMoodReminder({ children }: DailyMoodReminderProps) 
   useEffect(() => {
     checkDailyMoodReminder();
   }, []);
+
+  // Check mood reminder whenever the user logs a mood
+  useEffect(() => {
+    const todaysMoodEntry = getTodaysMoodEntry();
+    if (todaysMoodEntry && showMoodReminder) {
+      // User logged a mood, hide the reminder
+      console.log('✅ User logged mood - hiding reminder');
+      setShowMoodReminder(false);
+    }
+  }, [getTodaysMoodEntry, showMoodReminder]);
   
   const checkDailyMoodReminder = async () => {
     try {
       const today = new Date().toISOString().split('T')[0];
-      const lastReminderDate = await AsyncStorage.getItem('lastMoodReminderDate');
+      // Use user-specific storage key to prevent conflicts
+      const reminderKey = user ? `lastMoodReminderDate_${user.id}` : 'lastMoodReminderDate_anonymous';
+      const lastReminderDate = await AsyncStorage.getItem(reminderKey);
       const todaysMoodEntry = getTodaysMoodEntry();
+      
+      console.log('🔍 Checking mood reminder:', { 
+        today, 
+        lastReminderDate, 
+        hasMoodEntry: !!todaysMoodEntry,
+        reminderKey
+      });
       
       // Show reminder if:
       // 1. Haven't shown reminder today
@@ -39,9 +60,12 @@ export default function DailyMoodReminder({ children }: DailyMoodReminderProps) 
         lastReminderDate !== today && 
         !todaysMoodEntry;
       
+      console.log('📅 Mood reminder should show:', shouldShowReminder);
+      
       if (shouldShowReminder) {
+        console.log('🎯 Showing mood reminder');
         setShowMoodReminder(true);
-        await AsyncStorage.setItem('lastMoodReminderDate', today);
+        await AsyncStorage.setItem(reminderKey, today);
       }
     } catch (error) {
       console.error('Error checking daily mood reminder:', error);
@@ -56,10 +80,9 @@ export default function DailyMoodReminder({ children }: DailyMoodReminderProps) 
     if (action === 'checkin') {
       router.push('/(tabs)/gamification');
     } else if (action === 'later') {
-      // Set a reminder to show again in a few hours
-      setTimeout(() => {
-        setShowMoodReminder(true);
-      }, 4 * 60 * 60 * 1000); // 4 hours
+      // Don't show the reminder again today - just dismiss it
+      // The reminder will show again tomorrow when checkDailyMoodReminder runs
+      console.log('⏰ Mood reminder dismissed - will show again tomorrow');
     }
   };
   

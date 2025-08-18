@@ -18,7 +18,7 @@ const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
 export function ThemeProvider({ children }: { children: ReactNode }) {
   const { user } = useAuth();
-  const { currentTier } = useSubscription();
+  const { currentTier, isUpgradeTestingEnabled } = useSubscription();
   const [currentTheme, setCurrentTheme] = useState<Theme>(LIGHT_THEME);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -64,7 +64,8 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
 
 
       // Check if theme requires premium using subscription context
-      if (theme.isPremium && currentTier !== 'pro') {
+      // For closed testing, allow all themes
+      if (theme.isPremium && currentTier !== 'pro' && isUpgradeTestingEnabled) {
         throw new Error('This theme requires premium subscription');
       }
 

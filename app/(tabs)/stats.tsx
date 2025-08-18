@@ -48,7 +48,8 @@ export default function StatsScreen() {
     canUsePerformanceAlerts, 
     canUsePatternInsights,
     canUseMoodHabitCorrelations,
-    showUpgradePrompt 
+    showUpgradePrompt,
+    isUpgradeTestingEnabled
   } = useSubscription();
 
   const [selectedAnalyticsTab, setSelectedAnalyticsTab] = useState<AnalyticsTab>('overview');
@@ -1045,7 +1046,7 @@ export default function StatsScreen() {
             </View>
 
             {/* Advanced Analytics Dashboard - Only show for Pro users */}
-            {canAccessAnalytics(365) ? (
+            {(!isUpgradeTestingEnabled || canAccessAnalytics(365)) ? (
               <View style={styles.advancedAnalyticsContainer}>
                 <View style={styles.advancedAnalyticsHeader}>
                   <Text style={styles.sectionTitle}>🤖 {t('stats.advanced.title')}</Text>
@@ -1080,7 +1081,7 @@ export default function StatsScreen() {
           <View style={styles.moodContainer}>
             <Text style={styles.sectionTitle}>😊 {t('stats.mood.title')}</Text>
             <Text style={styles.sectionSubtitle}>{t('stats.mood.subtitle')}</Text>
-            {canUseMoodHabitCorrelations() ? (
+            {(!isUpgradeTestingEnabled || canUseMoodHabitCorrelations()) ? (
               <MoodHabitDashboard />
             ) : (
               <View style={styles.upgradeContainer}>
@@ -1402,6 +1403,12 @@ export default function StatsScreen() {
   };
 
   const handleAnalyticsTabChange = (tab: AnalyticsTab) => {
+    // For closed testing, allow access to all tabs
+    if (!isUpgradeTestingEnabled) {
+      setSelectedAnalyticsTab(tab);
+      return;
+    }
+    
     // Check if user can access advanced analytics
     if (tab === 'wellness' && !canUseWellnessIntegration()) {
       showUpgradePrompt('wellness_integration');

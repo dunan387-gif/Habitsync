@@ -1,12 +1,12 @@
 {
   "expo": {
-    "name": "HabitSync Productivity",
-    "slug": "habitsync-productivity",
+      "name": "HabitSncer Productivity",
+  "slug": "habitsncer-productivity",
     "version": "1.0.0",
     "description": "Sync your habits, sync your life. Transform your daily routines with powerful habit tracking, gamification, and AI-powered insights. Build lasting habits with streaks, achievements, and personalized motivation.",
     "orientation": "portrait",
     "icon": "./assets/images/habit-tracker-icon-1024.png",
-    "scheme": "habitsync",
+    "scheme": "habitsncer",
     "userInterfaceStyle": "automatic",
     "primaryColor": "#4F46E5",
     "splash": {
@@ -16,11 +16,11 @@
     },
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.sabbir404.habitsyncproductivity",
+      "bundleIdentifier": "com.sabbir404.habitsncerproductivity",
       "buildNumber": "1",
       "icon": "./assets/images/habit-tracker-icon-1024.png",
       "infoPlist": {
-        "NSUserNotificationsUsageDescription": "HabitSync uses notifications to remind you about your daily habits and celebrate your achievements."
+        "NSUserNotificationsUsageDescription": "HabitSncer uses notifications to remind you about your daily habits and celebrate your achievements."
       }
     },
     "android": {
@@ -30,7 +30,7 @@
         "monochromeImage": "./assets/images/habit-tracker-icon-96.png"
       },
       "icon": "./assets/images/habit-tracker-icon-1024.png",
-      "package": "com.sabbir404.habitsyncproductivity",
+              "package": "com.sabbir404.habitsncerproductivity",
       "versionCode": 1,
       "permissions": [
         "NOTIFICATIONS",
@@ -48,7 +48,7 @@
       "largeHeap": true,
       "hardwareAccelerated": true,
       "usesCleartextTraffic": false,
-      "backupAgent": "com.sabbir404.habitsyncproductivity.BackupAgent"
+              "backupAgent": "com.sabbir404.habitsncerproductivity.BackupAgent"
     },
     "web": {
       "bundler": "metro",

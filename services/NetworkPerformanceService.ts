@@ -137,7 +137,7 @@ class NetworkPerformanceService {
 
   private initializeConnectionPools(): void {
     const commonHosts = [
-      'api.habitsync.com',
+      'api.habitsncer.com',
       'firebase.googleapis.com',
       'supabase.co',
     ];

@@ -14,7 +14,7 @@ interface PatternInsightsProps {
 export default function PatternInsights({ moodData, habitData }: PatternInsightsProps) {
   const { t } = useLanguage();
   const { currentTheme } = useTheme();
-  const { canUsePatternInsights, showUpgradePrompt } = useSubscription();
+  const { canUsePatternInsights, showUpgradePrompt, isUpgradeTestingEnabled } = useSubscription();
   
   // Safety check for currentTheme
   if (!currentTheme || !currentTheme.colors) {
@@ -28,7 +28,8 @@ export default function PatternInsights({ moodData, habitData }: PatternInsights
   const styles = createStyles(currentTheme.colors);
 
   // Check if user can access pattern insights
-  if (!canUsePatternInsights()) {
+  // For closed testing, allow all features
+  if (isUpgradeTestingEnabled && !canUsePatternInsights()) {
     return (
       <View style={styles.upgradeContainer}>
         <Crown size={48} color={currentTheme.colors.primary} />

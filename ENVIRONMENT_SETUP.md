@@ -13,7 +13,7 @@ EXPO_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key_here
 EXPO_PUBLIC_GOOGLE_PAY_MERCHANT_ID=your_google_pay_merchant_id_here
 
 # App Configuration
-EXPO_PUBLIC_APP_NAME=HabitSync
+EXPO_PUBLIC_APP_NAME=HabitSncer
 EXPO_PUBLIC_APP_VERSION=1.0.0
 
 # Feature Flags

@@ -17,7 +17,7 @@ type ThemeSelectorProps = {
 export default function ThemeSelector({ visible, onClose }: ThemeSelectorProps) {
   const { currentTheme, setTheme, availableThemes } = useTheme();
   const { t } = useLanguage();
-  const { canUseTheme, showUpgradePrompt, upgradeToPro } = useSubscription();
+  const { canUseTheme, showUpgradePrompt, upgradeToPro, isUpgradeTestingEnabled } = useSubscription();
   const [isChangingTheme, setIsChangingTheme] = useState(false);
   const [showUpgradeModal, setShowUpgradeModal] = useState(false);
   const [isUpgrading, setIsUpgrading] = useState(false);
@@ -27,7 +27,8 @@ export default function ThemeSelector({ visible, onClose }: ThemeSelectorProps) 
 
     
     // Check if user can use this theme
-    if (!canUseTheme(theme.id)) {
+    // For closed testing, allow all themes
+    if (isUpgradeTestingEnabled && !canUseTheme(theme.id)) {
       
       setShowUpgradeModal(true);
       return;

@@ -21,7 +21,7 @@ interface WellnessIntegrationDashboardProps {
 export default function WellnessIntegrationDashboard({ moodData }: WellnessIntegrationDashboardProps) {
   const { currentTheme } = useTheme();
   const { t } = useLanguage();
-  const { canUseWellnessIntegration, showUpgradePrompt } = useSubscription();
+  const { canUseWellnessIntegration, showUpgradePrompt, isUpgradeTestingEnabled } = useSubscription();
   
   // Safety check for currentTheme
   if (!currentTheme || !currentTheme.colors) {
@@ -46,7 +46,8 @@ export default function WellnessIntegrationDashboard({ moodData }: WellnessInteg
   const styles = createStyles(currentTheme.colors);
 
   // Check if user can access wellness integration
-  if (!canUseWellnessIntegration()) {
+  // For closed testing, allow all features
+  if (isUpgradeTestingEnabled && !canUseWellnessIntegration()) {
     return (
       <View style={styles.upgradeContainer}>
         <Crown size={48} color={currentTheme.colors.primary} />

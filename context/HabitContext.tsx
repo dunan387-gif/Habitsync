@@ -185,9 +185,14 @@ export function HabitProvider({ children }: { children: ReactNode }) {
         
         console.log('🔍 Date check:', { today, lastDate, shouldReset: lastDate !== today });
         
-        if (lastDate !== today && isMounted) {
+        // Only reset if it's actually a new day AND we have a last date stored
+        if (lastDate && lastDate !== today && isMounted) {
           console.log('🔄 Resetting completedToday flags for new date');
           await resetCompletedToday();
+          await AsyncStorage.setItem(dateKey, today);
+        } else if (!lastDate && isMounted) {
+          // First time running - just store today's date without resetting
+          console.log('📅 First time date check - storing today\'s date');
           await AsyncStorage.setItem(dateKey, today);
         }
       } catch (error) {
@@ -196,7 +201,8 @@ export function HabitProvider({ children }: { children: ReactNode }) {
     };
     
     checkDate();
-    const interval = setInterval(checkDate, 60000); // Check every minute
+    // Check every 5 minutes instead of every minute to reduce frequency
+    const interval = setInterval(checkDate, 5 * 60000);
     
     return () => {
       isMounted = false;

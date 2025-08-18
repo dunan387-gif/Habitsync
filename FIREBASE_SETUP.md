@@ -23,8 +23,8 @@ EXPO_PUBLIC_OFFLINE_MODE=false
 1. **Go to Firebase Console**: https://console.firebase.google.com/
 2. **Create/Select Project**: Choose your project
 3. **Add Android App**: 
-   - Package name: `com.sabbir404.habitsyncproductivity`
-   - App nickname: `HabitSync Android`
+   - Package name: `com.sabbir404.habitsncerproductivity`
+- App nickname: `HabitSncer Android`
 4. **Download google-services.json**: Place in project root
 5. **Get Web Config**: 
    - Go to Project Settings → General → Your Apps

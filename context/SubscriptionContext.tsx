@@ -29,6 +29,9 @@ interface SubscriptionContextType {
   isLoading: boolean;
   isUpgrading: boolean;
   
+  // Testing flag for closed testing
+  isUpgradeTestingEnabled: boolean;
+  
   // Feature access methods
   canAddHabit: (currentHabitCount: number) => boolean;
   canAccessAnalytics: (days: number) => boolean;
@@ -78,7 +81,7 @@ export function SubscriptionProvider({ children }: { children: ReactNode }) {
   // Development flag to enable upgrade system testing
   // Set to true to see upgrade prompts and free tier limitations
   // Set to false to enable all pro features
-  const ENABLE_UPGRADE_TESTING = true; // Set to true to test upgrade prompts
+  const ENABLE_UPGRADE_TESTING = false; // Set to false for closed testing - all features free
   
   const [currentTier, setCurrentTier] = useState<string>('free'); // Will be updated when subscription data loads
   const [subscriptionStatus, setSubscriptionStatus] = useState<SubscriptionStatus | null>(null);
@@ -119,6 +122,11 @@ export function SubscriptionProvider({ children }: { children: ReactNode }) {
 
   // User-friendly default reminder system - show alert after 24 hours for free users
   useEffect(() => {
+    // Skip upgrade reminders during closed testing
+    if (!ENABLE_UPGRADE_TESTING) {
+      return;
+    }
+    
     if (currentTier === 'free' && !isLoading) {
       const checkDefaultReminder = async () => {
         try {
@@ -470,6 +478,11 @@ export function SubscriptionProvider({ children }: { children: ReactNode }) {
 
   // Feature access methods
   const canAddHabit = useCallback((currentHabitCount: number): boolean => {
+    // For closed testing, allow unlimited habits
+    if (!ENABLE_UPGRADE_TESTING) {
+      return true;
+    }
+    
     const limit = getFeatureLimit('habits', currentTier);
     const canAdd = limit === -1 || currentHabitCount < limit;
     
@@ -486,11 +499,21 @@ export function SubscriptionProvider({ children }: { children: ReactNode }) {
   }, [currentTier]);
 
   const canAccessAnalytics = useCallback((days: number): boolean => {
+    // For closed testing, allow all analytics
+    if (!ENABLE_UPGRADE_TESTING) {
+      return true;
+    }
+    
     const limit = getFeatureLimit('analyticsDays', currentTier);
     return limit === -1 || days <= limit;
   }, [currentTier]);
 
   const canAccessTimeframe = useCallback((timeframe: string): boolean => {
+    // For closed testing, allow all timeframes
+    if (!ENABLE_UPGRADE_TESTING) {
+      return true;
+    }
+    
     // Free users can only access week timeframe (7 days)
     if (currentTier === 'free') {
       return timeframe === 'week';
@@ -501,11 +524,21 @@ export function SubscriptionProvider({ children }: { children: ReactNode }) {
   }, [currentTier]);
 
   const canUseAI = useCallback((currentUsageThisWeek: number): boolean => {
+    // For closed testing, allow unlimited AI usage
+    if (!ENABLE_UPGRADE_TESTING) {
+      return true;
+    }
+    
     const limit = getFeatureLimit('aiSuggestionsPerWeek', currentTier);
     return limit === -1 || currentUsageThisWeek < limit;
   }, [currentTier]);
 
   const canUseTheme = useCallback((themeId: string): boolean => {
+    // For closed testing, allow all themes
+    if (!ENABLE_UPGRADE_TESTING) {
+      return true;
+    }
+    
     const tier = getTierById(currentTier);
     if (!tier) return false;
     
@@ -519,31 +552,66 @@ export function SubscriptionProvider({ children }: { children: ReactNode }) {
   }, [currentTier]);
 
   const canUseReminders = useCallback((currentReminders: number): boolean => {
+    // For closed testing, allow unlimited reminders
+    if (!ENABLE_UPGRADE_TESTING) {
+      return true;
+    }
+    
     const limit = getFeatureLimit('remindersPerHabit', currentTier);
     return limit === -1 || currentReminders < limit;
   }, [currentTier]);
 
   const canUseSocialFeatures = useCallback((): boolean => {
+    // For closed testing, allow all social features
+    if (!ENABLE_UPGRADE_TESTING) {
+      return true;
+    }
+    
     return isFeatureAvailable('socialFeatures', currentTier);
   }, [currentTier]);
 
   const canExportData = useCallback((): boolean => {
+    // For closed testing, allow data export
+    if (!ENABLE_UPGRADE_TESTING) {
+      return true;
+    }
+    
     return isFeatureAvailable('dataExport', currentTier);
   }, [currentTier]);
 
   const canUseWellnessIntegration = useCallback((): boolean => {
+    // For closed testing, allow wellness integration
+    if (!ENABLE_UPGRADE_TESTING) {
+      return true;
+    }
+    
     return isFeatureAvailable('wellnessIntegration', currentTier);
   }, [currentTier]);
 
   const canUsePerformanceAlerts = useCallback((): boolean => {
+    // For closed testing, allow performance alerts
+    if (!ENABLE_UPGRADE_TESTING) {
+      return true;
+    }
+    
     return isFeatureAvailable('performanceAlerts', currentTier);
   }, [currentTier]);
 
   const canUsePatternInsights = useCallback((): boolean => {
+    // For closed testing, allow pattern insights
+    if (!ENABLE_UPGRADE_TESTING) {
+      return true;
+    }
+    
     return isFeatureAvailable('patternInsights', currentTier);
   }, [currentTier]);
 
   const canUseMoodHabitCorrelations = useCallback((): boolean => {
+    // For closed testing, allow mood-habit correlations
+    if (!ENABLE_UPGRADE_TESTING) {
+      return true;
+    }
+    
     return isFeatureAvailable('moodHabitCorrelations', currentTier);
   }, [currentTier]);
 
@@ -632,6 +700,10 @@ export function SubscriptionProvider({ children }: { children: ReactNode }) {
   };
 
   const showUpgradeAlert = useCallback((title: string, message: string, type: 'default' | 'habit_limit' | 'analytics_limit' | 'ai_limit' | 'onboarding' | 'courses' = 'default') => {
+    // Skip upgrade alerts during closed testing
+    if (!ENABLE_UPGRADE_TESTING) {
+      return;
+    }
 
     
     const getFeatureList = (alertType: string) => {
@@ -723,6 +795,10 @@ export function SubscriptionProvider({ children }: { children: ReactNode }) {
 
   // Upgrade prompt system
   const showUpgradePrompt = useCallback((trigger: UpgradePrompt['trigger']) => {
+    // Skip upgrade prompts during closed testing
+    if (!ENABLE_UPGRADE_TESTING) {
+      return;
+    }
 
     
     if (currentTier === 'free') {
@@ -881,6 +957,7 @@ export function SubscriptionProvider({ children }: { children: ReactNode }) {
     subscriptionStatus,
     isLoading,
     isUpgrading,
+    isUpgradeTestingEnabled: ENABLE_UPGRADE_TESTING,
     canAddHabit,
     canAccessAnalytics,
     canAccessTimeframe,
@@ -893,8 +970,20 @@ export function SubscriptionProvider({ children }: { children: ReactNode }) {
     canUsePerformanceAlerts,
     canUsePatternInsights,
     canUseMoodHabitCorrelations,
-    isFeatureAvailable: (feature) => isFeatureAvailable(feature, currentTier),
-    getFeatureLimit: (feature) => getFeatureLimit(feature, currentTier),
+    isFeatureAvailable: (feature) => {
+      // For closed testing, all features are available
+      if (!ENABLE_UPGRADE_TESTING) {
+        return true;
+      }
+      return isFeatureAvailable(feature, currentTier);
+    },
+    getFeatureLimit: (feature) => {
+      // For closed testing, all limits are unlimited
+      if (!ENABLE_UPGRADE_TESTING) {
+        return -1;
+      }
+      return getFeatureLimit(feature, currentTier);
+    },
     upgradeToPro,
     downgradeToFree,
     restorePurchases,
@@ -927,6 +1016,7 @@ export function useSubscription() {
       subscriptionStatus: null,
       isLoading: true,
       isUpgrading: false,
+      isUpgradeTestingEnabled: false,
       canAddHabit: () => true,
       canAccessAnalytics: () => true,
       canAccessTimeframe: () => true,

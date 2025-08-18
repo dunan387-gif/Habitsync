@@ -3179,15 +3179,15 @@
   },
   "onboarding": {
     "welcome": {
-      "title": "Bienvenido a HabitSync",
+              "title": "Bienvenido a HabitSncer",
       "subtitle": "Tu rastreador de hábitos y compañero de estado de ánimo con IA. Construye mejores hábitos, rastrea tu bienestar y descubre patrones que llevan al éxito.",
       "feature1": "Sugerencias de hábitos con IA",
       "feature2": "Seguimiento avanzado del estado de ánimo",
       "feature3": "Insights personalizados"
     },
     "appOverview": {
-      "title": "Qué hace especial a HabitSync",
-      "subtitle": "Descubre las funciones únicas que distinguen a HabitSync de otros rastreadores de hábitos.",
+              "title": "Qué hace especial a HabitSncer",
+        "subtitle": "Descubre las funciones únicas que distinguen a HabitSncer de otros rastreadores de hábitos.",
       "feature1": "Sugerencias de hábitos y coaching con IA",
       "feature2": "Seguimiento avanzado del estado de ánimo con correlaciones",
       "feature3": "Múltiples recordatorios y notificaciones inteligentes",
@@ -3219,7 +3219,7 @@
     },
     "getStartedStep": {
       "title": "¿Listo para Transformar tu Vida?",
-      "subtitle": "Únete a miles de usuarios que ya han mejorado sus hábitos y bienestar con HabitSync.",
+              "subtitle": "Únete a miles de usuarios que ya han mejorado sus hábitos y bienestar con HabitSncer.",
       "feature1": "Crea tu primer hábito en segundos",
       "feature2": "Configura el seguimiento personalizado del estado de ánimo",
       "feature3": "Comienza tu viaje de bienestar con IA"
@@ -3231,7 +3231,7 @@
     "proFeature": "Función Pro",
     "upgrade": "Actualizar a Pro",
     "upgradeNow": "Actualizar Ahora",
-    "description": "HabitSync es tu rastreador de hábitos y compañero de estado de ánimo con IA. Construye mejores hábitos, rastrea tu viaje de bienestar y descubre patrones que llevan al éxito duradero con insights personalizados y coaching.",
+            "description": "HabitSncer es tu rastreador de hábitos y compañero de estado de ánimo con IA. Construye mejores hábitos, rastrea tu viaje de bienestar y descubre patrones que llevan al éxito duradero con insights personalizados y coaching.",
     "features": {
       "trackMoods": "Registra tus estados de ánimo",
       "buildHabits": "Crea hábitos saludables",
@@ -3615,7 +3615,7 @@
     "alreadyPro": "Ya Eres Pro",
     "alreadyProMessage": "¡Ya estás suscrito a Pro!",
     "upgradeSuccessful": "¡Actualización Exitosa!",
-    "upgradeSuccessfulMessage": "¡Bienvenido a HabitSync Pro! Ahora tienes acceso a todas las funciones premium.",
+            "upgradeSuccessfulMessage": "¡Bienvenido a HabitSncer Pro! Ahora tienes acceso a todas las funciones premium.",
     "upgradeFailed": "Error de Actualización",
     "upgradeFailedMessage": "Hubo un error al procesar tu actualización. Por favor, inténtalo de nuevo.",
     "enterPremiumKey": "Ingresar Clave Premium",
@@ -3723,7 +3723,7 @@
     "save": "Ahorrar",
     "valueProposition": {
       "title": "Transforma Tus Hábitos",
-      "subtitle": "Únete a miles de usuarios que han logrado sus objetivos con HabitSync Pro"
+              "subtitle": "Únete a miles de usuarios que han logrado sus objetivos con HabitSncer Pro"
     },
     "benefits": {
       "title": "¿Por Qué Elegir Pro?",
@@ -4311,10 +4311,10 @@
     "groupDeletedError": "Error al eliminar grupo",
     "onlyLeaderCanDelete": "Solo los líderes del grupo pueden eliminar grupos",
     "shareGroup": "Compartir Grupo",
-    "shareMessage": "¡Únete a mi grupo de estudio \"{groupName}\" en HabitSync! 📚\\n\\n{description}\\n\\nCategoría: {category}\\nMiembros: {currentMembers}/{maxMembers}\\n\\nID del Grupo: {groupId}\\n\\n¡Descarga HabitSync y usa este ID de Grupo para unirte!",
+            "shareMessage": "¡Únete a mi grupo de estudio \"{groupName}\" en HabitSncer! 📚\\n\\n{description}\\n\\nCategoría: {category}\\nMiembros: {currentMembers}/{maxMembers}\\n\\nID del Grupo: {groupId}\\n\\n¡Descarga HabitSncer y usa este ID de Grupo para unirte!",
     "shareTitle": "Unirse al Grupo de Estudio {groupName}",
     "inviteMembers": "Invitar Miembros",
-    "inviteMessage": "¡Estás invitado a unirte al grupo de estudio \"{groupName}\" en HabitSync! 📚\\n\\n{description}\\n\\nCategoría: {category}\\nMiembros actuales: {currentMembers}/{maxMembers}\\n\\nID del Grupo: {groupId}\\n\\n¡Descarga HabitSync y usa este ID de Grupo para unirte!",
+            "inviteMessage": "¡Estás invitado a unirte al grupo de estudio \"{groupName}\" en HabitSncer! 📚\\n\\n{description}\\n\\nCategoría: {category}\\nMiembros actuales: {currentMembers}/{maxMembers}\\n\\nID del Grupo: {groupId}\\n\\n¡Descarga HabitSncer y usa este ID de Grupo para unirte!",
     "inviteTitle": "Invitación a {groupName}",
     "categories": {
       "all": "Todos los Grupos",

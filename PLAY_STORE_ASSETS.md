@@ -23,20 +23,20 @@ Create screenshots for these screen sizes:
 
 ### **Feature Graphic**
 - **Size**: 1024x500 pixels
-- **Content**: App name "HabitSync Productivity" with key features
+- **Content**: App name "HabitSncer Productivity" with key features
 - **Style**: Modern, clean design with app colors (#4F46E5)
 
 ## 📝 **Store Listing Content**
 
 ### **App Title**
-"HabitSync Productivity - Habit Tracker & Mood Journal"
+"HabitSncer Productivity - Habit Tracker & Mood Journal"
 
 ### **Short Description** (80 characters max)
 "Build lasting habits with AI-powered insights and mood tracking"
 
 ### **Full Description**
 ```
-Transform your daily routines with HabitSync Productivity, the comprehensive habit tracking app that combines powerful analytics with mood integration and AI-powered insights.
+Transform your daily routines with HabitSncer Productivity, the comprehensive habit tracking app that combines powerful analytics with mood integration and AI-powered insights.
 
 🎯 CORE FEATURES:
 • Create and track unlimited habits with streak counting
@@ -81,7 +81,7 @@ Transform your daily routines with HabitSync Productivity, the comprehensive hab
 • Offline functionality
 • Cloud backup and restore
 
-Start your journey to better habits today with HabitSync Productivity!
+Start your journey to better habits today with HabitSncer Productivity!
 
 Free to start with premium features available.
 ```
