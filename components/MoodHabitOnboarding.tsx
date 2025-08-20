@@ -24,6 +24,7 @@ export default function MoodHabitOnboarding({ children }: MoodHabitOnboardingPro
   const { user, clearGuestUser, markOnboardingCompleted } = useAuth();
   const [showOnboarding, setShowOnboarding] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [hasCheckedOnboarding, setHasCheckedOnboarding] = useState(false);
   
   const styles = createStyles(currentTheme.colors);
   
@@ -31,10 +32,15 @@ export default function MoodHabitOnboarding({ children }: MoodHabitOnboardingPro
     console.log('🔄 MoodHabitOnboarding useEffect triggered:', {
       userId: user?.id,
       onboardingCompleted: user?.onboardingCompleted,
-      hasUser: !!user
+      hasUser: !!user,
+      hasChecked: hasCheckedOnboarding
     });
-    checkOnboardingStatus();
-  }, [user?.id, user?.onboardingCompleted]);
+    
+    // Only check if we haven't already checked for this user
+    if (!hasCheckedOnboarding && user?.id) {
+      checkOnboardingStatus();
+    }
+  }, [user?.id, hasCheckedOnboarding]); // Removed user?.onboardingCompleted to prevent infinite loops
   
   const checkOnboardingStatus = async () => {
     try {
@@ -47,10 +53,12 @@ export default function MoodHabitOnboarding({ children }: MoodHabitOnboardingPro
         // No user - don't show onboarding (will be handled by auth flow)
         console.log('❌ No user found, not showing onboarding');
         setShowOnboarding(false);
+        setHasCheckedOnboarding(true); // Mark as checked
       } else if (user.id.startsWith('guest-') || user.id === 'anonymous') {
         // Guest or anonymous users - don't show onboarding
         console.log('👻 Guest/anonymous user, not showing onboarding');
         setShowOnboarding(false);
+        setHasCheckedOnboarding(true); // Mark as checked
       } else {
         // Authenticated user - check both user object and AsyncStorage
         let shouldShowOnboarding = !user.onboardingCompleted;
@@ -63,7 +71,9 @@ export default function MoodHabitOnboarding({ children }: MoodHabitOnboardingPro
           if (storedUserData) {
             const parsedUserData = JSON.parse(storedUserData);
             console.log('📱 Stored user data onboarding status:', parsedUserData.onboardingCompleted);
-            shouldShowOnboarding = !parsedUserData.onboardingCompleted;
+            if (parsedUserData.onboardingCompleted === true) {
+              shouldShowOnboarding = false;
+            }
           }
           
           // 2. Check global onboarding key as fallback
@@ -97,6 +107,7 @@ export default function MoodHabitOnboarding({ children }: MoodHabitOnboardingPro
         
         console.log('✅ Authenticated user, showing onboarding:', shouldShowOnboarding);
         setShowOnboarding(shouldShowOnboarding);
+        setHasCheckedOnboarding(true); // Mark as checked to prevent re-checking
       }
       
       // Clean up old global onboarding key if it exists
@@ -177,38 +188,39 @@ export default function MoodHabitOnboarding({ children }: MoodHabitOnboardingPro
     }
   };
 
-  // Function to reset onboarding for testing (can be called from console)
-  const resetOnboarding = async () => {
-    try {
-      if (user && !user.id.startsWith('guest-') && user.id !== 'anonymous') {
-        console.log('🔄 Resetting onboarding for user:', user.email);
-        
-        // For authenticated users, we need to update the user object directly
-        const updatedUser = { ...user, onboardingCompleted: false };
-        
-        // Update in AsyncStorage
-        await AsyncStorage.setItem('userData', JSON.stringify(updatedUser));
-        await AsyncStorage.setItem(`userData_${user.id}`, JSON.stringify(updatedUser));
-        await AsyncStorage.setItem(keys.lastAuthenticatedUser, JSON.stringify(updatedUser));
-        
-        // Update in development cache
-        if (__DEV__) {
-          await AsyncStorage.setItem('dev_last_user', JSON.stringify({
-            ...updatedUser,
-            timestamp: Date.now()
-          }));
+      // Function to reset onboarding for testing (can be called from console)
+    const resetOnboarding = async () => {
+      try {
+        if (user && !user.id.startsWith('guest-') && user.id !== 'anonymous') {
+          console.log('🔄 Resetting onboarding for user:', user.email);
+          
+          // For authenticated users, we need to update the user object directly
+          const updatedUser = { ...user, onboardingCompleted: false };
+          
+          // Update in AsyncStorage
+          await AsyncStorage.setItem('userData', JSON.stringify(updatedUser));
+          await AsyncStorage.setItem(`userData_${user.id}`, JSON.stringify(updatedUser));
+          await AsyncStorage.setItem(keys.lastAuthenticatedUser, JSON.stringify(updatedUser));
+          
+          // Update in development cache
+          if (__DEV__) {
+            await AsyncStorage.setItem('dev_last_user', JSON.stringify({
+              ...updatedUser,
+              timestamp: Date.now()
+            }));
+          }
+          
+          // Reset checked state and force re-check onboarding status
+          setHasCheckedOnboarding(false);
+          setShowOnboarding(true);
+          console.log('✅ Onboarding reset successfully');
+        } else {
+          console.log('❌ Cannot reset onboarding for this user type');
         }
-        
-        // Force re-check onboarding status
-        setShowOnboarding(true);
-        console.log('✅ Onboarding reset successfully');
-      } else {
-        console.log('❌ Cannot reset onboarding for this user type');
+      } catch (error) {
+        console.error('Error resetting onboarding:', error);
       }
-    } catch (error) {
-      console.error('Error resetting onboarding:', error);
-    }
-  };
+    };
 
   // Expose reset function globally for testing
   if (typeof global !== 'undefined') {
@@ -247,8 +259,9 @@ export default function MoodHabitOnboarding({ children }: MoodHabitOnboardingPro
           await AsyncStorage.setItem(keys.lastAuthenticatedUser, JSON.stringify(updatedUser));
           await AsyncStorage.setItem(`onboarding_completed_${user.id}`, 'true');
           
-          // Force hide onboarding
+          // Force hide onboarding and mark as checked
           setShowOnboarding(false);
+          setHasCheckedOnboarding(true);
           
           console.log('✅ Onboarding force completed');
         } catch (error) {
@@ -272,6 +285,13 @@ export default function MoodHabitOnboarding({ children }: MoodHabitOnboardingPro
       } catch (error) {
         console.error('Error debugging Firebase auth:', error);
       }
+    };
+    
+    // Clear checked state for debugging
+    (global as any).clearCheckedState = () => {
+      console.log('🔄 Clearing checked state for debugging');
+      setHasCheckedOnboarding(false);
+      console.log('✅ Checked state cleared');
     };
   }
   
