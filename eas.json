@@ -16,9 +16,9 @@
       "env": {
         "EXPO_PUBLIC_ENVIRONMENT": "development",
         "FIREBASE_API_KEY": "AIzaSyCMTJy32lr_ItKHab895uamktkSV1KiLkY",
-        "FIREBASE_AUTH_DOMAIN": "habitsncer-7b08f.firebaseapp.com",
-        "FIREBASE_PROJECT_ID": "habitsncer-7b08f",
-        "FIREBASE_STORAGE_BUCKET": "habitsncer-7b08f.appspot.com",
+        "FIREBASE_AUTH_DOMAIN": "habitsyncer-7b08f.firebaseapp.com",
+        "FIREBASE_PROJECT_ID": "habitsyncer-7b08f",
+        "FIREBASE_STORAGE_BUCKET": "habitsyncer-7b08f.appspot.com",
         "FIREBASE_MESSAGING_SENDER_ID": "641731906688",
         "FIREBASE_APP_ID": "1:641731906688:web:f90a43606c0b0fd2816a65",
         "FIREBASE_MEASUREMENT_ID": "G-53N0W997QV"
@@ -37,9 +37,9 @@
       "env": {
         "EXPO_PUBLIC_ENVIRONMENT": "preview",
         "FIREBASE_API_KEY": "AIzaSyCMTJy32lr_ItKHab895uamktkSV1KiLkY",
-        "FIREBASE_AUTH_DOMAIN": "habitsncer-7b08f.firebaseapp.com",
-        "FIREBASE_PROJECT_ID": "habitsncer-7b08f",
-        "FIREBASE_STORAGE_BUCKET": "habitsncer-7b08f.appspot.com",
+        "FIREBASE_AUTH_DOMAIN": "habitsyncer-7b08f.firebaseapp.com",
+        "FIREBASE_PROJECT_ID": "habitsyncer-7b08f",
+        "FIREBASE_STORAGE_BUCKET": "habitsyncer-7b08f.appspot.com",
         "FIREBASE_MESSAGING_SENDER_ID": "641731906688",
         "FIREBASE_APP_ID": "1:641731906688:web:f90a43606c0b0fd2816a65",
         "FIREBASE_MEASUREMENT_ID": "G-53N0W997QV"
@@ -56,9 +56,9 @@
       "env": {
         "EXPO_PUBLIC_ENVIRONMENT": "production",
         "FIREBASE_API_KEY": "AIzaSyCMTJy32lr_ItKHab895uamktkSV1KiLkY",
-        "FIREBASE_AUTH_DOMAIN": "habitsncer-7b08f.firebaseapp.com",
-        "FIREBASE_PROJECT_ID": "habitsncer-7b08f",
-        "FIREBASE_STORAGE_BUCKET": "habitsncer-7b08f.appspot.com",
+        "FIREBASE_AUTH_DOMAIN": "habitsyncer-7b08f.firebaseapp.com",
+        "FIREBASE_PROJECT_ID": "habitsyncer-7b08f",
+        "FIREBASE_STORAGE_BUCKET": "habitsyncer-7b08f.appspot.com",
         "FIREBASE_MESSAGING_SENDER_ID": "641731906688",
         "FIREBASE_APP_ID": "1:641731906688:web:f90a43606c0b0fd2816a65",
         "FIREBASE_MEASUREMENT_ID": "G-53N0W997QV"

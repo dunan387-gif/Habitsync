@@ -163,9 +163,13 @@ const OnboardingFlow: React.FC<OnboardingFlowProps> = ({ onComplete }) => {
   };
   
   const handleSkip = () => {
+    console.log('🔄 Skip button pressed');
     // Complete onboarding and navigate to login page
     if (onComplete) {
+      console.log('✅ Calling onComplete with skipped=true');
       onComplete(true); // Pass true to indicate it was skipped
+    } else {
+      console.warn('⚠️ onComplete callback is not provided');
     }
   };
 
@@ -313,23 +317,30 @@ const OnboardingFlow: React.FC<OnboardingFlowProps> = ({ onComplete }) => {
         )}
         
         {currentStep === onboardingSteps.length - 1 ? (
-                            <TouchableOpacity
+          <TouchableOpacity
             style={[styles.primaryButton, { backgroundColor: currentTheme.colors.primary }]}
             onPress={() => {
+              console.log(' Get Started button pressed');
               if (onComplete) {
+                console.log('✅ Calling onComplete with skipped=false');
                 onComplete(false); // Pass false to indicate it was completed normally
+              } else {
+                console.warn('⚠️ onComplete callback is not provided');
               }
             }}
           >
-          <Text style={[styles.primaryButtonText, { color: "#FFFFFF" }]}>
-            {t('onboarding.getStarted')}
-          </Text>
-          <ArrowRight size={20} color="#FFFFFF" />
-        </TouchableOpacity>
+            <Text style={[styles.primaryButtonText, { color: "#FFFFFF" }]}>
+              {t('onboarding.getStarted')}
+            </Text>
+            <ArrowRight size={20} color="#FFFFFF" />
+          </TouchableOpacity>
         ) : (
-        <TouchableOpacity 
+          <TouchableOpacity 
             style={[styles.primaryButton, { backgroundColor: currentTheme.colors.primary }]}
-          onPress={handleNext}
+            onPress={() => {
+              console.log('🔄 Next button pressed, current step:', currentStep);
+              handleNext();
+            }}
           >
             <Text style={[styles.primaryButtonText, { color: "#FFFFFF" }]}>
               {t('onboarding.next')}

@@ -3110,15 +3110,15 @@
   },
   "onboarding": {
     "welcome": {
-              "title": "欢迎使用 HabitSncer",
+              "title": "欢迎使用 HabitSyncer",
       "subtitle": "您的AI驱动习惯追踪器和心情伴侣。养成更好的习惯，追踪您的健康之旅，发现通往成功的规律。",
       "feature1": "AI驱动习惯建议",
       "feature2": "高级心情追踪",
       "feature3": "个性化洞察"
     },
     "appOverview": {
-              "title": "HabitSncer 的独特之处",
-        "subtitle": "发现让 HabitSncer 区别于其他习惯追踪器的独特功能。",
+              "title": "HabitSyncer 的独特之处",
+        "subtitle": "发现让 HabitSyncer 区别于其他习惯追踪器的独特功能。",
       "feature1": "AI驱动习惯建议和指导",
       "feature2": "带相关性的高级心情追踪",
       "feature3": "多重提醒和智能通知",
@@ -3150,7 +3150,7 @@
     },
     "getStartedStep": {
       "title": "准备改变您的生活了吗？",
-              "subtitle": "加入已经通过 HabitSncer 改善习惯和幸福感的数千名用户。",
+              "subtitle": "加入已经通过 HabitSyncer 改善习惯和幸福感的数千名用户。",
       "feature1": "几秒钟内创建您的第一个习惯",
       "feature2": "设置个性化心情追踪",
       "feature3": "开始您的AI驱动健康之旅"
@@ -3162,7 +3162,7 @@
     "proFeature": "专业功能",
     "upgrade": "升级到专业版",
     "upgradeNow": "立即升级",
-            "description": "HabitSncer 是您的AI驱动习惯追踪器和心情伴侣。养成更好的习惯，追踪您的健康之旅，通过个性化洞察和指导发现通往持久成功的规律。",
+            "description": "HabitSyncer 是您的AI驱动习惯追踪器和心情伴侣。养成更好的习惯，追踪您的健康之旅，通过个性化洞察和指导发现通往持久成功的规律。",
     "features": {
       "trackMoods": "记录您的心情",
       "buildHabits": "养成健康习惯",
@@ -3629,7 +3629,7 @@
     "alreadyPro": "已经是专业版",
     "alreadyProMessage": "您已经订阅了专业版！",
     "upgradeSuccessful": "升级成功！",
-            "upgradeSuccessfulMessage": "欢迎使用 HabitSncer 专业版！您现在可以访问所有高级功能。",
+            "upgradeSuccessfulMessage": "欢迎使用 HabitSyncer 专业版！您现在可以访问所有高级功能。",
     "upgradeFailed": "升级失败",
     "upgradeFailedMessage": "处理您的升级时出现错误。请重试。",
     "enterPremiumKey": "输入高级密钥",
@@ -3737,7 +3737,7 @@
     "save": "节省",
     "valueProposition": {
       "title": "改变你的习惯",
-              "subtitle": "加入数千名通过 HabitSncer Pro 实现目标的用户"
+              "subtitle": "加入数千名通过 HabitSyncer Pro 实现目标的用户"
     },
     "benefits": {
       "title": "为什么选择专业版？",
@@ -4321,10 +4321,10 @@
     "groupDeletedError": "删除小组失败",
     "onlyLeaderCanDelete": "只有小组组长可以删除小组",
     "shareGroup": "分享小组",
-            "shareMessage": "加入我在HabitSncer上的学习小组\"{groupName}\"！📚\\n\\n{description}\\n\\n类别：{category}\\n成员：{currentMembers}/{maxMembers}\\n\\n小组ID：{groupId}\\n\\n下载HabitSncer并使用此小组ID加入！",
+            "shareMessage": "加入我在HabitSyncer上的学习小组\"{groupName}\"！📚\\n\\n{description}\\n\\n类别：{category}\\n成员：{currentMembers}/{maxMembers}\\n\\n小组ID：{groupId}\\n\\n下载HabitSyncer并使用此小组ID加入！",
     "shareTitle": "加入{groupName}学习小组",
     "inviteMembers": "邀请成员",
-            "inviteMessage": "您被邀请加入HabitSncer上的学习小组\"{groupName}\"！📚\\n\\n{description}\\n\\n类别：{category}\\n当前成员：{currentMembers}/{maxMembers}\\n\\n小组ID：{groupId}\\n\\n下载HabitSncer并使用此小组ID加入！",
+            "inviteMessage": "您被邀请加入HabitSyncer上的学习小组\"{groupName}\"！📚\\n\\n{description}\\n\\n类别：{category}\\n当前成员：{currentMembers}/{maxMembers}\\n\\n小组ID：{groupId}\\n\\n下载HabitSyncer并使用此小组ID加入！",
     "inviteTitle": "邀请加入{groupName}",
     "categories": {
       "all": "所有小组",

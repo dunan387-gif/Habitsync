@@ -391,11 +391,13 @@ export class AuthService {
 
       // Get user document
       const userDoc = await getDoc(doc(firebaseFirestore!, 'users', user.id));
+      let userData;
       if (!userDoc.exists()) {
-        throw new Error('User document not found');
+        console.log('⚠️ User document not found during export, using current user data');
+        userData = user;
+      } else {
+        userData = userDoc.data();
       }
-
-      const userData = userDoc.data();
 
       // Get user's habits
       const habitsQuery = query(collection(firebaseFirestore!, 'habits'), where('userId', '==', user.id));

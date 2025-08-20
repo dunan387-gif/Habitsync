@@ -20,7 +20,7 @@ export default function AccessibilityExample() {
         accessibilityHint="Contains the main content of the screen"
         accessibilityRole="header"
       >
-        <Text style={styles.title}>Welcome to HabitSncer</Text>
+        <Text style={styles.title}>Welcome to HabitSyncer</Text>
         <Text style={styles.subtitle}>Track your habits, transform your life</Text>
       </AccessibilityWrapper>
 

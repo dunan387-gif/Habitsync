@@ -20,7 +20,7 @@ if (!envExists) {
   console.log('EXPO_PUBLIC_GOOGLE_PAY_MERCHANT_ID=your_google_pay_merchant_id_here');
   console.log('');
   console.log('# App Configuration');
-  console.log('EXPO_PUBLIC_APP_NAME=HabitSncer');
+  console.log('EXPO_PUBLIC_APP_NAME=HabitSyncer');
   console.log('EXPO_PUBLIC_APP_VERSION=1.0.0');
   console.log('');
   console.log('# Feature Flags');

@@ -18,7 +18,7 @@
 ### 1.1 Enable Email/Password Authentication
 
 1. **Go to Firebase Console**: https://console.firebase.google.com
-2. **Select your project**: `habitsncer-7b08f`
+2. **Select your project**: `habitsyncer-7b08f`
 3. **Navigate to Authentication**: Click "Authentication" in the left sidebar
 4. **Go to Sign-in method**: Click the "Sign-in method" tab
 5. **Enable Email/Password**:

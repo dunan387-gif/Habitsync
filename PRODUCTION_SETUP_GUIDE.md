@@ -35,7 +35,7 @@ EXPO_PUBLIC_SUPABASE_ANON_KEY=your-anon-key-here
 EXPO_PUBLIC_GOOGLE_PAY_MERCHANT_ID=your-google-pay-merchant-id
 
 # App Configuration
-EXPO_PUBLIC_APP_NAME=HabitSncer Productivity
+EXPO_PUBLIC_APP_NAME=HabitSyncer Productivity
 EXPO_PUBLIC_APP_VERSION=1.0.0
 
 # Feature Flags

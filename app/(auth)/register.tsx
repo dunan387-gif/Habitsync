@@ -15,6 +15,7 @@ import { useTheme } from '@/context/ThemeContext';
 import { useLanguage } from '@/context/LanguageContext';
 import { Globe } from 'lucide-react-native';
 import LanguageSelector from '@/components/LanguageSelector';
+import { useNetworkOptimization } from '@/hooks/useNetworkOptimization';
 
 export default function RegisterScreen() {
   const [name, setName] = useState('');
@@ -23,10 +24,12 @@ export default function RegisterScreen() {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [showLanguageSelector, setShowLanguageSelector] = useState(false);
+  const [registrationStep, setRegistrationStep] = useState<string>('');
   const { register } = useAuth();
   const { colors } = useTheme();
   const { t } = useLanguage();
   const router = useRouter();
+  const { connectionQuality, isOnline } = useNetworkOptimization();
 
   const handleRegister = async () => {
     if (!name || !email || !password || !confirmPassword) {
@@ -44,14 +47,28 @@ export default function RegisterScreen() {
       return;
     }
 
+    if (!isOnline) {
+      Alert.alert(t('auth.error'), 'No internet connection. Please check your network and try again.');
+      return;
+    }
+
+    if (connectionQuality === 'poor' || connectionQuality === 'offline') {
+      Alert.alert(t('auth.error'), 'Poor network connection detected. Registration may take longer than usual.');
+    }
+
     setIsLoading(true);
     try {
+      setRegistrationStep('Creating account...');
       await register(email, password, name);
+      setRegistrationStep('Setting up your profile...');
+      // Add a small delay to show the step
+      await new Promise(resolve => setTimeout(resolve, 500));
       router.replace('/(tabs)' as any);
     } catch (error: any) {
       Alert.alert(t('auth.registrationFailed'), error?.message || t('auth.errorOccurred'));
     } finally {
       setIsLoading(false);
+      setRegistrationStep('');
     }
   };
 
@@ -120,7 +137,7 @@ export default function RegisterScreen() {
             disabled={isLoading}
           >
             <Text style={styles.buttonText}>
-              {isLoading ? t('auth.creatingAccount') : t('auth.createAccount')}
+              {isLoading ? (registrationStep || t('auth.creatingAccount')) : t('auth.createAccount')}
             </Text>
           </TouchableOpacity>
 

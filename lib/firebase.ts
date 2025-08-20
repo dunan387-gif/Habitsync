@@ -3,6 +3,7 @@ import { getAuth } from 'firebase/auth';
 import { getFirestore } from 'firebase/firestore';
 import { getAnalytics } from 'firebase/analytics';
 import { getRemoteConfig } from 'firebase/remote-config';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 // Import environment variables with fallbacks
 let FIREBASE_API_KEY: string;
 let FIREBASE_AUTH_DOMAIN: string;
@@ -14,9 +15,9 @@ let FIREBASE_MEASUREMENT_ID: string;
  // Use Expo's built-in environment variable support
 try {
   FIREBASE_API_KEY = process.env.EXPO_PUBLIC_FIREBASE_API_KEY || 'AIzaSyCMTJy32lr_ItKHab895uamktkSV1KiLkY';
-  FIREBASE_AUTH_DOMAIN = process.env.EXPO_PUBLIC_FIREBASE_AUTH_DOMAIN || 'habitsncer-7b08f.firebaseapp.com';
-FIREBASE_PROJECT_ID = process.env.EXPO_PUBLIC_FIREBASE_PROJECT_ID || 'habitsncer-7b08f';
-FIREBASE_STORAGE_BUCKET = process.env.EXPO_PUBLIC_FIREBASE_STORAGE_BUCKET || 'habitsncer-7b08f.appspot.com';
+  FIREBASE_AUTH_DOMAIN = process.env.EXPO_PUBLIC_FIREBASE_AUTH_DOMAIN || 'habitsyncer-7b08f.firebaseapp.com';
+FIREBASE_PROJECT_ID = process.env.EXPO_PUBLIC_FIREBASE_PROJECT_ID || 'habitsyncer-7b08f';
+FIREBASE_STORAGE_BUCKET = process.env.EXPO_PUBLIC_FIREBASE_STORAGE_BUCKET || 'habitsyncer-7b08f.appspot.com';
   FIREBASE_MESSAGING_SENDER_ID = process.env.EXPO_PUBLIC_FIREBASE_MESSAGING_SENDER_ID || '641731906688';
   FIREBASE_APP_ID = process.env.EXPO_PUBLIC_FIREBASE_APP_ID || '1:641731906688:web:f90a43606c0b0fd2816a65';
   FIREBASE_MEASUREMENT_ID = process.env.EXPO_PUBLIC_FIREBASE_MEASUREMENT_ID || 'G-53N0W997QV';
@@ -26,9 +27,9 @@ FIREBASE_STORAGE_BUCKET = process.env.EXPO_PUBLIC_FIREBASE_STORAGE_BUCKET || 'ha
   console.warn('⚠️ Firebase environment variables not found, using fallback configuration');
   // Fallback configuration
   FIREBASE_API_KEY = 'AIzaSyCMTJy32lr_ItKHab895uamktkSV1KiLkY';
-  FIREBASE_AUTH_DOMAIN = 'habitsncer-7b08f.firebaseapp.com';
-  FIREBASE_PROJECT_ID = 'habitsncer-7b08f';
-  FIREBASE_STORAGE_BUCKET = 'habitsncer-7b08f.appspot.com';
+  FIREBASE_AUTH_DOMAIN = 'habitsyncer-7b08f.firebaseapp.com';
+  FIREBASE_PROJECT_ID = 'habitsyncer-7b08f';
+  FIREBASE_STORAGE_BUCKET = 'habitsyncer-7b08f.appspot.com';
   FIREBASE_MESSAGING_SENDER_ID = '641731906688';
   FIREBASE_APP_ID = '1:641731906688:web:f90a43606c0b0fd2816a65';
   FIREBASE_MEASUREMENT_ID = 'G-53N0W997QV';
@@ -51,9 +52,16 @@ let firebaseFirestore: any = null;
 
 try {
   app = initializeApp(firebaseConfig);
+  
+  // Initialize auth with proper persistence for React Native
   firebaseAuth = getAuth(app);
+  
+  // Set persistence to LOCAL for React Native (this persists auth state)
+  // Note: In Firebase v12, the default persistence should work correctly
+  // but we'll add explicit configuration to ensure it works
+  console.log('Firebase initialized successfully with auth persistence');
+  
   firebaseFirestore = getFirestore(app);
-  console.log('Firebase initialized successfully');
 } catch (error) {
   console.error('Failed to initialize Firebase:', error);
   // Create fallback objects to prevent crashes

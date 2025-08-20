@@ -3073,15 +3073,15 @@
   },
   "onboarding": {
     "welcome": {
-              "title": "Bienvenue sur HabitSncer",
+              "title": "Bienvenue sur HabitSyncer",
       "subtitle": "Votre tracker d'habitudes et compagnon d'humeur alimenté par l'IA. Créez de meilleures habitudes, suivez votre bien-être et découvrez des schémas qui mènent au succès.",
       "feature1": "Suggestions d'habitudes alimentées par l'IA",
       "feature2": "Suivi avancé de l'humeur",
       "feature3": "Conseils personnalisés"
     },
     "appOverview": {
-              "title": "Ce qui rend HabitSncer spécial",
-        "subtitle": "Découvrez les fonctionnalités uniques qui distinguent HabitSncer des autres trackers d'habitudes.",
+              "title": "Ce qui rend HabitSyncer spécial",
+        "subtitle": "Découvrez les fonctionnalités uniques qui distinguent HabitSyncer des autres trackers d'habitudes.",
       "feature1": "Suggestions d'habitudes et coaching alimentés par l'IA",
       "feature2": "Suivi avancé de l'humeur avec corrélations",
       "feature3": "Rappels multiples et notifications intelligentes",
@@ -3113,7 +3113,7 @@
     },
     "getStartedStep": {
       "title": "Prêt à Transformer votre Vie ?",
-              "subtitle": "Rejoignez des milliers d'utilisateurs qui ont déjà amélioré leurs habitudes et leur bien-être avec HabitSncer.",
+              "subtitle": "Rejoignez des milliers d'utilisateurs qui ont déjà amélioré leurs habitudes et leur bien-être avec HabitSyncer.",
       "feature1": "Créez votre première habitude en quelques secondes",
       "feature2": "Configurez le suivi personnalisé de l'humeur",
       "feature3": "Commencez votre parcours bien-être alimenté par l'IA"
@@ -3125,7 +3125,7 @@
     "proFeature": "Fonctionnalité Pro",
     "upgrade": "Passer à Pro",
     "upgradeNow": "Passer à Pro Maintenant",
-    "description": "HabitSncer est votre tracker d'habitudes et compagnon d'humeur alimenté par l'IA. Créez de meilleures habitudes, suivez votre parcours de bien-être et découvrez des schémas qui mènent au succès durable avec des conseils personnalisés et du coaching.",
+    "description": "HabitSyncer est votre tracker d'habitudes et compagnon d'humeur alimenté par l'IA. Créez de meilleures habitudes, suivez votre parcours de bien-être et découvrez des schémas qui mènent au succès durable avec des conseils personnalisés et du coaching.",
     "features": {
       "trackMoods": "Suivez vos humeurs",
       "buildHabits": "Créez des habitudes saines",
@@ -3509,7 +3509,7 @@
     "alreadyPro": "Déjà Pro",
     "alreadyProMessage": "Vous êtes déjà abonné à Pro !",
     "upgradeSuccessful": "Mise à Niveau Réussie !",
-          "upgradeSuccessfulMessage": "Bienvenue sur HabitSncer Pro ! Vous avez maintenant accès à toutes les fonctionnalités premium.",
+          "upgradeSuccessfulMessage": "Bienvenue sur HabitSyncer Pro ! Vous avez maintenant accès à toutes les fonctionnalités premium.",
     "upgradeFailed": "Échec de la Mise à Niveau",
     "upgradeFailedMessage": "Une erreur s'est produite lors du traitement de votre mise à niveau. Veuillez réessayer.",
     "enterPremiumKey": "Entrer la Clé Premium",
@@ -3617,7 +3617,7 @@
     "save": "Économiser",
     "valueProposition": {
       "title": "Transformez Vos Habitudes",
-              "subtitle": "Rejoignez des milliers d'utilisateurs qui ont atteint leurs objectifs avec HabitSncer Pro"
+              "subtitle": "Rejoignez des milliers d'utilisateurs qui ont atteint leurs objectifs avec HabitSyncer Pro"
     },
     "benefits": {
       "title": "Pourquoi Choisir Pro ?",
@@ -4201,10 +4201,10 @@
     "groupDeletedError": "Échec de la suppression du groupe",
     "onlyLeaderCanDelete": "Seuls les chefs de groupe peuvent supprimer des groupes",
     "shareGroup": "Partager le Groupe",
-            "shareMessage": "Rejoignez mon groupe d'étude \"{groupName}\" sur HabitSncer ! 📚\\n\\n{description}\\n\\nCatégorie : {category}\\nMembres : {currentMembers}/{maxMembers}\\n\\nID du Groupe : {groupId}\\n\\nTéléchargez HabitSncer et utilisez cet ID de Groupe pour rejoindre !",
+            "shareMessage": "Rejoignez mon groupe d'étude \"{groupName}\" sur HabitSyncer ! 📚\\n\\n{description}\\n\\nCatégorie : {category}\\nMembres : {currentMembers}/{maxMembers}\\n\\nID du Groupe : {groupId}\\n\\nTéléchargez HabitSyncer et utilisez cet ID de Groupe pour rejoindre !",
     "shareTitle": "Rejoindre le Groupe d'Étude {groupName}",
     "inviteMembers": "Inviter des Membres",
-            "inviteMessage": "Vous êtes invité à rejoindre le groupe d'étude \"{groupName}\" sur HabitSncer ! 📚\\n\\n{description}\\n\\nCatégorie : {category}\\nMembres actuels : {currentMembers}/{maxMembers}\\n\\nID du Groupe : {groupId}\\n\\nTéléchargez HabitSncer et utilisez cet ID de Groupe pour rejoindre !",
+            "inviteMessage": "Vous êtes invité à rejoindre le groupe d'étude \"{groupName}\" sur HabitSyncer ! 📚\\n\\n{description}\\n\\nCatégorie : {category}\\nMembres actuels : {currentMembers}/{maxMembers}\\n\\nID du Groupe : {groupId}\\n\\nTéléchargez HabitSyncer et utilisez cet ID de Groupe pour rejoindre !",
     "inviteTitle": "Invitation à {groupName}",
     "categories": {
       "all": "Tous les Groupes",

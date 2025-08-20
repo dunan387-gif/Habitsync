@@ -24,8 +24,13 @@ export default function DailyMoodReminder({ children }: DailyMoodReminderProps) 
   const styles = createStyles(currentTheme.colors);
   
   useEffect(() => {
-    checkDailyMoodReminder();
-  }, []);
+    // Only check for mood reminder if user is authenticated
+    if (user && !user.id.startsWith('guest-') && user.id !== 'anonymous') {
+      checkDailyMoodReminder();
+    } else {
+      setIsLoading(false);
+    }
+  }, [user]);
 
   // Check mood reminder whenever the user logs a mood
   useEffect(() => {
@@ -39,17 +44,38 @@ export default function DailyMoodReminder({ children }: DailyMoodReminderProps) 
   
   const checkDailyMoodReminder = async () => {
     try {
+      // Don't show mood reminder for unauthenticated users
+      if (!user || user.id.startsWith('guest-') || user.id === 'anonymous') {
+        console.log('🚫 Skipping mood reminder for unauthenticated user');
+        setIsLoading(false);
+        return;
+      }
+
       const today = new Date().toISOString().split('T')[0];
-      // Use user-specific storage key to prevent conflicts
-      const reminderKey = user ? `lastMoodReminderDate_${user.id}` : 'lastMoodReminderDate_anonymous';
+      
+      // Use email-based key as fallback to handle user ID changes
+      const reminderKey = `lastMoodReminderDate_${user.id}`;
+      const emailBasedKey = `lastMoodReminderDate_email_${user.email}`;
+      
+      // Check both user ID and email-based keys
       const lastReminderDate = await AsyncStorage.getItem(reminderKey);
+      const emailBasedReminderDate = await AsyncStorage.getItem(emailBasedKey);
+      
+      // Use the most recent reminder date from either key
+      const effectiveReminderDate = lastReminderDate || emailBasedReminderDate;
+      
       const todaysMoodEntry = getTodaysMoodEntry();
       
       console.log('🔍 Checking mood reminder:', { 
         today, 
-        lastReminderDate, 
+        lastReminderDate,
+        emailBasedReminderDate,
+        effectiveReminderDate,
         hasMoodEntry: !!todaysMoodEntry,
-        reminderKey
+        reminderKey,
+        emailBasedKey,
+        userId: user.id,
+        userEmail: user.email
       });
       
       // Show reminder if:
@@ -57,7 +83,7 @@ export default function DailyMoodReminder({ children }: DailyMoodReminderProps) 
       // 2. User hasn't logged mood today
       // 3. It's a new day
       const shouldShowReminder = 
-        lastReminderDate !== today && 
+        effectiveReminderDate !== today && 
         !todaysMoodEntry;
       
       console.log('📅 Mood reminder should show:', shouldShowReminder);
@@ -65,7 +91,9 @@ export default function DailyMoodReminder({ children }: DailyMoodReminderProps) 
       if (shouldShowReminder) {
         console.log('🎯 Showing mood reminder');
         setShowMoodReminder(true);
+        // Save to both keys to handle future user ID changes
         await AsyncStorage.setItem(reminderKey, today);
+        await AsyncStorage.setItem(emailBasedKey, today);
       }
     } catch (error) {
       console.error('Error checking daily mood reminder:', error);
@@ -88,6 +116,11 @@ export default function DailyMoodReminder({ children }: DailyMoodReminderProps) 
   
 
   
+  // Don't render anything for unauthenticated users
+  if (!user || user.id.startsWith('guest-') || user.id === 'anonymous') {
+    return <>{children}</>;
+  }
+
   if (isLoading) {
     return <View style={styles.loadingContainer} />;
   }

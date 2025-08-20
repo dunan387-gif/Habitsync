@@ -14,6 +14,8 @@ export default function Index() {
       hasUser: !!user, 
       userEmail: user?.email,
       userId: user?.id,
+      userType: user ? (user.id.startsWith('guest-') ? 'Guest' : 'Authenticated') : 'No user',
+      onboardingCompleted: user?.onboardingCompleted,
       userObject: user
     });
     
@@ -26,6 +28,12 @@ export default function Index() {
     if (!isLoading) {
       // Add a small delay to ensure auth state is fully loaded
       navigationTimer = setTimeout(() => {
+        console.log('🔍 Making navigation decision...');
+        console.log('  - User exists:', !!user);
+        console.log('  - User ID:', user?.id);
+        console.log('  - User type:', user ? (user.id.startsWith('guest-') ? 'Guest' : 'Authenticated') : 'No user');
+        console.log('  - Onboarding completed:', user?.onboardingCompleted);
+        
         if (user && user.id && !user.id.startsWith('guest-') && user.id !== 'anonymous') {
           // User is authenticated, navigate to main app
           console.log('✅ User authenticated, navigating to main app');
@@ -37,6 +45,9 @@ export default function Index() {
         } else {
           // User is not authenticated, navigate to login
           console.log('🚪 User not authenticated, navigating to login');
+          console.log('  - User object:', user);
+          console.log('  - User ID check:', user?.id);
+          console.log('  - Guest check:', user?.id?.startsWith('guest-'));
           router.replace('/(auth)/login');
         }
       }, 500); // Reduced delay for better responsiveness

@@ -34,37 +34,45 @@ export class FirebaseService {
         throw new Error('Firebase not initialized');
       }
       
-      const userCredential = await createUserWithEmailAndPassword(firebaseAuth, email, password);
-      const firebaseUser = userCredential.user;
+      // Add timeout for Firebase operations
+      const timeoutPromise = new Promise((_, reject) => 
+        setTimeout(() => reject(new Error('Registration timeout')), 15000)
+      );
       
-      // Update display name
-      await updateProfile(firebaseUser, {
-        displayName: name,
-      });
+      const registrationPromise = (async () => {
+        const userCredential = await createUserWithEmailAndPassword(firebaseAuth, email, password);
+        const firebaseUser = userCredential.user;
+        
+        // Update display name
+        await updateProfile(firebaseUser, {
+          displayName: name,
+        });
 
-      // Create user document in Firestore
-      const userData: User = {
-        id: firebaseUser.uid,
-        email: firebaseUser.email!,
-        name: name,
-        joinedAt: new Date().toISOString(),
-        onboardingCompleted: false,
-        preferences: {
-          notifications: true,
-          emailUpdates: true,
-          publicProfile: false,
-        },
-        stats: {
-          totalHabits: 0,
-          completedHabits: 0,
-          currentStreak: 0,
-          longestStreak: 0,
-        },
-      };
+        // Create user document in Firestore
+        const userData: User = {
+          id: firebaseUser.uid,
+          email: firebaseUser.email!,
+          name: name,
+          joinedAt: new Date().toISOString(),
+          onboardingCompleted: false,
+          preferences: {
+            notifications: true,
+            emailUpdates: true,
+            publicProfile: false,
+          },
+          stats: {
+            totalHabits: 0,
+            completedHabits: 0,
+            currentStreak: 0,
+            longestStreak: 0,
+          },
+        };
 
-      await setDoc(doc(firebaseFirestore, 'users', firebaseUser.uid), userData);
+        await setDoc(doc(firebaseFirestore, 'users', firebaseUser.uid), userData);
+        return userData;
+      })();
 
-      return userData;
+      return await Promise.race([registrationPromise, timeoutPromise]) as User;
     } catch (error: any) {
       console.error('Firebase signup error:', error);
       throw new Error(error.message || 'Signup failed');
@@ -84,7 +92,33 @@ export class FirebaseService {
       const userDoc = await getDoc(doc(firebaseFirestore, 'users', firebaseUser.uid));
 
       if (!userDoc.exists()) {
-        throw new Error('User document not found');
+        console.log('⚠️ User document not found in Firestore, creating it...');
+        
+        // Create the missing user document
+        const newUser: User = {
+          id: firebaseUser.uid,
+          email: firebaseUser.email || email,
+          name: firebaseUser.displayName || email.split('@')[0],
+          joinedAt: new Date().toISOString(),
+          onboardingCompleted: false,
+          preferences: {
+            notifications: true,
+            emailUpdates: true,
+            publicProfile: false,
+          },
+          stats: {
+            totalHabits: 0,
+            completedHabits: 0,
+            currentStreak: 0,
+            longestStreak: 0,
+          },
+        };
+        
+        // Save the user document to Firestore
+        await setDoc(doc(firebaseFirestore, 'users', firebaseUser.uid), newUser);
+        console.log('✅ Created missing user document for:', email);
+        
+        return newUser;
       }
 
       return userDoc.data() as User;
@@ -118,13 +152,8 @@ export class FirebaseService {
         return null;
       }
 
-      const userDoc = await getDoc(doc(firebaseFirestore, 'users', firebaseUser.uid));
-
-      if (!userDoc.exists()) {
-        return null;
-      }
-
-      return userDoc.data() as User;
+      // Use the utility function to check and fix user document issues
+      return await FirebaseService.checkAndFixUserDocument(firebaseUser);
     } catch (error: any) {
       console.error('Firebase getCurrentUser error:', error);
       return null;
@@ -185,18 +214,17 @@ export class FirebaseService {
     return onAuthStateChanged(firebaseAuth, async (firebaseUser) => {
       if (firebaseUser) {
         try {
-          const userDoc = await getDoc(doc(firebaseFirestore, 'users', firebaseUser.uid));
-
-          if (userDoc.exists()) {
-            callback(userDoc.data() as User);
-          } else {
-            callback(null);
-          }
+          console.log('✅ Firebase auth state updated:', firebaseUser.email);
+          
+          // Use the utility function to check and fix user document issues
+          const user = await FirebaseService.checkAndFixUserDocument(firebaseUser);
+          callback(user);
         } catch (error) {
           console.error('Firebase auth state change error:', error);
           callback(null);
         }
       } else {
+        console.log('🚪 Firebase auth state: no user');
         callback(null);
       }
     });
@@ -431,6 +459,52 @@ export class FirebaseService {
     } catch (error: any) {
       console.error('Firebase logMoodEntry error:', error);
       throw new Error(error.message || 'Failed to log mood entry');
+    }
+  }
+
+  /**
+   * Utility function to check and fix user document issues
+   */
+  static async checkAndFixUserDocument(firebaseUser: FirebaseUser): Promise<User> {
+    try {
+      if (!firebaseFirestore) {
+        throw new Error('Firebase not initialized');
+      }
+
+      const userDoc = await getDoc(doc(firebaseFirestore, 'users', firebaseUser.uid));
+
+      if (!userDoc.exists()) {
+        console.log('🔧 Creating missing user document for:', firebaseUser.email);
+        
+        const newUser: User = {
+          id: firebaseUser.uid,
+          email: firebaseUser.email!,
+          name: firebaseUser.displayName || firebaseUser.email!.split('@')[0],
+          joinedAt: new Date().toISOString(),
+          onboardingCompleted: false,
+          preferences: {
+            notifications: true,
+            emailUpdates: true,
+            publicProfile: false,
+          },
+          stats: {
+            totalHabits: 0,
+            completedHabits: 0,
+            currentStreak: 0,
+            longestStreak: 0,
+          },
+        };
+        
+        await setDoc(doc(firebaseFirestore, 'users', firebaseUser.uid), newUser);
+        console.log('✅ User document created successfully');
+        
+        return newUser;
+      }
+
+      return userDoc.data() as User;
+    } catch (error) {
+      console.error('Error checking/fixing user document:', error);
+      throw error;
     }
   }
 }

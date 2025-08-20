@@ -28,6 +28,11 @@ export default function MoodHabitOnboarding({ children }: MoodHabitOnboardingPro
   const styles = createStyles(currentTheme.colors);
   
   useEffect(() => {
+    console.log('🔄 MoodHabitOnboarding useEffect triggered:', {
+      userId: user?.id,
+      onboardingCompleted: user?.onboardingCompleted,
+      hasUser: !!user
+    });
     checkOnboardingStatus();
   }, [user?.id, user?.onboardingCompleted]);
   
@@ -50,8 +55,9 @@ export default function MoodHabitOnboarding({ children }: MoodHabitOnboardingPro
         // Authenticated user - check both user object and AsyncStorage
         let shouldShowOnboarding = !user.onboardingCompleted;
         
-        // Double-check with AsyncStorage as backup
+        // Enhanced persistence check for onboarding status
         try {
+          // 1. Check user-specific data
           const userDataKey = `userData_${user.id}`;
           const storedUserData = await AsyncStorage.getItem(userDataKey);
           if (storedUserData) {
@@ -60,12 +66,30 @@ export default function MoodHabitOnboarding({ children }: MoodHabitOnboardingPro
             shouldShowOnboarding = !parsedUserData.onboardingCompleted;
           }
           
-          // Also check the global onboarding key as fallback
+          // 2. Check global onboarding key as fallback
           const globalOnboardingKey = `onboarding_completed_${user.id}`;
           const globalOnboardingStatus = await AsyncStorage.getItem(globalOnboardingKey);
           if (globalOnboardingStatus === 'true') {
             console.log('🌐 Global onboarding key shows completed');
             shouldShowOnboarding = false;
+          }
+          
+          // 3. Check last authenticated user data
+          const lastAuthUser = await AsyncStorage.getItem(keys.lastAuthenticatedUser);
+          if (lastAuthUser) {
+            const parsedLastUser = JSON.parse(lastAuthUser);
+            if (parsedLastUser.id === user.id && parsedLastUser.onboardingCompleted) {
+              console.log('🔐 Last authenticated user shows onboarding completed');
+              shouldShowOnboarding = false;
+            }
+          }
+          
+          // 4. Additional safety check: if user has an ID but onboarding is not completed in any storage,
+          // and we're not in the middle of completing onboarding, show onboarding
+          if (shouldShowOnboarding && user.id && !user.id.startsWith('guest-') && user.id !== 'anonymous') {
+            console.log('✅ User needs onboarding, showing onboarding flow');
+          } else if (!shouldShowOnboarding) {
+            console.log('✅ User has completed onboarding, not showing flow');
           }
         } catch (storageError) {
           console.warn('⚠️ Error checking AsyncStorage for onboarding status:', storageError);
@@ -99,47 +123,53 @@ export default function MoodHabitOnboarding({ children }: MoodHabitOnboardingPro
     try {
       console.log('🎉 Onboarding completed, skipped:', skipped);
       console.log('👤 Current user:', user ? user.email : 'No user');
+      console.log('👤 User ID:', user?.id);
+      
+      // Immediately hide onboarding to prevent UI blocking
+      setShowOnboarding(false);
+      console.log('✅ Onboarding flow hidden immediately');
       
       // Mark onboarding as completed for authenticated users
       if (user && !user.id.startsWith('guest-') && user.id !== 'anonymous') {
         console.log('✅ Marking onboarding as completed for authenticated user');
         
-        // Save completion status in multiple places for redundancy
-        try {
-          // 1. Use the main markOnboardingCompleted function
-          await markOnboardingCompleted();
-          console.log('✅ Onboarding completion saved via main function');
-          
-          // 2. Also save a global onboarding key as backup
-          const globalOnboardingKey = `onboarding_completed_${user.id}`;
-          await AsyncStorage.setItem(globalOnboardingKey, 'true');
-          console.log('✅ Global onboarding key saved');
-          
-          // 3. Update the user data directly in AsyncStorage
-          const updatedUser = { ...user, onboardingCompleted: true };
-          await AsyncStorage.setItem(`userData_${user.id}`, JSON.stringify(updatedUser));
-          await AsyncStorage.setItem(keys.lastAuthenticatedUser, JSON.stringify(updatedUser));
-          console.log('✅ User data updated in AsyncStorage');
-          
-        } catch (error) {
-          console.warn('⚠️ Onboarding completion had issues, but continuing:', error);
-          // Continue anyway - the user has completed onboarding
-          
-          // Try to save at least the global key
+        // Use a timeout to prevent blocking the UI
+        setTimeout(async () => {
           try {
+            // 1. Use the main markOnboardingCompleted function
+            await markOnboardingCompleted();
+            console.log('✅ Onboarding completion saved via main function');
+            
+            // 2. Also save a global onboarding key as backup
             const globalOnboardingKey = `onboarding_completed_${user.id}`;
             await AsyncStorage.setItem(globalOnboardingKey, 'true');
-            console.log('✅ Global onboarding key saved as fallback');
-          } catch (fallbackError) {
-            console.error('❌ Even fallback save failed:', fallbackError);
+            console.log('✅ Global onboarding key saved');
+            
+            // 3. Update the user data directly in AsyncStorage
+            const updatedUser = { ...user, onboardingCompleted: true };
+            await AsyncStorage.setItem(`userData_${user.id}`, JSON.stringify(updatedUser));
+            await AsyncStorage.setItem(keys.lastAuthenticatedUser, JSON.stringify(updatedUser));
+            console.log('✅ User data updated in AsyncStorage');
+            
+          } catch (error) {
+            console.warn('⚠️ Onboarding completion had issues, but continuing:', error);
+            // Continue anyway - the user has completed onboarding
+            
+            // Try to save at least the global key
+            try {
+              const globalOnboardingKey = `onboarding_completed_${user.id}`;
+              await AsyncStorage.setItem(globalOnboardingKey, 'true');
+              console.log('✅ Global onboarding key saved as fallback');
+            } catch (fallbackError) {
+              console.error('❌ Even fallback save failed:', fallbackError);
+            }
           }
-        }
+        }, 100);
+        
       } else {
         console.log('👻 Not marking onboarding for guest/anonymous user');
       }
       
-      setShowOnboarding(false);
-      console.log('✅ Onboarding flow hidden');
     } catch (error) {
       console.error('❌ Error in onboarding completion:', error);
       // Still hide onboarding even if there's an error
@@ -200,6 +230,47 @@ export default function MoodHabitOnboarding({ children }: MoodHabitOnboardingPro
         } catch (error) {
           console.error('Error clearing onboarding status:', error);
         }
+      }
+    };
+    
+    // Emergency fix for onboarding persistence issues
+    (global as any).forceCompleteOnboarding = async () => {
+      if (user) {
+        try {
+          console.log('🚨 Force completing onboarding for user:', user.email);
+          
+          // Update user object
+          const updatedUser = { ...user, onboardingCompleted: true };
+          
+          // Save to all storage locations
+          await AsyncStorage.setItem(`userData_${user.id}`, JSON.stringify(updatedUser));
+          await AsyncStorage.setItem(keys.lastAuthenticatedUser, JSON.stringify(updatedUser));
+          await AsyncStorage.setItem(`onboarding_completed_${user.id}`, 'true');
+          
+          // Force hide onboarding
+          setShowOnboarding(false);
+          
+          console.log('✅ Onboarding force completed');
+        } catch (error) {
+          console.error('Error force completing onboarding:', error);
+        }
+      }
+    };
+    
+    // Debug Firebase auth persistence
+    (global as any).debugFirebaseAuth = async () => {
+      try {
+        console.log('🔍 Debugging Firebase auth persistence...');
+        const { firebaseAuth } = await import('@/lib/firebase');
+        if (firebaseAuth) {
+          const currentUser = firebaseAuth.currentUser;
+          console.log('Firebase current user:', currentUser ? currentUser.email : 'null');
+          console.log('Firebase auth state:', firebaseAuth);
+        } else {
+          console.log('Firebase auth not initialized');
+        }
+      } catch (error) {
+        console.error('Error debugging Firebase auth:', error);
       }
     };
   }

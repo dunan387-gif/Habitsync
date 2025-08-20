@@ -3481,15 +3481,15 @@
   },
   "onboarding": {
     "welcome": {
-              "title": "Welcome to HabitSncer",
+              "title": "Welcome to HabitSyncer",
       "subtitle": "Your AI-powered habit tracker and mood companion. Build better habits, track your wellness, and discover patterns that lead to success.",
       "feature1": "AI-powered habit suggestions",
       "feature2": "Advanced mood tracking", 
       "feature3": "Personalized insights"
     },
     "appOverview": {
-              "title": "What Makes HabitSncer Special",
-        "subtitle": "Discover the unique features that set HabitSncer apart from other habit trackers.",
+              "title": "What Makes HabitSyncer Special",
+        "subtitle": "Discover the unique features that set HabitSyncer apart from other habit trackers.",
       "feature1": "AI-powered habit suggestions & coaching",
       "feature2": "Advanced mood tracking with correlations",
       "feature3": "Multiple reminders & smart notifications",
@@ -3521,7 +3521,7 @@
     },
     "getStartedStep": {
       "title": "Ready to Transform Your Life?",
-              "subtitle": "Join thousands of users who have already improved their habits and wellbeing with HabitSncer.",
+              "subtitle": "Join thousands of users who have already improved their habits and wellbeing with HabitSyncer.",
       "feature1": "Create your first habit in seconds",
       "feature2": "Set up personalized mood tracking",
       "feature3": "Start your AI-powered wellness journey"
@@ -3533,7 +3533,7 @@
     "proFeature": "Pro Feature",
     "upgrade": "Upgrade to Pro",
     "upgradeNow": "Upgrade Now",
-            "description": "HabitSncer is your AI-powered habit tracker and mood companion. Build better habits, track your wellness journey, and discover patterns that lead to lasting success with personalized insights and coaching.",
+            "description": "HabitSyncer is your AI-powered habit tracker and mood companion. Build better habits, track your wellness journey, and discover patterns that lead to lasting success with personalized insights and coaching.",
     "features": {
       "trackMoods": "Track your moods",
       "buildHabits": "Build healthy habits",
@@ -3996,7 +3996,7 @@
     "alreadyPro": "Already Pro",
     "alreadyProMessage": "You are already subscribed to Pro!",
     "upgradeSuccessful": "Upgrade Successful!",
-            "upgradeSuccessfulMessage": "Welcome to HabitSncer Pro! You now have access to all premium features.",
+            "upgradeSuccessfulMessage": "Welcome to HabitSyncer Pro! You now have access to all premium features.",
     "upgradeFailed": "Upgrade Failed",
     "upgradeFailedMessage": "There was an error processing your upgrade. Please try again.",
     "enterPremiumKey": "Enter Premium Key",
@@ -4136,7 +4136,7 @@
     "save": "Save",
     "valueProposition": {
       "title": "Transform Your Habits",
-              "subtitle": "Join thousands of users who've achieved their goals with HabitSncer Pro"
+              "subtitle": "Join thousands of users who've achieved their goals with HabitSyncer Pro"
     },
     "benefits": {
       "title": "Why Choose Pro?",
@@ -4783,10 +4783,10 @@
     "groupDeletedError": "Failed to delete group",
     "onlyLeaderCanDelete": "Only group leaders can delete groups",
     "shareGroup": "Share Group",
-            "shareMessage": "Join my study group \"{groupName}\" on HabitSncer! 📚\\n\\n{description}\\n\\nCategory: {category}\\nMembers: {currentMembers}/{maxMembers}\\n\\nGroup ID: {groupId}\\n\\nDownload HabitSncer and use this Group ID to join!",
+            "shareMessage": "Join my study group \"{groupName}\" on HabitSyncer! 📚\\n\\n{description}\\n\\nCategory: {category}\\nMembers: {currentMembers}/{maxMembers}\\n\\nGroup ID: {groupId}\\n\\nDownload HabitSyncer and use this Group ID to join!",
     "shareTitle": "Join {groupName} Study Group",
     "inviteMembers": "Invite Members",
-            "inviteMessage": "You're invited to join \"{groupName}\" study group on HabitSncer! 📚\\n\\n{description}\\n\\nCategory: {category}\\nCurrent members: {currentMembers}/{maxMembers}\\n\\nGroup ID: {groupId}\\n\\nDownload HabitSncer and use this Group ID to join!",
+            "inviteMessage": "You're invited to join \"{groupName}\" study group on HabitSyncer! 📚\\n\\n{description}\\n\\nCategory: {category}\\nCurrent members: {currentMembers}/{maxMembers}\\n\\nGroup ID: {groupId}\\n\\nDownload HabitSyncer and use this Group ID to join!",
     "inviteTitle": "Invitation to {groupName}",
     "categories": {
       "all": "All Groups",

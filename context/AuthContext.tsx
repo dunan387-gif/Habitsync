@@ -52,11 +52,17 @@ const cleanupCorruptedData = async () => {
     const allKeys = await AsyncStorage.getAllKeys();
     let cleanedCount = 0;
     
-    for (const key of allKeys) {
+    // Only check auth-related keys during registration
+    const authKeys = [keys.user, keys.guestUser, keys.lastAuthenticatedUser];
+    const keysToCheck = allKeys.filter(key => 
+      authKeys.includes(key) || key.includes('userData_') || key.includes('habits_')
+    );
+    
+    for (const key of keysToCheck) {
       const value = await AsyncStorage.getItem(key);
       if (value) {
         try {
-          JSON.parse(value); // Test if it's valid JSON
+          JSON.parse(value);
         } catch (parseError) {
           console.log(`🗑️ Removing corrupted data from key: ${key}`);
           await AsyncStorage.removeItem(key);
@@ -65,28 +71,6 @@ const cleanupCorruptedData = async () => {
       }
     }
     console.log(`✅ Cleanup complete - removed ${cleanedCount} corrupted entries`);
-    
-    // Additional cleanup for specific auth-related keys
-    const authKeys = [keys.user, keys.guestUser, keys.lastAuthenticatedUser];
-    for (const authKey of authKeys) {
-      const authValue = await AsyncStorage.getItem(authKey);
-      if (authValue) {
-        try {
-          const parsed = JSON.parse(authValue);
-          // Validate required fields for user data
-          if (authKey === keys.user && (!parsed.id || !parsed.email)) {
-            console.log(`🗑️ Removing invalid user data from ${authKey}`);
-            await AsyncStorage.removeItem(authKey);
-            cleanedCount++;
-          }
-        } catch (parseError) {
-          console.log(`🗑️ Removing corrupted auth data from ${authKey}`);
-          await AsyncStorage.removeItem(authKey);
-          cleanedCount++;
-        }
-      }
-    }
-    
     return cleanedCount;
   } catch (error) {
     console.error('❌ Error during cleanup:', error);
@@ -146,31 +130,67 @@ const clearCorruptedAuthData = async () => {
   }
 };
 
-// Helper function to migrate guest data to user
-const migrateGuestDataToUser = async (userId: string) => {
-  try {
-    const guestData = await AsyncStorage.getItem(keys.guestUser);
-    if (guestData) {
-      // Here you would migrate guest data to the authenticated user
-      // This could include habits, preferences, etc.
-      console.log('🔄 Migrating guest data to user:', userId);
-      await AsyncStorage.removeItem(keys.guestUser);
+  // Helper function to migrate guest data to user
+  const migrateGuestDataToUser = async (userId: string) => {
+    try {
+      const guestData = await AsyncStorage.getItem(keys.guestUser);
+      if (guestData) {
+        // Here you would migrate guest data to the authenticated user
+        // This could include habits, preferences, etc.
+        console.log('🔄 Migrating guest data to user:', userId);
+        await AsyncStorage.removeItem(keys.guestUser);
+      }
+    } catch (error) {
+      console.error('Failed to migrate guest data:', error);
     }
-  } catch (error) {
-    console.error('Failed to migrate guest data:', error);
-  }
-};
+  };
+
+  // Helper function to migrate user data when user ID changes
+  const migrateUserData = async (oldUserId: string, newUserId: string) => {
+    try {
+      console.log('🔄 Migrating user data from', oldUserId, 'to', newUserId);
+      
+      // Migrate user data
+      const oldUserData = await AsyncStorage.getItem(`userData_${oldUserId}`);
+      if (oldUserData) {
+        await AsyncStorage.setItem(`userData_${newUserId}`, oldUserData);
+        await AsyncStorage.removeItem(`userData_${oldUserId}`);
+      }
+      
+      // Migrate habits data
+      const oldHabitsData = await AsyncStorage.getItem(`habits_${oldUserId}`);
+      if (oldHabitsData) {
+        await AsyncStorage.setItem(`habits_${newUserId}`, oldHabitsData);
+        await AsyncStorage.removeItem(`habits_${oldUserId}`);
+      }
+      
+      // Migrate mood reminder data
+      const oldReminderData = await AsyncStorage.getItem(`lastMoodReminderDate_${oldUserId}`);
+      if (oldReminderData) {
+        await AsyncStorage.setItem(`lastMoodReminderDate_${newUserId}`, oldReminderData);
+        await AsyncStorage.removeItem(`lastMoodReminderDate_${oldUserId}`);
+      }
+      
+      console.log('✅ User data migration completed');
+    } catch (error) {
+      console.error('❌ Error migrating user data:', error);
+    }
+  };
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [isInitializing, setIsInitializing] = useState(true);
   
   // Debug user state changes
   useEffect(() => {
     console.log('👤 User state changed:', { 
       hasUser: !!user, 
       userEmail: user?.email, 
-      userId: user?.id 
+      userId: user?.id,
+      userType: user ? (user.id.startsWith('guest-') ? 'Guest' : 'Authenticated') : 'No user',
+      onboardingCompleted: user?.onboardingCompleted,
+      timestamp: new Date().toISOString()
     });
   }, [user]);
 
@@ -179,6 +199,24 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [privacySettings, setPrivacySettings] = useState<PrivacySettings | null>(null);
   const [preventGuestCreation, setPreventGuestCreation] = useState(false);
   const [isRestoringAuth, setIsRestoringAuth] = useState(false);
+
+  // Utility function to safely update user state
+  const safeSetUser = useCallback((newUser: User | null) => {
+    if (!user && !newUser) return; // Both null, no change needed
+    if (!user && newUser) {
+      setUser(newUser);
+      return;
+    }
+    if (user && !newUser) {
+      setUser(null);
+      return;
+    }
+    if (user && newUser && user.id !== newUser.id) {
+      setUser(newUser);
+      return;
+    }
+    // Users are the same, no update needed
+  }, [user]);
 
   // Helper function to save last authenticated user
   const saveLastAuthenticatedUser = async (user: User) => {
@@ -204,7 +242,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         const storedUser = await AsyncStorage.getItem(keys.user);
         if (storedUser) {
           const userData = JSON.parse(storedUser);
-          setUser(userData);
+          safeSetUser(userData);
           return true;
         }
         return false;
@@ -215,7 +253,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       if (cachedUser) {
         try {
           const userData = JSON.parse(cachedUser);
-          setUser(userData);
+          safeSetUser(userData);
           console.log('✅ User restored from cache during hot reload:', userData.email);
           return true;
         } catch (error) {
@@ -223,14 +261,52 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         }
       }
 
-      // Check Firebase session
+      // Check Firebase session with enhanced persistence check
+      console.log('🔍 Checking Firebase auth persistence...');
       const firebaseUser = await FirebaseService.getCurrentUser();
       if (firebaseUser) {
+        console.log('✅ Firebase auth persistence working - user found:', firebaseUser.email);
+        
+        // Check if we have a different user ID for the same email
+        const lastUser = await AsyncStorage.getItem(keys.lastAuthenticatedUser);
+        if (lastUser) {
+          try {
+            const lastUserData = JSON.parse(lastUser);
+            if (lastUserData.email === firebaseUser.email && lastUserData.id !== firebaseUser.id) {
+              console.log('🔄 User ID changed for same email:', {
+                oldId: lastUserData.id,
+                newId: firebaseUser.id,
+                email: firebaseUser.email
+              });
+              
+              // Migrate data from old user ID to new user ID
+              await migrateUserData(lastUserData.id, firebaseUser.id);
+            }
+          } catch (error) {
+            console.warn('⚠️ Error checking user ID migration:', error);
+          }
+        }
+        
         await migrateGuestDataToUser(firebaseUser.id);
         await saveLastAuthenticatedUser(firebaseUser);
-        setUser(firebaseUser);
-        console.log('✅ User authenticated from Firebase:', firebaseUser.email);
+        safeSetUser(firebaseUser);
+        console.log('✅ User authenticated from Firebase with persistence:', firebaseUser.email);
         return true;
+      } else {
+        console.log('⚠️ Firebase auth persistence issue - no user found, checking AsyncStorage backup...');
+        
+        // Fallback to AsyncStorage if Firebase auth is not persisting
+        const backupUser = await AsyncStorage.getItem(keys.lastAuthenticatedUser);
+        if (backupUser) {
+          try {
+            const userData = JSON.parse(backupUser);
+            console.log('🔄 Using AsyncStorage backup for user:', userData.email);
+            safeSetUser(userData);
+            return true;
+          } catch (error) {
+            console.error('❌ Backup user data corrupted:', error);
+          }
+        }
       }
       return false;
     } catch (error) {
@@ -248,7 +324,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         if (storedUser) {
           console.log('✅ Found stored user, restoring...');
           const userData = JSON.parse(storedUser);
-          setUser(userData);
+          safeSetUser(userData);
           console.log('✅ User restored:', userData.email);
         } else {
           console.log('📭 No stored user found, creating guest user...');
@@ -270,33 +346,33 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
               currentStreak: 0,
               longestStreak: 0,
             },
-          };
-          await AsyncStorage.setItem(keys.user, JSON.stringify(guestUser));
-          setUser(guestUser);
-          console.log('✅ Guest user created automatically');
+                  };
+        await AsyncStorage.setItem(keys.user, JSON.stringify(guestUser));
+        safeSetUser(guestUser);
+        console.log('✅ Guest user created automatically');
         }
       } else {
         // Try to restore from last authenticated user if Firebase user is not available
         const lastUser = await AsyncStorage.getItem(keys.lastAuthenticatedUser);
         if (lastUser) {
-          try {
-            const userData = JSON.parse(lastUser);
-            setUser(userData);
-            console.log('✅ User restored from last authenticated session:', userData.email);
-          } catch (error) {
-            console.log('❌ Last authenticated user data corrupted, clearing...');
-            await AsyncStorage.removeItem(keys.lastAuthenticatedUser);
-            setUser(null);
-          }
-        } else {
-          // Set user to null to trigger auth flow
-          setUser(null);
+                  try {
+          const userData = JSON.parse(lastUser);
+          safeSetUser(userData);
+          console.log('✅ User restored from last authenticated session:', userData.email);
+        } catch (error) {
+                      console.log('❌ Last authenticated user data corrupted, clearing...');
+          await AsyncStorage.removeItem(keys.lastAuthenticatedUser);
+          safeSetUser(null);
         }
+      } else {
+        // Set user to null to trigger auth flow
+        safeSetUser(null);
+      }
       }
     } catch (error) {
       console.error('Failed to check auth state:', error);
       // Set user to null on error to trigger auth flow
-      setUser(null);
+      safeSetUser(null);
     }
   };
 
@@ -318,10 +394,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       console.log('🚀 Setting up authentication...');
       setPreventGuestCreation(false);
       
-      // Clean up corrupted data first
-      const cleanedCount = await cleanupCorruptedData();
-      if (cleanedCount > 0) {
-        console.log(`🧹 Cleaned up ${cleanedCount} corrupted entries`);
+      // Skip cleanup during registration for better performance
+      if (!user) {
+        const cleanedCount = await cleanupCorruptedData();
+        if (cleanedCount > 0) {
+          console.log(`🧹 Cleaned up ${cleanedCount} corrupted entries`);
+        }
       }
       
       // Remove debug calls that might interfere with auth restoration
@@ -343,7 +421,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             try {
               await migrateGuestDataToUser(firebaseUser.id);
               await saveLastAuthenticatedUser(firebaseUser);
-              setUser(firebaseUser);
+              safeSetUser(firebaseUser);
               console.log('✅ Firebase auth state updated:', firebaseUser.email);
             } catch (error) {
               console.error('❌ Error processing Firebase user:', error);
@@ -355,15 +433,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
               const cachedUser = await AsyncStorage.getItem(keys.lastAuthenticatedUser);
               if (!cachedUser) {
                 console.log('🚪 User signed out');
-                setUser(null);
+                safeSetUser(null);
               } else {
                 console.log('🔄 Restoring cached user during hot reload');
                 try {
                   const userData = JSON.parse(cachedUser);
-                  setUser(userData);
+                  safeSetUser(userData);
                 } catch (error) {
                   console.log('🚪 Cached user data corrupted, signing out');
-                  setUser(null);
+                  safeSetUser(null);
                 }
               }
             } else {
@@ -384,6 +462,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       // Ensure loading is set to false after all setup is complete
       console.log('✅ Authentication setup complete');
       setIsLoading(false);
+      setIsInitializing(false);
     };
     
     setupAuth();
@@ -394,7 +473,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         unsubscribe();
       }
     };
-  }, [isRestoringAuth]); // Add missing dependency
+  }, [isRestoringAuth]); // REMOVED 'user' from dependencies - this was causing the infinite loop
 
   const login = useCallback(async (email: string, password: string) => {
     try {
@@ -473,10 +552,20 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
       const firebaseUser = await FirebaseService.signUpWithEmail(email, password, name);
       if (firebaseUser) {
-        await migrateGuestDataToUser(firebaseUser.id);
-        await saveLastAuthenticatedUser(firebaseUser);
+        // Only save to essential keys during registration
+        await AsyncStorage.setItem(keys.lastAuthenticatedUser, JSON.stringify(firebaseUser));
         setUser(firebaseUser);
         console.log('✅ User registered:', firebaseUser.email);
+        
+        // Perform additional operations after successful registration
+        setTimeout(async () => {
+          try {
+            await migrateGuestDataToUser(firebaseUser.id);
+            await AsyncStorage.setItem(keys.user, JSON.stringify(firebaseUser));
+          } catch (error) {
+            console.warn('Non-critical operations failed:', error);
+          }
+        }, 100);
       }
     } catch (error: any) {
       console.error('Registration failed:', error);
@@ -668,6 +757,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     if (!user) throw new Error('No user logged in');
     
     try {
+      console.log('🔄 Marking onboarding completed for user:', user.email, 'ID:', user.id);
+      
       if (!FIREBASE_MODE) {
         const updatedUser = { ...user, onboardingCompleted: true };
         await AsyncStorage.setItem(keys.user, JSON.stringify(updatedUser));
@@ -687,10 +778,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       // Always update locally regardless of Firebase success
       const updatedUser = { ...user, onboardingCompleted: true };
       
-      // Update in AsyncStorage
+      // Update in AsyncStorage with multiple keys for redundancy
       await AsyncStorage.setItem(keys.user, JSON.stringify(updatedUser));
       await AsyncStorage.setItem(`userData_${user.id}`, JSON.stringify(updatedUser));
       await AsyncStorage.setItem(keys.lastAuthenticatedUser, JSON.stringify(updatedUser));
+      
+      // Also save with email-based key for user ID changes
+      if (user.email) {
+        await AsyncStorage.setItem(`userData_email_${user.email}`, JSON.stringify(updatedUser));
+      }
       
       // Update in development cache
       if (__DEV__) {
@@ -700,8 +796,17 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         }));
       }
       
+      // Add a small delay to ensure state updates are processed
+      await new Promise(resolve => setTimeout(resolve, 100));
+      
       setUser(updatedUser);
       console.log('✅ Onboarding marked as completed locally');
+      
+      // Force a re-render to ensure the UI updates
+      setTimeout(() => {
+        console.log('🔄 Forcing re-render after onboarding completion');
+      }, 200);
+      
     } catch (error: any) {
       console.error('Failed to mark onboarding completed:', error);
       throw new Error(error.message || 'Failed to mark onboarding completed');
