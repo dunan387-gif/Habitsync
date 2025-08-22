@@ -43,8 +43,10 @@ export default function MoodHabitOnboarding({ children }: MoodHabitOnboardingPro
   }, [user?.id, hasCheckedOnboarding]); // Removed user?.onboardingCompleted to prevent infinite loops
   
   const checkOnboardingStatus = async () => {
+    const startTime = Date.now();
+    console.log('⏱️ Starting onboarding status check for user:', user ? user.email : 'No user');
+    
     try {
-      console.log('🔍 Checking onboarding status for user:', user ? user.email : 'No user');
       console.log('👤 User onboarding completed:', user?.onboardingCompleted);
       console.log('👤 User ID type:', user ? (user.id.startsWith('guest-') ? 'Guest' : 'Authenticated') : 'No user');
       
@@ -54,11 +56,13 @@ export default function MoodHabitOnboarding({ children }: MoodHabitOnboardingPro
         console.log('❌ No user found, not showing onboarding');
         setShowOnboarding(false);
         setHasCheckedOnboarding(true); // Mark as checked
+        console.log(`⏱️ No user onboarding check completed in ${Date.now() - startTime}ms`);
       } else if (user.id.startsWith('guest-') || user.id === 'anonymous') {
         // Guest or anonymous users - don't show onboarding
         console.log('👻 Guest/anonymous user, not showing onboarding');
         setShowOnboarding(false);
         setHasCheckedOnboarding(true); // Mark as checked
+        console.log(`⏱️ Guest user onboarding check completed in ${Date.now() - startTime}ms`);
       } else {
         // Authenticated user - check both user object and AsyncStorage
         let shouldShowOnboarding = !user.onboardingCompleted;
@@ -108,6 +112,7 @@ export default function MoodHabitOnboarding({ children }: MoodHabitOnboardingPro
         console.log('✅ Authenticated user, showing onboarding:', shouldShowOnboarding);
         setShowOnboarding(shouldShowOnboarding);
         setHasCheckedOnboarding(true); // Mark as checked to prevent re-checking
+        console.log(`⏱️ Onboarding status check completed in ${Date.now() - startTime}ms`);
       }
       
       // Clean up old global onboarding key if it exists

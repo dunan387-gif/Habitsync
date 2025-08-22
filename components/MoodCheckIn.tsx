@@ -154,8 +154,17 @@ export default function MoodCheckIn({ onMoodSubmit }: MoodCheckInProps) {
           <Text style={styles.completedNote}>
             {todayMoodData?.emoji} {todayMoodData ? t(todayMoodData.labelKey) : todaysMood.moodState} ({t('moodCheckIn.quickMoodSelector.intensityLabel')}: {todaysMood.intensity}/10)
           </Text>
+          {todaysMood.note && (
+            <Text style={styles.completedNote}>
+              {todaysMood.note}
+            </Text>
+          )}
+          {todaysMood.triggers && todaysMood.triggers.length > 0 && (
+            <Text style={styles.completedNote}>
+              {t('moodCheckIn.tagsTitle')}: {todaysMood.triggers.join(', ')}
+            </Text>
+          )}
         </View>
-        {renderSubmittedMood()}
       </View>
     );
   }

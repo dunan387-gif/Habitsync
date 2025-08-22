@@ -217,7 +217,7 @@ export default function HabitForm({ visible, onClose, onSave, initialValues, isE
 
             <ScrollView 
               showsVerticalScrollIndicator={false}
-              style={{ flex: 1, maxHeight: '70%' }}
+              style={{ flex: 1, maxHeight: '80%' }}
               contentContainerStyle={{ paddingBottom: 20 }}
             >
               <View style={styles.formGroup}>
@@ -307,14 +307,10 @@ export default function HabitForm({ visible, onClose, onSave, initialValues, isE
                       <TouchableOpacity
                         style={[
                           styles.reminderTypeButton,
-                          useMultipleReminders && styles.reminderTypeButtonActive,
-                          currentTier === 'free' && styles.reminderTypeButtonDisabled
+                          useMultipleReminders && styles.reminderTypeButtonActive
                         ]}
                         onPress={() => {
-                          if (currentTier === 'free') {
-                            showUpgradePrompt('reminder_limit');
-                            return;
-                          }
+                          // For testing purposes, allow all users to use multiple reminders
                           setUseMultipleReminders(true);
                           setReminderEnabled(false);
                         }}
@@ -322,14 +318,10 @@ export default function HabitForm({ visible, onClose, onSave, initialValues, isE
                         <View style={styles.reminderTypeButtonContent}>
                           <Text style={[
                             styles.reminderTypeText,
-                            useMultipleReminders && styles.reminderTypeTextActive,
-                            currentTier === 'free' && styles.reminderTypeTextDisabled
+                            useMultipleReminders && styles.reminderTypeTextActive
                           ]}>
                             {t('multiple_reminders')}
                           </Text>
-                          {currentTier === 'free' && (
-                            <Crown size={12} color={currentTheme.colors.primary} style={styles.premiumIcon} />
-                          )}
                         </View>
                       </TouchableOpacity>
                     </View>
@@ -463,8 +455,8 @@ const createStyles = (colors: any) => StyleSheet.create({
     borderRadius: 20,
     padding: 20,
     width: '95%',
-    minHeight: 800,
-    maxHeight: '90%',
+    minHeight: 900,
+    maxHeight: '95%',
     borderWidth: 2,
     borderColor: '#E2E8F0',
     shadowColor: '#000',

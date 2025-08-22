@@ -28,7 +28,7 @@ export default function HabitDetailScreen() {
   const { getHabitById, updateHabit, deleteHabit } = useHabits();
   const { t, currentLanguage } = useLanguage();
   const { currentTheme } = useTheme();
-  const { currentTier, showUpgradePrompt } = useSubscription();
+  const { currentTier, showUpgradePrompt, canUseReminders } = useSubscription();
   
   const habit = getHabitById(id as string);
   
@@ -45,7 +45,7 @@ export default function HabitDetailScreen() {
   
   // Multiple reminders state
   const [reminders, setReminders] = useState<HabitReminder[]>(habit?.reminders || []);
-  const [useMultipleReminders, setUseMultipleReminders] = useState(false);
+  const [useMultipleReminders, setUseMultipleReminders] = useState(habit?.reminders && habit.reminders.length > 0);
 
   const daysOfWeek = [
     { id: 0, name: t('sunday'), short: t('sun') },
@@ -285,8 +285,11 @@ export default function HabitDetailScreen() {
                       !useMultipleReminders && styles.reminderTypeButtonActive
                     ]}
                     onPress={() => {
+                      console.log('🔘 Single reminder button pressed');
                       setUseMultipleReminders(false);
                       setReminders([]);
+                      // Ensure reminderEnabled stays true
+                      setReminderEnabled(true);
                     }}
                   >
                     <Text style={[
@@ -299,29 +302,28 @@ export default function HabitDetailScreen() {
                   <TouchableOpacity
                     style={[
                       styles.reminderTypeButton,
-                      useMultipleReminders && styles.reminderTypeButtonActive,
-                      currentTier === 'free' && styles.reminderTypeButtonDisabled
+                      useMultipleReminders && styles.reminderTypeButtonActive
                     ]}
                     onPress={() => {
-                      if (currentTier === 'free') {
-                        showUpgradePrompt('reminder_limit');
-                        return;
-                      }
+                      console.log('🔘 Multiple reminders button pressed');
+                      console.log('Current state:', { useMultipleReminders, reminders });
+                      // For testing purposes, allow all users to use multiple reminders
                       setUseMultipleReminders(true);
-                      setReminderEnabled(false);
+                      // Keep reminderEnabled true to ensure the section stays visible
+                      setReminderEnabled(true);
+                      console.log('State updated - useMultipleReminders should be true');
+                      // Add visual feedback
+                      Alert.alert('Button Pressed', 'Multiple reminders button was pressed!');
                     }}
+                    activeOpacity={0.7}
                   >
                     <View style={styles.reminderTypeButtonContent}>
                       <Text style={[
                         styles.reminderTypeText,
-                        useMultipleReminders && styles.reminderTypeTextActive,
-                        currentTier === 'free' && styles.reminderTypeTextDisabled
+                        useMultipleReminders && styles.reminderTypeTextActive
                       ]}>
                         {t('multiple_reminders')}
                       </Text>
-                      {currentTier === 'free' && (
-                        <Crown size={12} color={currentTheme.colors.primary} style={styles.premiumIcon} />
-                      )}
                     </View>
                   </TouchableOpacity>
                 </View>
@@ -387,11 +389,14 @@ export default function HabitDetailScreen() {
 
                 {/* Multiple Reminders */}
                 {useMultipleReminders && (
-                  <MultipleReminders
-                    reminders={reminders}
-                    onRemindersChange={setReminders}
-                    maxReminders={3}
-                  />
+                  <>
+                    {console.log('🎯 Rendering MultipleReminders component')}
+                    <MultipleReminders
+                      reminders={reminders}
+                      onRemindersChange={setReminders}
+                      maxReminders={3}
+                    />
+                  </>
                 )}
               </>
             )}

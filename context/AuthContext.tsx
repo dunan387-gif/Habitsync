@@ -200,23 +200,38 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [preventGuestCreation, setPreventGuestCreation] = useState(false);
   const [isRestoringAuth, setIsRestoringAuth] = useState(false);
 
-  // Utility function to safely update user state
+  // Debounce state for rapid user changes
+  const [lastUserUpdate, setLastUserUpdate] = useState(0);
+  
+  // Utility function to safely update user state with debouncing
   const safeSetUser = useCallback((newUser: User | null) => {
+    // Debounce rapid state changes
+    const now = Date.now();
+    if (now - lastUserUpdate < 100) {
+      console.log('⏱️ Debouncing rapid user state change');
+      return;
+    }
+    setLastUserUpdate(now);
+    
     if (!user && !newUser) return; // Both null, no change needed
     if (!user && newUser) {
+      console.log('⏱️ Setting new user:', newUser.email);
       setUser(newUser);
       return;
     }
     if (user && !newUser) {
+      console.log('⏱️ Clearing user state');
       setUser(null);
       return;
     }
     if (user && newUser && user.id !== newUser.id) {
+      console.log('⏱️ Updating user from', user.email, 'to', newUser.email);
       setUser(newUser);
       return;
     }
     // Users are the same, no update needed
-  }, [user]);
+    console.log('⏱️ User state unchanged, skipping update');
+  }, [user, lastUserUpdate]);
 
   // Helper function to save last authenticated user
   const saveLastAuthenticatedUser = async (user: User) => {
@@ -235,16 +250,21 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
-  // Check existing auth session
+  // Check existing auth session with performance monitoring
   const checkExistingAuthSession = async (): Promise<boolean> => {
+    const startTime = Date.now();
+    console.log('⏱️ Starting auth session check...');
+    
     try {
       if (!FIREBASE_MODE) {
         const storedUser = await AsyncStorage.getItem(keys.user);
         if (storedUser) {
           const userData = JSON.parse(storedUser);
           safeSetUser(userData);
+          console.log(`⏱️ Offline mode auth check completed in ${Date.now() - startTime}ms`);
           return true;
         }
+        console.log(`⏱️ Offline mode auth check completed in ${Date.now() - startTime}ms`);
         return false;
       }
 
@@ -255,6 +275,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           const userData = JSON.parse(cachedUser);
           safeSetUser(userData);
           console.log('✅ User restored from cache during hot reload:', userData.email);
+          console.log(`⏱️ Cache-based auth check completed in ${Date.now() - startTime}ms`);
           return true;
         } catch (error) {
           console.log('❌ Cached user data corrupted, trying Firebase...');
@@ -291,6 +312,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         await saveLastAuthenticatedUser(firebaseUser);
         safeSetUser(firebaseUser);
         console.log('✅ User authenticated from Firebase with persistence:', firebaseUser.email);
+        console.log(`⏱️ Firebase auth check completed in ${Date.now() - startTime}ms`);
         return true;
       } else {
         console.log('⚠️ Firebase auth persistence issue - no user found, checking AsyncStorage backup...');

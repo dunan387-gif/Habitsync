@@ -39,7 +39,10 @@
         "VIBRATE",
         "WAKE_LOCK",
         "ACCESS_NETWORK_STATE",
-        "INTERNET"
+        "INTERNET",
+        "RECEIVE_BOOT_COMPLETED",
+        "REQUEST_IGNORE_BATTERY_OPTIMIZATIONS",
+        "FOREGROUND_SERVICE"
       ],
       "softwareKeyboardLayoutMode": "pan",
       "allowBackup": true,
@@ -62,7 +65,8 @@
         "expo-notifications",
         {
           "icon": "./assets/images/habit-tracker-icon-96.png",
-          "color": "#ffffff"
+          "color": "#ffffff",
+          "mode": "production"
         }
       ],
       "expo-font",

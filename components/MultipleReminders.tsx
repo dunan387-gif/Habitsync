@@ -17,11 +17,13 @@ export default function MultipleReminders({
   onRemindersChange, 
   maxReminders = 3 
 }: MultipleRemindersProps) {
+  console.log('🎯 MultipleReminders component rendered with:', { reminders, maxReminders });
   const { currentTheme } = useTheme();
   const { t, currentLanguage } = useLanguage();
   
   const [showTimePicker, setShowTimePicker] = useState<string | null>(null);
   const [showDayPicker, setShowDayPicker] = useState<string | null>(null);
+  const scrollViewRef = React.useRef<ScrollView>(null);
 
   // Days of the week array
   const daysOfWeek = [
@@ -49,6 +51,9 @@ export default function MultipleReminders({
     };
 
     onRemindersChange([...reminders, newReminder]);
+    
+    // Let maintainVisibleContentPosition handle the scroll behavior
+    // This will keep existing reminders visible while showing the new one
   };
 
   const removeReminder = (id: string) => {
@@ -146,8 +151,18 @@ export default function MultipleReminders({
           <Text style={styles.emptyText}>{t('no_reminders_set')}</Text>
         </View>
       ) : (
-        <ScrollView style={styles.remindersList} showsVerticalScrollIndicator={false}>
-          {reminders.map((reminder, index) => (
+        <View style={styles.scrollContainer}>
+          <ScrollView 
+            ref={scrollViewRef}
+            style={styles.remindersList} 
+            showsVerticalScrollIndicator={true}
+            contentContainerStyle={{ flexGrow: 1, paddingBottom: 20 }}
+            maintainVisibleContentPosition={{
+              minIndexForVisible: 0,
+              autoscrollToTopThreshold: 10
+            }}
+          >
+            {reminders.map((reminder, index) => (
             <View key={reminder.id} style={styles.reminderItem}>
               <View style={styles.reminderHeader}>
                 <View style={styles.reminderInfo}>
@@ -224,10 +239,11 @@ export default function MultipleReminders({
                   </View>
                 </View>
               </View>
-            </View>
-          ))}
-        </ScrollView>
-      )}
+                         </View>
+           ))}
+           </ScrollView>
+         </View>
+       )}
 
       {/* Time Picker Modal */}
       {showTimePicker && (
@@ -289,8 +305,11 @@ const createStyles = (colors: any) => StyleSheet.create({
     fontSize: 14,
     color: colors.textSecondary,
   },
+  scrollContainer: {
+    flex: 1,
+  },
   remindersList: {
-    maxHeight: 400,
+    maxHeight: 850,
   },
   reminderItem: {
     backgroundColor: colors.surface,

@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
-import { Platform, View, Text, ActivityIndicator } from 'react-native';
+import { Platform, View, Text, ActivityIndicator, TouchableOpacity } from 'react-native';
 import { useFonts } from 'expo-font';
 import { ErrorProvider, useError } from '@/context/ErrorContext';
 import ErrorToast from '@/components/ErrorToast';
@@ -13,17 +13,10 @@ import { GamificationProvider } from '@/context/GamificationContext';
 import { CelebrationProvider, useCelebration } from '@/context/CelebrationContext';
 import CelebrationOverlay from '@/components/CelebrationOverlay';
 import ErrorBoundary from '@/components/ErrorBoundary';
-import { EncryptionService } from '@/services/EncryptionService';
 import { HabitProvider } from '@/context/HabitContext';
 import { ThemeProvider, useTheme } from '@/context/ThemeContext';
 import { LanguageProvider, useLanguage } from '@/context/LanguageContext';
 import { AuthProvider, useAuth } from '@/context/AuthContext';
-import { requestNotificationPermissions } from '@/services/NotificationService';
-import MoodHabitOnboarding from '@/components/MoodHabitOnboarding';
-import { useAndroidLifecycle } from '@/hooks/useAndroidLifecycle';
-import AdvancedCacheService from '@/services/AdvancedCacheService';
-import NetworkPerformanceService from '@/services/NetworkPerformanceService';
-import BackgroundTaskService from '@/services/BackgroundTaskService';
 
 // Add gesture handler import at the top level
 import 'react-native-gesture-handler';
@@ -42,117 +35,22 @@ function ErrorToastContainer() {
   );
 }
 
-function RootLayoutContent() {
+function AppContent() {
   const { user, isLoading } = useAuth();
   const { currentTheme } = useTheme();
   const { currentError } = useError();
   const { t, isLoading: isLanguageLoading } = useLanguage();
-  const { currentCelebration, hideCelebration } = useCelebration();
   const [isAppReady, setIsAppReady] = useState(false);
-  const [hasError, setHasError] = useState(false);
 
-  // Android lifecycle management
-  const androidLifecycle = useAndroidLifecycle({
-    enableMemoryOptimization: true,
-    enablePerformanceTracking: true,
-    enableBackgroundCleanup: true,
-    onAppStateChange: (status) => {
-      console.log('📱 Android App State Changed:', status);
-    }
-  });
-
-  // Initialize advanced performance services
+  // Wait for everything to be loaded before rendering
   useEffect(() => {
-    const initializePerformanceServices = async () => {
-      try {
-        // Initialize advanced cache service
-        const cacheService = AdvancedCacheService.getInstance();
-        cacheService.optimizeForPlatform();
-
-        // Initialize network performance service
-        const networkService = NetworkPerformanceService.getInstance();
-        networkService.optimizeForPlatform();
-
-        // Initialize background task service
-        const backgroundService = BackgroundTaskService.getInstance();
-
-        console.log('🚀 Advanced performance services initialized');
-      } catch (error) {
-        console.error('Failed to initialize performance services:', error);
-      }
-    };
-
-    initializePerformanceServices();
-  }, []);
-
-  // CRITICAL: Wait for everything to be loaded before rendering ANYTHING
-  useEffect(() => {
-    try {
-      console.log('🔄 RootLayoutContent - Loading states:', { 
-        isLoading, 
-        isLanguageLoading, 
-        isAppReady 
-      });
-      
-      // CRITICAL: Check if Firebase is properly initialized
-      const checkFirebaseInitialization = async () => {
-        try {
-          const { firebaseAuth } = await import('@/lib/firebase');
-          if (!firebaseAuth) {
-            console.error('🚨 CRITICAL: Firebase Auth not initialized');
-            throw new Error('Firebase Auth not available');
-          }
-          console.log('✅ Firebase Auth verified');
-        } catch (firebaseError) {
-          console.error('🚨 CRITICAL: Firebase initialization check failed:', firebaseError);
-          // Don't throw here, just log the error
-        }
-      };
-      
-      checkFirebaseInitialization();
-      
-      if (!isLoading && !isLanguageLoading) {
-        // Add a small delay to ensure everything is truly ready
-        const timer = setTimeout(() => {
-          console.log('✅ Setting isAppReady to true');
-          setIsAppReady(true);
-        }, 100);
-        return () => clearTimeout(timer);
-      } else {
-        console.log('⏳ Still waiting for loading to complete:', { isLoading, isLanguageLoading });
-      }
-      
-      // Add a timeout to prevent infinite loading
-      const timeout = setTimeout(() => {
-        console.warn('⚠️ Loading timeout reached, forcing app ready state');
+    if (!isLoading && !isLanguageLoading) {
+      const timer = setTimeout(() => {
         setIsAppReady(true);
-      }, 10000); // 10 second timeout
-      
-      return () => clearTimeout(timeout);
-    } catch (error) {
-      console.error('Error in RootLayoutContent initialization:', error);
-      setHasError(true);
+      }, 100);
+      return () => clearTimeout(timer);
     }
   }, [isLoading, isLanguageLoading]);
-
-  // Show error screen if something went wrong
-  if (hasError) {
-    return (
-      <View style={{ 
-        flex: 1, 
-        justifyContent: 'center', 
-        alignItems: 'center', 
-        backgroundColor: '#f5f5f5'
-      }}>
-        <Text style={{ fontSize: 18, color: '#333', textAlign: 'center', marginBottom: 20 }}>
-          Something went wrong while loading the app.
-        </Text>
-        <Text style={{ fontSize: 14, color: '#666', textAlign: 'center' }}>
-          Please try restarting the app.
-        </Text>
-      </View>
-    );
-  }
 
   // Show loading screen until everything is ready
   if (!isAppReady) {
@@ -167,20 +65,12 @@ function RootLayoutContent() {
         <Text style={{ marginTop: 16, color: currentTheme.colors.text }}>
           Loading...
         </Text>
+        <Text style={{ marginTop: 8, color: currentTheme.colors.textSecondary, fontSize: 12 }}>
+          {isLoading ? 'Checking authentication...' : isLanguageLoading ? 'Loading translations...' : 'Initializing app...'}
+        </Text>
       </View>
     );
   }
-
-  // Safe title function - only called after everything is loaded
-  const safeTitle = (key: string): string => {
-    try {
-      const result = t(key);
-      return typeof result === 'string' && result.length > 0 ? result : key;
-    } catch (error) {
-      console.warn('Translation error for key:', key, error);
-      return key;
-    }
-  };
 
   return (
     <ErrorBoundary fallback={
@@ -193,110 +83,115 @@ function RootLayoutContent() {
         <Text style={{ fontSize: 18, color: currentTheme.colors.text, textAlign: 'center', marginBottom: 20 }}>
           Something went wrong while loading the app.
         </Text>
-        <Text style={{ fontSize: 14, color: currentTheme.colors.text, textAlign: 'center' }}>
-          Please try restarting the app.
-        </Text>
+        <TouchableOpacity 
+          style={{ 
+            backgroundColor: currentTheme.colors.primary, 
+            padding: 12, 
+            borderRadius: 8 
+          }}
+          onPress={() => {
+            // Force reload the app
+            window.location.reload();
+          }}
+        >
+          <Text style={{ color: 'white', fontWeight: '600' }}>Reload App</Text>
+        </TouchableOpacity>
       </View>
     }>
       <Stack
         screenOptions={{
-          headerStyle: {
-            backgroundColor: currentTheme.colors.background,
-          },
-          headerTintColor: currentTheme.colors.text,
-          headerTitleStyle: {
-            fontWeight: 'bold',
-          },
           headerShown: false,
+          animation: 'fade',
         }}
       >
-        <Stack.Screen name="(auth)" options={{ headerShown: false }} />
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="mood-tracking" options={{ headerShown: false }} />
-        
-        <Stack.Screen 
-          name="profile" 
-          options={{ 
-            headerShown: true, 
-            title: safeTitle('profile.title') 
-          }} 
-        />
-        <Stack.Screen 
-          name="habit/[id]" 
-          options={{ 
-            headerShown: true, 
-            title: safeTitle('habit_details') 
-          }} 
-        />
-        <Stack.Screen name="course/[id]" options={{ headerShown: false }} />
-        <Stack.Screen name="settings" options={{ headerShown: false }} />
-        <Stack.Screen name="+not-found" options={{ title: 'Not Found' }} />
+        <Stack.Screen name="index" />
+        <Stack.Screen name="(auth)" />
+        <Stack.Screen name="(tabs)" />
+        <Stack.Screen name="habit" />
+        <Stack.Screen name="course" />
+        <Stack.Screen name="mood-tracking" />
+        <Stack.Screen name="settings" />
+        <Stack.Screen name="profile" />
+        <Stack.Screen name="debug" />
+        <Stack.Screen name="test-auth" />
+        <Stack.Screen name="simple-test" />
+        <Stack.Screen name="minimal" />
+        <Stack.Screen name="+not-found" />
       </Stack>
-      
+
+      {/* Global Components */}
       <ErrorToastContainer />
       <PerformanceAlerts />
-      <CelebrationOverlay
-        visible={!!currentCelebration}
-        type={currentCelebration?.type || 'allComplete'}
-        message={currentCelebration?.message || ''}
-        onComplete={hideCelebration}
-      />
     </ErrorBoundary>
   );
 }
 
+// Component that uses celebration context
+function CelebrationWrapper() {
+  const { currentCelebration, hideCelebration } = useCelebration();
+  
+  return (
+    <>
+      {currentCelebration && (
+        <CelebrationOverlay
+          visible={true}
+          type={currentCelebration.type || 'allComplete'}
+          message={currentCelebration.message || ''}
+          onComplete={hideCelebration}
+        />
+      )}
+    </>
+  );
+}
+
+// Root provider wrapper to ensure proper initialization order
+function RootProviderWrapper({ children }: { children: React.ReactNode }) {
+  return (
+    <ErrorProvider>
+      <AuthProvider>
+        <ThemeProvider>
+          <LanguageProvider>
+            <CelebrationProvider>
+              <HabitProvider>
+                <GamificationProvider>
+                  <SubscriptionProvider>
+                    <PerformanceAlertsProvider>
+                      {children}
+                      <CelebrationWrapper />
+                    </PerformanceAlertsProvider>
+                  </SubscriptionProvider>
+                </GamificationProvider>
+              </HabitProvider>
+            </CelebrationProvider>
+          </LanguageProvider>
+        </ThemeProvider>
+      </AuthProvider>
+    </ErrorProvider>
+  );
+}
+
 export default function RootLayout() {
-  const [isInitialized, setIsInitialized] = useState(false);
+  const [fontsLoaded] = useFonts({
+    // Add any custom fonts here if needed
+  });
 
-  useEffect(() => {
-    const initializeApp = async () => {
-      try {
-        await EncryptionService.initializeEncryption();
-        setIsInitialized(true);
-      } catch (error) {
-        console.error('Failed to initialize encryption:', error);
-        setIsInitialized(true); // Continue anyway
-      }
-    };
-    
-    initializeApp();
-  }, []);
-
-  // Don't render anything until initialization is complete
-  if (!isInitialized) {
+  if (!fontsLoaded) {
     return (
       <View style={{ 
         flex: 1, 
         justifyContent: 'center', 
         alignItems: 'center', 
-        backgroundColor: '#4F46E5' // Use app's primary color
+        backgroundColor: '#ffffff' 
       }}>
-        <ActivityIndicator size="large" color="#ffffff" />
+        <ActivityIndicator size="large" color="#007AFF" />
+        <Text style={{ marginTop: 16, color: '#333' }}>Loading fonts...</Text>
       </View>
     );
   }
 
   return (
-    <AuthProvider>
-      <SubscriptionProvider>
-        <ThemeProvider>
-          <LanguageProvider>
-            <ErrorProvider>
-              <CelebrationProvider>
-                <GamificationProvider>
-                  <PerformanceAlertsProvider>
-                    <HabitProvider>
-                      <MoodHabitOnboarding>
-                        <RootLayoutContent />
-                      </MoodHabitOnboarding>
-                    </HabitProvider>
-                  </PerformanceAlertsProvider>
-                </GamificationProvider>
-              </CelebrationProvider>
-            </ErrorProvider>
-          </LanguageProvider>
-        </ThemeProvider>
-      </SubscriptionProvider>
-    </AuthProvider>
+    <RootProviderWrapper>
+      <AppContent />
+    </RootProviderWrapper>
   );
 }

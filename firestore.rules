@@ -33,11 +33,12 @@ service cloud.firestore {
 
     // Users collection - users can only access their own data
     match /users/{userId} {
-      allow read, write: if isOwner(userId);
+      allow read: if isOwner(userId);
       allow create: if isAuthenticated() && 
                        request.auth.uid == userId && 
                        isValidUserData();
-      allow update: if isOwner(userId);
+      allow update: if isAuthenticated() && 
+                       request.auth.uid == userId;
       allow delete: if isOwner(userId);
     }
     

@@ -29,9 +29,12 @@ export default function RegisterScreen() {
   const { colors } = useTheme();
   const { t } = useLanguage();
   const router = useRouter();
-  const { connectionQuality, isOnline } = useNetworkOptimization();
+  const { connectionQuality, isOnline, testNetworkConnectivity } = useNetworkOptimization();
 
   const handleRegister = async () => {
+    const startTime = Date.now();
+    console.log('⏱️ Starting registration process for:', email);
+    
     if (!name || !email || !password || !confirmPassword) {
       Alert.alert(t('auth.error'), t('auth.fillAllFields'));
       return;
@@ -47,22 +50,29 @@ export default function RegisterScreen() {
       return;
     }
 
-    if (!isOnline) {
-      Alert.alert(t('auth.error'), 'No internet connection. Please check your network and try again.');
+    // More lenient network check - only block if definitely offline
+    if (connectionQuality === 'offline') {
+      Alert.alert(t('auth.error'), 'No internet connection detected. Please check your network and try again.');
       return;
     }
 
-    if (connectionQuality === 'poor' || connectionQuality === 'offline') {
-      Alert.alert(t('auth.error'), 'Poor network connection detected. Registration may take longer than usual.');
+    // Warn about poor connection but don't block
+    if (connectionQuality === 'poor') {
+      Alert.alert(t('auth.warning'), 'Slow network connection detected. Registration may take longer than usual.');
     }
 
     setIsLoading(true);
     try {
+      // Force a network connectivity test before registration
+      console.log('🔍 Testing network connectivity before registration...');
+      await testNetworkConnectivity();
+      
       setRegistrationStep('Creating account...');
       await register(email, password, name);
       setRegistrationStep('Setting up your profile...');
       // Add a small delay to show the step
       await new Promise(resolve => setTimeout(resolve, 500));
+      console.log(`⏱️ Registration process completed in ${Date.now() - startTime}ms`);
       router.replace('/(tabs)' as any);
     } catch (error: any) {
       Alert.alert(t('auth.registrationFailed'), error?.message || t('auth.errorOccurred'));

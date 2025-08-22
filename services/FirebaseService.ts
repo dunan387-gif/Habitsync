@@ -29,6 +29,9 @@ import {
 export class FirebaseService {
   // Authentication methods
   static async signUpWithEmail(email: string, password: string, name: string): Promise<User> {
+    const startTime = Date.now();
+    console.log('⏱️ Starting Firebase registration for:', email);
+    
     try {
       if (!firebaseAuth || !firebaseFirestore) {
         throw new Error('Firebase not initialized');
@@ -68,11 +71,15 @@ export class FirebaseService {
           },
         };
 
+        console.log('⏱️ Creating user document in Firestore for:', firebaseUser.uid);
         await setDoc(doc(firebaseFirestore, 'users', firebaseUser.uid), userData);
+        console.log('✅ User document created successfully in Firestore');
         return userData;
       })();
 
-      return await Promise.race([registrationPromise, timeoutPromise]) as User;
+      const result = await Promise.race([registrationPromise, timeoutPromise]) as User;
+      console.log(`⏱️ Firebase registration completed in ${Date.now() - startTime}ms`);
+      return result;
     } catch (error: any) {
       console.error('Firebase signup error:', error);
       throw new Error(error.message || 'Signup failed');
@@ -80,6 +87,9 @@ export class FirebaseService {
   }
 
   static async signInWithEmail(email: string, password: string): Promise<User> {
+    const startTime = Date.now();
+    console.log('⏱️ Starting Firebase sign-in for:', email);
+    
     try {
       if (!firebaseAuth || !firebaseFirestore) {
         throw new Error('Firebase not initialized');
@@ -118,10 +128,14 @@ export class FirebaseService {
         await setDoc(doc(firebaseFirestore, 'users', firebaseUser.uid), newUser);
         console.log('✅ Created missing user document for:', email);
         
-        return newUser;
+        const result = newUser;
+        console.log(`⏱️ Firebase sign-in completed in ${Date.now() - startTime}ms`);
+        return result;
       }
 
-      return userDoc.data() as User;
+      const result = userDoc.data() as User;
+      console.log(`⏱️ Firebase sign-in completed in ${Date.now() - startTime}ms`);
+      return result;
     } catch (error: any) {
       console.error('Firebase signin error:', error);
       throw new Error(error.message || 'Signin failed');
@@ -167,6 +181,36 @@ export class FirebaseService {
         throw new Error('Firebase not initialized');
       }
       
+      // First check if the user document exists
+      const userDocRef = doc(firebaseFirestore, 'users', userId);
+      const userDoc = await getDoc(userDocRef);
+      
+      if (!userDoc.exists()) {
+        console.log('⚠️ User document not found, creating it for:', userId);
+        // Create the user document if it doesn't exist
+        const newUser: User = {
+          id: userId,
+          email: '', // Will be updated by the caller
+          name: data.name || '',
+          joinedAt: new Date().toISOString(),
+          onboardingCompleted: false,
+          preferences: {
+            notifications: true,
+            emailUpdates: true,
+            publicProfile: false,
+          },
+          stats: {
+            totalHabits: 0,
+            completedHabits: 0,
+            currentStreak: 0,
+            longestStreak: 0,
+          },
+        };
+        
+        await setDoc(userDocRef, newUser);
+        console.log('✅ Created missing user document for profile update');
+      }
+      
       // Convert ProfileUpdateData to Firestore-compatible format
       const updateData: any = {};
       
@@ -178,9 +222,21 @@ export class FirebaseService {
       if (data.coverImage !== undefined) updateData.coverImage = data.coverImage;
       if (data.preferences !== undefined) updateData.preferences = data.preferences;
       
-      await updateDoc(doc(firebaseFirestore, 'users', userId), updateData);
+      console.log('⏱️ Updating user profile for:', userId, 'with data:', Object.keys(updateData));
+      await updateDoc(userDocRef, updateData);
+      console.log('✅ User profile updated successfully');
     } catch (error: any) {
       console.error('Firebase updateUserProfile error:', error);
+      
+      // Provide more specific error messages
+      if (error.code === 'permission-denied') {
+        throw new Error('Permission denied. Please make sure you are signed in and have permission to update your profile.');
+      } else if (error.code === 'not-found') {
+        throw new Error('User profile not found. Please try signing in again.');
+      } else if (error.code === 'unavailable') {
+        throw new Error('Service temporarily unavailable. Please check your internet connection and try again.');
+      }
+      
       throw new Error(error.message || 'Profile update failed');
     }
   }

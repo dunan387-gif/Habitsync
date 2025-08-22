@@ -153,7 +153,7 @@ const updateReactNativeConnectionQuality = () => {
 
   // Calculate average response time
   const responseTimes = recentRequests
-    .filter(req => req.timestamp)
+    .filter(req => req.timestamp && req.timestamp > 0)
     .map(req => req.timestamp || 0);
   
   if (responseTimes.length === 0) {
@@ -168,20 +168,36 @@ const updateReactNativeConnectionQuality = () => {
   // Calculate success rate
   const successRate = networkStats.successfulRequests / Math.max(networkStats.totalRequests, 1);
   
-  // Determine connection quality based on response time and success rate
+  // More lenient connection quality detection - don't mark as offline unless absolutely necessary
   if (avgResponseTime < 300 && successRate > 0.95) {
     connectionQuality = 'excellent';
     connectionSpeed = 50; // Fast connection
+    isOnline = true;
   } else if (avgResponseTime < 1000 && successRate > 0.9) {
     connectionQuality = 'good';
     connectionSpeed = 20; // Good connection
-  } else if (avgResponseTime < 3000 && successRate > 0.8) {
+    isOnline = true;
+  } else if (avgResponseTime < 5000 && successRate > 0.7) {
     connectionQuality = 'poor';
     connectionSpeed = 5; // Slow connection
+    isOnline = true; // Still online, just slow
+  } else if (avgResponseTime < 10000 && successRate > 0.5) {
+    connectionQuality = 'poor';
+    connectionSpeed = 2; // Very slow connection
+    isOnline = true; // Still online, just very slow
   } else {
-    connectionQuality = 'offline';
-    connectionSpeed = 0;
-    isOnline = false;
+    // Only mark as offline if we have multiple failed requests and very poor performance
+    const recentFailures = recentRequests.filter(req => req.timestamp === 0).length;
+    if (recentFailures >= 3 && successRate < 0.3) {
+      connectionQuality = 'offline';
+      connectionSpeed = 0;
+      isOnline = false;
+    } else {
+      // Assume poor but still online
+      connectionQuality = 'poor';
+      connectionSpeed = 1;
+      isOnline = true;
+    }
   }
   
   // Add some realistic variation
@@ -228,30 +244,56 @@ export const useNetworkOptimization = (options: UseNetworkOptimizationOptions = 
     try {
       const startTime = Date.now();
       
-      // Use a reliable, fast endpoint for connectivity testing
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 5000); // 5 second timeout
+      // Use multiple reliable endpoints for connectivity testing
+      const testEndpoints = [
+        'https://www.google.com/favicon.ico', // Google favicon - very reliable
+        'https://www.cloudflare.com/favicon.ico', // Cloudflare favicon
+        'https://httpbin.org/delay/0', // Fallback to httpbin
+      ];
       
-      const response = await fetch('https://httpbin.org/delay/0', {
-        method: 'GET',
-        signal: controller.signal,
-      });
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 3000); // Reduced timeout to 3 seconds
+      
+      let success = false;
+      let responseTime = 0;
+      let usedEndpoint = '';
+      
+      // Try each endpoint until one succeeds
+      for (const endpoint of testEndpoints) {
+        try {
+          const response = await fetch(endpoint, {
+            method: 'GET',
+            signal: controller.signal,
+            cache: 'no-cache', // Don't use cached responses
+          });
+          
+          if (response.ok) {
+            success = true;
+            responseTime = Date.now() - startTime;
+            usedEndpoint = endpoint;
+            break;
+          }
+        } catch (endpointError) {
+          // Try next endpoint
+          continue;
+        }
+      }
       
       clearTimeout(timeoutId);
       
-      const responseTime = Date.now() - startTime;
-      
-      if (response.ok) {
+      if (success) {
+        console.log('✅ Network connectivity test passed:', usedEndpoint, 'in', responseTime, 'ms');
+        
         // Add a test request to history for quality estimation
         const testRequest: NetworkRequest = {
           id: `test_${Date.now()}`,
-          url: 'https://httpbin.org/delay/0',
+          url: usedEndpoint,
           method: 'GET',
           priority: 'low',
           timestamp: responseTime,
           retryCount: 0,
           maxRetries: 0,
-          timeout: 5000
+          timeout: 3000
         };
         
         requestHistory.push(testRequest);
@@ -263,24 +305,27 @@ export const useNetworkOptimization = (options: UseNetworkOptimizationOptions = 
         networkStats.totalRequests++;
         networkStats.successfulRequests++;
         networkStats.totalResponseTime += responseTime;
+        
+        // Force online status if test succeeds
+        isOnline = true;
+        connectionQuality = responseTime < 500 ? 'excellent' : responseTime < 1000 ? 'good' : 'poor';
+      } else {
+        throw new Error('All connectivity test endpoints failed');
       }
     } catch (error) {
-      // Network test failed - this helps determine offline status
-      // Only log if it's not an expected timeout/abort
-      if (error instanceof Error && error.name !== 'AbortError') {
-        console.log('Network connectivity test failed:', error);
-      }
+      // Network test failed - but be more lenient about marking as offline
+      console.log('⚠️ Network connectivity test failed:', error);
       
       // Add failed test to history
       const testRequest: NetworkRequest = {
         id: `test_failed_${Date.now()}`,
-        url: 'https://httpbin.org/delay/0',
+        url: 'connectivity_test',
         method: 'GET',
         priority: 'low',
         timestamp: 0,
         retryCount: 0,
         maxRetries: 0,
-        timeout: 5000
+        timeout: 3000
       };
       
       requestHistory.push(testRequest);
@@ -291,6 +336,14 @@ export const useNetworkOptimization = (options: UseNetworkOptimizationOptions = 
       // Update stats
       networkStats.totalRequests++;
       networkStats.failedRequests++;
+      
+      // Don't immediately mark as offline - only if we have multiple consecutive failures
+      const recentFailures = requestHistory.slice(-5).filter(req => req.timestamp === 0).length;
+      if (recentFailures >= 3) {
+        console.log('🚨 Multiple connectivity test failures, marking as offline');
+        isOnline = false;
+        connectionQuality = 'offline';
+      }
     }
   }, []);
 
@@ -728,6 +781,14 @@ export const useNetworkOptimization = (options: UseNetworkOptimizationOptions = 
             connectionQuality = 'poor';
           }
         }
+      }
+
+      // CRITICAL: Always assume online unless we have definitive proof of being offline
+      // This prevents false offline detection from blocking legitimate operations
+      if (connectionQuality === 'offline' && requestHistory.length < 3) {
+        console.log('⚠️ Overriding offline detection - insufficient data');
+        connectionQuality = 'poor';
+        isOnline = true;
       }
 
       setOnlineStatus(isOnline);

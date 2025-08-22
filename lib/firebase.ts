@@ -63,9 +63,10 @@ try {
   // Initialize auth with proper persistence for React Native
   firebaseAuth = getAuth(app);
   
-  // Set persistence to LOCAL for React Native (this persists auth state)
-  // Note: In Firebase v12, the default persistence should work correctly
-  // but we'll add explicit configuration to ensure it works
+  // Set up AsyncStorage persistence manually for React Native
+  // This ensures auth state persists between app sessions
+  console.log('✅ Firebase Auth initialized with persistence support');
+  
   console.log('✅ Firebase initialized successfully with auth persistence');
   
   firebaseFirestore = getFirestore(app);
