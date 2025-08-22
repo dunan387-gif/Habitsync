@@ -51,6 +51,13 @@ let firebaseAuth: any = null;
 let firebaseFirestore: any = null;
 
 try {
+  console.log('🚀 Initializing Firebase with config:', {
+    apiKey: firebaseConfig.apiKey ? 'SET' : 'MISSING',
+    authDomain: firebaseConfig.authDomain ? 'SET' : 'MISSING',
+    projectId: firebaseConfig.projectId ? 'SET' : 'MISSING',
+    appId: firebaseConfig.appId ? 'SET' : 'MISSING'
+  });
+  
   app = initializeApp(firebaseConfig);
   
   // Initialize auth with proper persistence for React Native
@@ -59,15 +66,28 @@ try {
   // Set persistence to LOCAL for React Native (this persists auth state)
   // Note: In Firebase v12, the default persistence should work correctly
   // but we'll add explicit configuration to ensure it works
-  console.log('Firebase initialized successfully with auth persistence');
+  console.log('✅ Firebase initialized successfully with auth persistence');
   
   firebaseFirestore = getFirestore(app);
+  
+  // Verify initialization
+  if (!firebaseAuth) {
+    throw new Error('Firebase Auth failed to initialize');
+  }
+  if (!firebaseFirestore) {
+    throw new Error('Firebase Firestore failed to initialize');
+  }
+  
+  console.log('✅ Firebase services verified and ready');
 } catch (error) {
-  console.error('Failed to initialize Firebase:', error);
+  console.error('❌ Failed to initialize Firebase:', error);
   // Create fallback objects to prevent crashes
   app = null;
   firebaseAuth = null;
   firebaseFirestore = null;
+  
+  // Log critical error for debugging
+  console.error('🚨 CRITICAL: Firebase initialization failed. App may not function properly.');
 }
 
 export { firebaseAuth, firebaseFirestore };

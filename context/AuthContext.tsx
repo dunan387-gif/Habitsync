@@ -465,10 +465,20 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setIsInitializing(false);
     };
     
-    setupAuth();
+    // CRITICAL: Add timeout to prevent infinite loading
+    const setupTimeout = setTimeout(() => {
+      console.warn('⚠️ Auth setup timeout reached, forcing completion');
+      setIsLoading(false);
+      setIsInitializing(false);
+    }, 15000); // 15 second timeout
+    
+    setupAuth().finally(() => {
+      clearTimeout(setupTimeout);
+    });
     
     return () => {
       isMounted = false;
+      clearTimeout(setupTimeout);
       if (unsubscribe) {
         unsubscribe();
       }

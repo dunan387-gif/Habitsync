@@ -94,6 +94,23 @@ function RootLayoutContent() {
         isAppReady 
       });
       
+      // CRITICAL: Check if Firebase is properly initialized
+      const checkFirebaseInitialization = async () => {
+        try {
+          const { firebaseAuth } = await import('@/lib/firebase');
+          if (!firebaseAuth) {
+            console.error('🚨 CRITICAL: Firebase Auth not initialized');
+            throw new Error('Firebase Auth not available');
+          }
+          console.log('✅ Firebase Auth verified');
+        } catch (firebaseError) {
+          console.error('🚨 CRITICAL: Firebase initialization check failed:', firebaseError);
+          // Don't throw here, just log the error
+        }
+      };
+      
+      checkFirebaseInitialization();
+      
       if (!isLoading && !isLanguageLoading) {
         // Add a small delay to ensure everything is truly ready
         const timer = setTimeout(() => {
@@ -166,7 +183,21 @@ function RootLayoutContent() {
   };
 
   return (
-    <ErrorBoundary>
+    <ErrorBoundary fallback={
+      <View style={{ 
+        flex: 1, 
+        justifyContent: 'center', 
+        alignItems: 'center', 
+        backgroundColor: currentTheme.colors.background
+      }}>
+        <Text style={{ fontSize: 18, color: currentTheme.colors.text, textAlign: 'center', marginBottom: 20 }}>
+          Something went wrong while loading the app.
+        </Text>
+        <Text style={{ fontSize: 14, color: currentTheme.colors.text, textAlign: 'center' }}>
+          Please try restarting the app.
+        </Text>
+      </View>
+    }>
       <Stack
         screenOptions={{
           headerStyle: {
