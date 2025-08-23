@@ -26,7 +26,7 @@ import PredictiveAnalyticsService from '@/services/PredictiveAnalyticsService';
 import { WellnessIntegrationService } from '@/services/WellnessIntegrationService';
 import LibraryAnalyticsService from '@/services/LibraryAnalyticsService';
 import LibraryAnalyticsDisplay from '@/components/LibraryAnalyticsDisplay';
-import MoodHabitDashboard from '@/components/MoodHabitDashboard';
+import SimpleMoodAnalytics from '@/components/SimpleMoodAnalytics';
 import SleepTrackingForm from '@/components/SleepTrackingForm';
 import ExerciseTrackingForm from '@/components/ExerciseTrackingForm';
 import NutritionTrackingForm from '@/components/NutritionTrackingForm';
@@ -1082,7 +1082,7 @@ export default function StatsScreen() {
             <Text style={styles.sectionTitle}>😊 {t('stats.mood.title')}</Text>
             <Text style={styles.sectionSubtitle}>{t('stats.mood.subtitle')}</Text>
             {(!isUpgradeTestingEnabled || canUseMoodHabitCorrelations()) ? (
-              <MoodHabitDashboard />
+              <SimpleMoodAnalytics />
             ) : (
               <View style={styles.upgradeContainer}>
                 <Text style={styles.sectionSubtitle}>{t('stats.mood.upgradeMessage')}</Text>
