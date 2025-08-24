@@ -63,9 +63,8 @@ export default function RegisterScreen() {
 
     setIsLoading(true);
     try {
-      // Force a network connectivity test before registration
-      console.log('🔍 Testing network connectivity before registration...');
-      await testNetworkConnectivity();
+          // Force a network connectivity test before registration
+    await testNetworkConnectivity();
       
       setRegistrationStep('Creating account...');
       await register(email, password, name);

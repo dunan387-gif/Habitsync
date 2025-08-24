@@ -282,7 +282,7 @@ export const useNetworkOptimization = (options: UseNetworkOptimizationOptions = 
       clearTimeout(timeoutId);
       
       if (success) {
-        console.log('✅ Network connectivity test passed:', usedEndpoint, 'in', responseTime, 'ms');
+        // Network connectivity test passed silently
         
         // Add a test request to history for quality estimation
         const testRequest: NetworkRequest = {
@@ -314,7 +314,7 @@ export const useNetworkOptimization = (options: UseNetworkOptimizationOptions = 
       }
     } catch (error) {
       // Network test failed - but be more lenient about marking as offline
-      console.log('⚠️ Network connectivity test failed:', error);
+      // Silently handle network test failures
       
       // Add failed test to history
       const testRequest: NetworkRequest = {
@@ -340,7 +340,7 @@ export const useNetworkOptimization = (options: UseNetworkOptimizationOptions = 
       // Don't immediately mark as offline - only if we have multiple consecutive failures
       const recentFailures = requestHistory.slice(-5).filter(req => req.timestamp === 0).length;
       if (recentFailures >= 3) {
-        console.log('🚨 Multiple connectivity test failures, marking as offline');
+        // Multiple connectivity test failures, marking as offline
         isOnline = false;
         connectionQuality = 'offline';
       }
@@ -786,7 +786,7 @@ export const useNetworkOptimization = (options: UseNetworkOptimizationOptions = 
       // CRITICAL: Always assume online unless we have definitive proof of being offline
       // This prevents false offline detection from blocking legitimate operations
       if (connectionQuality === 'offline' && requestHistory.length < 3) {
-        console.log('⚠️ Overriding offline detection - insufficient data');
+        // Overriding offline detection - insufficient data
         connectionQuality = 'poor';
         isOnline = true;
       }

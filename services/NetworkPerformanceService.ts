@@ -455,7 +455,7 @@ class NetworkPerformanceService {
 
   // Memory pressure handling
   handleMemoryPressure(): void {
-    console.log('🔄 Handling memory pressure - clearing network cache');
+    // Handling memory pressure - clearing network cache
     this.clearCache();
     this.requestQueue = [];
     this.activeRequests.clear();

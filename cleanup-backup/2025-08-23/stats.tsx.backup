@@ -5,28 +5,26 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { 
   BarChart2, LineChart, TrendingUp, Calendar, Clock, Target, Award, Activity, 
   BarChart3, PieChart, Filter, Flame, Trophy, Zap, Star, ChevronDown,
-  Download, Share2, Users, Sparkles, Heart, Smile, Brain, Crown, BookOpen
+  Download, Share2, Users, Sparkles, Heart, Smile, Brain, Crown
 } from 'lucide-react-native';
 import { useHabits } from '@/context/HabitContext';
 import { useTheme } from '@/context/ThemeContext';
 import { useLanguage } from '@/context/LanguageContext';
 import { useSubscription } from '@/context/SubscriptionContext';
-
+import { MoodEntry, HabitMoodEntry } from '@/types';
 import ProgressChart from '@/components/ProgressChart';
 import HabitStats from '@/components/HabitStats';
-import ActivityLog from '@/components/ActivityLog';
-import MiniProgressCharts from '@/components/MiniProgressCharts';
+import ActivityLog from '../../components/ActivityLog';
+import MiniProgressCharts from '../../components/MiniProgressCharts';
 import ShareProgress from '@/components/ShareProgress';
 import InviteFriends from '@/components/InviteFriends';
 import HabitHeatmap from '@/components/HabitHeatmap';
 import AdvancedAnalyticsDashboard from '@/components/AdvancedAnalyticsDashboard';
 import EnhancedCoachingDashboard from '@/components/EnhancedCoachingDashboard';
 import PatternInsights from '@/components/PatternInsights';
-import PredictiveAnalyticsService from '@/services/PredictiveAnalyticsService';
+import { PredictiveAnalyticsService } from '@/services/PredictiveAnalyticsService';
 import { WellnessIntegrationService } from '@/services/WellnessIntegrationService';
-import LibraryAnalyticsService from '@/services/LibraryAnalyticsService';
-import LibraryAnalyticsDisplay from '@/components/LibraryAnalyticsDisplay';
-
+import MoodHabitDashboard from '@/components/MoodHabitDashboard';
 import SleepTrackingForm from '@/components/SleepTrackingForm';
 import ExerciseTrackingForm from '@/components/ExerciseTrackingForm';
 import NutritionTrackingForm from '@/components/NutritionTrackingForm';
@@ -34,7 +32,7 @@ import MeditationTrackingForm from '@/components/MeditationTrackingForm';
 import SocialActivityTrackingForm from '@/components/SocialActivityTrackingForm';
 
 
-type AnalyticsTab = 'overview' | 'wellness' | 'advanced' | 'library';
+type AnalyticsTab = 'overview' | 'mood' | 'wellness' | 'advanced';
 
 export default function StatsScreen() {
   const { habits, getCompletionRate, getDailyCompletionData, getTotalCompletions, getOverallCompletionRate } = useHabits();
@@ -48,8 +46,7 @@ export default function StatsScreen() {
     canUsePerformanceAlerts, 
     canUsePatternInsights,
     canUseMoodHabitCorrelations,
-    showUpgradePrompt,
-    isUpgradeTestingEnabled
+    showUpgradePrompt 
   } = useSubscription();
 
   const [selectedAnalyticsTab, setSelectedAnalyticsTab] = useState<AnalyticsTab>('overview');
@@ -57,7 +54,8 @@ export default function StatsScreen() {
   const [selectedActivityFilter, setSelectedActivityFilter] = useState<'all' | 'completed' | 'missed'>('all');
   const [showShareModal, setShowShareModal] = useState(false);
   const [showDropdown, setShowDropdown] = useState(false);
-
+  const [moodData, setMoodData] = useState<MoodEntry[]>([]);
+  const [habitMoodData, setHabitMoodData] = useState<HabitMoodEntry[]>([]);
   const [isDataLoaded, setIsDataLoaded] = useState(false);
 
   // Wellness data state
@@ -79,7 +77,28 @@ export default function StatsScreen() {
     completionRate: new Animated.Value(0)
   });
 
+  // Load mood and habit mood data
+  useEffect(() => {
+    const loadMoodAndHabitData = async () => {
+      try {
+        const [storedMoodData, storedHabitMoodData] = await Promise.all([
+          AsyncStorage.getItem('moodEntries'),
+          AsyncStorage.getItem('habitMoodEntries')
+        ]);
+        
+        setMoodData(storedMoodData ? JSON.parse(storedMoodData) : []);
+        setHabitMoodData(storedHabitMoodData ? JSON.parse(storedHabitMoodData) : []);
+        setIsDataLoaded(true);
+      } catch (error) {
+        console.error('Error loading mood and habit data:', error);
+        setMoodData([]);
+        setHabitMoodData([]);
+        setIsDataLoaded(true);
+      }
+    };
 
+    loadMoodAndHabitData();
+  }, []);
 
   // Load wellness data and analysis
   useEffect(() => {
@@ -284,8 +303,8 @@ export default function StatsScreen() {
 
     try {
       const habitsData = habits || [];
-        const moodEntries: any[] = [];
-        const habitMoodEntries: any[] = [];
+      const moodEntries = moodData || [];
+      const habitMoodEntries = habitMoodData || [];
       
       // Create comprehensive data export
       const exportData = {
@@ -530,28 +549,36 @@ export default function StatsScreen() {
       {
         key: 'overview',
         icon: BarChart3,
+        label: t('stats.tabs.overview'),
+        description: t('stats.tabs.overviewDesc'),
         color: currentTheme.colors.primary
       },
-
+      {
+        key: 'mood',
+        icon: Heart,
+        label: t('stats.tabs.mood'),
+        description: t('stats.tabs.moodDesc'),
+        color: currentTheme.colors.warning
+      },
       {
         key: 'wellness',
         icon: Activity,
+        label: t('stats.tabs.wellness'),
+        description: t('stats.tabs.wellnessDesc'),
         color: currentTheme.colors.success
       },
       {
         key: 'advanced',
         icon: Sparkles,
-        color: currentTheme.colors.accent
-      },
-      {
-        key: 'library',
-        icon: BookOpen,
+        label: t('stats.tabs.advanced'),
+        description: t('stats.tabs.advancedDesc'),
         color: currentTheme.colors.accent
       }
     ];
 
     return (
       <View style={styles.analyticsTabsContainer}>
+        <Text style={styles.analyticsTabsTitle}>{t('stats.analytics.title')}</Text>
         <View style={styles.analyticsTabs}>
           {tabs.map((tab) => {
             const IconComponent = tab.icon;
@@ -572,10 +599,23 @@ export default function StatsScreen() {
                   { backgroundColor: isActive ? `${tab.color}15` : `${currentTheme.colors.textMuted}10` }
                 ]}>
                   <IconComponent 
-                    size={24} 
+                    size={20} 
                     color={isActive ? tab.color : currentTheme.colors.textMuted} 
                   />
                 </View>
+                <Text style={[
+                  styles.analyticsTabText,
+                  isActive && styles.activeAnalyticsTabText,
+                  { color: isActive ? tab.color : currentTheme.colors.textMuted }
+                ]}>
+                  {tab.label}
+                </Text>
+                <Text style={[
+                  styles.analyticsTabDescription,
+                  isActive && styles.activeAnalyticsTabDescription
+                ]}>
+                  {tab.description}
+                </Text>
                 {isActive && (
                   <View style={[styles.analyticsTabIndicator, { backgroundColor: tab.color }]} />
                 )}
@@ -962,7 +1002,7 @@ export default function StatsScreen() {
                  data={generateHeatmapData(habits || [])}
                  onDayPress={(date, count) => {
                    // Handle day press - could show tooltip or details
-                   // console.log(`Date: ${date}, Habits completed: ${count}`);
+                   console.log(`Date: ${date}, Habits completed: ${count}`);
                  }}
                />
                <View style={styles.heatmapStats}>
@@ -1020,17 +1060,14 @@ export default function StatsScreen() {
             </View>
 
             {/* Advanced Analytics Dashboard - Only show for Pro users */}
-            {(!isUpgradeTestingEnabled || canAccessAnalytics(365)) ? (
+            {canAccessAnalytics(365) ? (
               <View style={styles.advancedAnalyticsContainer}>
                 <View style={styles.advancedAnalyticsHeader}>
                   <Text style={styles.sectionTitle}>🤖 {t('stats.advanced.title')}</Text>
                   <Text style={styles.sectionSubtitle}>{t('stats.advanced.subtitle')}</Text>
                 </View>
                 {isDataLoaded ? (
-                  <AdvancedAnalyticsDashboard 
-                    moodData={[]}
-                    habitMoodData={[]}
-                  />
+                  <AdvancedAnalyticsDashboard />
                 ) : (
                   <Text style={styles.loadingText}>{t('stats.loading')}</Text>
                 )}
@@ -1043,31 +1080,251 @@ export default function StatsScreen() {
                   style={styles.upgradeButton}
                   onPress={() => showUpgradePrompt('analytics_limit')}
                 >
-                  <Text style={styles.upgradeButtonText}>{t('premium.upgradeToPro')}</Text>
+                  <Text style={styles.upgradeButtonText}>{t('upgradeToPro')}</Text>
                 </TouchableOpacity>
               </View>
             )}
            </>
          );
 
-
+      case 'mood':
+        return (
+          <View style={styles.moodContainer}>
+            <Text style={styles.sectionTitle}>😊 {t('stats.mood.title')}</Text>
+            <Text style={styles.sectionSubtitle}>{t('stats.mood.subtitle')}</Text>
+            {canUseMoodHabitCorrelations() ? (
+              <MoodHabitDashboard />
+            ) : (
+              <View style={styles.upgradeContainer}>
+                <Text style={styles.sectionSubtitle}>{t('stats.mood.upgradeMessage')}</Text>
+                <TouchableOpacity 
+                  style={styles.upgradeButton}
+                  onPress={() => showUpgradePrompt('mood_correlations')}
+                >
+                  <Text style={styles.upgradeButtonText}>{t('upgradeToPro')}</Text>
+                </TouchableOpacity>
+              </View>
+            )}
+          </View>
+        );
 
             case 'wellness':
         return (
           <>
             {!showWellnessForm ? (
               <View style={styles.wellnessContainer}>
-                {wellnessLoading ? (
-                  <View style={styles.loadingContainer}>
-                    <Text style={styles.loadingText}>{t('stats.loading')}</Text>
-                  </View>
-                ) : (
+                {/* Wellness Overview Header */}
+                <View style={styles.wellnessHeader}>
+                  <Text style={styles.sectionTitle}>💚 {t('wellness.title')}</Text>
+                  <Text style={styles.sectionSubtitle}>{t('wellness.subtitle')}</Text>
+                </View>
+
+                {canUseWellnessIntegration() ? (
                   <>
-                    {/* Wellness Overview Header */}
-                    <View style={styles.wellnessHeader}>
-                      <Text style={styles.sectionTitle}>💚 {t('wellness.title')}</Text>
-                      <Text style={styles.sectionSubtitle}>{t('wellness.subtitle')}</Text>
-                    </View>
+                    {wellnessLoading ? (
+                      <View style={styles.loadingContainer}>
+                        <Text style={styles.loadingText}>{t('stats.loading')}</Text>
+                      </View>
+                    ) : (
+                      <>
+                        {/* Wellness Score Overview */}
+                        <View style={styles.wellnessScoreContainer}>
+                          <View style={styles.wellnessScoreCard}>
+                            <View style={styles.wellnessScoreHeader}>
+                              <Heart size={28} color={currentTheme.colors.primary} />
+                              <Text style={styles.wellnessScoreTitle}>{t('wellness.overview.overallScore')}</Text>
+                            </View>
+                            <Text style={styles.wellnessScoreValue}>{calculateWellnessMetrics().overallScore}%</Text>
+                            <View style={styles.wellnessScoreProgress}>
+                              <View style={[styles.wellnessScoreFill, { width: `${calculateWellnessMetrics().overallScore}%`, backgroundColor: currentTheme.colors.primary }]} />
+                            </View>
+                            <Text style={styles.wellnessScoreTrend}>
+                              {calculateWellnessMetrics().weeklyTrend > 0 ? '↗️' : calculateWellnessMetrics().weeklyTrend < 0 ? '↘️' : '→'} 
+                              {calculateWellnessMetrics().weeklyTrend > 0 ? ` +${calculateWellnessMetrics().weeklyTrend}%` : 
+                               calculateWellnessMetrics().weeklyTrend < 0 ? ` ${calculateWellnessMetrics().weeklyTrend}%` : ' 0%'} {t('stats.thisWeek')}
+                            </Text>
+                          </View>
+                        </View>
+
+                        {/* Wellness Pillars Grid */}
+                        <View style={styles.wellnessPillarsContainer}>
+                          <Text style={styles.wellnessSectionTitle}>{t('wellness.pillars.title')}</Text>
+                          <View style={styles.wellnessPillarsGrid}>
+                            <View style={styles.wellnessPillarCard}>
+                              <View style={styles.wellnessPillarIcon}>
+                                <Activity size={24} color={currentTheme.colors.success} />
+                              </View>
+                              <Text style={styles.wellnessPillarTitle}>{t('wellness.categories.physical')}</Text>
+                              <Text style={styles.wellnessPillarValue}>{calculateWellnessMetrics().exercise.score}%</Text>
+                              <View style={styles.wellnessPillarProgress}>
+                                <View style={[styles.wellnessPillarFill, { width: `${calculateWellnessMetrics().exercise.score}%`, backgroundColor: currentTheme.colors.success }]} />
+                              </View>
+                              <Text style={styles.wellnessPillarDesc}>{t('wellness.categories.physicalSubtitle')}</Text>
+                            </View>
+
+                            <View style={styles.wellnessPillarCard}>
+                              <View style={styles.wellnessPillarIcon}>
+                                <Brain size={24} color={currentTheme.colors.accent} />
+                              </View>
+                              <Text style={styles.wellnessPillarTitle}>{t('wellness.categories.mental')}</Text>
+                              <Text style={styles.wellnessPillarValue}>{calculateWellnessMetrics().meditation.score}%</Text>
+                              <View style={styles.wellnessPillarProgress}>
+                                <View style={[styles.wellnessPillarFill, { width: `${calculateWellnessMetrics().meditation.score}%`, backgroundColor: currentTheme.colors.accent }]} />
+                              </View>
+                              <Text style={styles.wellnessPillarDesc}>{t('wellness.categories.mentalSubtitle')}</Text>
+                            </View>
+
+                            <View style={styles.wellnessPillarCard}>
+                              <View style={styles.wellnessPillarIcon}>
+                                <Users size={24} color={currentTheme.colors.warning} />
+                              </View>
+                              <Text style={styles.wellnessPillarTitle}>{t('wellness.categories.social')}</Text>
+                              <Text style={styles.wellnessPillarValue}>{calculateWellnessMetrics().social.score}%</Text>
+                              <View style={styles.wellnessPillarProgress}>
+                                <View style={[styles.wellnessPillarFill, { width: `${calculateWellnessMetrics().social.score}%`, backgroundColor: currentTheme.colors.warning }]} />
+                              </View>
+                              <Text style={styles.wellnessPillarDesc}>{t('wellness.categories.socialSubtitle')}</Text>
+                            </View>
+
+                            <View style={styles.wellnessPillarCard}>
+                              <View style={styles.wellnessPillarIcon}>
+                                <Target size={24} color={currentTheme.colors.primary} />
+                              </View>
+                              <Text style={styles.wellnessPillarTitle}>{t('wellness.categories.spiritual')}</Text>
+                              <Text style={styles.wellnessPillarValue}>{calculateWellnessMetrics().sleep.score}%</Text>
+                              <View style={styles.wellnessPillarProgress}>
+                                <View style={[styles.wellnessPillarFill, { width: `${calculateWellnessMetrics().sleep.score}%`, backgroundColor: currentTheme.colors.primary }]} />
+                              </View>
+                              <Text style={styles.wellnessPillarDesc}>{t('wellness.categories.spiritualSubtitle')}</Text>
+                            </View>
+                          </View>
+                        </View>
+
+                        {/* Wellness Metrics */}
+                        <View style={styles.wellnessMetricsContainer}>
+                          <Text style={styles.wellnessSectionTitle}>{t('wellness.metrics.title')}</Text>
+                          <View style={styles.wellnessMetricsGrid}>
+                            <View style={styles.wellnessMetricCard}>
+                              <View style={styles.wellnessMetricIcon}>
+                                <Clock size={20} color={currentTheme.colors.success} />
+                              </View>
+                              <Text style={styles.wellnessMetricValue}>{calculateWellnessMetrics().sleep.avgHours}h</Text>
+                              <Text style={styles.wellnessMetricLabel}>{t('stats.wellness.metrics.avgSleep')}</Text>
+                              <Text style={styles.wellnessMetricTrend}>
+                                {calculateWellnessMetrics().sleep.trend > 0 ? '↗️' : calculateWellnessMetrics().sleep.trend < 0 ? '↘️' : '→'} 
+                                {calculateWellnessMetrics().sleep.trend > 0 ? ` +${calculateWellnessMetrics().sleep.trend}h` : 
+                                 calculateWellnessMetrics().sleep.trend < 0 ? ` ${calculateWellnessMetrics().sleep.trend}h` : ' 0h'}
+                              </Text>
+                            </View>
+
+                            <View style={styles.wellnessMetricCard}>
+                              <View style={styles.wellnessMetricIcon}>
+                                <Activity size={20} color={currentTheme.colors.primary} />
+                              </View>
+                              <Text style={styles.wellnessMetricValue}>{calculateWellnessMetrics().exercise.avgSteps}k</Text>
+                              <Text style={styles.wellnessMetricLabel}>{t('stats.wellness.metrics.dailySteps')}</Text>
+                              <Text style={styles.wellnessMetricTrend}>
+                                {calculateWellnessMetrics().exercise.trend > 0 ? '↗️' : calculateWellnessMetrics().exercise.trend < 0 ? '↘️' : '→'} 
+                                {calculateWellnessMetrics().exercise.trend > 0 ? ` +${calculateWellnessMetrics().exercise.trend}k` : 
+                                 calculateWellnessMetrics().exercise.trend < 0 ? ` ${calculateWellnessMetrics().exercise.trend}k` : ' 0k'}
+                              </Text>
+                            </View>
+
+                            <View style={styles.wellnessMetricCard}>
+                              <View style={styles.wellnessMetricIcon}>
+                                <Zap size={20} color={currentTheme.colors.warning} />
+                              </View>
+                              <Text style={styles.wellnessMetricValue}>{calculateWellnessMetrics().meditation.avgDuration}m</Text>
+                              <Text style={styles.wellnessMetricLabel}>{t('stats.wellness.metrics.meditation')}</Text>
+                              <Text style={styles.wellnessMetricTrend}>
+                                {calculateWellnessMetrics().meditation.trend > 0 ? '↗️' : calculateWellnessMetrics().meditation.trend < 0 ? '↘️' : '→'} 
+                                {calculateWellnessMetrics().meditation.trend > 0 ? ` +${calculateWellnessMetrics().meditation.trend}m` : 
+                                 calculateWellnessMetrics().meditation.trend < 0 ? ` ${calculateWellnessMetrics().meditation.trend}m` : ' 0m'}
+                              </Text>
+                            </View>
+
+                            <View style={styles.wellnessMetricCard}>
+                              <View style={styles.wellnessMetricIcon}>
+                                <Users size={20} color={currentTheme.colors.accent} />
+                              </View>
+                              <Text style={styles.wellnessMetricValue}>{calculateWellnessMetrics().nutrition.avgWater}</Text>
+                              <Text style={styles.wellnessMetricLabel}>{t('stats.wellness.metrics.waterGlasses')}</Text>
+                              <Text style={styles.wellnessMetricTrend}>
+                                {calculateWellnessMetrics().nutrition.trend > 0 ? '↗️' : calculateWellnessMetrics().nutrition.trend < 0 ? '↘️' : '→'} 
+                                {calculateWellnessMetrics().nutrition.trend > 0 ? ` +${calculateWellnessMetrics().nutrition.trend}` : 
+                                 calculateWellnessMetrics().nutrition.trend < 0 ? ` ${calculateWellnessMetrics().nutrition.trend}` : ' 0'}
+                              </Text>
+                            </View>
+                          </View>
+                        </View>
+
+                        {/* Wellness Add Button */}
+                        <View style={styles.wellnessAddContainer}>
+                          <Text style={styles.wellnessSectionTitle}>{t('stats.wellness.trackYourWellness')}</Text>
+                          <Text style={styles.wellnessAddSubtitle}>{t('stats.wellness.addWellnessSubtitle')}</Text>
+                          
+                          <TouchableOpacity style={styles.wellnessAddButton} onPress={handleAddWellness}>
+                            <View style={styles.wellnessAddButtonContent}>
+                              <Text style={styles.wellnessAddButtonIcon}>+</Text>
+                              <Text style={styles.wellnessAddButtonText}>{t('stats.wellness.addWellnessActivity')}</Text>
+                            </View>
+                          </TouchableOpacity>
+                        </View>
+
+                        {/* Wellness Recommendations */}
+                        <View style={styles.wellnessRecommendationsContainer}>
+                          <Text style={styles.wellnessSectionTitle}>{t('stats.recommendations.title')}</Text>
+                          <View style={styles.wellnessRecommendationsList}>
+                            <TouchableOpacity style={styles.wellnessRecommendationCard}>
+                              <View style={styles.wellnessRecommendationIcon}>
+                                <Activity size={20} color={currentTheme.colors.success} />
+                              </View>
+                              <View style={styles.wellnessRecommendationContent}>
+                                <Text style={styles.wellnessRecommendationTitle}>{t('stats.wellness.recommendations.increaseMovement')}</Text>
+                                <Text style={styles.wellnessRecommendationDesc}>{t('stats.wellness.recommendations.increaseMovementDesc')}</Text>
+                              </View>
+                              <ChevronDown size={16} color={currentTheme.colors.textMuted} />
+                            </TouchableOpacity>
+
+                            <TouchableOpacity style={styles.wellnessRecommendationCard}>
+                              <View style={styles.wellnessRecommendationIcon}>
+                                <Clock size={20} color={currentTheme.colors.primary} />
+                              </View>
+                              <View style={styles.wellnessRecommendationContent}>
+                                <Text style={styles.wellnessRecommendationTitle}>{t('stats.wellness.recommendations.optimizeSleep')}</Text>
+                                <Text style={styles.wellnessRecommendationDesc}>{t('stats.wellness.recommendations.optimizeSleepDesc')}</Text>
+                              </View>
+                              <ChevronDown size={16} color={currentTheme.colors.textMuted} />
+                            </TouchableOpacity>
+
+                            <TouchableOpacity style={styles.wellnessRecommendationCard}>
+                              <View style={styles.wellnessRecommendationIcon}>
+                                <Brain size={20} color={currentTheme.colors.accent} />
+                              </View>
+                              <View style={styles.wellnessRecommendationContent}>
+                                <Text style={styles.wellnessRecommendationTitle}>{t('stats.wellness.recommendations.deepBreathing')}</Text>
+                                <Text style={styles.wellnessRecommendationDesc}>{t('stats.wellness.recommendations.deepBreathingDesc')}</Text>
+                              </View>
+                              <ChevronDown size={16} color={currentTheme.colors.textMuted} />
+                            </TouchableOpacity>
+                          </View>
+                        </View>
+                      </>
+                    )}
+                  </>
+                ) : (
+                  <View style={styles.upgradeContainer}>
+                    <Text style={styles.sectionSubtitle}>{t('stats.wellness.upgradeMessage')}</Text>
+                    <TouchableOpacity 
+                      style={styles.upgradeButton}
+                      onPress={() => showUpgradePrompt('wellness_integration')}
+                    >
+                      <Text style={styles.upgradeButtonText}>{t('upgradeToPro')}</Text>
+                    </TouchableOpacity>
+                  </View>
+                )}
+              </View>
+            ) : (
 
                     {/* Wellness Score Overview */}
                     <View style={styles.wellnessScoreContainer}>
@@ -1253,8 +1510,19 @@ export default function StatsScreen() {
                     </View>
                   </>
                 )}
-              </View>
-            ) : (
+                  ) : (
+                    <View style={styles.upgradeContainer}>
+                      <Text style={styles.sectionSubtitle}>{t('stats.wellness.upgradeMessage')}</Text>
+                      <TouchableOpacity 
+                        style={styles.upgradeButton}
+                        onPress={() => showUpgradePrompt('wellness_integration')}
+                      >
+                        <Text style={styles.upgradeButtonText}>{t('upgradeToPro')}</Text>
+                      </TouchableOpacity>
+                    </View>
+                  )}
+                </View>
+              ) : (
               <View style={styles.wellnessFormSection}>
                 <View style={styles.wellnessFormHeader}>
                   <TouchableOpacity style={styles.wellnessFormBackButton} onPress={handleCloseWellnessForm}>
@@ -1310,45 +1578,40 @@ export default function StatsScreen() {
         return (
           <View style={styles.aiCoachingContainer}>
             <View style={styles.aiCoachingHeader}>
-              <View style={styles.aiCoachingTitleContainer}>
-                <Text style={styles.sectionTitle}>🤖 {t('stats.aiCoaching.title')}</Text>
-                <View style={styles.betaTag}>
-                  <Text style={styles.betaText}>BETA</Text>
-                </View>
-              </View>
+              <Text style={styles.sectionTitle}>🤖 {t('stats.aiCoaching.title')}</Text>
               <Text style={styles.sectionSubtitle}>{t('stats.aiCoaching.subtitle')}</Text>
             </View>
             
-            {isDataLoaded ? (
-              <EnhancedCoachingDashboard 
-                moodData={[]}
-                habitMoodData={[]}
-              />
+            {canUsePerformanceAlerts() ? (
+              <>
+                {isDataLoaded ? (
+                  <EnhancedCoachingDashboard 
+                    moodData={moodData}
+                    habitMoodData={habitMoodData}
+                  />
+                ) : (
+                  <View style={styles.aiCoachingCard}>
+                    <View style={styles.aiCoachingIcon}>
+                      <Sparkles size={32} color={currentTheme.colors.primary} />
+                    </View>
+                    <Text style={styles.aiCoachingTitle}>{t('stats.aiCoaching.loading')}</Text>
+                    <Text style={styles.aiCoachingDescription}>
+                      {t('stats.aiCoaching.preparingSession')}
+                    </Text>
+                  </View>
+                )}
+              </>
             ) : (
-              <View style={styles.aiCoachingCard}>
-                <View style={styles.aiCoachingIcon}>
-                  <Sparkles size={32} color={currentTheme.colors.primary} />
-                </View>
-                <Text style={styles.aiCoachingTitle}>{t('stats.aiCoaching.loading')}</Text>
-                <Text style={styles.aiCoachingDescription}>
-                  {t('stats.aiCoaching.preparingSession')}
-                </Text>
+              <View style={styles.upgradeContainer}>
+                <Text style={styles.sectionSubtitle}>{t('stats.advanced.upgradeMessage')}</Text>
+                <TouchableOpacity 
+                  style={styles.upgradeButton}
+                  onPress={() => showUpgradePrompt('analytics_limit')}
+                >
+                  <Text style={styles.upgradeButtonText}>{t('upgradeToPro')}</Text>
+                </TouchableOpacity>
               </View>
             )}
-          </View>
-        );
-
-      case 'library':
-        return (
-          <View style={styles.analyticsContainer}>
-            <View style={styles.analyticsHeader}>
-              <Text style={styles.sectionTitle}>
-                📚 {t('stats.library.title')}{'\n'}
-                <Text style={styles.sectionSubtitle}>{t('stats.library.subtitle')}</Text>
-              </Text>
-            </View>
-            
-            <LibraryAnalyticsDisplay />
           </View>
         );
 
@@ -1358,23 +1621,6 @@ export default function StatsScreen() {
   };
 
   const handleAnalyticsTabChange = (tab: AnalyticsTab) => {
-    // For closed testing, allow access to all tabs
-    if (!isUpgradeTestingEnabled) {
-      setSelectedAnalyticsTab(tab);
-      return;
-    }
-    
-    // Check if user can access advanced analytics
-    if (tab === 'wellness' && !canUseWellnessIntegration()) {
-      showUpgradePrompt('wellness_integration');
-      return;
-    }
-    
-    if (tab === 'advanced' && !canUsePerformanceAlerts()) {
-      showUpgradePrompt('analytics_limit');
-      return;
-    }
-    
     setSelectedAnalyticsTab(tab);
   };
 
@@ -1609,7 +1855,6 @@ const createStyles = (colors: any) => StyleSheet.create({
     fontWeight: '600',
     color: colors.text,
     marginBottom: 16,
-    lineHeight: 24,
   },
   statsGrid: {
     flexDirection: 'row',
@@ -2147,23 +2392,6 @@ const createStyles = (colors: any) => StyleSheet.create({
   },
   aiCoachingHeader: {
     marginBottom: 24,
-  },
-  aiCoachingTitleContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 4,
-  },
-  betaTag: {
-    backgroundColor: colors.primary,
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    borderRadius: 8,
-    marginLeft: 8,
-  },
-  betaText: {
-    fontSize: 12,
-    fontWeight: 'bold',
-    color: colors.background,
   },
   aiCoachingCard: {
     backgroundColor: colors.card,

@@ -1,0 +1,10 @@
+[33me92b3ef[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m Complete mood analytics redesign: Replace complex dashboard with simple 3-tab system, add circular mood selector, implement smart alerts and celebrations, integrate with habit tracking
+[33mddf0fcd[m Fix provider hierarchy: Resolve useAuth and useCelebration context errors by reordering providers and creating proper component wrappers
+[33m09e45b2[m CRITICAL FIX: Resolve APK blank screen issue - Firebase initialization and environment variables
+[33maf1e51b[m CRITICAL FIX: Prevent onboarding from reappearing on every app launch
+[33m009f675[m CRITICAL FIX: Resolve infinite re-render loop and Firebase auth persistence issues
+[33mbe7788b[m Fix habit persistence and mood reminder issues
+[33mae2f9c5[m  Fix habit completion persistence issue
+[33ma009269[m  Complete feedback system implementation and fixes
+[33m2e6b1c8[m feat: Add performance optimizations and Android preview build enhancements - Add OptimizedImage and OptimizedLoading components for better performance - Implement advanced caching and background task services - Add bundle optimization and animation hooks - Update app layout with performance improvements - Add clear-cache utility script - Update translations and app configuration
+[33m2f5bf44[m fix: Resolve onboarding loop by improving status persistence and routing logic

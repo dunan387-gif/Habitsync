@@ -107,8 +107,8 @@ function AppContent() {
         <Stack.Screen name="index" />
         <Stack.Screen name="(auth)" />
         <Stack.Screen name="(tabs)" />
-        <Stack.Screen name="habit" />
-        <Stack.Screen name="course" />
+        <Stack.Screen name="habit/[id]" />
+        <Stack.Screen name="course/[id]" />
         <Stack.Screen name="mood-tracking" />
         <Stack.Screen name="settings" />
         <Stack.Screen name="profile" />

@@ -1,5 +1,5 @@
 import { Tabs } from 'expo-router';
-import { Home, BookOpen, BarChart3, Trophy, MoreHorizontal, Users } from 'lucide-react-native';
+import { Home, BookOpen, BarChart3, Trophy, MoreHorizontal } from 'lucide-react-native';
 import { View, ActivityIndicator, Platform } from 'react-native';
 import { useTheme } from '@/context/ThemeContext';
 import { useLanguage } from '@/context/LanguageContext';
@@ -93,15 +93,6 @@ export default function TabLayout() {
           title: safeTitle('tabs.library'),
           tabBarIcon: ({ color, focused }) => (
             <BookOpen size={24} color={color} />
-          ),
-        }}
-      />
-      <Tabs.Screen 
-        name="community"
-        options={{
-          title: safeTitle('tabs.community'),
-          tabBarIcon: ({ color, focused }) => (
-            <Users size={24} color={color} />
           ),
         }}
       />

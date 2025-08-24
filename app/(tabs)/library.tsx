@@ -296,10 +296,15 @@ export default function Library() {
           accessibilityRole="tab"
           accessibilityState={{ selected: showCourses }}
         >
-          <BookOpen 
-            size={22} 
-            color={showCourses ? currentTheme.colors.primary : currentTheme.colors.textSecondary} 
-          />
+          <View style={styles.tabContent}>
+            <BookOpen 
+              size={22} 
+              color={showCourses ? currentTheme.colors.primary : currentTheme.colors.textSecondary} 
+            />
+            <Text style={[styles.betaLabel, { color: showCourses ? currentTheme.colors.primary : currentTheme.colors.textSecondary }]}>
+              Beta
+            </Text>
+          </View>
         </TouchableOpacity>
         <TouchableOpacity
           style={[styles.tab, showStudyGroups && styles.activeTab]}
@@ -314,10 +319,15 @@ export default function Library() {
           accessibilityRole="tab"
           accessibilityState={{ selected: showStudyGroups }}
         >
-          <Users2 
-            size={22} 
-            color={showStudyGroups ? currentTheme.colors.primary : currentTheme.colors.textSecondary} 
-          />
+          <View style={styles.tabContent}>
+            <Users2 
+              size={22} 
+              color={showStudyGroups ? currentTheme.colors.primary : currentTheme.colors.textSecondary} 
+            />
+            <Text style={[styles.betaLabel, { color: showStudyGroups ? currentTheme.colors.primary : currentTheme.colors.textSecondary }]}>
+              Beta
+            </Text>
+          </View>
         </TouchableOpacity>
         <TouchableOpacity
           style={[styles.tab, showPeerRecommendations && styles.activeTab]}
@@ -736,6 +746,16 @@ const createStyles = (colors: any) => StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 4,
     elevation: 3,
+  },
+  tabContent: {
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  betaLabel: {
+    fontSize: 8,
+    fontWeight: '600',
+    marginTop: 2,
+    textTransform: 'uppercase',
   },
   createButton: {
     flexDirection: 'row',
